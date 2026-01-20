@@ -1,0 +1,75 @@
+'use client';
+
+import { useEffect } from 'react';
+import { motion, useMotionValue, useSpring } from 'motion/react';
+
+export default function CustomCursor() {
+  const cursorX = useMotionValue(-100);
+  const cursorY = useMotionValue(-100);
+  const cursorRotate = useMotionValue(0);
+
+  const springConfig = { damping: 28, stiffness: 280, mass: 0.35 };
+  const cursorXSpring = useSpring(cursorX, springConfig);
+  const cursorYSpring = useSpring(cursorY, springConfig);
+  const cursorRotateSpring = useSpring(cursorRotate, { damping: 22, stiffness: 180 });
+
+  useEffect(() => {
+    let prevX = -100;
+    let prevY = -100;
+
+    const moveCursor = (e: MouseEvent) => {
+      cursorX.set(e.clientX);
+      cursorY.set(e.clientY);
+
+      const dx = e.clientX - prevX;
+      const dy = e.clientY - prevY;
+
+      if (Math.abs(dx) > 0.5 || Math.abs(dy) > 0.5) {
+        const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+        const targetAngle = angle + 135;
+        const currentAngle = cursorRotate.get();
+        let delta = targetAngle - currentAngle;
+        while (delta <= -180) delta += 360;
+        while (delta > 180) delta -= 360;
+        cursorRotate.set(currentAngle + delta);
+      }
+
+      prevX = e.clientX;
+      prevY = e.clientY;
+    };
+
+    window.addEventListener('mousemove', moveCursor);
+    return () => window.removeEventListener('mousemove', moveCursor);
+  }, [cursorX, cursorY, cursorRotate]);
+
+  return (
+    <motion.div
+      className="fixed top-0 left-0 z-9999 pointer-events-none"
+      style={{
+        x: cursorXSpring,
+        y: cursorYSpring,
+        rotate: cursorRotateSpring,
+        translateX: "-4px", 
+        translateY: "-4px",
+        transformOrigin: "4px 4px"
+      }}
+    >
+      <svg
+        width="32"
+        height="32"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="drop-shadow-[2px_4px_6px_rgba(0,0,0,0.3)]"
+      >
+        <path
+          d="M3 3L10.07 19.97L12.58 12.58L19.97 10.07L3 3Z"
+          fill="#000000"
+          stroke="white"
+          strokeWidth="2"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </motion.div>
+  );
+}

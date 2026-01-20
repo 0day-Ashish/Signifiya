@@ -1,0 +1,225 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id            String    @id @default(uuid())
+  bookingId     String?   @unique // unique per user, assigned on first profile load (e.g. SGF26-A1B2C3D4)
+  name          String
+  email         String    @unique
+  emailVerified Boolean
+  image         String?
+  gender        String?
+  collegeName   String?
+  mobileNo      String?
+  role          String?   // "admin" for admin panel access
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+  registeredEvents Event[]
+  generatedPasses  Pass[]
+
+  @@map("user")
+}
+
+model Event {
+  id            String   @id @default(uuid())
+  name          String
+  description   String?
+  date          DateTime
+  location      String?
+  price         Int      @default(0)
+  type          String?  // "Solo", "Team (1-3)", etc.
+  userId        String?
+  user          User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  participantTeams ParticipantTeamEvent[]
+
+  @@map("event")
+}
+
+model Pass {
+  id                     String    @id @default(uuid())
+  bookingId              String?   @unique // legacy per-pass id
+  userBookingId          String?   // User.bookingId at purchase, shown on pass
+  type                   String    // e.g., "Day 1 Pass", "Dual Day Pass"
+  qrCode                 String?   // code for QR (e.g. SP-xxx)
+  validUntil             DateTime
+  userId                 String
+  user                   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  visitorRegistrationId  String?   @unique
+  visitorRegistration    VisitorRegistration? @relation(fields: [visitorRegistrationId], references: [id], onDelete: SetNull)
+  verifiedAt             DateTime? // legacy single-day attendance
+  verifiedBy             String?   // admin userId who verified
+  verifiedDay1At         DateTime? // Day 1 attendance (for Day 1 and Dual Day passes)
+  verifiedDay1By         String?
+  verifiedDay2At         DateTime? // Day 2 attendance (for Day 2 and Dual Day passes)
+  verifiedDay2By         String?
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
+
+  @@map("pass")
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  expiresAt DateTime
+  token     String
+  createdAt DateTime
+  updatedAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id @default(uuid())
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id @default(uuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
+
+  @@map("verification")
+}
+
+model Issue {
+  id        String   @id @default(uuid())
+  text      String
+  email     String?
+  name      String?
+  resolved  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("issue")
+}
+
+model NewsletterSubscription {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  consent   Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("newsletter_subscription")
+}
+
+// Visitor pass registration (/visitor-registration, /register)
+model VisitorRegistration {
+  id              String   @id @default(uuid())
+  name            String
+  email           String
+  phone           String
+  college         String
+  passType        String   // "day1" | "day2" | "dual" | "full"
+  amount          Int      // in INR
+  status          String   @default("pending") // pending | verified | rejected
+  paymentProofUrl String?
+  bookingId       String?  @unique // legacy per-reg id
+  userBookingId   String?  // User.bookingId at purchase
+  userId          String?  // if logged in
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  pass            Pass?
+
+  @@map("visitor_registration")
+}
+
+// Event-participating teams (/events)
+model ParticipantTeam {
+  id                String    @id @default(uuid())
+  teamName          String
+  leaderName        String
+  leaderEmail       String
+  leaderPhone       String
+  leaderBookingId   String?   // team lead Booking ID for pass
+  leaderAttendedAt  DateTime? // event-day: team lead attendance
+  leaderAttendedBy  String?
+  college           String
+  totalAmount       Int
+  status            String    @default("pending") // pending | verified | rejected
+  paymentProofUrl   String?
+  qrCode            String?   // for event pass QR
+  eventTime         String?   // e.g. "10:00 AM - 5:00 PM"
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  members           ParticipantTeamMember[]
+  events            ParticipantTeamEvent[]
+
+  @@map("participant_team")
+}
+
+model ParticipantTeamMember {
+  id         String    @id @default(uuid())
+  name       String
+  college    String?
+  phone      String?
+  email      String?
+  attendedAt DateTime? // event-day: teammate attendance
+  attendedBy String?
+  teamId     String
+  team       ParticipantTeam @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  createdAt  DateTime  @default(now())
+
+  @@map("participant_team_member")
+}
+
+model ParticipantTeamEvent {
+  teamId  String
+  eventId String
+  team    ParticipantTeam @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  event   Event           @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@id([teamId, eventId])
+  @@map("participant_team_event")
+}
+
+// Organizing committee (/teams page) – admin CRUD
+model OrganizingMember {
+  id       String   @id @default(uuid())
+  name     String
+  role     String
+  category String
+  image    String?
+  order    Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("organizing_member")
+}
