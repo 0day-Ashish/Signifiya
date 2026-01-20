@@ -25,55 +25,22 @@ const SOCIAL_ICONS = [
 ];
 
 const TEAM_MEMBERS = [
-  {
-    id: 1,
-    name: "Prof. Dr. Sajal Saha",
-    role: "Core Committee",
-    image: "/avatar1.jpg", 
-    bio: "HOD, Department of Computer Science and Engineering, SOET",
-    color: "#deb3fa",
-    linkedin: "https://www.linkedin.com/in/sajalsahaofficial/"
-  },
-  {
-    id: 2,
-    name: "Prof. Dr. Sushanta Kr. Mandal",
-    role: "Core Committee",
-    image: "/avatar2.jpg",
-    bio: "HOD, Department of Electronics and Communication Engineering, SOET",
-    color: "#FCD34D"
-  },
-  {
-    id: 3,
-    name: "Dr. Mohammad Zubair",
-    role: "Core Committee",
-    image: "/avatar3.jpg",
-    bio: "HOD, Department of Mechanical Engineering, SOET",
-    color: "#3B82F6"
-  },
-  {
-    id: 4,
-    name: "Dr. Hasim Ali Khan",
-    role: "Core Committee",
-    image: "/avatar4.jpg",
-    bio: "HOD, Department of Electrical Engineering, SOET",
-    color: "#E9D5FF"
-  },
-  { id: 5, name: "Ms. Soodipa Chakraborty", role: "Core Committee", image: "/avatar1.jpg", bio: "Assistant Professor, Mechanical Engineering, SOET", color: "#FF6B6B" },
-  { id: 6, name: "Mr. Nisarga Chand", role: "Core Committee", image: "/avatar2.jpg", bio: "Assistant Professor, Electrical Engineering, SOET", color: "#4ECDC4" },
-  { id: 7, name: "Dr. Soumitra Roy", role: "Core Committee", image: "/avatar3.jpg", bio: "Assistant Professor, Computer Science and Engineering, SOET", color: "#45B7D1" },
   { id: 8, name: "Hrishav Dey", role: "UX Researcher", image: "/avatar4.jpg", bio: "Understanding user needs.", color: "#96CEB4" },
-  { id: 9, name: "Sudipto Barman", role: "DevOps", image: "/avatar1.jpg", bio: "Ensuring smooth deployments.", color: "#D4A5A5" },
+  
   { id: 10, name: "Digant Mishra", role: "Content Writer", image: "/avatar2.jpg", bio: "Telling our story.", color: "#9B59B6" },
-  { id: 11, name: "Arijit Dey", role: "QA Engineer", image: "/avatar3.jpg", bio: "Maintaining high quality.", color: "#3498DB" },
-  { id: 12, name: "Snehashish Mondal", role: "Events Lead", image: "/avatar4.jpg", bio: "Organizing memorable events.", color: "#E67E22" },
+  { id: 11, name: "Arijit De", role: "QA Engineer", image: "/avatar3.jpg", bio: "Maintaining high quality.", color: "#3498DB" },
+  { id: 12, name: "Snehasish Mondal", role: "Events Lead", image: "/avatar4.jpg", bio: "Organizing memorable events.", color: "#E67E22" },
   { id: 20, name: "Ashish R. Das", role: "Lead Developer", image: "/avatar1.jpg", bio: "19, full stack dev, community lead @0DAY", color: "#8E44AD", linkedin: "https://linkedin.com/in/arddev", instagram: "https://instagram.com/ashishh_rd_", github: "https://github.com/0day-Ashish" },
   { id: 13, name: "Garima Roy", role: "Security Analyst", image: "/avatar1.jpg", bio: "Protecting our infrastructure.", color: "#2ECC71" },
   { id: 14, name: "Leeza Bhowal", role: "Legal Advisor", image: "/avatar2.jpg", bio: "Navigating regulations.", color: "#F1C40F" },
   { id: 15, name: "Somnath Singha Roy", role: "Support Lead", image: "/avatar3.jpg", bio: "Helping our users succeed.", color: "#1ABC9C" },
   { id: 16, name: "Srijita Bera", role: "Growth Hacker", image: "/avatar4.jpg", bio: "Accelerating our reach.", color: "#E74C3C" },
-  { id: 17, name: "Siddhartha Chakraborty", role: "Blockchain Dev", image: "/avatar1.jpg", bio: "Developing smart contracts.", color: "#8E44AD" },
+  { id: 17, name: "Siddartha Chakraborty", role: "Blockchain Dev", image: "/avatar1.jpg", bio: "Developing smart contracts.", color: "#8E44AD" },
   { id: 18, name: "Samriddhi Sinha", role: "Blockchain Dev", image: "/avatar2.jpg", bio: "Developing smart contracts.", color: "#8E44AD" },
-  { id: 19, name: "Ashish Yadav", role: "Blockchain Dev", image: "/avatar3.jpg", bio: "Developing smart contracts.", color: "#8E44AD" }
+  { id: 19, name: "Ashish Yadav", role: "Blockchain Dev", image: "/avatar3.jpg", bio: "Developing smart contracts.", color: "#8E44AD" },
+  { id: 21, name: "Keshav Maheshwari", role: "Core Committee", image: "/avatar1.jpg", bio: "Core Committee", color: "#deb3fa", linkedin: "https://linkedin.com/in/sajal-saha-example" },
+  { id: 22, name: "Sampad Ghosh ", role: "Core Committee", image: "/avatar1.jpg", bio: "Core Committee", color: "#deb3fa", linkedin: "https://linkedin.com/in/sajal-saha-example" },
+  { id: 9, name: "Sudipto Barman", role: "DevOps", image: "/avatar1.jpg", bio: "Ensuring smooth deployments.", color: "#D4A5A5" }
 ];
 
 export default function Team() {

@@ -195,7 +195,7 @@ export default function Footer() {
                     <button className="bg-white text-black px-4 py-1.5 rounded-lg border-2 border-black flex items-center gap-2 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all group/btn w-fit">
                         <Image src="/googleplay.png" alt="Google Play" width={24} height={24} className="w-6 h-6 object-contain" />
                         <div className="flex flex-col items-start leading-none">
-                            <span className="text-[8px] uppercase font-bold tracking-wider">Get it on</span>
+                            <span className="text-[8px] uppercase font-bold tracking-wider">Coming Soon !</span>
                             <span className="text-sm font-bold font-sans tracking-tight">Google Play</span>
                         </div>
                     </button>

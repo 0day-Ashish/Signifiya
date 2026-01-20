@@ -24,7 +24,7 @@ export default function Sponsors() {
             <FadeIn>
                 <div className="flex flex-col gap-4 text-center">
                     <h2 className={`text-5xl sm:text-7xl text-black uppercase leading-[0.9] ${gilton.className}`}>
-                        Our <span className="italic">Sponsors</span>
+                        Past <span className="italic">Sponsors</span>
                     </h2>
                     <p className={`text-xl text-gray-600 font-medium max-w-2xl mx-auto ${softura.className}`}>
                         Powered by the best in the industry.
