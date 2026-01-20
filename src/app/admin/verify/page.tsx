@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { getPassesByBookingId, getEventTeamsByBookingId, markPassAttended, markEventTeamLeaderAttended, markEventTeamMemberAttended, resolveToBookingId } from "../actions";
 
 type PassRow = {
@@ -40,6 +40,18 @@ export default function AdminVerifyPage() {
   const [showScanner, setShowScanner] = useState(false);
   const scannerRef = useRef<{ stop: () => Promise<void> } | null>(null);
   const handledRef = useRef(false);
+  const resultsRef = useRef<HTMLElement | null>(null);
+
+  const fetchBoth = useCallback(async (bid: string) => {
+    const [passRes, teamRes] = await Promise.all([
+      getPassesByBookingId(bid),
+      getEventTeamsByBookingId(bid),
+    ]);
+    setPasses(passRes.passes);
+    setEventTeams(teamRes.teams);
+    setUserName(passRes.userName);
+    setUserEmail(passRes.userEmail);
+  }, []);
 
   useEffect(() => {
     if (!showScanner) return;
@@ -48,32 +60,41 @@ export default function AdminVerifyPage() {
     (async () => {
       const { Html5Qrcode } = await import("html5-qrcode");
       const scanner = new Html5Qrcode("admin-qr-reader");
-      scannerRef.current = scanner; // set before start so cleanup can stop if user closes early
+      scannerRef.current = scanner;
       await scanner.start(
         { facingMode: "environment" },
         { fps: 10, qrbox: { width: 250, height: 250 } },
-        async (decodedText) => {
+        (decodedText) => {
           if (handledRef.current) return;
           handledRef.current = true;
-          setShowScanner(false);
-          const bid = await resolveToBookingId(decodedText);
-          if (bid) {
-            setError(null);
-            setQuery(bid);
-            setSearched(false);
-            setLoading(true);
+          void (async () => {
             try {
-              await fetchBoth(bid);
-              setSearched(true);
+              const bid = await resolveToBookingId(decodedText);
+              if (bid) {
+                setShowScanner(false);
+                setError(null);
+                setQuery(bid);
+                setSearched(false);
+                setLoading(true);
+                try {
+                  await fetchBoth(bid);
+                  setSearched(true);
+                  setTimeout(() => resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 80);
+                } catch (e) {
+                  setError(e instanceof Error ? e.message : "Lookup failed");
+                  setSearched(true);
+                } finally {
+                  setLoading(false);
+                }
+              } else {
+                setShowScanner(false);
+                setError("QR not recognized. Use a visitor or event pass QR.");
+              }
             } catch (e) {
-              setError(e instanceof Error ? e.message : "Lookup failed");
-              setSearched(true);
-            } finally {
-              setLoading(false);
+              setShowScanner(false);
+              setError(e instanceof Error ? e.message : "Resolve failed");
             }
-          } else {
-            setError("QR not recognized. Use a visitor or event pass QR.");
-          }
+          })();
         },
         () => {}
       );
@@ -86,18 +107,7 @@ export default function AdminVerifyPage() {
       scannerRef.current?.stop().catch(() => {});
       scannerRef.current = null;
     };
-  }, [showScanner]);
-
-  const fetchBoth = async (bid: string) => {
-    const [passRes, teamRes] = await Promise.all([
-      getPassesByBookingId(bid),
-      getEventTeamsByBookingId(bid),
-    ]);
-    setPasses(passRes.passes);
-    setEventTeams(teamRes.teams);
-    setUserName(passRes.userName);
-    setUserEmail(passRes.userEmail);
-  };
+  }, [showScanner, fetchBoth]);
 
   const handleLookup = async () => {
     const bid = query.trim();
@@ -236,7 +246,7 @@ export default function AdminVerifyPage() {
 
       {/* Results */}
       {searched && (
-        <section className="rounded-xl border border-zinc-800 bg-zinc-900/50 overflow-hidden">
+        <section ref={resultsRef} className="rounded-xl border border-zinc-800 bg-zinc-900/50 overflow-hidden">
           {!hasAny ? (
             <div className="p-8 text-center text-zinc-500">
               No passes found for this Booking ID. Ask the visitor to confirm their ID or to show their QR.
