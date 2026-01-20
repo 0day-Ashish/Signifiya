@@ -52,7 +52,7 @@ const EVENTS_DATA = [
     title: "LATHE WAR",
     date: "March 13th - 14th",
     description: "des.",
-    image: "/mechanical2.jpg",
+    image: "/lathe-war.jpg",
   },
   {
     id: 6,
@@ -76,7 +76,7 @@ const EVENTS_DATA = [
     title: "ROBO TERRAIN",
     date: "March 13th - 14th",
     description: "des.",
-    image: "/.jpg",
+    image: "/robotics1.jpg",
   },
   {
     id: 9,
@@ -84,7 +84,7 @@ const EVENTS_DATA = [
     title: "PATH FOLLOWER",
     date: "March 13th - 14th",
     description: "des.",
-    image: "/.jpg",
+    image: "/robotics2.jpg",
   },
   {
     id: 10,
@@ -92,7 +92,7 @@ const EVENTS_DATA = [
     title: "DANCE BATTLE",
     date: "March 13th - 14th",
     description: "des.",
-    image: "/.jpg",
+    image: "/dance-battle.jpg",
   },
   {
     id: 11,
@@ -100,7 +100,7 @@ const EVENTS_DATA = [
     title: "TREASURE HUNT",
     date: "March 13th - 14th",
     description: "des.",
-    image: "/.jpg",
+    image: "/treasure-hunt.jpg",
   },
   {
     id: 12,
@@ -108,7 +108,7 @@ const EVENTS_DATA = [
     title: "ARM WRESTLING",
     date: "March 13th - 14th",
     description: "des.",
-    image: "/.jpg",
+    image: "/non-tech1.jpg",
   },
   {
     id: 13,
@@ -116,7 +116,7 @@ const EVENTS_DATA = [
     title: "RAP BATTLE",
     date: "March 13th - 14th",
     description: "des.",
-    image: "/.jpg",
+    image: "/rap-battle.jpg",
   }
 ];
 
