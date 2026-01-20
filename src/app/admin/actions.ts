@@ -311,6 +311,36 @@ export async function markPassAttended(passId: string, day: "day1" | "day2") {
   revalidatePath("/admin/verify");
 }
 
+// --- Resolve QR code (SP-xxx, EP-xxx) or plain string to booking ID for verification ---
+export async function resolveToBookingId(value: string): Promise<string | null> {
+  await guard();
+  const v = value?.trim();
+  if (!v || v.length < 3) return null;
+
+  if (v.startsWith("SP-")) {
+    const pass = await prisma.pass.findFirst({
+      where: { qrCode: v },
+      include: { user: { select: { bookingId: true } } },
+    });
+    return pass?.userBookingId ?? pass?.user?.bookingId ?? null;
+  }
+
+  if (v.startsWith("EP-")) {
+    const team = await prisma.participantTeam.findFirst({
+      where: { qrCode: v },
+    });
+    if (!team) return null;
+    if (team.leaderBookingId) return team.leaderBookingId;
+    const user = await prisma.user.findFirst({
+      where: { email: team.leaderEmail },
+      select: { bookingId: true },
+    });
+    return user?.bookingId ?? null;
+  }
+
+  return v;
+}
+
 // --- Event teams by Booking ID (verification: event passes) ---
 export async function getEventTeamsByBookingId(bookingId: string) {
   await guard();

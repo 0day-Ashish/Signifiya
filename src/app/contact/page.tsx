@@ -20,7 +20,7 @@ const CONTACT_MEMBERS = [
     id: 1,
     name: "Ashish R. Das",
     role: "Lead Developer",
-    email: "ashish@signifiya.com",
+    email: "ard@signifiya.com",
     phone: "+91 8910114007",
     image: "/avatar1.jpg",
     color: "#deb3fa",
@@ -32,10 +32,10 @@ const CONTACT_MEMBERS = [
   },
   {
     id: 2,
-    name: "Arijit ",
+    name: "Arijit Dey",
     role: "Finance Head",
     email: "arijit@signifiya.com",
-    phone: "+91 ",
+    phone: "+91 9831093297",
     image: "/avatar5.jpg",
     color: "#FCD34D",
     social: {
@@ -46,10 +46,10 @@ const CONTACT_MEMBERS = [
   },
   {
     id: 3,
-    name: "Mike Johnson",
-    role: "Community Manager",
-    email: "mike@signifiya.com",
-    phone: "+1 (555) 345-6789",
+    name: "Garima Roy",
+    role: "Core Committee",
+    email: "garima@signifiya.com",
+    phone: "+91 9073377527",
     image: "/avatar3.jpg",
     color: "#3B82F6",
     social: {

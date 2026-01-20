@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { getPassesByBookingId, getEventTeamsByBookingId, markPassAttended, markEventTeamLeaderAttended, markEventTeamMemberAttended } from "../actions";
+import { useState, useRef, useEffect } from "react";
+import { getPassesByBookingId, getEventTeamsByBookingId, markPassAttended, markEventTeamLeaderAttended, markEventTeamMemberAttended, resolveToBookingId } from "../actions";
 
 type PassRow = {
   id: string;
@@ -37,6 +37,56 @@ export default function AdminVerifyPage() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [searched, setSearched] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showScanner, setShowScanner] = useState(false);
+  const scannerRef = useRef<{ stop: () => Promise<void> } | null>(null);
+  const handledRef = useRef(false);
+
+  useEffect(() => {
+    if (!showScanner) return;
+    handledRef.current = false;
+
+    (async () => {
+      const { Html5Qrcode } = await import("html5-qrcode");
+      const scanner = new Html5Qrcode("admin-qr-reader");
+      scannerRef.current = scanner; // set before start so cleanup can stop if user closes early
+      await scanner.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: { width: 250, height: 250 } },
+        async (decodedText) => {
+          if (handledRef.current) return;
+          handledRef.current = true;
+          setShowScanner(false);
+          const bid = await resolveToBookingId(decodedText);
+          if (bid) {
+            setError(null);
+            setQuery(bid);
+            setSearched(false);
+            setLoading(true);
+            try {
+              await fetchBoth(bid);
+              setSearched(true);
+            } catch (e) {
+              setError(e instanceof Error ? e.message : "Lookup failed");
+              setSearched(true);
+            } finally {
+              setLoading(false);
+            }
+          } else {
+            setError("QR not recognized. Use a visitor or event pass QR.");
+          }
+        },
+        () => {}
+      );
+    })().catch((err: unknown) => {
+      setError(err instanceof Error ? err.message : "Could not start camera");
+      setShowScanner(false);
+    });
+
+    return () => {
+      scannerRef.current?.stop().catch(() => {});
+      scannerRef.current = null;
+    };
+  }, [showScanner]);
 
   const fetchBoth = async (bid: string) => {
     const [passRes, teamRes] = await Promise.all([
@@ -143,14 +193,40 @@ export default function AdminVerifyPage() {
             className="w-full rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-3 text-white font-mono placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
           />
         </div>
-        <button
-          onClick={handleLookup}
-          disabled={loading}
-          className="px-6 py-3 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold uppercase text-sm disabled:opacity-50 transition-colors"
-        >
-          {loading ? "Looking up…" : "Look up"}
-        </button>
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            onClick={handleLookup}
+            disabled={loading}
+            className="px-6 py-3 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold uppercase text-sm disabled:opacity-50 transition-colors"
+          >
+            {loading ? "Looking up…" : "Look up"}
+          </button>
+          <button
+            type="button"
+            onClick={() => { setError(null); setShowScanner(true); }}
+            className="md:hidden px-5 py-3 rounded-lg border-2 border-emerald-500/60 bg-emerald-500/10 text-emerald-400 font-bold uppercase text-sm hover:bg-emerald-500/20 transition-colors"
+          >
+            Scan QR
+          </button>
+        </div>
       </section>
+
+      {/* Mobile-only QR scanner modal */}
+      {showScanner && (
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/90 p-4">
+          <div className="flex w-full max-w-[320px] items-center justify-between mb-3">
+            <span className="text-sm font-bold uppercase text-white">Scan visitor or event pass QR</span>
+            <button
+              type="button"
+              onClick={() => setShowScanner(false)}
+              className="rounded-lg border border-zinc-600 bg-zinc-800 px-3 py-1.5 text-sm text-zinc-300 hover:bg-zinc-700"
+            >
+              Close
+            </button>
+          </div>
+          <div id="admin-qr-reader" className="min-h-[260px] w-full max-w-[min(300px,90vw)] overflow-hidden rounded-xl bg-zinc-900" />
+        </div>
+      )}
 
       {error && (
         <div className="rounded-xl border border-amber-500/50 bg-amber-500/10 px-4 py-3 text-amber-400 text-sm">

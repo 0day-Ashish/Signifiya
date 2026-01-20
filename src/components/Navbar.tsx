@@ -35,6 +35,16 @@ export default function Navbar({
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
 
+  // Close profile menu on Escape
+  useEffect(() => {
+    if (!showProfileMenu) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setShowProfileMenu(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [showProfileMenu, setShowProfileMenu]);
+
   // Determine if menu should be visible: on mobile use click state, on desktop use scroll state
   const isMenuVisible = isDesktop ? showNavLinks : mobileMenuOpen;
 
@@ -159,19 +169,6 @@ export default function Navbar({
                            
                            <button 
                               onClick={async () => {
-                                  if(confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
-                                      await authClient.signOut();
-                                      // Ideally call API to delete user
-                                      window.location.reload();
-                                  }
-                              }}
-                              className="w-full bg-red-400 text-black font-bold py-1.5 sm:py-2 rounded-lg border-2 border-black hover:bg-red-500 transition-colors text-xs sm:text-sm uppercase"
-                           >
-                              Delete Account
-                           </button>
-                           
-                           <button 
-                              onClick={async () => {
                                   await authClient.signOut();
                                   setShowProfileMenu(false);
                                   router.push("/");
@@ -181,6 +178,9 @@ export default function Navbar({
                            >
                               Sign Out
                            </button>
+                           <p className="hidden sm:block text-[10px] text-zinc-500 text-center mt-1 pt-2 border-t border-zinc-200">
+                              Press esc to close
+                           </p>
                       </div>
                   )}
               </div>

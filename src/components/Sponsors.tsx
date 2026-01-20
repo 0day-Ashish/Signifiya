@@ -9,12 +9,12 @@ const softura = localFont({ src: "../../public/fonts/Softura-Demo.otf" });
 
 // Placeholder sponsors data
 const SPONSORS = [
-  { id: 1, name: "Sponsor 1", logo: "/logo.png" },
-  { id: 2, name: "Sponsor 2", logo: "/logo.png" },
-  { id: 3, name: "Sponsor 3", logo: "/logo.png" },
-  { id: 4, name: "Sponsor 4", logo: "/logo.png" },
-  { id: 5, name: "Sponsor 5", logo: "/logo.png" },
-  { id: 6, name: "Sponsor 6", logo: "/logo.png" },
+  { id: 1, name: "Sponsor 1", logo: "/.png" },
+  { id: 2, name: "Sponsor 2", logo: "/.png" },
+  { id: 3, name: "Sponsor 3", logo: "/.png" },
+  { id: 4, name: "Sponsor 4", logo: "/.png" },
+  { id: 5, name: "Sponsor 5", logo: "/.png" },
+  { id: 6, name: "Sponsor 6", logo: "/.png" },
 ];
 
 export default function Sponsors() {

@@ -19,7 +19,7 @@ const EVENTS_DATA = [
   { id: 1, category: "EEE", title: "ELECTRIFYING CIRCUIT", date: "March 13th - 14th", description: "des.", image: "/eee.jpg", prizePool: "TBA" },
   { id: 2, category: "CIVIL", title: "TOWER MAKING", date: "March 13th - 14th", description: "5v5 Tactical Shooter. High stakes, big rewards. Prove your aim.", image: "/civil1.jpg", prizePool: "TBA" },
   { id: 3, category: "CIVIL", title: "BRIDGE MAKING", date: "March 13th - 14th", description: "Electrifying performances by the best college bands from across the region.", image: "/civil2.jpg", prizePool: "TBA" },
-  { id: 4, category: "MECHANICAL", title: "WASTE TO WEALTH", date: "March 13th - 14th", description: "des.", image: "/mechanical1.jpg", prizePool: "TBA" },
+  { id: 4, category: "MECHANICAL", title: "RE-FAB", date: "March 13th - 14th", description: "des.", image: "/mechanical1.jpg", prizePool: "TBA" },
   { id: 5, category: "MECHANICAL", title: "LATHE WAR", date: "March 13th - 14th", description: "des.", image: "/lathe-war.jpg", prizePool: "TBA" },
   { id: 6, category: "CSE", title: "CODING PREMIERE LEAGUE", date: "March 13th - 14th", description: "des.", image: "/cse2.jpg", prizePool: "₹25,000" },
   { id: 7, category: "CSE", title: "DIL SE DESIGN", date: "March 13th - 14th", description: "des.", image: "/cse1.jpg", prizePool: "TBA" },
