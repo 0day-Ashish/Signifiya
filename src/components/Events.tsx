@@ -11,117 +11,28 @@ const rampart = localFont({ src: "../../public/fonts/RampartOne-Regular.ttf" });
 const gilton = localFont({ src: "../../public/fonts/GiltonRegular.otf" });
 const softura = localFont({ src: "../../public/fonts/Softura-Demo.otf" });
 
-const CATEGORIES = ["CSE", "CIVIL", "MECHANICAL", "EEE", "ROBOTICS", "NON-TECH"];
+const CATEGORIES = ["ESPORTS", "CSE", "CIVIL", "MECHANICAL", "EEE", "ROBOTICS", "NON-TECH"];
 
 const EVENTS_DATA = [
-  {
-    id: 1,
-    category: "EEE",
-    title: "ELECTRIFYING CIRCUIT",
-    date: "March 13th - 14th",
-    description: "des.",
-    image: "/eee.jpg", 
-  },
-  {
-    id: 2,
-    category: "CIVIL",
-    title: "TOWER MAKING",
-    date: "March 13th - 14th",
-    description: "5v5 Tactical Shooter. High stakes, big rewards. Prove your aim.",
-    image: "/civil1.jpg",
-  },
-  {
-    id: 3,
-    category: "CIVIL",
-    title: "BRIDGE MAKING",
-    date: "March 13th - 14th",
-    description: "Electrifying performances by the best college bands from across the region.",
-    image: "/civil2.jpg",
-  },
-  {
-    id: 4,
-    category: "MECHANICAL",
-    title: "WASTE TO WEALTH",
-    date: "March 13th - 14th",
-    description: "des.",
-    image: "/mechanical1.jpg",
-  },
-  {
-    id: 5,
-    category: "MECHANICAL",
-    title: "LATHE WAR",
-    date: "March 13th - 14th",
-    description: "des.",
-    image: "/lathe-war.jpg",
-  },
-  {
-    id: 6,
-    category: "CSE",
-    title: "CODING PREMIERE LEAGUE",
-    date: "March 13th - 14th",
-    description: "des.",
-    image: "/cse2.jpg",
-  },
-  {
-    id: 7,
-    category: "CSE",
-    title: "DIL SE DESIGN",
-    date: "March 13th - 14th",
-    description: "des.",
-    image: "/cse1.jpg",
-  },
-  {
-    id: 8,
-    category: "ROBOTICS",
-    title: "ROBO TERRAIN",
-    date: "March 13th - 14th",
-    description: "des.",
-    image: "/robotics1.jpg",
-  },
-  {
-    id: 9,
-    category: "ROBOTICS",
-    title: "PATH FOLLOWER",
-    date: "March 13th - 14th",
-    description: "des.",
-    image: "/robotics2.jpg",
-  },
-  {
-    id: 10,
-    category: "NON-TECH",
-    title: "DANCE BATTLE",
-    date: "March 13th - 14th",
-    description: "des.",
-    image: "/dance-battle.jpg",
-  },
-  {
-    id: 11,
-    category: "NON-TECH",
-    title: "TREASURE HUNT",
-    date: "March 13th - 14th",
-    description: "des.",
-    image: "/treasure-hunt.jpg",
-  },
-  {
-    id: 12,
-    category: "NON-TECH",
-    title: "ARM WRESTLING",
-    date: "March 13th - 14th",
-    description: "des.",
-    image: "/non-tech1.jpg",
-  },
-  {
-    id: 13,
-    category: "NON-TECH",
-    title: "RAP BATTLE",
-    date: "March 13th - 14th",
-    description: "des.",
-    image: "/rap-battle.jpg",
-  }
+  { id: 0, category: "ESPORTS", title: "VALORANT TOURNAMENT", date: "March 13th - 14th", description: "des.", image: "/valorant.jpg", prizePool: "TBA" },
+  { id: 14, category: "ESPORTS", title: "BGMI", date: "March 13th - 14th", description: "des.", image: "/bgmi.jpg", prizePool: "TBA" },
+  { id: 1, category: "EEE", title: "ELECTRIFYING CIRCUIT", date: "March 13th - 14th", description: "des.", image: "/eee.jpg", prizePool: "TBA" },
+  { id: 2, category: "CIVIL", title: "TOWER MAKING", date: "March 13th - 14th", description: "5v5 Tactical Shooter. High stakes, big rewards. Prove your aim.", image: "/civil1.jpg", prizePool: "TBA" },
+  { id: 3, category: "CIVIL", title: "BRIDGE MAKING", date: "March 13th - 14th", description: "Electrifying performances by the best college bands from across the region.", image: "/civil2.jpg", prizePool: "TBA" },
+  { id: 4, category: "MECHANICAL", title: "WASTE TO WEALTH", date: "March 13th - 14th", description: "des.", image: "/mechanical1.jpg", prizePool: "TBA" },
+  { id: 5, category: "MECHANICAL", title: "LATHE WAR", date: "March 13th - 14th", description: "des.", image: "/lathe-war.jpg", prizePool: "TBA" },
+  { id: 6, category: "CSE", title: "CODING PREMIERE LEAGUE", date: "March 13th - 14th", description: "des.", image: "/cse2.jpg", prizePool: "₹25,000" },
+  { id: 7, category: "CSE", title: "DIL SE DESIGN", date: "March 13th - 14th", description: "des.", image: "/cse1.jpg", prizePool: "TBA" },
+  { id: 8, category: "ROBOTICS", title: "ROBO TERRAIN", date: "March 13th - 14th", description: "des.", image: "/robotics1.jpg", prizePool: "TBA" },
+  { id: 9, category: "ROBOTICS", title: "PATH FOLLOWER", date: "March 13th - 14th", description: "des.", image: "/robotics2.jpg", prizePool: "TBA" },
+  { id: 10, category: "NON-TECH", title: "DANCE BATTLE", date: "March 13th - 14th", description: "des.", image: "/dance-battle.jpg", prizePool: "TBA" },
+  { id: 11, category: "NON-TECH", title: "TREASURE HUNT", date: "March 13th - 14th", description: "des.", image: "/treasure-hunt.jpg", prizePool: "TBA" },
+  { id: 12, category: "NON-TECH", title: "ARM WRESTLING", date: "March 13th - 14th", description: "des.", image: "/non-tech1.jpg", prizePool: "TBA" },
+  { id: 13, category: "NON-TECH", title: "RAP BATTLE", date: "March 13th - 14th", description: "des.", image: "/rap-battle.jpg", prizePool: "TBA" },
 ];
 
 export default function Events() {
-  const [activeCategory, setActiveCategory] = useState("CSE");
+  const [activeCategory, setActiveCategory] = useState("ESPORTS");
 
   const filteredEvents = EVENTS_DATA.filter(event => event.category === activeCategory);
 
@@ -194,6 +105,9 @@ export default function Events() {
                                     <p className={`text-sm text-gray-500 font-bold uppercase tracking-widest ${softura.className}`}>
                                         {event.date}
                                     </p>
+                                    <span className={`inline-block mt-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-sm font-bold ${softura.className}`}>
+                                        Prize pool: {event.prizePool}
+                                    </span>
                                 </div>
                                 <p className={`text-base text-gray-800 font-medium leading-snug line-clamp-3 ${softura.className}`}>
                                     {event.description}

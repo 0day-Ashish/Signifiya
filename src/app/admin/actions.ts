@@ -14,11 +14,12 @@ async function guard() {
 // --- Dashboard stats ---
 export async function getAdminDashboardStats() {
   await guard();
-  const [userCount, visitorCount, teamCount, issueCount, visitorRevenue, teamRevenue] = await Promise.all([
+  const [userCount, visitorCount, teamCount, issueCount, newsletterCount, visitorRevenue, teamRevenue] = await Promise.all([
     prisma.user.count(),
     prisma.visitorRegistration.count(),
     prisma.participantTeam.count(),
     prisma.issue.count(),
+    prisma.newsletterSubscription.count(),
     prisma.visitorRegistration.aggregate({ where: { status: "verified" }, _sum: { amount: true } }),
     prisma.participantTeam.aggregate({ where: { status: "verified" }, _sum: { totalAmount: true } }),
   ]);
@@ -28,6 +29,7 @@ export async function getAdminDashboardStats() {
     visitorCount,
     teamCount,
     issueCount,
+    newsletterCount,
     totalRevenue,
     visitorRevenue: visitorRevenue._sum.amount || 0,
     teamRevenue: teamRevenue._sum.totalAmount || 0,
@@ -184,6 +186,23 @@ export async function getParticipantTeamsForRevenue(params?: { limit?: number; o
     prisma.participantTeam.count(),
   ]);
   return { teams, total };
+}
+
+// --- Newsletter subscriptions ---
+export async function getNewsletterSubscriptions(params?: { limit?: number; offset?: number }) {
+  await guard();
+  const limit = params?.limit ?? 50;
+  const offset = params?.offset ?? 0;
+  const [subscriptions, total] = await Promise.all([
+    prisma.newsletterSubscription.findMany({
+      orderBy: { createdAt: "desc" },
+      take: limit,
+      skip: offset,
+      select: { id: true, email: true, consent: true, createdAt: true },
+    }),
+    prisma.newsletterSubscription.count(),
+  ]);
+  return { subscriptions, total };
 }
 
 // --- Issues (contact page reports) ---

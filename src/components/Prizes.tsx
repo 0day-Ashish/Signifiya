@@ -29,7 +29,7 @@ export default function Prizes() {
             <FadeIn>
                 <div className="flex flex-col gap-2 relative z-10">
                     <h2 className={`text-6xl sm:text-6xl text-black leading-none tracking-tight ${bartle.className} drop-shadow-[4px_4px_0px_rgba(0,0,0,0.2)]`}>
-                        80k+ INR
+                        120k+ INR
                     </h2>
                     <h3 className={`text-3xl sm:text-5xl text-black uppercase leading-tight ${softura.className}`}>
                         in Prize Pool

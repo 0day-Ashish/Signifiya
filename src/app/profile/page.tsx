@@ -380,7 +380,7 @@ export default function Profile() {
       {/* Back Button */}
       <Link 
         href="/"
-        className="fixed top-16 left-8 sm:left-11 z-50 ml-2 sm:ml-0 sm:mt-20 w-9 h-9 sm:w-12 sm:h-12 bg-white text-black rounded-full border-2 border-black flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all active:scale-95 cursor-none"
+        className="fixed top-16 -mt-7 left-8 sm:left-11 z-50 ml-4 sm:ml-0 sm:mt-20 w-9 h-9 sm:w-12 sm:h-12 bg-white text-black rounded-full border-2 border-black flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all active:scale-95 cursor-none"
       >
         <svg className="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <line x1="19" y1="12" x2="5" y2="12"></line>
@@ -626,7 +626,7 @@ export default function Profile() {
                                      </svg>
                                      <p className={`font-bold text-black text-lg ${softura.className}`}>No Events Found</p>
                                      <p className={`text-sm text-gray-600 font-medium max-w-[200px] ${softura.className}`}>You&apos;ve not registered for any event yet.</p>
-                                     <Link href="/events" className={`mt-2 text-sm font-bold text-[#9c27b0] underline hover:text-black ${softura.className}`}>Register for events →</Link>
+                                     <Link href="/" className={`mt-2 text-sm font-bold text-[#9c27b0] underline hover:text-black ${softura.className}`}>Register for events →</Link>
                                  </div>
                              )}
                         </div>

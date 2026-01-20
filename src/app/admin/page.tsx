@@ -12,6 +12,7 @@ export default async function AdminDashboardPage() {
     { label: "Passes sold", value: stats.visitorCount, href: "/admin/revenue", color: "bg-emerald-500/20 border-emerald-500/50 text-emerald-300" },
     { label: "Event Teams", value: stats.teamCount, href: "/admin/teams", color: "bg-amber-500/20 border-amber-500/50 text-amber-300" },
     { label: "Revenue (₹)", value: stats.totalRevenue.toLocaleString("en-IN"), href: "/admin/revenue", color: "bg-green-500/20 border-green-500/50 text-green-300" },
+    { label: "Newsletter", value: stats.newsletterCount, href: "/admin/newsletter", color: "bg-sky-500/20 border-sky-500/50 text-sky-300" },
     { label: "Issues Reported", value: stats.issueCount, href: "/admin/issues", color: "bg-rose-500/20 border-rose-500/50 text-rose-300" },
   ];
 
@@ -19,7 +20,7 @@ export default async function AdminDashboardPage() {
     <div className="space-y-8">
       <h1 className="text-2xl font-black uppercase tracking-tight text-white">Dashboard</h1>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {cards.map((c) => (
           <Link
             key={c.label}
