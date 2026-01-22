@@ -7,7 +7,7 @@ import { s3Client } from "@/lib/s3";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 
 const PASS_AMOUNTS: Record<string, number> = { day1: 49, day2: 49, dual: 79, full: 499 };
-const PASS_TYPE_LABELS: Record<string, string> = { day1: "Day 1 Pass", day2: "Day 2 Pass", dual: "Dual Day Pass", full: "Visitor Pass" };
+const PASS_TYPE_LABELS: Record<string, string> = { day1: "Single day pass", dual: "Dual day pass", full: "Visitor Pass" };
 
 export async function uploadAvatar(formData: FormData) {
   try {

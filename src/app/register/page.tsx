@@ -23,12 +23,12 @@ import {
 } from "@/components/ui/select";
 import Image from "next/image";
 
-const PASS_AMOUNTS: Record<string, number> = { day1: 49, day2: 49, dual: 79 };
-const PASS_LABELS: Record<string, string> = { day1: "Day 1 Pass", day2: "Day 2 Pass", dual: "Dual Day Pass" };
+const PASS_AMOUNTS: Record<string, number> = { single: 49, dual: 79 };
+const PASS_LABELS: Record<string, string> = { single: "Single day pass", dual: "Dual day pass" };
 
 const formSchema = z.object({
   bookingId: z.string().min(8, "Enter your Booking ID").max(20),
-  passType: z.enum(["day1", "day2", "dual"]),
+  passType: z.enum(["single", "dual"]),
   firstName: z.string().min(2, "Required"),
   lastName: z.string().min(2, "Required"),
   email: z.string().email("Invalid email"),
@@ -59,7 +59,7 @@ export default function Register() {
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
-    defaultValues: { agreement: false, bookingId: "", passType: "day1" },
+    defaultValues: { agreement: false, bookingId: "", passType: "single" },
   });
 
   const onSubmit = (data: FormData) => {
@@ -85,7 +85,7 @@ export default function Register() {
         email: values.email,
         phone: values.phone,
         college: values.college,
-        passType: values.passType || "day1",
+        passType: values.passType === "single" ? "day1" : values.passType || "day1", // Map "single" to "day1" for backend compatibility
         sessionUserId: session.user.id,
       });
       if (!res.success) {
@@ -196,14 +196,13 @@ export default function Register() {
 
                   <div>
                     <Label className={labelStyles}>Select pass</Label>
-                    <Select value={watch("passType") ?? "day1"} onValueChange={(v) => setValue("passType", v as "day1" | "day2" | "dual")}>
+                    <Select value={watch("passType") ?? "single"} onValueChange={(v) => setValue("passType", v as "single" | "dual")}>
                       <SelectTrigger className={inputStyles}>
                         <SelectValue placeholder="Select pass" />
                       </SelectTrigger>
                       <SelectContent className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                        <SelectItem value="day1">Day 1 — ₹49</SelectItem>
-                        <SelectItem value="day2">Day 2 — ₹49</SelectItem>
-                        <SelectItem value="dual">Dual day — ₹79</SelectItem>
+                        <SelectItem value="single">Single day pass — ₹49</SelectItem>
+                        <SelectItem value="dual">Dual day pass — ₹79</SelectItem>
                       </SelectContent>
                     </Select>
                     {errors.passType && (
@@ -354,7 +353,7 @@ export default function Register() {
                 </button>
 
                 <div className="bg-zinc-100 border-2 border-black p-4 rounded-xl mb-6">
-                  <p className="font-bold text-sm text-zinc-700">{PASS_LABELS[watch("passType") || "day1"]} — ₹{PASS_AMOUNTS[watch("passType") || "day1"]}. Payment bypassed for testing. Click below to generate your pass.</p>
+                  <p className="font-bold text-sm text-zinc-700">{PASS_LABELS[watch("passType") || "single"]} — ₹{PASS_AMOUNTS[watch("passType") || "single"]}. Payment bypassed for testing. Click below to generate your pass.</p>
                 </div>
 
                 {!session?.user && (
