@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, useMotionValue, useSpring } from 'motion/react';
 
 export default function CustomCursor() {
+  const [isDesktop, setIsDesktop] = useState(false);
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
   const cursorRotate = useMotionValue(0);
@@ -14,6 +15,21 @@ export default function CustomCursor() {
   const cursorRotateSpring = useSpring(cursorRotate, { damping: 22, stiffness: 180 });
 
   useEffect(() => {
+    // Check if device has pointer (mouse) and is not a touch device
+    const checkIsDesktop = () => {
+      const hasPointer = window.matchMedia('(pointer: fine)').matches;
+      const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      setIsDesktop(hasPointer && !isTouchDevice && window.innerWidth >= 768);
+    };
+
+    checkIsDesktop();
+    window.addEventListener('resize', checkIsDesktop);
+    return () => window.removeEventListener('resize', checkIsDesktop);
+  }, []);
+
+  useEffect(() => {
+    if (!isDesktop) return;
+
     let prevX = -100;
     let prevY = -100;
 
@@ -40,11 +56,13 @@ export default function CustomCursor() {
 
     window.addEventListener('mousemove', moveCursor);
     return () => window.removeEventListener('mousemove', moveCursor);
-  }, [cursorX, cursorY, cursorRotate]);
+  }, [cursorX, cursorY, cursorRotate, isDesktop]);
+
+  if (!isDesktop) return null;
 
   return (
     <motion.div
-      className="fixed top-0 left-0 z-9999 pointer-events-none"
+      className="fixed top-0 left-0 z-9999 pointer-events-none hidden md:block"
       style={{
         x: cursorXSpring,
         y: cursorYSpring,
