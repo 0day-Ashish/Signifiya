@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import Infobar from "@/components/Infobar";
 import localFont from "next/font/local";
 import Image from "next/image";
 import Link from "next/link";
@@ -195,15 +194,6 @@ function ContactCard({ member, index }: { member: ContactMember; index: number }
               >
                 {member.email}
               </motion.a>
-              
-              <motion.a
-                href={`tel:${member.phone}`}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="block w-full bg-white text-black py-3 px-4 rounded-xl font-semibold hover:bg-gray-100 transition-colors border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.3)]"
-              >
-                {member.phone}
-              </motion.a>
 
               {/* Social Icons */}
               <div className="flex justify-center gap-4 pt-2">
@@ -373,9 +363,6 @@ export default function Contact() {
           <path d="M18 15l-6-6-6 6"/>
         </svg>
       </button>
-
-          <Infobar />
-
           <Navbar
             showNavLinks={showNavLinks}
             session={session}
@@ -455,7 +442,7 @@ export default function Contact() {
                 <form onSubmit={handleIssueSubmit} className="space-y-6">
                   <div className="flex flex-col gap-2">
                     <label className={`font-bold text-black uppercase text-sm ${softura.className}`}>
-                      Your Name (Optional)
+                      Your Name <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
@@ -468,7 +455,7 @@ export default function Contact() {
 
                   <div className="flex flex-col gap-2">
                     <label className={`font-bold text-black uppercase text-sm ${softura.className}`}>
-                      Your Email (Optional)
+                      Your Email <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="email"
