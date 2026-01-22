@@ -266,9 +266,10 @@ export default function AdminVerifyPage() {
                   </div>
                   <div className="divide-y divide-zinc-800">
                     {passes.map((p) => {
-                      const isDual = p.type === "Dual Day Pass";
+                      const isDual = p.type === "Dual day pass" || p.type === "Dual Day Pass";
                       const isDay2Only = p.type === "Day 2 Pass";
-                      const attended1 = p.verifiedDay1At ?? (isDual ? null : p.verifiedAt);
+                      const isSingleDay = p.type === "Single day pass" || p.type === "Day 1 Pass";
+                      const attended1 = p.verifiedDay1At ?? (isDual ? null : (isSingleDay ? p.verifiedAt : null));
                       const attended2 = p.verifiedDay2At ?? (isDay2Only ? p.verifiedAt : null);
 
                       return (
@@ -318,7 +319,7 @@ export default function AdminVerifyPage() {
                                   disabled={!!marking}
                                   className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm disabled:opacity-50 transition-colors"
                                 >
-                                  {marking === `${p.id}-day1` || marking === `${p.id}-day2` ? "…" : "Mark attended"}
+                                  {marking === `${p.id}-day1` || marking === `${p.id}-day2` ? "…" : isSingleDay || isDay2Only ? "Mark attended" : "Mark attended"}
                                 </button>
                               )
                             )}

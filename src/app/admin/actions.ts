@@ -296,8 +296,8 @@ export async function markPassAttended(passId: string, day: "day1" | "day2") {
   const pass = await prisma.pass.findUnique({ where: { id: passId }, select: { type: true } });
   if (!pass) throw new Error("Pass not found");
 
-  const isDual = pass.type === "Dual Day Pass";
-  const isDay1Only = pass.type === "Day 1 Pass";
+  const isDual = pass.type === "Dual day pass" || pass.type === "Dual Day Pass";
+  const isDay1Only = pass.type === "Single day pass" || pass.type === "Day 1 Pass";
   const isDay2Only = pass.type === "Day 2 Pass";
 
   if (day === "day1" && !isDual && !isDay1Only && pass.type !== "Visitor Pass") throw new Error("Day 1 attendance not applicable for this pass");
