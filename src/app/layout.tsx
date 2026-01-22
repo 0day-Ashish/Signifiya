@@ -4,7 +4,7 @@ import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
 import { AudioProvider } from "@/components/AudioProvider";
 import CustomCursor from "@/components/CustomCursor2";
-import Infobar from "@/components/Infobar";
+import ConditionalInfobar from "@/components/ConditionalInfobar";
 import { Analytics } from "@vercel/analytics/next"
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,7 +33,7 @@ export default function RootLayout({
       >
 
         <CustomCursor />
-        <Infobar />
+        <ConditionalInfobar />
         <AudioProvider>
           <SmoothScroll>{children}</SmoothScroll>
         </AudioProvider>

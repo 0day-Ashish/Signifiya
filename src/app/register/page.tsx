@@ -130,7 +130,7 @@ export default function Register() {
               ← RETURN HOME
             </Link>
 
-            <h1 className="text-5xl lg:text-6xl font-black tracking-tighter text-black leading-none uppercase">
+            <h1 className="text-3xl lg:text-6xl font-black tracking-tighter text-black leading-none uppercase">
               Visitor <br />{" "}
               <span className="text-purple-600">Registration.</span>
             </h1>

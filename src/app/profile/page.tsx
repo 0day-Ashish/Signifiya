@@ -4,7 +4,6 @@ import { useState, useRef, useEffect } from "react";
 import { authClient } from "@/lib/auth-client";
 import { uploadAvatar, updateUserProfile, getUserProfile } from "@/app/actions";
 import Navbar from "@/components/Navbar";
-import Infobar from "@/components/Infobar";
 import Footer from "@/components/Footer";
 import localFont from "next/font/local";
 import Image from "next/image";
@@ -368,7 +367,7 @@ export default function Profile() {
         </div>
       )}
 
-      <Infobar />
+      
       
       <Navbar 
         showNavLinks={showNavLinks}
