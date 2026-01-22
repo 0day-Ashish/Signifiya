@@ -1,10 +1,14 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
+import localFont from "next/font/local";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import Infobar from "@/components/Infobar";
 
-// --- 1. MOCK DATA ---
+const gilton = localFont({ src: "../../../public/fonts/GiltonRegular.otf" });
+const softura = localFont({ src: "../../../public/fonts/Softura-Demo.otf" });
+
 const categories = ["ALL", "TECH", "CULTURAL", "VIBES", "BTS"];
 
 const galleryImages = [
@@ -124,15 +128,24 @@ export default function Gallery() {
       <div className="p-4 lg:p-6">
         <div className="bg-gradient-to-b from-purple-950 via-purple-600 to-purple-100 min-h-[60vh] lg:min-h-[80vh] w-full rounded-[2rem] flex flex-col justify-center items-center relative overflow-hidden ">
           <div className="z-10 flex flex-col items-center px-4">
-            <h1 className="text-[15vw] lg:text-[12vw] font-bold tracking-tighter text-white leading-none text-center select-none drop-shadow-xl">
+            <h1 className={`text-[15vw] lg:text-[10vw] italic tracking-widest text-white leading-none text-center select-none drop-shadow-xl ${gilton.className}`}>
               GALLERY
             </h1>
 
             <div className="mt-6 flex flex-col items-center">
               <span className="bg-white text-black px-4 py-1 font-mono font-bold border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -rotate-2">
-                EST. 2021
+                EST. 2022
               </span>
-              <p className="text-zinc-100 text-center text-lg lg:text-2xl max-w-2xl font-bold tracking-tight mt-6">
+              <span className="bg-white text-black px-4 py-1 font-mono font-bold border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -rotate-2">
+                EST. 2023
+              </span>
+              <span className="bg-white text-black px-4 py-1 font-mono font-bold border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -rotate-2">
+                EST. 2024
+              </span>
+              <span className="bg-white text-black px-4 py-1 font-mono font-bold border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -rotate-2">
+                EST. 2025
+              </span>
+              <p className={`text-zinc-100 text-center text-lg lg:text-2xl max-w-2xl tracking-tight mt-6 ${softura.className}`}>
                 A collection of chaotic, beautiful, and{" "}
                 <span className="bg-black text-white px-2 italic">
                   unforgettable
@@ -160,7 +173,7 @@ export default function Gallery() {
                 key={cat}
                 onClick={() => setActiveFilter(cat)}
                 className={`
-                px-6 py-2 lg:px-8 lg:py-3 font-black text-base lg:text-lg border-4 border-black rounded-xl transition-all duration-200
+                px-6 py-2 lg:px-8 lg:py-3 font-black text-base lg:text-lg border-4 border-black rounded-xl transition-all duration-200 ${softura.className}
                 ${
                   activeFilter === cat
                     ? "bg-purple-500 text-white shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] translate-x-[2px] translate-y-[2px]"
@@ -211,10 +224,10 @@ export default function Gallery() {
                 {/* Caption Area */}
                 <div className="mt-4 px-2 pb-2 flex justify-between items-end">
                   <div>
-                    <h3 className="font-black text-xl tracking-tighter text-black uppercase leading-none">
+                    <h3 className={`font-black text-xl tracking-tighter text-black uppercase leading-none ${softura.className}`}>
                       {img.caption}
                     </h3>
-                    <p className="font-mono text-xs text-zinc-500 mt-1">
+                    <p className={`font-mono text-xs text-zinc-500 mt-1 ${softura.className}`}>
                       // IMG_{img.id}_2026.PNG
                     </p>
                   </div>

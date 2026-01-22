@@ -3,6 +3,13 @@ import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import Image from "next/image";
+import Link from "next/link";
+import localFont from "next/font/local";
+
+const gilton = localFont({ src: "../../../public/fonts/GiltonRegular.otf" });
+const softura = localFont({ src: "../../../public/fonts/Softura-Demo.otf" });
+const bicubik = localFont({ src: "../../../public/fonts/Bicubik.otf" });
+
 
 // --- 1. CONFIGURATION DATA ---
 const eventsData = [
@@ -19,11 +26,11 @@ const eventsData = [
         time: "10:00 AM - 1:00 PM",
         venue: "Computer Lab A",
         coordinators: "Aviroop Pal, Sourish Samanta",
-        image1: "/code1.jpg",
-        image2: "/code2.jpg",
+        image1: "/cse2.jpg",
+
         lottie:
           "https://lottie.host/5d55c618-6fa5-489d-82bf-a9e561c64414/w57drvo4fH.lottie",
-        color: "bg-purple-100", // Dynamic accents
+        color: "bg-purple-100",
       },
       {
         id: 2,
@@ -265,19 +272,29 @@ const EventCard = ({ event, index }: { event: any; index: number }) => {
 export default function Schedule() {
   return (
     <div className="bg-zinc-950 min-h-screen p-4 font-sans">
+      {/* Return Home Link - Fixed beside logo */}
+      <div className="fixed top-20 lg:top-16 sm:top-12 left-[120px] sm:left-[130px] z-50">
+        <Link
+          href="/"
+          className="inline-block w-fit text-black font-mono text-xs font-bold border-2 border-black px-3 py-1 rounded bg-yellow-300 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-y-0.5 hover:shadow-none transition-all"
+        >
+          ← RETURN HOME
+        </Link>
+      </div>
+      
       {/* Hero Section - Preserved Layout, Updated "Container" Style */}
       <div className="bg-gradient-to-b from-purple-950 via-purple-600 to-purple-100 min-h-[85vh] p-6 w-full rounded-[2rem] flex flex-col justify-center items-center relative overflow-hidden mb-8">
         <div className="z-10 flex flex-col items-center">
-          <h1 className="text-[18vw] lg:text-[14vw] font-bold tracking-tighter text-white leading-none text-center select-none ">
+          <h1 className={`text-[18vw] lg:text-[12vw] tracking-wider text-white leading-none text-center select-none ${gilton.className}`}>
             Events
           </h1>
           <div className="mt-4 lg:mt-0 lg:absolute lg:bottom-10 lg:right-10">
-            <span className="tracking-tighter text-white font-black text-3xl lg:text-5xl text-shadow-lg">
+            <span className={`tracking-wider text-white font-black text-3xl lg:text-4xl text-shadow-lg ${bicubik.className}`}>
               Signifiya 2026.
             </span>
           </div>
 
-          <p className="text-zinc-100 text-center text-xl lg:text-3xl max-w-4xl font-bold tracking-tight text-balance mt-6 lg:mt-0">
+          <p className={`text-zinc-100 text-center text-xl lg:text-3xl max-w-full tracking-tight text-balance mt-6 lg:mt-0 ${softura.className}`}>
             Get to know more about{" "}
             <span className="italic text-white underline decoration-wavy decoration-purple-400">
               Signifiya
