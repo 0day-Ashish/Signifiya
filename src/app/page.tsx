@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import Infobar from "@/components/Infobar";
 import Preloader from "@/components/Preloader";
 import Timer from "@/components/Timer";
 import localFont from "next/font/local";
@@ -233,7 +232,7 @@ export default function Home() {
         </svg>
       </button>
 
-          <Infobar />
+          
           
           {/* Progress Bar */}
           <div 
