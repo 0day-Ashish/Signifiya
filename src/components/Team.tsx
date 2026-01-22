@@ -86,7 +86,7 @@ export default function Team() {
             {/* Left Side: Scrollable Member List — on mobile: below card (order-2) */}
             <div className="flex-1 min-h-0 z-10 flex flex-col order-2 md:order-1 md:h-full">
                 <FadeIn>
-                    <h2 className={`text-3xl sm:text-5xl text-black uppercase mb-4 mt-5 sm:mt-0 md:mb-8 shrink-0 ${gilton.className}`}>
+                    <h2 className={`text-4xl sm:text-6xl text-black uppercase mb-4 mt-5 sm:mt-0 md:mb-8 shrink-0 ${gilton.className}`}>
                         Meet The <span className="italic">Team</span>
                     </h2>
                 </FadeIn>

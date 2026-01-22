@@ -3,6 +3,8 @@
 import localFont from "next/font/local";
 import FadeIn from "./FadeIn";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import { useState } from "react";
+import { motion, useMotionValue, useSpring } from "motion/react";
 
 const rampart = localFont({ src: "../../public/fonts/RampartOne-Regular.ttf" });
 const gilton = localFont({ src: "../../public/fonts/GiltonRegular.otf" });
@@ -11,9 +13,42 @@ const bartle = localFont({ src: "../../public/fonts/BBHBartle-Regular.ttf" });
 
 
 export default function Prizes() {
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const springConfig = { damping: 20, stiffness: 150, mass: 0.1 };
+  const xSpring = useSpring(x, springConfig);
+  const ySpring = useSpring(y, springConfig);
+
+  const [isHovering, setIsHovering] = useState(false);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    x.set(e.clientX - rect.left);
+    y.set(e.clientY - rect.top);
+  };
+
   return (
     <section className="w-full bg-black pb-3">
-        <div className="bg-[#E8EDFF] rounded-[2.5rem] p-8 sm:p-12 relative overflow-hidden flex flex-col items-center justify-center text-center gap-6 border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+        <div 
+          className="bg-[#E8EDFF] rounded-[2.5rem] p-8 sm:p-12 relative overflow-hidden flex flex-col items-center justify-center text-center gap-6 border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"
+          onMouseEnter={() => setIsHovering(true)}
+          onMouseLeave={() => setIsHovering(false)}
+          onMouseMove={handleMouseMove}
+        >
+          {/* Floating Text Box */}
+          <motion.div 
+            className={`absolute pointer-events-none z-50 transition-opacity duration-200 ${isHovering ? 'opacity-100' : 'opacity-0'}`}
+            style={{
+              left: xSpring,
+              top: ySpring,
+              transform: 'translate(20px, -60px)'
+            }}
+          >
+            <div className={`bg-black text-white text-sm  uppercase px-4 py-1.5 rounded-full border border-white shadow-lg whitespace-nowrap ${gilton.className} tracking-widest`}>
+              paisaa hi paisaa hogaaa
+            </div>
+          </motion.div>
             
             {/* Lottie Animation */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">

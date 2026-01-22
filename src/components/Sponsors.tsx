@@ -32,20 +32,17 @@ export default function Sponsors() {
                 </div>
             </FadeIn>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 items-center justify-items-center">
-                {SPONSORS.map((sponsor, index) => (
-                    <FadeIn key={sponsor.id} delay={index * 100}>
-                        <div className="w-32 h-32 relative grayscale hover:grayscale-0 transition-all duration-300 hover:scale-110 cursor-none">
-                            <Image
-                                src={sponsor.logo}
-                                alt={sponsor.name}
-                                fill
-                                className="object-contain"
-                            />
-                        </div>
-                    </FadeIn>
-                ))}
-            </div>
+            <FadeIn delay={200}>
+                <div className="w-full relative flex items-center justify-center  -mt-18 sm:-mt-58 overflow-visible">
+                    <Image
+                        src="/sponsors.png"
+                        alt="Sponsors"
+                        width={1200}
+                        height={800}
+                        className="w-[120%] sm:w-full h-auto object-contain scale-110 sm:scale-100"
+                    />
+                </div>
+            </FadeIn>
             
             <div className="flex justify-center mt-4">
                 <button className={`bg-black text-white px-8 py-3 rounded-full border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,0.2)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,0.2)] hover:translate-x-[3px] hover:translate-y-[3px] transition-all uppercase font-bold text-lg tracking-wider ${softura.className}`}>

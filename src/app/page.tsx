@@ -21,6 +21,7 @@ import Events from "@/components/Events";
 import Prizes from "@/components/Prizes";
 import Gallery from "@/components/Gallery";
 import Sponsors from "@/components/Sponsors";
+import GradualBlur from "@/components/ui/GradualBlur";
 
 const rampart = localFont({ src: "../../public/fonts/RampartOne-Regular.ttf" });
 const gilton = localFont({ src: "../../public/fonts/GiltonRegular.otf" });
@@ -289,13 +290,13 @@ export default function Home() {
                 <h1 className={`text-5xl sm:text-6xl md:text-9xl text-white tracking-widest ${bicubik.className}`}>
                   SIGNIFIYA
                 </h1>
-                <span className={`text-xl sm:text-2xl md:text-3xl text-white tracking-[0.5em] ${bicubik.className} ml-152`}>
+                <span className={`text-xl sm:text-2xl md:text-3xl text-white tracking-[0.5em] ${bicubik.className} sm:ml-152`}>
                   2026
                 </span>
              </div>
 
              {/* Lottie Animation Above Timer */}
-             <div className="absolute -top-18 left-1/2 -translate-x-[170%] w-[220px] h-[220px] pointer-events-none z-20">
+             <div className="hidden sm:block absolute -top-18 left-1/2 -translate-x-[170%] w-[220px] h-[220px] pointer-events-none z-20">
                 <DotLottieReact
                   src="https://lottie.host/e28afc4a-f625-49e6-b4b6-a41b4d08a155/f7wuEZYKPl.lottie"
                   loop
@@ -373,6 +374,24 @@ export default function Home() {
       <NewsletterSupport />
       <Footer />
       </div>
+
+      {/* Fixed GradualBlur Section at Bottom */}
+      <section style={{position: 'fixed', bottom: 0, left: 0, right: 0, height: 500, overflow: 'hidden', zIndex: 40, pointerEvents: 'none'}}>
+        <div style={{ height: '100%', overflowY: 'auto', padding: '6rem 2rem' }}>
+          {/* Content Here - such as an image or text */}
+        </div>
+
+        <GradualBlur
+          target="parent"
+          position="bottom"
+          height="4rem"
+          strength={2}
+          divCount={5}
+          curve="bezier"
+          exponential
+          opacity={1}
+        />
+      </section>
     </div>
   );
 }
