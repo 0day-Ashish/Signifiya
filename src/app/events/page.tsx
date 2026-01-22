@@ -68,7 +68,10 @@ const formSchema = z.object({
   email: z.string().email("Invalid email"),
   phone: z.string().regex(/^[0-9]{10}$/, "Must be 10 digits"),
   college: z.string().min(2, "Required"),
-  bookingId: z.string().min(8, "Enter your Booking ID").max(20),
+  bookingId: z
+    .string()
+    .min(1, "Enter your Booking ID")
+    .regex(/^SGF26-[A-Z0-9]{8}$/, "Invalid Booking ID format. Must be SGF26-XXXXXXXX (8 alphanumeric characters)"),
   selectedEvents: z.array(z.string()).min(1, "Select one event").max(1),
   members: z
     .array(
@@ -368,6 +371,27 @@ export default function EventRegistration() {
                       {...register("bookingId")}
                       className={inputStyles}
                       placeholder="SGF26-XXXXXXXX"
+                      onChange={(e) => {
+                        let value = e.target.value.toUpperCase();
+                        // Remove any characters that aren't alphanumeric or hyphen
+                        value = value.replace(/[^A-Z0-9-]/g, '');
+                        // Ensure it starts with SGF26-
+                        if (value && !value.startsWith('SGF26-')) {
+                          if (value.startsWith('SGF26')) {
+                            value = 'SGF26-' + value.slice(5).replace(/-/g, '');
+                          } else if (value.length <= 5) {
+                            value = 'SGF26-' + value.replace(/SGF26/g, '').replace(/-/g, '');
+                          } else {
+                            value = 'SGF26-' + value.replace(/SGF26-?/g, '').replace(/-/g, '').slice(0, 8);
+                          }
+                        }
+                        // Limit to SGF26- + 8 characters
+                        if (value.startsWith('SGF26-')) {
+                          const suffix = value.slice(6).replace(/-/g, '').slice(0, 8);
+                          value = 'SGF26-' + suffix;
+                        }
+                        setValue("bookingId", value, { shouldValidate: true });
+                      }}
                     />
                     <p className="text-xs text-zinc-500 mt-1">Find it in <Link href="/profile" className="underline font-semibold text-zinc-700">Profile</Link>. Sign in and visit Profile first if you don&apos;t have one.</p>
                     {errors.bookingId && (

@@ -27,7 +27,10 @@ const PASS_AMOUNTS: Record<string, number> = { single: 49, dual: 79 };
 const PASS_LABELS: Record<string, string> = { single: "Single day pass", dual: "Dual day pass" };
 
 const formSchema = z.object({
-  bookingId: z.string().min(8, "Enter your Booking ID").max(20),
+  bookingId: z
+    .string()
+    .min(1, "Enter your Booking ID")
+    .regex(/^SGF26-[A-Z0-9]{8}$/, "Invalid Booking ID format. Must be SGF26-XXXXXXXX (8 alphanumeric characters)"),
   passType: z.enum(["single", "dual"]),
   firstName: z.string().min(2, "Required"),
   lastName: z.string().min(2, "Required"),
@@ -185,6 +188,27 @@ export default function Register() {
                       {...register("bookingId")}
                       className={inputStyles}
                       placeholder="SGF26-XXXXXXXX"
+                      onChange={(e) => {
+                        let value = e.target.value.toUpperCase();
+                        // Remove any characters that aren't alphanumeric or hyphen
+                        value = value.replace(/[^A-Z0-9-]/g, '');
+                        // Ensure it starts with SGF26-
+                        if (value && !value.startsWith('SGF26-')) {
+                          if (value.startsWith('SGF26')) {
+                            value = 'SGF26-' + value.slice(5).replace(/-/g, '');
+                          } else if (value.length <= 5) {
+                            value = 'SGF26-' + value.replace(/SGF26/g, '').replace(/-/g, '');
+                          } else {
+                            value = 'SGF26-' + value.replace(/SGF26-?/g, '').replace(/-/g, '').slice(0, 8);
+                          }
+                        }
+                        // Limit to SGF26- + 8 characters
+                        if (value.startsWith('SGF26-')) {
+                          const suffix = value.slice(6).replace(/-/g, '').slice(0, 8);
+                          value = 'SGF26-' + suffix;
+                        }
+                        setValue("bookingId", value, { shouldValidate: true });
+                      }}
                     />
                     <p className="text-xs text-zinc-500 mt-1">Find it in <Link href="/profile" className="underline font-semibold text-zinc-700">Profile</Link>. Sign in and visit Profile first if you don&apos;t have one.</p>
                     {errors.bookingId && (
