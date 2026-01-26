@@ -24,8 +24,7 @@ const nextConfig: NextConfig = {
   },
   // Enable compression
   compress: true,
-  // Optimize production builds
-  swcMinify: true,
+  // Note: SWC minification is enabled by default in Next.js 13+
   // Add headers for static assets caching
   async headers() {
     return [

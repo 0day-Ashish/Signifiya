@@ -1,6 +1,6 @@
 "use server";
 
-import { getCache, setCache, CacheKeys, CACHE_TTL } from "@/lib/cache";
+import { getCache, setCache, deleteCache, CacheKeys, CACHE_TTL } from "@/lib/cache";
 import { APP_CONFIG } from "@/config/app.config";
 
 // Event data type
