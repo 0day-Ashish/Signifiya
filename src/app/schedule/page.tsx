@@ -27,7 +27,6 @@ const eventsData = [
         venue: "Computer Lab A",
         coordinators: "Aviroop Pal, Sourish Samanta",
         image1: "/cse2.jpg",
-
         lottie:
           "https://lottie.host/5d55c618-6fa5-489d-82bf-a9e561c64414/w57drvo4fH.lottie",
         color: "bg-purple-100",
@@ -41,8 +40,7 @@ const eventsData = [
         time: "11:00 AM - 2:00 PM",
         venue: "Electrical Workshop",
         coordinators: "Faculty: Dr. Jeet Banerjee",
-        image1: "/circuit1.jpg",
-        image2: "/circuit2.jpg",
+        image1: "/eee.jpg",
         lottie:
           "https://lottie.host/9f6d3544-7d52-4467-9614-266f44372576/TestLottie.lottie",
         color: "bg-yellow-100",
@@ -56,8 +54,7 @@ const eventsData = [
         time: "2:00 PM - 4:00 PM",
         venue: "Civil Block Lawn",
         coordinators: "Ashish Yadav",
-        image1: "/tower1.jpg",
-        image2: "/tower2.jpg",
+        image1: "/civil1.jpg",
         lottie:
           "https://lottie.host/02005934-206e-445a-b62d-045339304381/Construction.lottie",
         color: "bg-blue-100",
@@ -71,8 +68,7 @@ const eventsData = [
         time: "10:00 AM - 12:00 PM",
         venue: "Workshop Hall",
         coordinators: "Aritro Chakrabarty",
-        image1: "/mech1.jpg",
-        image2: "/mech2.jpg",
+        image1: "/mechanical1.jpg",
         lottie:
           "https://lottie.host/5d55c618-6fa5-489d-82bf-a9e561c64414/w57drvo4fH.lottie",
         color: "bg-green-100",
@@ -86,8 +82,7 @@ const eventsData = [
         time: "3:00 PM - 5:00 PM",
         venue: "Main Audi",
         coordinators: "Sumanto",
-        image1: "/bot1.jpg",
-        image2: "/bot2.jpg",
+        image1: "/robotics2.jpg",
         lottie:
           "https://lottie.host/5d55c618-6fa5-489d-82bf-a9e561c64414/w57drvo4fH.lottie",
         color: "bg-red-100",
@@ -107,8 +102,7 @@ const eventsData = [
         time: "10:00 AM - 1:00 PM",
         venue: "Mac Lab",
         coordinators: "Baibhab Adhikary",
-        image1: "/design1.jpg",
-        image2: "/design2.jpg",
+        image1: "/cse1.jpg",
         lottie:
           "https://lottie.host/5d55c618-6fa5-489d-82bf-a9e561c64414/w57drvo4fH.lottie",
         color: "bg-pink-100",
@@ -122,8 +116,7 @@ const eventsData = [
         time: "11:00 AM - 1:00 PM",
         venue: "Civil Courtyard",
         coordinators: "Aniruddha Biswas",
-        image1: "/bridge1.jpg",
-        image2: "/bridge2.jpg",
+        image1: "/civil2.jpg",
         lottie:
           "https://lottie.host/5d55c618-6fa5-489d-82bf-a9e561c64414/w57drvo4fH.lottie",
         color: "bg-orange-100",
@@ -137,8 +130,7 @@ const eventsData = [
         time: "12:00 PM - 2:00 PM",
         venue: "Machine Shop",
         coordinators: "Suman Jana, Soumen Samanta",
-        image1: "/lathe1.jpg",
-        image2: "/lathe2.jpg",
+        image1: "/lathe-war.jpg",
         lottie:
           "https://lottie.host/5d55c618-6fa5-489d-82bf-a9e561c64414/w57drvo4fH.lottie",
         color: "bg-indigo-100",
@@ -152,8 +144,7 @@ const eventsData = [
         time: "2:00 PM - 5:00 PM",
         venue: "Open Ground",
         coordinators: "Student Coordinators",
-        image1: "/robo1.jpg",
-        image2: "/robo2.jpg",
+        image1: "/robotics1.jpg",
         lottie:
           "https://lottie.host/5d55c618-6fa5-489d-82bf-a9e561c64414/w57drvo4fH.lottie",
         color: "bg-teal-100",
@@ -167,8 +158,7 @@ const eventsData = [
         time: "5:00 PM Onwards",
         venue: "Main Stage",
         coordinators: "Saheb Sir",
-        image1: "/dance1.jpg",
-        image2: "/dance2.jpg",
+        image1: "/dance-battle.jpg",
         lottie:
           "https://lottie.host/5d55c618-6fa5-489d-82bf-a9e561c64414/w57drvo4fH.lottie",
         color: "bg-fuchsia-100",
@@ -309,7 +299,7 @@ export default function Schedule() {
         // The White "Block" Container
         <div
           key={dayIndex}
-          className="bg-white min-h-screen mb-8 rounded-[2rem]  p-6 lg:p-12 relative overflow-visible"
+          className="bg-[#fff1f2] min-h-screen mb-8 rounded-[2rem] p-6 lg:p-12 relative overflow-visible"
         >
           {/* Day Header - Absolute Positioned as requested */}
           <div className="w-full h-full relative mb-24">

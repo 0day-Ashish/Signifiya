@@ -24,9 +24,10 @@ export default function Navbar({
 
   useEffect(() => {
     const checkScreenSize = () => {
-      setIsDesktop(window.innerWidth >= 640);
+      // Use 1024px (lg breakpoint) instead of 640px so iPad (834px) is treated as mobile
+      setIsDesktop(window.innerWidth >= 1024);
       // Close mobile menu when switching to desktop
-      if (window.innerWidth >= 640) {
+      if (window.innerWidth >= 1024) {
         setMobileMenuOpen(false);
       }
     };
@@ -83,14 +84,14 @@ export default function Navbar({
            >
               <div className="relative w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center">
                 {/* Plus Icon */}
-                <span className={`absolute inset-0 flex items-center justify-center transition-transform duration-300 ease-in-out group-hover/nav:rotate-90 group-hover/nav:opacity-0 sm:group-hover/nav:opacity-0 ${isMenuVisible ? 'rotate-90 opacity-0' : 'rotate-0 opacity-100'}`}>
+                <span className={`absolute inset-0 flex items-center justify-center transition-transform duration-300 ease-in-out lg:group-hover/nav:rotate-90 lg:group-hover/nav:opacity-0 ${isMenuVisible ? 'rotate-90 opacity-0' : 'rotate-0 opacity-100'}`}>
                   <svg className="w-4 h-4 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="12" y1="5" x2="12" y2="19"></line>
                     <line x1="5" y1="12" x2="19" y2="12"></line>
                   </svg>
                 </span>
                 {/* Minus Icon */}
-                <span className={`absolute inset-0 flex items-center justify-center transition-all duration-300 ease-in-out group-hover/nav:rotate-0 group-hover/nav:opacity-100 sm:group-hover/nav:opacity-100 ${isMenuVisible ? 'rotate-0 opacity-100' : '-rotate-90 opacity-0'}`}>
+                <span className={`absolute inset-0 flex items-center justify-center transition-all duration-300 ease-in-out lg:group-hover/nav:rotate-0 lg:group-hover/nav:opacity-100 ${isMenuVisible ? 'rotate-0 opacity-100' : '-rotate-90 opacity-0'}`}>
                   <svg className="w-4 h-4 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="5" y1="12" x2="19" y2="12"></line>
                   </svg>
@@ -98,8 +99,8 @@ export default function Navbar({
               </div>
            </button>
 
-           {/* Menu - Vertical on Mobile, Horizontal on Desktop */}
-           <div className={`absolute top-full sm:top-0 right-0 sm:right-full mt-2 sm:mt-0 sm:pr-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 transition-all duration-300 ease-out sm:group-hover/nav:opacity-100 sm:group-hover/nav:translate-y-0 sm:group-hover/nav:visible ${isMenuVisible ? 'opacity-100 translate-y-0 visible' : 'opacity-0 -translate-y-4 sm:-translate-y-4 invisible'}`}>
+           {/* Menu - Vertical on Mobile/Tablet, Horizontal on Desktop (lg and above) */}
+           <div className={`absolute top-full lg:top-0 right-0 lg:right-full mt-2 lg:mt-0 lg:pr-4 flex flex-col lg:flex-row items-stretch lg:items-center gap-2 lg:gap-3 transition-all duration-300 ease-out lg:group-hover/nav:opacity-100 lg:group-hover/nav:translate-y-0 lg:group-hover/nav:visible ${isMenuVisible ? 'opacity-100 translate-y-0 visible' : 'opacity-0 -translate-y-4 lg:-translate-y-4 invisible'}`}>
               {[
                 { name: 'Gallery', href: '/gallery' },
                 { name: 'Merchandise', href: '/merch' },

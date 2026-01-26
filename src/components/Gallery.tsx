@@ -9,13 +9,12 @@ import Link from "next/link";
 const gilton = localFont({ src: "../../public/fonts/GiltonRegular.otf" });
 const softura = localFont({ src: "../../public/fonts/Softura-Demo.otf" });
 
-// Placeholder images - repeating existing ones for the gallery grid
 const GALLERY_IMAGES = [
-  { src: "/about.jpg", alt: "Gallery Image 1", span: "col-span-1 md:col-span-2 row-span-2", rotation: "rotate-2" },
-  { src: "/soet-au.jpeg", alt: "Gallery Image 2", span: "col-span-1 row-span-1", rotation: "-rotate-3" },
-  { src: "/about.jpg", alt: "Gallery Image 3", span: "col-span-1 row-span-1", rotation: "rotate-1" },
-  { src: "/soet-au.jpeg", alt: "Gallery Image 4", span: "col-span-1 row-span-1", rotation: "-rotate-2" },
-  { src: "/about.jpg", alt: "Gallery Image 5", span: "col-span-1 md:col-span-2 row-span-1", rotation: "rotate-3" },
+  { src: "/gall1.jpg", alt: "Gallery Image 1", span: "col-span-1 md:col-span-2 row-span-2", rotation: "rotate-2" },
+  { src: "/gall2.jpg", alt: "Gallery Image 2", span: "col-span-1 row-span-1", rotation: "-rotate-3" },
+  { src: "/gall5.jpg", alt: "Gallery Image 3", span: "col-span-1 row-span-1", rotation: "rotate-1" },
+  { src: "/gall3.jpg", alt: "Gallery Image 4", span: "col-span-1 row-span-1", rotation: "-rotate-2" },
+  { src: "/gall4.jpg", alt: "Gallery Image 5", span: "col-span-1 md:col-span-2 row-span-1", rotation: "rotate-3" },
 ];
 
 export default function Gallery() {

@@ -2,6 +2,7 @@
 
 import localFont from "next/font/local";
 import Image from "next/image";
+import Link from "next/link";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { useState } from "react";
 import { motion, useMotionValue, useSpring } from "motion/react";
@@ -215,15 +216,22 @@ export default function Footer() {
 
                 {/* Right Navigation */}
                 <nav className="flex flex-col gap-2 min-w-[200px] mt-8 md:mt-0">
-                  {["HOME", "BECOME A SPONSOR", "EVENTS", "CONTACT", "FAQ", "RULES & REGULATIONS"].map((item) => (
-                    <a 
-                      key={item} 
-                      href="#" 
+                  {[
+                    { label: "HOME", href: "/" },
+                    { label: "BECOME A SPONSOR", href: "#sponsors" },
+                    { label: "EVENTS", href: "/schedule" },
+                    { label: "CONTACT", href: "/contact" },
+                    { label: "FAQ", href: "#faq" },
+                    { label: "RULES & REGULATIONS", href: "#" }
+                  ].map((item) => (
+                    <Link 
+                      key={item.label} 
+                      href={item.href} 
                       className="text-black font-extrabold text-lg sm:text-xl relative w-fit group"
                     >
-                      {item}
+                      {item.label}
                       <span className="absolute bottom-0 left-0 w-0 h-[3px] bg-black transition-all duration-500 ease-in-out group-hover:w-full" />
-                    </a>
+                    </Link>
                   ))}
                 </nav>
               </div>
@@ -231,15 +239,18 @@ export default function Footer() {
               {/* Bottom Links & Copyright */}
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mt-auto pt-12 z-10 w-full">
                 <div className="flex flex-col gap-2 min-w-[200px] order-1 sm:order-2">
-                  {["ASSETS", "PRIVACY NOTICE", "TERMS OF SERVICE"].map((item) => (
-                    <a  
-                      key={item} 
-                      href="#" 
+                  {[
+                    { label: "ASSETS", href: "/assets" },
+                    { label: "TERMS OF SERVICE", href: "#" }
+                  ].map((item) => (
+                    <Link  
+                      key={item.label} 
+                      href={item.href} 
                       className="text-black font-bold text-sm relative w-fit group"
                     >
-                      {item}
+                      {item.label}
                       <span className="absolute bottom-0 left-0 w-0 h-[3px] bg-black transition-all duration-500 ease-in-out group-hover:w-full" />
-                    </a>
+                    </Link>
                   ))}
                 </div>
                 <span className="text-black font-bold text-sm order-2 sm:order-1">

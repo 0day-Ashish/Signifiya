@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import localFont from "next/font/local";
 import Navbar from "@/components/Navbar";
@@ -14,7 +14,7 @@ const categories = ["ALL", "TECH", "CULTURAL", "VIBES", "BTS"];
 const galleryImages = [
   {
     id: 1,
-    src: "/gallery1.jpg",
+    src: "/gall13.jpg",
     caption: "The Opening Ceremony",
     category: "CULTURAL",
     size: "large",
@@ -22,9 +22,27 @@ const galleryImages = [
     rotation: "rotate-2",
   },
   {
+    id: 10,
+    src: "/gall12.jpg",
+    caption: "The Opening Ceremony",
+    category: "CULTURAL",
+    size: "large",
+    color: "bg-purple-200",
+    rotation: "rotate-2",
+  },
+  {
+    id: 13,
+    src: "/gall4.jpg",
+    caption: "SIGNIFIYA'25",
+    category: "CULTURAL",
+    size: "large",
+    color: "bg-purple-200",
+    rotation: "rotate-2",
+  },
+  {
     id: 2,
-    src: "/gallery2.jpg",
-    caption: "Hackathon Grind",
+    src: "/gall5.jpg",
+    caption: "Valorant Grind",
     category: "TECH",
     size: "small",
     color: "bg-yellow-200",
@@ -32,8 +50,8 @@ const galleryImages = [
   },
   {
     id: 3,
-    src: "/gallery3.jpg",
-    caption: "Robo Wars Arena",
+    src: "/gall22.jpg",
+    caption: "Drone Arena",
     category: "TECH",
     size: "tall",
     color: "bg-blue-200",
@@ -41,7 +59,7 @@ const galleryImages = [
   },
   {
     id: 4,
-    src: "/gallery4.jpg",
+    src: "/gall24.jpg",
     caption: "DJ Night Madness",
     category: "VIBES",
     size: "small",
@@ -50,7 +68,34 @@ const galleryImages = [
   },
   {
     id: 5,
-    src: "/gallery5.jpg",
+    src: "/gall21.jpg",
+    caption: "Behind The Scenes",
+    category: "BTS",
+    size: "small",
+    color: "bg-green-200",
+    rotation: "rotate-3",
+  },
+  {
+    id: 14,
+    src: "/gall15.jpg",
+    caption: "Behind The Scenes",
+    category: "BTS",
+    size: "small",
+    color: "bg-green-200",
+    rotation: "rotate-3",
+  },
+  {
+    id: 11,
+    src: "/gall8.jpg",
+    caption: "Behind The Scenes",
+    category: "BTS",
+    size: "small",
+    color: "bg-green-200",
+    rotation: "rotate-3",
+  },
+  {
+    id: 12,
+    src: "/gall7.jpg",
     caption: "Behind The Scenes",
     category: "BTS",
     size: "small",
@@ -59,7 +104,7 @@ const galleryImages = [
   },
   {
     id: 6,
-    src: "/gallery6.jpg",
+    src: "/gall9.jpg",
     caption: "Prize Distribution",
     category: "CULTURAL",
     size: "large",
@@ -67,8 +112,26 @@ const galleryImages = [
     rotation: "-rotate-1",
   },
   {
+    id: 9,
+    src: "/gall18.jpg",
+    caption: "Core Team @2022",
+    category: "CULTURAL",
+    size: "large",
+    color: "bg-orange-200",
+    rotation: "-rotate-1",
+  },
+  {
+    id: 15,
+    src: "/gall11.jpg",
+    caption: "SIGNIFIYA'22",
+    category: "CULTURAL",
+    size: "large",
+    color: "bg-orange-200",
+    rotation: "-rotate-1",
+  },
+  {
     id: 7,
-    src: "/gallery7.jpg",
+    src: "/gall2.jpg",
     caption: "Gaming Zone",
     category: "TECH",
     size: "small",
@@ -77,8 +140,8 @@ const galleryImages = [
   },
   {
     id: 8,
-    src: "/gallery8.jpg",
-    caption: "Food Stall Squad",
+    src: "/gall3.jpg",
+    caption: "Stalls Squad",
     category: "VIBES",
     size: "small",
     color: "bg-teal-200",
@@ -114,6 +177,7 @@ const Marquee = () => (
 // The Main Gallery Page
 export default function Gallery() {
   const [activeFilter, setActiveFilter] = useState("ALL");
+  const [hearts, setHearts] = useState<{ id: number; imageId: number; x: number; y: number; angle: number; distance: number }[]>([]);
 
   // Filter logic
   const filteredImages =
@@ -121,26 +185,51 @@ export default function Gallery() {
       ? galleryImages
       : galleryImages.filter((img) => img.category === activeFilter);
 
+  // Generate hearts confetti on button click
+  const handleHeartClick = (e: React.MouseEvent<HTMLButtonElement>, imageId: number) => {
+    const button = e.currentTarget;
+    const rect = button.getBoundingClientRect();
+    const buttonX = rect.left + rect.width / 2;
+    const buttonY = rect.top + rect.height / 2;
+
+    // Generate 12 hearts with random angles and distances
+    const newHearts = Array.from({ length: 12 }, (_, i) => ({
+      id: Date.now() + i,
+      imageId,
+      x: buttonX,
+      y: buttonY,
+      angle: (Math.PI * 2 * i) / 12 + (Math.random() - 0.5) * 0.5, // Spread evenly with some randomness
+      distance: 80 + Math.random() * 40, // Random distance between 80-120px
+    }));
+
+    setHearts((prev) => [...prev, ...newHearts]);
+
+    // Remove hearts after animation completes
+    setTimeout(() => {
+      setHearts((prev) => prev.filter((h) => !newHearts.some((nh) => nh.id === h.id)));
+    }, 2000);
+  };
+
   return (
     // Added overflow-x-hidden to prevent horizontal scrollbars from rotated elements
     <div className="bg-zinc-950 min-h-screen font-sans selection:bg-purple-500 selection:text-white overflow-x-hidden">
       {/* --- HERO SECTION --- */}
       <div className="p-4 lg:p-6">
-        <div className="bg-gradient-to-b from-purple-950 via-purple-600 to-purple-100 min-h-[60vh] lg:min-h-[80vh] w-full rounded-[2rem] flex flex-col justify-center items-center relative overflow-hidden ">
-          <div className="z-10 flex flex-col items-center px-4">
+        <div className="bg-gradient-to-b from-purple-950 via-purple-600 to-purple-100 min-h-[70vh] lg:min-h-[90vh] w-full rounded-[2rem] flex flex-col justify-center items-center relative overflow-hidden ">
+          <div className="z-10 flex flex-col items-center sm:mt-0 mt-28 px-4">
             <h1 className={`text-[15vw] lg:text-[10vw] italic tracking-widest text-white leading-none text-center select-none drop-shadow-xl ${gilton.className}`}>
               GALLERY
             </h1>
 
             <div className="mt-6 flex flex-col items-center">
+            <span className="bg-white text-black px-4 py-1 font-mono font-bold border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -rotate-2">
+                EST. 2021
+              </span>
               <span className="bg-white text-black px-4 py-1 font-mono font-bold border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -rotate-2">
                 EST. 2022
               </span>
               <span className="bg-white text-black px-4 py-1 font-mono font-bold border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -rotate-2">
                 EST. 2023
-              </span>
-              <span className="bg-white text-black px-4 py-1 font-mono font-bold border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -rotate-2">
-                EST. 2024
               </span>
               <span className="bg-white text-black px-4 py-1 font-mono font-bold border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -rotate-2">
                 EST. 2025
@@ -224,15 +313,15 @@ export default function Gallery() {
                 {/* Caption Area */}
                 <div className="mt-4 px-2 pb-2 flex justify-between items-end">
                   <div>
-                    <h3 className={`font-black text-xl tracking-tighter text-black uppercase leading-none ${softura.className}`}>
+                    <h3 className={`font-black text-xl tracking-widest text-black uppercase leading-none ${softura.className}`}>
                       {img.caption}
                     </h3>
-                    <p className={`font-mono text-xs text-zinc-500 mt-1 ${softura.className}`}>
-                      // IMG_{img.id}_2026.PNG
-                    </p>
                   </div>
                   {/* Like/Heart Button */}
-                  <button className="bg-red-500 text-white w-10 h-10 border-2 border-black rounded-full flex items-center justify-center shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-y-1 active:shadow-none transition-all hover:bg-red-600">
+                  <button 
+                    onClick={(e) => handleHeartClick(e, img.id)}
+                    className="bg-red-500 text-white w-10 h-10 border-2 border-black rounded-full flex items-center justify-center shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-y-1 active:shadow-none transition-all hover:bg-red-600 relative z-30"
+                  >
                     ♥
                   </button>
                 </div>
@@ -246,6 +335,26 @@ export default function Gallery() {
       </div>
         <Footer />
 
+      {/* Heart Confetti */}
+      {hearts.map((heart) => {
+        const endX = Math.cos(heart.angle) * heart.distance;
+        const endY = Math.sin(heart.angle) * heart.distance - 30; // Slight upward arc
+        return (
+          <div
+            key={heart.id}
+            className="fixed pointer-events-none z-50 text-2xl heart-particle"
+            style={{
+              left: `${heart.x}px`,
+              top: `${heart.y}px`,
+              '--end-x': `${endX}px`,
+              '--end-y': `${endY}px`,
+            } as React.CSSProperties & { '--end-x': string; '--end-y': string }}
+          >
+            <span className="text-red-500 drop-shadow-lg">♥</span>
+          </div>
+        );
+      })}
+
       {/* Custom Styles for Animation */}
       <style jsx global>{`
         @keyframes marquee {
@@ -258,6 +367,25 @@ export default function Gallery() {
         }
         .animate-marquee {
           animation: marquee 20s linear infinite;
+        }
+        
+        .heart-particle {
+          transform: translate(-50%, -50%);
+          animation: heartConfetti 2s ease-out forwards;
+        }
+        
+        @keyframes heartConfetti {
+          0% {
+            transform: translate(-50%, -50%) translate(0, 0) scale(1) rotate(0deg);
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.8;
+          }
+          100% {
+            transform: translate(-50%, -50%) translate(calc(var(--end-x, 0px)), calc(var(--end-y, 0px))) scale(0.3) rotate(360deg);
+            opacity: 0;
+          }
         }
       `}</style>
     </div>

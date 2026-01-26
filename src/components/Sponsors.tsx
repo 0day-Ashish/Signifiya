@@ -33,7 +33,7 @@ export default function Sponsors() {
             </FadeIn>
 
             <FadeIn delay={200}>
-                <div className="w-full relative flex items-center justify-center  -mt-18 sm:-mt-58 overflow-visible">
+                <div className="w-full relative flex items-center justify-center -mt-18 sm:-mt-58 md:-mt-28 lg:-mt-58 overflow-visible">
                     <Image
                         src="/sponsors.png"
                         alt="Sponsors"
