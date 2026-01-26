@@ -22,9 +22,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Image from "next/image";
+import { APP_CONFIG } from "@/config/app.config";
 
-const PASS_AMOUNTS: Record<string, number> = { single: 49, dual: 79 };
-const PASS_LABELS: Record<string, string> = { single: "Single day pass", dual: "Dual day pass" };
+const PASS_AMOUNTS = { single: APP_CONFIG.passPrices.single, dual: APP_CONFIG.passPrices.dual };
+const PASS_LABELS = { single: APP_CONFIG.passTypeLabels.single, dual: APP_CONFIG.passTypeLabels.dual };
 
 const formSchema = z.object({
   bookingId: z
@@ -88,7 +89,7 @@ export default function Register() {
         email: values.email,
         phone: values.phone,
         college: values.college,
-        passType: values.passType === "single" ? "day1" : values.passType || "day1", // Map "single" to "day1" for backend compatibility
+        passType: values.passType || "single",
         sessionUserId: session.user.id,
       });
       if (!res.success) {
@@ -225,8 +226,8 @@ export default function Register() {
                         <SelectValue placeholder="Select pass" />
                       </SelectTrigger>
                       <SelectContent className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                        <SelectItem value="single">Single day pass — ₹49</SelectItem>
-                        <SelectItem value="dual">Dual day pass — ₹79</SelectItem>
+                        <SelectItem value="single">{APP_CONFIG.passTypeLabels.single} — ₹{APP_CONFIG.passPrices.single}</SelectItem>
+                        <SelectItem value="dual">{APP_CONFIG.passTypeLabels.dual} — ₹{APP_CONFIG.passPrices.dual}</SelectItem>
                       </SelectContent>
                     </Select>
                     {errors.passType && (

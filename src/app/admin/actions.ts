@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth-server";
 import { revalidatePath } from "next/cache";
+import { getCache, setCache, CacheKeys, CACHE_TTL, deleteCache } from "@/lib/cache";
 
 // --- Auth guard: all functions return null or throw if not admin ---
 async function guard() {
@@ -14,6 +15,28 @@ async function guard() {
 // --- Dashboard stats ---
 export async function getAdminDashboardStats() {
   await guard();
+  const cacheKey = CacheKeys.adminStats();
+  
+  // Try cache first
+  const cached = await getCache<{
+    userCount: number;
+    visitorCount: number;
+    teamCount: number;
+    issueCount: number;
+    newsletterCount: number;
+    totalRevenue: number;
+    visitorRevenue: number;
+    teamRevenue: number;
+  }>(cacheKey, process.env.NODE_ENV === "development");
+  
+  if (cached) {
+    if (process.env.NODE_ENV === "development") {
+      console.log(`[CACHE] Admin stats served from cache`);
+    }
+    return cached;
+  }
+
+  // Fetch from database
   const [userCount, visitorCount, teamCount, issueCount, newsletterCount, visitorRevenue, teamRevenue] = await Promise.all([
     prisma.user.count(),
     prisma.visitorRegistration.count(),
@@ -24,7 +47,8 @@ export async function getAdminDashboardStats() {
     prisma.participantTeam.aggregate({ where: { status: "verified" }, _sum: { totalAmount: true } }),
   ]);
   const totalRevenue = (visitorRevenue._sum.amount || 0) + (teamRevenue._sum.totalAmount || 0);
-  return {
+  
+  const stats = {
     userCount,
     visitorCount,
     teamCount,
@@ -34,6 +58,24 @@ export async function getAdminDashboardStats() {
     visitorRevenue: visitorRevenue._sum.amount || 0,
     teamRevenue: teamRevenue._sum.totalAmount || 0,
   };
+
+  // Cache for 5 minutes (short TTL for real-time feel)
+  await setCache(cacheKey, stats, CACHE_TTL.MEDIUM, process.env.NODE_ENV === "development");
+  
+  if (process.env.NODE_ENV === "development") {
+    console.log(`[CACHE] Admin stats cached for ${CACHE_TTL.MEDIUM}s`);
+  }
+
+  return stats;
+}
+
+/**
+ * Invalidate admin dashboard stats cache
+ * Call this when stats change (new user, payment verified, etc.)
+ */
+export async function invalidateAdminStatsCache() {
+  await deleteCache(CacheKeys.adminStats());
+  await deleteCache(CacheKeys.adminRevenue());
 }
 
 // --- Users ---
@@ -153,6 +195,20 @@ export async function deleteOrganizingMember(id: string) {
 // --- Revenue ---
 export async function getRevenueBreakdown() {
   await guard();
+  const cacheKey = CacheKeys.adminRevenue();
+  
+  // Try cache first
+  const cached = await getCache<{
+    visitor: { total: number; count: number };
+    team: { total: number; count: number };
+    grandTotal: number;
+  }>(cacheKey);
+  
+  if (cached) {
+    return cached;
+  }
+
+  // Fetch from database
   const [visitorAgg, teamAgg] = await Promise.all([
     prisma.visitorRegistration.aggregate({
       _sum: { amount: true },
@@ -165,11 +221,17 @@ export async function getRevenueBreakdown() {
       where: { status: "verified" },
     }),
   ]);
-  return {
+  
+  const revenue = {
     visitor: { total: visitorAgg._sum.amount || 0, count: visitorAgg._count },
     team: { total: teamAgg._sum.totalAmount || 0, count: teamAgg._count },
     grandTotal: (visitorAgg._sum.amount || 0) + (teamAgg._sum.totalAmount || 0),
   };
+
+  // Cache for 5 minutes
+  await setCache(cacheKey, revenue, CACHE_TTL.MEDIUM);
+
+  return revenue;
 }
 
 export async function getParticipantTeamsForRevenue(params?: { limit?: number; offset?: number }) {
@@ -250,6 +312,10 @@ export async function getVisitorRegistrations(params?: { limit?: number; offset?
 export async function updateVisitorStatus(id: string, status: "pending" | "verified" | "rejected") {
   await guard();
   await prisma.visitorRegistration.update({ where: { id }, data: { status } });
+  
+  // Invalidate cache immediately for real-time data
+  await invalidateAdminStatsCache();
+  
   revalidatePath("/admin/revenue");
   revalidatePath("/admin");
 }
@@ -257,6 +323,10 @@ export async function updateVisitorStatus(id: string, status: "pending" | "verif
 export async function updateParticipantTeamStatus(id: string, status: "pending" | "verified" | "rejected") {
   await guard();
   await prisma.participantTeam.update({ where: { id }, data: { status } });
+  
+  // Invalidate cache immediately for real-time data
+  await invalidateAdminStatsCache();
+  
   revalidatePath("/admin/revenue");
   revalidatePath("/admin/teams");
   revalidatePath("/admin");
@@ -296,12 +366,11 @@ export async function markPassAttended(passId: string, day: "day1" | "day2") {
   const pass = await prisma.pass.findUnique({ where: { id: passId }, select: { type: true } });
   if (!pass) throw new Error("Pass not found");
 
-  const isDual = pass.type === "Dual day pass" || pass.type === "Dual Day Pass";
-  const isDay1Only = pass.type === "Single day pass" || pass.type === "Day 1 Pass";
-  const isDay2Only = pass.type === "Day 2 Pass";
+  const isDual = pass.type === "Dual day pass" || pass.type === "Dual Day Pass" || pass.type === "Double Day Pass";
+  const isSingleDay = pass.type === "Single day pass" || pass.type === "Single Day Pass" || pass.type === "Day 1 Pass";
 
-  if (day === "day1" && !isDual && !isDay1Only && pass.type !== "Visitor Pass") throw new Error("Day 1 attendance not applicable for this pass");
-  if (day === "day2" && !isDual && !isDay2Only) throw new Error("Day 2 attendance not applicable for this pass");
+  if (day === "day1" && !isDual && !isSingleDay && pass.type !== "Visitor Pass") throw new Error("Day 1 attendance not applicable for this pass");
+  if (day === "day2" && !isDual) throw new Error("Day 2 attendance not applicable for this pass");
 
   const data = day === "day1"
     ? { verifiedDay1At: new Date(), verifiedDay1By: session.user.id }

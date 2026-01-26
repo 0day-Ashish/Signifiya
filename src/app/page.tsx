@@ -22,6 +22,7 @@ import Prizes from "@/components/Prizes";
 import Gallery from "@/components/Gallery";
 import Sponsors from "@/components/Sponsors";
 import GradualBlur from "@/components/ui/GradualBlur";
+import { APP_CONFIG } from "@/config/app.config";
 
 const rampart = localFont({ src: "../../public/fonts/RampartOne-Regular.ttf" });
 const gilton = localFont({ src: "../../public/fonts/GiltonRegular.otf" });
@@ -291,7 +292,7 @@ export default function Home() {
                   SIGNIFIYA
                 </h1>
                 <span className={`text-xl sm:text-2xl md:text-3xl text-white tracking-[0.5em] ${bicubik.className} sm:ml-152`}>
-                  2026
+                  {APP_CONFIG.event.year}
                 </span>
              </div>
 

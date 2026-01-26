@@ -14,50 +14,9 @@ import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import { submitIssue } from "@/app/actions";
 
-const CONTACT_MEMBERS = [
-  {
-    id: 1,
-    name: "Ashish R. Das",
-    role: "Lead Developer",
-    email: "ard@signifiya.com",
-    phone: "+91 8910114007",
-    image: "/avatar1.jpg",
-    color: "#deb3fa",
-    social: {
-      instagram: "https://instagram.com/ashishh_rd_",
-      linkedin: "https://linkedin.com/in/arddev",
-      twitter: "https://twitter.com/Ashishrd06"
-    }
-  },
-  {
-    id: 2,
-    name: "Arijit Dey",
-    role: "Finance Head",
-    email: "arijit@signifiya.com",
-    phone: "+91 9831093297",
-    image: "/avatar5.jpg",
-    color: "#FCD34D",
-    social: {
-      instagram: "https://instagram.com/jane",
-      linkedin: "https://linkedin.com/in/jane",
-      twitter: "https://twitter.com/jane"
-    }
-  },
-  {
-    id: 3,
-    name: "Garima Roy",
-    role: "Core Committee",
-    email: "garima@signifiya.com",
-    phone: "+91 9073377527",
-    image: "/avatar3.jpg",
-    color: "#3B82F6",
-    social: {
-      instagram: "https://instagram.com/mike",
-      linkedin: "https://linkedin.com/in/mike",
-      twitter: "https://twitter.com/mike"
-    }
-  }
-];
+import { APP_CONFIG } from "@/config/app.config";
+
+const CONTACT_MEMBERS = APP_CONFIG.contact.members;
 
 const rampart = localFont({ src: "../../../public/fonts/RampartOne-Regular.ttf" });
 const gilton = localFont({ src: "../../../public/fonts/GiltonRegular.otf" });

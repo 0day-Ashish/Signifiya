@@ -5,9 +5,11 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { s3Client } from "@/lib/s3";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { APP_CONFIG, PassType } from "@/config/app.config";
+import { getCache, setCache, deleteCache, CacheKeys, CACHE_TTL } from "@/lib/cache";
 
-const PASS_AMOUNTS: Record<string, number> = { day1: 49, day2: 49, dual: 79, full: 499 };
-const PASS_TYPE_LABELS: Record<string, string> = { day1: "Single day pass", dual: "Dual day pass", full: "Visitor Pass" };
+const PASS_AMOUNTS = APP_CONFIG.passPrices;
+const PASS_TYPE_LABELS = APP_CONFIG.passTypeLabels;
 
 export async function uploadAvatar(formData: FormData) {
   try {
@@ -52,6 +54,10 @@ export async function uploadAvatar(formData: FormData) {
   }
 }
 
+export async function invalidateUserProfileCache(userId: string) {
+  await deleteCache(CacheKeys.userProfile(userId));
+}
+
 export async function updateUserProfile(
   userId: string, 
   data: {
@@ -78,6 +84,9 @@ export async function updateUserProfile(
       },
     });
 
+    // Invalidate user profile cache for real-time updates
+    await invalidateUserProfileCache(userId);
+
     return { success: true, user: updatedUser };
   } catch (error: any) {
     console.error("Update profile error:", error);
@@ -92,6 +101,15 @@ function generateUserBookingId() {
 export async function getUserProfile(userId: string) {
   try {
      if (!userId) return null;
+     
+     const cacheKey = CacheKeys.userProfile(userId);
+     
+     // Try cache first
+     const cached = await getCache<any>(cacheKey);
+     if (cached) {
+       return cached;
+     }
+
      let user = await prisma.user.findUnique({
        where: { id: userId },
        include: {
@@ -109,6 +127,8 @@ export async function getUserProfile(userId: string) {
        try {
          await prisma.user.update({ where: { id: userId }, data: { bookingId: bid } });
          user = { ...user, bookingId: bid };
+         // Invalidate cache since bookingId was just assigned
+         await deleteCache(cacheKey);
        } catch (e: any) {
          if (e?.code === "P2002") {
            const u = await prisma.user.findUnique({ where: { id: userId }, select: { bookingId: true } });
@@ -141,7 +161,12 @@ export async function getUserProfile(userId: string) {
        });
      }
 
-     return { ...user, registeredEventTeams };
+     const profile = { ...user, registeredEventTeams };
+     
+     // Cache for 5 minutes (user-specific data)
+     await setCache(cacheKey, profile, CACHE_TTL.MEDIUM);
+
+     return profile;
   } catch (error) {
     console.error("Get profile error:", error);
     return null;
@@ -149,13 +174,13 @@ export async function getUserProfile(userId: string) {
 }
 
 export async function purchaseVisitorPass(data: {
-  bookingId: string;   // User.bookingId from form; pass is assigned to the user who owns it
+  bookingId: string;   
   name: string;
   email: string;
   phone: string;
   college: string;
   passType: string;
-  sessionUserId: string; // logged-in user id, must own the bookingId
+  sessionUserId: string; 
 }) {
   try {
     const { bookingId: rawBookingId, name, email, phone, college, passType, sessionUserId } = data;
@@ -168,8 +193,13 @@ export async function purchaseVisitorPass(data: {
     if (!owner) return { success: false, error: "Invalid Booking ID" };
     if (owner.id !== sessionUserId) return { success: false, error: "This Booking ID does not belong to your account" };
 
-    const amount = PASS_AMOUNTS[passType];
-    const typeLabel = PASS_TYPE_LABELS[passType];
+    // Type guard to ensure passType is valid
+    if (!(passType in PASS_AMOUNTS)) {
+      return { success: false, error: "Invalid pass type" };
+    }
+
+    const amount = PASS_AMOUNTS[passType as PassType];
+    const typeLabel = PASS_TYPE_LABELS[passType as PassType];
     if (amount == null || !typeLabel) return { success: false, error: "Invalid pass type" };
 
     const validUntil = new Date(Date.now() + 60 * 24 * 60 * 60 * 1000);
@@ -200,6 +230,10 @@ export async function purchaseVisitorPass(data: {
         visitorRegistrationId: reg.id,
       },
     });
+
+    // Invalidate caches for real-time updates
+    await invalidateUserProfileCache(owner.id);
+    // Note: Admin stats will be invalidated on next refresh (5 min TTL) or can be manually invalidated
 
     revalidatePath("/admin");
     revalidatePath("/admin/revenue");

@@ -4,6 +4,7 @@ import Image from "next/image";
 import { QRCodeCanvas } from "qrcode.react";
 import html2canvas from "html2canvas-pro";
 import { useRef } from "react";
+import { APP_CONFIG } from "@/config/app.config";
 
 interface EventCardProps {
   teamLeadName: string;
@@ -47,7 +48,7 @@ export default function EventCard({ teamLeadName, eventName, bookingId, teamName
 
           <div className="relative z-20 flex text-start justify-start gap-2 w-full h-50 items-end pb-4">
             <h1 className="text-md tracking-tighter font-bold text-zinc-400 pt-12">Signifiya</h1>
-            <h1 className="text-md tracking-tighter font-bold text-zinc-400">2026</h1>
+            <h1 className="text-md tracking-tighter font-bold text-zinc-400">{APP_CONFIG.event.year}</h1>
           </div>
 
           <div className="relative z-20 flex text-center pt-2 justify-start gap-2 items-end">

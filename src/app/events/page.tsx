@@ -15,6 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Dropzone, DropzoneContent } from "@/components/ui/dropzone";
 import EventCard from "@/components/Events-Pass";
 import { registerEventTeam } from "@/app/actions";
+import { APP_CONFIG } from "@/config/app.config";
 
 // ... (Configuration Data remains the same) ...
 const eventsList = [
@@ -27,7 +28,7 @@ const eventsList = [
   },
   {
     id: "hack",
-    name: "Hackathon 2026",
+    name: `Hackathon ${APP_CONFIG.event.year}`,
     price: 300,
     type: "Team (2-4)",
     color: "bg-yellow-100",
@@ -224,7 +225,7 @@ export default function EventRegistration() {
     }
     if (res.pass) setCreatedEventPass(res.pass);
     setStep(5);
-    toast.success("Registration Successful!", { description: "Welcome to Signifiya 2026." });
+      toast.success("Registration Successful!", { description: `Welcome to ${APP_CONFIG.event.fullName}.` });
   };
 
   const toggleEvent = (id: string) => {
@@ -744,7 +745,7 @@ export default function EventRegistration() {
               ></div>
               <div className="relative z-10">
                 <p className="font-bold text-xl uppercase mb-1">
-                  Signifiya 2026
+                  {APP_CONFIG.event.fullName}
                 </p>
                 <p className="text-sm text-zinc-600">
                   Secure your spot in the ultimate tech showdown. Limited slots
