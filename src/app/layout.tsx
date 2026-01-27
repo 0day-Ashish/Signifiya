@@ -40,6 +40,7 @@ export default function RootLayout({
         <CustomCursor />
         <ConditionalInfobar />
         <AudioProvider>
+        <Analytics/>
           <SmoothScroll>{children}</SmoothScroll>
         </AudioProvider>
       </body>

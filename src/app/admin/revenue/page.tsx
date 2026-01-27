@@ -1,12 +1,12 @@
 import { getRevenueBreakdown, getVisitorRegistrations, getParticipantTeamsForRevenue } from "../actions";
 import { RevenueStatusButtons } from "./RevenueStatusButtons";
 import { AdminPagination, PAGE_SIZE } from "../components/AdminPagination";
+import { APP_CONFIG } from "@/config/app.config";
 
 const PASS_TYPE_LABELS: Record<string, string> = {
-  day1: "Day 1 Pass",
-  day2: "Day 2 Pass",
-  dual: "Dual Day Pass",
-  full: "Visitor Pass",
+  single: APP_CONFIG.passTypeLabels.single,
+  dual: APP_CONFIG.passTypeLabels.dual,
+  full: APP_CONFIG.passTypeLabels.full,
 };
 
 type SearchParams = Promise<{ p?: string; t?: string }> | { p?: string; t?: string };

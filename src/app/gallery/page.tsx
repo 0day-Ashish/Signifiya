@@ -5,6 +5,7 @@ import localFont from "next/font/local";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Infobar from "@/components/Infobar";
+import { APP_CONFIG } from "@/config/app.config";
 
 const gilton = localFont({ src: "../../../public/fonts/GiltonRegular.otf" });
 const softura = localFont({ src: "../../../public/fonts/Softura-Demo.otf" });
@@ -158,16 +159,16 @@ const Marquee = () => (
     <div className="absolute inset-0 flex items-center bg-yellow-300 border-y-4 border-black transform -rotate-1 scale-105 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
       <div className="animate-marquee whitespace-nowrap flex">
         <span className="text-3xl font-black mx-4 tracking-tighter">
-          ★ CAPTURING MOMENTS ★ MAKING MEMORIES ★ SIGNIFIYA 2026 ★
+          ★ CAPTURING MOMENTS ★ MAKING MEMORIES ★ {APP_CONFIG.event.fullName} ★
         </span>
         <span className="text-3xl font-black mx-4 tracking-tighter">
-          ★ CAPTURING MOMENTS ★ MAKING MEMORIES ★ SIGNIFIYA 2026 ★
+          ★ CAPTURING MOMENTS ★ MAKING MEMORIES ★ {APP_CONFIG.event.fullName} ★
         </span>
         <span className="text-3xl font-black mx-4 tracking-tighter">
-          ★ CAPTURING MOMENTS ★ MAKING MEMORIES ★ SIGNIFIYA 2026 ★
+          ★ CAPTURING MOMENTS ★ MAKING MEMORIES ★ {APP_CONFIG.event.fullName} ★
         </span>
         <span className="text-3xl font-black mx-4 tracking-tighter">
-          ★ CAPTURING MOMENTS ★ MAKING MEMORIES ★ SIGNIFIYA 2026 ★
+          ★ CAPTURING MOMENTS ★ MAKING MEMORIES ★ {APP_CONFIG.event.fullName} ★
         </span>
       </div>
     </div>

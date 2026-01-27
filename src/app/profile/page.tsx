@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { authClient } from "@/lib/auth-client";
+import { APP_CONFIG } from "@/config/app.config";
 import { uploadAvatar, updateUserProfile, getUserProfile } from "@/app/actions";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -264,7 +265,7 @@ export default function Profile() {
             </div>
             <div className="aspect-square w-48 h-48 bg-white border-2 border-black rounded-xl flex items-center justify-center overflow-hidden shrink-0">
               <img
-                src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(showEventPassDetail.qrCode || showEventPassDetail.id)}`}
+                src={`${APP_CONFIG.services.qrCodeApi}?size=200x200&data=${encodeURIComponent(showEventPassDetail.qrCode || showEventPassDetail.id)}`}
                 alt="Event pass QR"
                 className="w-full h-full object-contain"
               />
@@ -307,7 +308,7 @@ export default function Profile() {
                 </button>
               </div>
               <div className="aspect-square w-48 h-48 bg-white border-2 border-black rounded-xl flex items-center justify-center overflow-hidden">
-                <img src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrData)}`} alt="Pass QR" className="w-full h-full object-contain" />
+                <img src={`${APP_CONFIG.services.qrCodeApi}?size=200x200&data=${encodeURIComponent(qrData)}`} alt="Pass QR" className="w-full h-full object-contain" />
               </div>
               <p className={`font-bold text-black uppercase ${softura.className}`}>{p.type}</p>
               {(p.userBookingId || p.bookingId) && <p className={`text-sm font-mono text-zinc-600 ${softura.className}`}>Booking ID: {p.userBookingId || p.bookingId}</p>}

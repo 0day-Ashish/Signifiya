@@ -1,5 +1,5 @@
 "use client";
-
+import Link from "next/link";
 import localFont from "next/font/local";
 import Image from "next/image";
 import FadeIn from "./FadeIn";
@@ -45,9 +45,11 @@ export default function Sponsors() {
             </FadeIn>
             
             <div className="flex justify-center mt-4">
+                <Link href="/sponsors">
                 <button className={`bg-black text-white px-8 py-3 rounded-full border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,0.2)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,0.2)] hover:translate-x-[3px] hover:translate-y-[3px] transition-all uppercase font-bold text-lg tracking-wider ${softura.className}`}>
                     Become a Sponsor
                 </button>
+                </Link>
             </div>
         </div>
     </section>
