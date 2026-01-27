@@ -309,29 +309,31 @@ export default function Home() {
               <Timer />
             </div>
             
-            {!session ? (
-              <Link 
-                href="/sign-in"
-                className={`bg-[#deb3fa] text-black px-6 py-2 rounded-full border-2 border-black font-bold text-base uppercase tracking-wider shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 ${gilton.className}`}
-              >
-                Sign In / Sign Up
-              </Link>
-            ) : (
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
+            <div className="lg:-mt-8 xl:-mt-12">
+              {!session ? (
                 <Link 
-                  href="#events"
-                  className={`bg-[#deb3fa] text-black px-4 py-2 sm:px-6 sm:py-3 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-black font-bold text-sm sm:text-base sm:text-lg uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 ${gilton.className}`}
+                  href="/sign-in"
+                  className={`bg-[#deb3fa] text-black px-6 py-2 rounded-full border-2 border-black font-bold text-base uppercase tracking-wider shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 ${gilton.className}`}
                 >
-                  Check Events
+                  Sign In / Sign Up
                 </Link>
-                <Link 
-                  href="/register"
-                  className={`bg-[#ffffff] text-black px-4 py-2 sm:px-6 sm:py-3 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-black font-bold text-sm sm:text-base sm:text-lg uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 ${gilton.className}`}
-                >
-                  Visitor&apos;s Pass
-                </Link>
-              </div>
-            )}
+              ) : (
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
+                  <Link 
+                    href="#events"
+                    className={`bg-[#deb3fa] text-black px-4 py-2 sm:px-6 sm:py-3 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-black font-bold text-sm sm:text-base sm:text-lg uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 ${gilton.className}`}
+                  >
+                    Check Events
+                  </Link>
+                  <Link 
+                    href="/register"
+                    className={`bg-[#ffffff] text-black px-4 py-2 sm:px-6 sm:py-3 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-black font-bold text-sm sm:text-base sm:text-lg uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 ${gilton.className}`}
+                  >
+                    Visitor&apos;s Pass
+                  </Link>
+                </div>
+              )}
+            </div>
           </div>
           
           {/* Lottie Animation at Bottom of Hero */}

@@ -7,7 +7,7 @@ import * as z from "zod";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
-import { purchaseVisitorPass } from "@/app/actions";
+import { createRazorpayOrder, verifyRazorpayPayment } from "@/app/actions";
 
 import VisitorCard from "@/components/Visitors-Pass";
 import { Button } from "@/components/ui/button";
@@ -70,6 +70,18 @@ export default function Register() {
     setStep(2);
   };
 
+  // Load Razorpay script
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
   const handleConfirmRegister = async () => {
     const values = watch();
     if (!values?.bookingId || !values?.firstName || !values?.lastName || !values?.email || !values?.phone || !values?.college) {
@@ -83,7 +95,8 @@ export default function Register() {
     setPayError(null);
     setIsLoading(true);
     try {
-      const res = await purchaseVisitorPass({
+      // Create Razorpay order
+      const orderRes = await createRazorpayOrder({
         bookingId: values.bookingId.trim(),
         name: `${values.firstName} ${values.lastName}`.trim(),
         email: values.email,
@@ -92,23 +105,82 @@ export default function Register() {
         passType: values.passType || "single",
         sessionUserId: session.user.id,
       });
-      if (!res.success) {
-        setPayError(res.error || "Registration failed.");
+
+      if (!orderRes.success || !orderRes.orderId || !orderRes.amount) {
+        setPayError(orderRes.error || "Failed to create payment order.");
+        setIsLoading(false);
         return;
       }
-      if (res.pass) {
-        const userName = res.visitorRegistration?.name || `${values.firstName} ${values.lastName}`.trim() || "Visitor";
-        const uid = res.pass.userBookingId ?? (res.pass as { userBookingId?: string | null }).userBookingId ?? undefined;
-        setCreatedPass({
-          type: res.pass.type,
-          qrCode: res.pass.qrCode || res.pass.id,
-          id: res.pass.id,
-          userBookingId: uid ?? undefined,
-          name: userName,
-        });
-      }
-      setStep(3);
-    } finally {
+
+      // Initialize Razorpay checkout
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "",
+        amount: orderRes.amount * 100, // Amount in paise
+        currency: "INR",
+        name: "SIGNIFIYA'26",
+        description: `${PASS_LABELS[values.passType || "single"]} - Visitor Pass`,
+        order_id: orderRes.orderId,
+        handler: async function (response: any) {
+          // Payment successful - verify and create pass
+          setIsLoading(true);
+          try {
+            const verifyRes = await verifyRazorpayPayment({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              bookingId: values.bookingId.trim(),
+              name: `${values.firstName} ${values.lastName}`.trim(),
+              email: values.email,
+              phone: values.phone,
+              college: values.college,
+              passType: values.passType || "single",
+              sessionUserId: session.user.id,
+            });
+
+            if (!verifyRes.success) {
+              setPayError(verifyRes.error || "Payment verification failed.");
+              setIsLoading(false);
+              return;
+            }
+
+            if (verifyRes.pass) {
+              const userName = verifyRes.visitorRegistration?.name || `${values.firstName} ${values.lastName}`.trim() || "Visitor";
+              const uid = verifyRes.pass.userBookingId ?? (verifyRes.pass as { userBookingId?: string | null }).userBookingId ?? undefined;
+              setCreatedPass({
+                type: verifyRes.pass.type,
+                qrCode: verifyRes.pass.qrCode || verifyRes.pass.id,
+                id: verifyRes.pass.id,
+                userBookingId: uid ?? undefined,
+                name: userName,
+              });
+            }
+            setStep(3);
+          } catch (error: any) {
+            setPayError(error?.message || "Payment verification failed.");
+          } finally {
+            setIsLoading(false);
+          }
+        },
+        prefill: {
+          name: `${values.firstName} ${values.lastName}`.trim(),
+          email: values.email,
+          contact: values.phone,
+        },
+        theme: {
+          color: "#9c27b0",
+        },
+        modal: {
+          ondismiss: function () {
+            setIsLoading(false);
+          },
+        },
+      };
+
+      // Open Razorpay checkout
+      const razorpay = (window as any).Razorpay(options);
+      razorpay.open();
+    } catch (error: any) {
+      setPayError(error?.message || "Failed to initialize payment.");
       setIsLoading(false);
     }
   };
@@ -378,7 +450,12 @@ export default function Register() {
                 </button>
 
                 <div className="bg-zinc-100 border-2 border-black p-4 rounded-xl mb-6">
-                  <p className="font-bold text-sm text-zinc-700">{PASS_LABELS[watch("passType") || "single"]} — ₹{PASS_AMOUNTS[watch("passType") || "single"]}. Payment bypassed for testing. Click below to generate your pass.</p>
+                  <p className="font-bold text-sm text-zinc-700">
+                    {PASS_LABELS[watch("passType") || "single"]} — ₹{PASS_AMOUNTS[watch("passType") || "single"]}
+                  </p>
+                  <p className="text-xs text-zinc-600 mt-2">
+                    Click below to proceed with secure payment via Razorpay.
+                  </p>
                 </div>
 
                 {!session?.user && (
@@ -396,7 +473,7 @@ export default function Register() {
                   disabled={isLoading || !session?.user}
                   onClick={handleConfirmRegister}
                 >
-                  {isLoading ? "GENERATING…" : "CONFIRM & REGISTER ✓"}
+                  {isLoading ? "PROCESSING…" : `PAY ₹${PASS_AMOUNTS[watch("passType") || "single"]} & REGISTER`}
                 </Button>
               </motion.div>
             )}

@@ -173,14 +173,17 @@ export async function getUserProfile(userId: string) {
   }
 }
 
-export async function purchaseVisitorPass(data: {
-  bookingId: string;   
+/**
+ * Create Razorpay order for visitor pass
+ */
+export async function createRazorpayOrder(data: {
+  bookingId: string;
   name: string;
   email: string;
   phone: string;
   college: string;
   passType: string;
-  sessionUserId: string; 
+  sessionUserId: string;
 }) {
   try {
     const { bookingId: rawBookingId, name, email, phone, college, passType, sessionUserId } = data;
@@ -202,10 +205,108 @@ export async function purchaseVisitorPass(data: {
     const typeLabel = PASS_TYPE_LABELS[passType as PassType];
     if (amount == null || !typeLabel) return { success: false, error: "Invalid pass type" };
 
+    // Import Razorpay dynamically
+    let Razorpay: any;
+    try {
+      // @ts-ignore - Razorpay types will be available after npm install
+      Razorpay = (await import("razorpay")).default;
+    } catch (error) {
+      return { success: false, error: "Razorpay package not installed. Please run: npm install razorpay" };
+    }
+    
+    const razorpay = new Razorpay({
+      key_id: process.env.RAZORPAY_KEY_ID || "",
+      key_secret: process.env.RAZORPAY_KEY_SECRET || "",
+    });
+
+    // Create Razorpay order
+    const order = await razorpay.orders.create({
+      amount: amount * 100, // Convert to paise
+      currency: "INR",
+      receipt: `SGF26-${randomUUID().slice(0, 8).toUpperCase()}`,
+      notes: {
+        bookingId: bid,
+        passType,
+        userId: sessionUserId,
+        name: name.trim(),
+        email: email.trim(),
+      },
+    });
+
+    return {
+      success: true,
+      orderId: order.id,
+      amount,
+      currency: "INR",
+    };
+  } catch (error: any) {
+    console.error("createRazorpayOrder error:", error);
+    return { success: false, error: error?.message || "Failed to create order" };
+  }
+}
+
+/**
+ * Verify Razorpay payment and create visitor pass
+ */
+export async function verifyRazorpayPayment(data: {
+  razorpay_order_id: string;
+  razorpay_payment_id: string;
+  razorpay_signature: string;
+  bookingId: string;
+  name: string;
+  email: string;
+  phone: string;
+  college: string;
+  passType: string;
+  sessionUserId: string;
+}) {
+  try {
+    const {
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+      bookingId: rawBookingId,
+      name,
+      email,
+      phone,
+      college,
+      passType,
+      sessionUserId,
+    } = data;
+
+    const bid = rawBookingId?.trim();
+    if (!bid || !name?.trim() || !email?.trim() || !phone?.trim() || !college?.trim() || !passType || !sessionUserId) {
+      return { success: false, error: "All fields are required" };
+    }
+
+    const owner = await prisma.user.findUnique({ where: { bookingId: bid } });
+    if (!owner) return { success: false, error: "Invalid Booking ID" };
+    if (owner.id !== sessionUserId) return { success: false, error: "This Booking ID does not belong to your account" };
+
+    // Verify payment signature
+    const crypto = await import("crypto");
+    const hmac = crypto.createHmac("sha256", process.env.RAZORPAY_KEY_SECRET || "");
+    hmac.update(`${razorpay_order_id}|${razorpay_payment_id}`);
+    const generatedSignature = hmac.digest("hex");
+
+    if (generatedSignature !== razorpay_signature) {
+      return { success: false, error: "Payment verification failed" };
+    }
+
+    // Type guard to ensure passType is valid
+    if (!(passType in PASS_AMOUNTS)) {
+      return { success: false, error: "Invalid pass type" };
+    }
+
+    const amount = PASS_AMOUNTS[passType as PassType];
+    const typeLabel = PASS_TYPE_LABELS[passType as PassType];
+    if (amount == null || !typeLabel) return { success: false, error: "Invalid pass type" };
+
     const validUntil = new Date(Date.now() + 60 * 24 * 60 * 60 * 1000);
     const qrCode = `SP-${randomUUID()}`;
     const userBookingId = owner.bookingId!;
 
+    // Create visitor registration
     const reg = await prisma.visitorRegistration.create({
       data: {
         name: name.trim(),
@@ -220,6 +321,7 @@ export async function purchaseVisitorPass(data: {
       },
     });
 
+    // Create pass
     const pass = await prisma.pass.create({
       data: {
         userBookingId,
@@ -233,7 +335,6 @@ export async function purchaseVisitorPass(data: {
 
     // Invalidate caches for real-time updates
     await invalidateUserProfileCache(owner.id);
-    // Note: Admin stats will be invalidated on next refresh (5 min TTL) or can be manually invalidated
 
     revalidatePath("/admin");
     revalidatePath("/admin/revenue");
@@ -245,9 +346,26 @@ export async function purchaseVisitorPass(data: {
       visitorRegistration: reg,
     };
   } catch (error: any) {
-    console.error("purchaseVisitorPass error:", error);
-    return { success: false, error: error?.message || "Purchase failed" };
+    console.error("verifyRazorpayPayment error:", error);
+    return { success: false, error: error?.message || "Payment verification failed" };
   }
+}
+
+/**
+ * Legacy function - kept for backward compatibility
+ * Now redirects to payment flow
+ */
+export async function purchaseVisitorPass(data: {
+  bookingId: string;   
+  name: string;
+  email: string;
+  phone: string;
+  college: string;
+  passType: string;
+  sessionUserId: string; 
+}) {
+  // This function is now deprecated - use createRazorpayOrder instead
+  return { success: false, error: "Please use the payment flow" };
 }
 
 export async function submitIssue(data: {
