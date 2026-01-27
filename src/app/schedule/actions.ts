@@ -158,7 +158,7 @@ const getEventsData = (): DayData[] => [
       },
       {
         id: 9,
-        title: "Robo Terrain",
+        title: "Robo Soccer",
         department: "Robotics",
         description:
           "Navigate your bot through rough and uneven terrains without getting stuck or toppling over.",
