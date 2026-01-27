@@ -16,7 +16,7 @@ const FAQs = [
   },
   {
     question: "How do I get started?",
-    answer: "Getting started is easy! Simply download our app from the Google Play Store (App Store coming soon), create an account, and verify your identity. You'll be ready to explore our features in minutes."
+    answer: "Getting started is easy! Simply download our app from the Google Play Store (App Store coming soon) or use our website, create an account, and verify your identity. You'll be ready to explore our features in minutes."
   },
   {
     question: "Is my data secure?",

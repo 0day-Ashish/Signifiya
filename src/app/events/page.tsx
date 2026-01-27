@@ -12,9 +12,8 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Dropzone, DropzoneContent } from "@/components/ui/dropzone";
 import EventCard from "@/components/Events-Pass";
-import { registerEventTeam } from "@/app/actions";
+import { createEventRazorpayOrder, verifyEventRazorpayPayment } from "@/app/actions";
 import { APP_CONFIG } from "@/config/app.config";
 
 // ... (Configuration Data remains the same) ...
@@ -96,8 +95,8 @@ const labelStyles =
 export default function EventRegistration() {
   const [step, setStep] = useState(1);
   const [timeLeft, setTimeLeft] = useState(900);
-  const [files, setFiles] = useState<File[] | undefined>();
   const [isLoading, setIsLoading] = useState(false);
+  const [payError, setPayError] = useState<string | null>(null);
   const [totalCost, setTotalCost] = useState(0);
   const [createdEventPass, setCreatedEventPass] = useState<{
     teamLeadName: string;
@@ -140,6 +139,20 @@ export default function EventRegistration() {
     }, 0);
     setTotalCost(total);
   }, [selectedEventIds]);
+
+  // Load Razorpay script
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (step === 4 && timeLeft > 0) {
@@ -195,37 +208,127 @@ export default function EventRegistration() {
   };
 
   const handleFinalSubmit = async () => {
-    if (!files || files.length === 0) {
-      toast.error("Payment proof missing!", {
-        description: "Please upload a screenshot of your payment.",
-      });
-      return;
-    }
     setIsLoading(true);
+    setPayError(null);
     const vals = watch();
     const eventId = vals.selectedEvents?.[0];
     const ev = eventsList.find((e) => e.id === eventId);
-    const res = await registerEventTeam({
-      teamName: vals.teamName,
-      leaderName: vals.leaderName,
-      leaderEmail: vals.email,
-      leaderPhone: vals.phone,
-      college: vals.college,
-      bookingId: vals.bookingId,
-      eventName: ev?.name || "",
-      eventPrice: ev?.price || 0,
-      members: (vals.members || []).map((m) => ({ name: m?.name, college: m?.college, phone: m?.phone, email: m?.email })),
-      totalAmount: totalCost,
-      paymentProofUrl: null,
-    });
-    setIsLoading(false);
-    if (!res.success) {
-      toast.error(res.error || "Registration failed.");
-      return;
+    
+    try {
+      // Create Razorpay order
+      const orderRes = await createEventRazorpayOrder({
+        teamName: vals.teamName,
+        leaderName: vals.leaderName,
+        leaderEmail: vals.email,
+        leaderPhone: vals.phone,
+        college: vals.college,
+        bookingId: vals.bookingId,
+        eventName: ev?.name || "",
+        eventPrice: ev?.price || 0,
+        members: (vals.members || []).map((m) => ({ name: m?.name, college: m?.college, phone: m?.phone, email: m?.email })),
+        totalAmount: totalCost,
+      });
+
+      if (!orderRes.success || !orderRes.orderId || !orderRes.amount) {
+        setPayError(orderRes.error || "Failed to create payment order.");
+        setIsLoading(false);
+        return;
+      }
+
+      // Initialize Razorpay checkout
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "",
+        amount: orderRes.amount * 100, // Amount in paise
+        currency: "INR",
+        name: "SIGNIFIYA'26",
+        description: `${ev?.name || "Event"} - Team Registration`,
+        order_id: orderRes.orderId,
+        handler: async function (response: any) {
+          // Payment successful - verify and create team
+          setIsLoading(true);
+          try {
+            const verifyRes = await verifyEventRazorpayPayment({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              teamName: vals.teamName,
+              leaderName: vals.leaderName,
+              leaderEmail: vals.email,
+              leaderPhone: vals.phone,
+              college: vals.college,
+              bookingId: vals.bookingId,
+              eventName: ev?.name || "",
+              eventPrice: ev?.price || 0,
+              members: (vals.members || []).map((m) => ({ name: m?.name, college: m?.college, phone: m?.phone, email: m?.email })),
+              totalAmount: totalCost,
+            });
+
+            if (!verifyRes.success) {
+              setPayError(verifyRes.error || "Payment verification failed.");
+              setIsLoading(false);
+              return;
+            }
+
+            if (verifyRes.pass) {
+              setCreatedEventPass(verifyRes.pass);
+            }
+            setStep(5);
+            toast.success("Registration Successful!", { description: `Welcome to ${APP_CONFIG.event.fullName}.` });
+          } catch (error: any) {
+            setPayError(error?.message || "Payment verification failed.");
+          } finally {
+            setIsLoading(false);
+          }
+        },
+        prefill: {
+          name: vals.leaderName,
+          email: vals.email,
+          contact: vals.phone,
+        },
+        theme: {
+          color: "#9c27b0",
+        },
+        config: {
+          display: {
+            blocks: {
+              banks: {
+                name: "All Payment Methods",
+                instruments: [
+                  {
+                    method: "upi",
+                  },
+                  {
+                    method: "card",
+                  },
+                  {
+                    method: "netbanking",
+                  },
+                  {
+                    method: "wallet",
+                  },
+                ],
+              },
+            },
+            sequence: ["block.banks"],
+            preferences: {
+              show_default_blocks: true,
+            },
+          },
+        },
+        modal: {
+          ondismiss: function () {
+            setIsLoading(false);
+          },
+        },
+      };
+
+      // Open Razorpay checkout
+      const razorpay = (window as any).Razorpay(options);
+      razorpay.open();
+    } catch (error: any) {
+      setPayError(error?.message || "Failed to initialize payment.");
+      setIsLoading(false);
     }
-    if (res.pass) setCreatedEventPass(res.pass);
-    setStep(5);
-      toast.success("Registration Successful!", { description: `Welcome to ${APP_CONFIG.event.fullName}.` });
   };
 
   const toggleEvent = (id: string) => {
@@ -240,7 +343,7 @@ export default function EventRegistration() {
   return (
     <div className="bg-zinc-950 min-h-screen flex items-center justify-center p-4 lg:p-8 font-sans overflow-x-hidden">
       <div className="bg-white rounded-[2rem] w-full max-w-full overflow-hidden flex flex-col lg:flex-row min-h-[85vh]">
-        <div className="flex-1 flex flex-col p-6 lg:p-10 relative">
+        <div className="flex-1 flex flex-col p-6 lg:p-10 relative overflow-hidden">
           <div className="flex flex-col mb-6">
             <Link
               href="/"
@@ -253,7 +356,7 @@ export default function EventRegistration() {
               Event <span className="text-purple-600">Registration.</span>
             </h1>
 
-            <div className="mt-8 w-full h-6 border-2 border-black rounded-full p-1 bg-zinc-100 mb-2">
+            <div className="mt-8 w-full max-w-full h-6 border-2 border-black rounded-full p-1 bg-zinc-100 mb-2 overflow-hidden box-border">
               <motion.div
                 initial={{ width: "0%" }}
                 animate={{ width: `${step * 25}%` }}
@@ -633,26 +736,22 @@ export default function EventRegistration() {
                       <span>₹{totalCost}</span>
                     </div>
                   </div>
-                  {/* QR and Upload */}
-                  <div className="border-4 border-black p-4 rounded-2xl bg-zinc-50 flex flex-col items-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                    <p className="font-bold mb-2 uppercase">Scan UPI QR</p>
-                    <div className="bg-white p-2 border-2 border-black rounded-lg mb-4">
-                      <Image src="/qr.svg" alt="QR" width={150} height={150} />
+                  
+                  {payError && (
+                    <div className="bg-red-100 border-2 border-red-600 p-3 rounded-xl">
+                      <p className="text-red-600 font-bold text-sm">{payError}</p>
                     </div>
-                    <Dropzone
-                      onDrop={(f) => {
-                        setFiles(f);
-                        toast.success("Screenshot uploaded!");
-                      }}
-                    >
-                      <div className="w-full border-2 border-dashed border-zinc-400 p-4 rounded-lg text-center cursor-pointer hover:bg-white hover:border-black transition-all">
-                        <p className="font-bold text-xs text-zinc-600">
-                          UPLOAD SCREENSHOT
-                        </p>
-                      </div>
-                      <DropzoneContent />
-                    </Dropzone>
+                  )}
+
+                  <div className="bg-zinc-100 border-2 border-black p-4 rounded-xl">
+                    <p className="font-bold text-sm text-zinc-700 mb-2">
+                      Total Amount: ₹{totalCost}
+                    </p>
+                    <p className="text-xs text-zinc-600">
+                      Click below to proceed with secure payment via Razorpay.
+                    </p>
                   </div>
+
                   <div className="flex gap-4">
                     <Button
                       onClick={() => setStep(3)}
@@ -664,9 +763,9 @@ export default function EventRegistration() {
                     <Button
                       onClick={handleFinalSubmit}
                       disabled={isLoading}
-                      className="flex-[2] bg-green-500 text-black font-bold py-6 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
+                      className="flex-[2] bg-green-500 text-black font-bold py-6 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all disabled:opacity-60"
                     >
-                      {isLoading ? "VERIFYING..." : "CONFIRM & REGISTER"}
+                      {isLoading ? "PROCESSING…" : `PAY ₹${totalCost} & REGISTER`}
                     </Button>
                   </div>
                 </motion.div>

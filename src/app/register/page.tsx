@@ -169,6 +169,33 @@ export default function Register() {
         theme: {
           color: "#9c27b0",
         },
+        config: {
+          display: {
+            blocks: {
+              banks: {
+                name: "All Payment Methods",
+                instruments: [
+                  {
+                    method: "upi",
+                  },
+                  {
+                    method: "card",
+                  },
+                  {
+                    method: "netbanking",
+                  },
+                  {
+                    method: "wallet",
+                  },
+                ],
+              },
+            },
+            sequence: ["block.banks"],
+            preferences: {
+              show_default_blocks: true,
+            },
+          },
+        },
         modal: {
           ondismiss: function () {
             setIsLoading(false);

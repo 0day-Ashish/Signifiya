@@ -21,7 +21,6 @@ import Events from "@/components/Events";
 import Prizes from "@/components/Prizes";
 import Gallery from "@/components/Gallery";
 import Sponsors from "@/components/Sponsors";
-import GradualBlur from "@/components/ui/GradualBlur";
 import { APP_CONFIG } from "@/config/app.config";
 
 const rampart = localFont({ src: "../../public/fonts/RampartOne-Regular.ttf" });
@@ -270,19 +269,6 @@ export default function Home() {
                 />
              </div>
           </div>
-
-          {/* Logo Top Left */}
-          {/* <div className="fixed top-12 sm:top-15 left-8 z-60">
-            <div className="w-20 h-20 relative">
-            <Image
-                src="/logo2.png"  
-                alt="Signifiya Logo" 
-                fill
-                className="object-contain"
-               />
-            </div>
-          </div> */}
-
           
           {/* Main Content - Timer */}
           <div className="z-10 mt-32 flex flex-col items-center gap-12 sm:gap-22 relative">
@@ -321,13 +307,13 @@ export default function Home() {
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
                   <Link 
                     href="#events"
-                    className={`bg-[#deb3fa] text-black px-4 py-2 sm:px-6 sm:py-3 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-black font-bold text-sm sm:text-base sm:text-lg uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 ${gilton.className}`}
+                    className={`bg-[#deb3fa] text-black px-4 py-2 sm:px-2 sm:py-2 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-black font-bold text-sm sm:text-base sm:text-lg uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 ${gilton.className}`}
                   >
                     Check Events
                   </Link>
                   <Link 
                     href="/register"
-                    className={`bg-[#ffffff] text-black px-4 py-2 sm:px-6 sm:py-3 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-black font-bold text-sm sm:text-base sm:text-lg uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 ${gilton.className}`}
+                    className={`bg-[#ffffff] text-black px-4 py-2 sm:px-2 sm:py-2 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-black font-bold text-sm sm:text-base sm:text-lg uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 ${gilton.className}`}
                   >
                     Visitor&apos;s Pass
                   </Link>
@@ -337,7 +323,7 @@ export default function Home() {
           </div>
           
           {/* Lottie Animation at Bottom of Hero */}
-          <div className="absolute bottom-0 w-full flex flex-col items-center justify-center z-0 pointer-events-none">
+          <div className="absolute bottom-0 lg:bottom-[-30px] xl:bottom-[-40px] w-full flex flex-col items-center justify-center z-0 pointer-events-none">
              <p className={`text-black/60 text-[10px] sm:text-xs md:text-sm font-bold tracking-widest uppercase text-center max-w-lg mb-[-10px] sm:mb-[-50px] ${softura.className}`}>
                 SOET&apos;s awaited fest is back with even more fun n exciting plans ! Glide down to explore our fest
              </p>
@@ -378,23 +364,7 @@ export default function Home() {
       <Footer />
       </div>
 
-      {/* Fixed GradualBlur Section at Bottom */}
-      <section style={{position: 'fixed', bottom: 0, left: 0, right: 0, height: 500, overflow: 'hidden', zIndex: 40, pointerEvents: 'none'}}>
-        <div style={{ height: '100%', overflowY: 'auto', padding: '6rem 2rem' }}>
-          {/* Content Here - such as an image or text */}
-        </div>
-
-        <GradualBlur
-          target="parent"
-          position="bottom"
-          height="4rem"
-          strength={2}
-          divCount={5}
-          curve="bezier"
-          exponential
-          opacity={1}
-        />
-      </section>
+      
     </div>
   );
 }

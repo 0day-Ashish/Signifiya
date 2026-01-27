@@ -75,13 +75,13 @@ export default function EventCard({ teamLeadName, eventName, bookingId, teamName
           {/* QR, Booking ID, Event name, Event time, Team name */}
           <div className="absolute bottom-12 sm:bottom-16 left-4 right-4 sm:left-8 sm:right-8 z-20 flex flex-col justify-start items-start gap-2">
             <div className="flex flex-row justify-center gap-4 sm:gap-8">
-              <div className="shrink-0 p-2 border bg-white border-zinc-800 rounded-md border-dashed">
+              <div className="shrink-0 w-fit h-fit p-2 bg-white border-2 border-dashed border-zinc-800 rounded-md flex items-center justify-center">
                 <QRCodeCanvas value={qrCode} size={100} />
               </div>
               <div className="gap-1.5 sm:gap-2 flex flex-col min-w-0 flex-1">
                 <div className="flex flex-col leading-tight">
                   <span className="text-zinc-500 font-medium tracking-tighter text-xs">Booking ID</span>
-                  <h1 className="text-sm sm:text-lg md:text-xl font-bold tracking-tighter font-mono text-white">#{bookingId || "—"}</h1>
+                  <h1 className="text-sm sm:text-lg md:text-xl font-bold tracking-tighter font-mono text-white">{bookingId || "—"}</h1>
                 </div>
                 <div className="flex flex-col leading-tight">
                   <span className="text-zinc-500 font-medium tracking-tighter text-xs">Event Name</span>

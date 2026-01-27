@@ -75,7 +75,7 @@ export default function VisitorCard({ name, bookingId, qrCode, passTypeLabel, em
               <div className="gap-2 sm:gap-4 flex flex-col min-w-0 flex-1">
                 <div className="flex flex-col leading-tight min-w-0">
                   <span className="text-zinc-400 font-medium tracking-tighter text-xs">Booking ID</span>
-                  <h1 className="text-xs sm:text-sm md:text-base font-bold tracking-tighter font-mono text-white whitespace-nowrap overflow-hidden text-ellipsis" title={bookingId || undefined}>#{bookingId || "—"}</h1>
+                  <h1 className="text-xs sm:text-sm md:text-base font-bold tracking-tighter font-mono text-white whitespace-nowrap overflow-hidden text-ellipsis" title={bookingId || undefined}>{bookingId || "—"}</h1>
                 </div>
                 <p className="text-[10px] text-zinc-500 max-w-[140px]">Scan QR or use Booking ID at entry.</p>
               </div>

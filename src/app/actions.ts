@@ -393,8 +393,10 @@ export async function submitIssue(data: {
   }
 }
 
-// --- Event team registration (/events) ---
-export async function registerEventTeam(data: {
+/**
+ * Create Razorpay order for event team registration
+ */
+export async function createEventRazorpayOrder(data: {
   teamName: string;
   leaderName: string;
   leaderEmail: string;
@@ -405,13 +407,101 @@ export async function registerEventTeam(data: {
   eventPrice: number;
   members: { name?: string; college?: string; phone?: string; email?: string }[];
   totalAmount: number;
-  paymentProofUrl?: string | null;
 }) {
   try {
-    const { teamName, leaderName, leaderEmail, leaderPhone, college, bookingId, eventName, eventPrice, members, totalAmount, paymentProofUrl } = data;
+    const { teamName, leaderName, leaderEmail, leaderPhone, college, bookingId, eventName, totalAmount } = data;
     if (!teamName?.trim() || !leaderName?.trim() || !leaderEmail?.trim() || !leaderPhone?.trim() || !college?.trim() || !bookingId?.trim() || !eventName?.trim()) {
       return { success: false, error: "Team leader details, booking ID and event are required" };
     }
+
+    // Import Razorpay dynamically
+    let Razorpay: any;
+    try {
+      // @ts-ignore - Razorpay types will be available after npm install
+      Razorpay = (await import("razorpay")).default;
+    } catch (error) {
+      return { success: false, error: "Razorpay package not installed. Please run: npm install razorpay" };
+    }
+    
+    const razorpay = new Razorpay({
+      key_id: process.env.RAZORPAY_KEY_ID || "",
+      key_secret: process.env.RAZORPAY_KEY_SECRET || "",
+    });
+
+    // Create Razorpay order
+    const order = await razorpay.orders.create({
+      amount: totalAmount * 100, // Convert to paise
+      currency: "INR",
+      receipt: `EVT-${randomUUID().slice(0, 8).toUpperCase()}`,
+      notes: {
+        bookingId: bookingId.trim(),
+        teamName: teamName.trim(),
+        eventName: eventName.trim(),
+        leaderEmail: leaderEmail.trim(),
+      },
+    });
+
+    return {
+      success: true,
+      orderId: order.id,
+      amount: totalAmount,
+      currency: "INR",
+    };
+  } catch (error: any) {
+    console.error("createEventRazorpayOrder error:", error);
+    return { success: false, error: error?.message || "Failed to create order" };
+  }
+}
+
+/**
+ * Verify Razorpay payment and create event team registration
+ */
+export async function verifyEventRazorpayPayment(data: {
+  razorpay_order_id: string;
+  razorpay_payment_id: string;
+  razorpay_signature: string;
+  teamName: string;
+  leaderName: string;
+  leaderEmail: string;
+  leaderPhone: string;
+  college: string;
+  bookingId: string;
+  eventName: string;
+  eventPrice: number;
+  members: { name?: string; college?: string; phone?: string; email?: string }[];
+  totalAmount: number;
+}) {
+  try {
+    const {
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+      teamName,
+      leaderName,
+      leaderEmail,
+      leaderPhone,
+      college,
+      bookingId,
+      eventName,
+      eventPrice,
+      members,
+      totalAmount,
+    } = data;
+
+    if (!teamName?.trim() || !leaderName?.trim() || !leaderEmail?.trim() || !leaderPhone?.trim() || !college?.trim() || !bookingId?.trim() || !eventName?.trim()) {
+      return { success: false, error: "Team leader details, booking ID and event are required" };
+    }
+
+    // Verify payment signature
+    const crypto = await import("crypto");
+    const hmac = crypto.createHmac("sha256", process.env.RAZORPAY_KEY_SECRET || "");
+    hmac.update(`${razorpay_order_id}|${razorpay_payment_id}`);
+    const generatedSignature = hmac.digest("hex");
+
+    if (generatedSignature !== razorpay_signature) {
+      return { success: false, error: "Payment verification failed" };
+    }
+
     const qrCode = `EP-${randomUUID()}`;
     const eventTime = "10:00 AM - 5:00 PM";
 
@@ -431,8 +521,8 @@ export async function registerEventTeam(data: {
         leaderBookingId: bookingId.trim(),
         college: college.trim(),
         totalAmount: Number(totalAmount) || 0,
-        status: "pending",
-        paymentProofUrl: paymentProofUrl || null,
+        status: "verified",
+        paymentProofUrl: null,
         qrCode,
         eventTime,
       },
@@ -455,6 +545,10 @@ export async function registerEventTeam(data: {
       data: { teamId: team.id, eventId: event.id },
     });
 
+    // Invalidate admin stats cache
+    const { invalidateAdminStatsCache } = await import("./admin/actions");
+    await invalidateAdminStatsCache();
+
     revalidatePath("/admin");
     revalidatePath("/admin/teams");
     revalidatePath("/admin/events");
@@ -476,9 +570,30 @@ export async function registerEventTeam(data: {
       },
     };
   } catch (error: any) {
-    console.error("registerEventTeam error:", error);
-    return { success: false, error: error?.message || "Registration failed" };
+    console.error("verifyEventRazorpayPayment error:", error);
+    return { success: false, error: error?.message || "Payment verification failed" };
   }
+}
+
+/**
+ * Legacy function - kept for backward compatibility
+ * Now redirects to payment flow
+ */
+export async function registerEventTeam(data: {
+  teamName: string;
+  leaderName: string;
+  leaderEmail: string;
+  leaderPhone: string;
+  college: string;
+  bookingId: string;
+  eventName: string;
+  eventPrice: number;
+  members: { name?: string; college?: string; phone?: string; email?: string }[];
+  totalAmount: number;
+  paymentProofUrl?: string | null;
+}) {
+  // This function is now deprecated - use createEventRazorpayOrder instead
+  return { success: false, error: "Please use the payment flow" };
 }
 
 export async function subscribeNewsletter(data: { email: string; consent: boolean }) {
