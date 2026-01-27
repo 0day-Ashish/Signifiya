@@ -189,9 +189,10 @@ const EventCard = ({ event, index }: { event: any; index: number }) => {
 
   return (
     <div
+      id={`event-${event.id}`}
       className={`flex flex-col ${
         isTextLeft ? "lg:flex-row" : "lg:flex-row-reverse"
-      } justify-between items-center w-full gap-8 lg:gap-16 py-12 lg:py-16`}
+      } justify-between items-center w-full gap-8 lg:gap-16 py-12 lg:py-16 scroll-mt-24`}
     >
       <Navbar />
       {/* Content Section */}
@@ -319,6 +320,20 @@ export default function Schedule() {
       setSession(sessionData);
     }
   }, [sessionData]);
+
+  // Handle hash navigation with smooth scroll
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.hash) {
+      const hash = window.location.hash;
+      const element = document.querySelector(hash);
+      if (element) {
+        // Wait for content to load
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      }
+    }
+  }, [eventsData]);
 
   useEffect(() => {
     let lastScrollY = window.scrollY;

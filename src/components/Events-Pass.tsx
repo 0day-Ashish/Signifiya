@@ -58,11 +58,11 @@ export default function EventCard({ teamLeadName, eventName, bookingId, teamName
 
           {/* Team Lead (left) + Team members below */}
           <div className="relative z-20 mt-8 flex flex-col items-start text-left">
-            <span className="text-zinc-500 text-sm font-medium">Team Lead.</span>
+            <span className="text-white text-sm font-medium">Team Lead.</span>
             <h1 className="text-xl sm:text-2xl font-bold tracking-tighter leading-tight text-white">{teamLeadName || "—"}</h1>
             {members && members.length > 0 && (
               <div className="mt-3 w-full">
-                <span className="text-zinc-500 text-xs font-medium">Team members</span>
+                <span className="text-white text-xs font-medium">Team members</span>
                 <ul className="mt-1 space-y-0.5 text-sm sm:text-base font-medium text-white/90">
                   {members.map((m, i) => (
                     <li key={i}>{m.name}</li>

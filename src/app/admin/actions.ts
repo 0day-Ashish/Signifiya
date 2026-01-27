@@ -92,7 +92,7 @@ export async function getUserSuggestions(query: string) {
   if (!q || q.length < 2) return [];
   return prisma.user.findMany({
     where: userSearchWhere(q),
-    select: { id: true, name: true, email: true },
+    select: { id: true, name: true, email: true, role: true },
     orderBy: { createdAt: "desc" },
     take: 10,
   });
@@ -104,7 +104,7 @@ export async function getUsers(params?: { search?: string; limit?: number; offse
   const [users, total] = await Promise.all([
     prisma.user.findMany({
       where,
-      select: { id: true, name: true, email: true, collegeName: true, mobileNo: true, image: true, createdAt: true },
+      select: { id: true, name: true, email: true, collegeName: true, mobileNo: true, image: true, role: true, createdAt: true },
       orderBy: { createdAt: "desc" },
       take: params?.limit ?? 100,
       skip: params?.offset ?? 0,
@@ -112,6 +112,44 @@ export async function getUsers(params?: { search?: string; limit?: number; offse
     prisma.user.count({ where }),
   ]);
   return { users, total };
+}
+
+/**
+ * Promote a user to admin by setting their role to "admin"
+ */
+export async function promoteUserToAdmin(userId: string) {
+  await guard();
+  try {
+    const user = await prisma.user.update({
+      where: { id: userId },
+      data: { role: "admin" },
+      select: { id: true, email: true, name: true, role: true },
+    });
+    revalidatePath("/admin/users");
+    return { success: true, user };
+  } catch (error: any) {
+    console.error("Promote user to admin error:", error);
+    return { success: false, error: error.message || "Failed to promote user" };
+  }
+}
+
+/**
+ * Remove admin access from a user
+ */
+export async function removeAdminAccess(userId: string) {
+  await guard();
+  try {
+    const user = await prisma.user.update({
+      where: { id: userId },
+      data: { role: null },
+      select: { id: true, email: true, name: true, role: true },
+    });
+    revalidatePath("/admin/users");
+    return { success: true, user };
+  } catch (error: any) {
+    console.error("Remove admin access error:", error);
+    return { success: false, error: error.message || "Failed to remove admin access" };
+  }
 }
 
 // --- Events + per-event registrations ---

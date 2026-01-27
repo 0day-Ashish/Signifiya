@@ -307,13 +307,13 @@ export default function Home() {
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
                   <Link 
                     href="#events"
-                    className={`bg-[#deb3fa] text-black px-4 py-2 sm:px-2 sm:py-2 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-black font-bold text-sm sm:text-base sm:text-lg uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 ${gilton.className}`}
+                    className={`bg-[#deb3fa] text-black px-4 py-2 sm:px-2 sm:py-2 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-black font-bold text-sm sm:text-base uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 ${gilton.className}`}
                   >
                     Check Events
                   </Link>
                   <Link 
                     href="/register"
-                    className={`bg-[#ffffff] text-black px-4 py-2 sm:px-2 sm:py-2 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-black font-bold text-sm sm:text-base sm:text-lg uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 ${gilton.className}`}
+                    className={`bg-[#ffffff] text-black px-4 py-2 sm:px-2 sm:py-2 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-black font-bold text-sm sm:text-base uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 ${gilton.className}`}
                   >
                     Visitor&apos;s Pass
                   </Link>

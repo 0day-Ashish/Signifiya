@@ -1,6 +1,7 @@
 import { getUsers } from "../actions";
 import { UserSearchBox } from "./UserSearchBox";
 import { AdminPagination, PAGE_SIZE } from "../components/AdminPagination";
+import { AdminToggleButton } from "./AdminToggleButton";
 
 type SearchParams = Promise<{ search?: string; page?: string }> | { search?: string; page?: string };
 
@@ -37,7 +38,9 @@ export default async function AdminUsersPage({ searchParams }: { searchParams?: 
                 <th className="px-4 py-3 font-bold text-zinc-300">Email</th>
                 <th className="px-4 py-3 font-bold text-zinc-300">College</th>
                 <th className="px-4 py-3 font-bold text-zinc-300">Mobile</th>
+                <th className="px-4 py-3 font-bold text-zinc-300">Role</th>
                 <th className="px-4 py-3 font-bold text-zinc-300">Joined</th>
+                <th className="px-4 py-3 font-bold text-zinc-300">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -47,7 +50,19 @@ export default async function AdminUsersPage({ searchParams }: { searchParams?: 
                   <td className="px-4 py-3 text-zinc-300">{u.email}</td>
                   <td className="px-4 py-3 text-zinc-400">{u.collegeName || "—"}</td>
                   <td className="px-4 py-3 text-zinc-400">{u.mobileNo || "—"}</td>
+                  <td className="px-4 py-3">
+                    {u.role === "admin" ? (
+                      <span className="px-2 py-1 bg-green-500/20 text-green-400 text-xs font-bold rounded border border-green-500/50">
+                        Admin
+                      </span>
+                    ) : (
+                      <span className="px-2 py-1 bg-zinc-700/50 text-zinc-400 text-xs font-bold rounded">User</span>
+                    )}
+                  </td>
                   <td className="px-4 py-3 text-zinc-500">{new Date(u.createdAt).toLocaleDateString()}</td>
+                  <td className="px-4 py-3">
+                    <AdminToggleButton userId={u.id} isAdmin={u.role === "admin"} userEmail={u.email} />
+                  </td>
                 </tr>
               ))}
             </tbody>

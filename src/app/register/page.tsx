@@ -435,19 +435,17 @@ export default function Register() {
                     </div>
                   </div>
 
-                  <div className="flex items-center space-x-3 bg-zinc-50 p-3 rounded-lg border-2 border-dashed border-zinc-300">
+                  <label className="flex items-center space-x-3 bg-zinc-50 p-3 rounded-lg border-2 border-dashed border-zinc-300 cursor-pointer">
                     <Checkbox
                       id="terms"
+                      checked={watch("agreement")}
                       onCheckedChange={(v) => setValue("agreement", v === true)}
-                      className="border-2 border-black data-[state=checked]:bg-black data-[state=checked]:text-white w-5 h-5 rounded-md"
+                      className="border-2 border-black data-[state=checked]:bg-black data-[state=checked]:text-white w-5 h-5 rounded-md cursor-pointer"
                     />
-                    <Label
-                      htmlFor="terms"
-                      className="text-zinc-700 font-bold text-xs cursor-pointer uppercase"
-                    >
+                    <span className="text-zinc-700 font-bold text-xs uppercase select-none">
                       I accept the terms and conditions
-                    </Label>
-                  </div>
+                    </span>
+                  </label>
 
                   <Button
                     type="submit"

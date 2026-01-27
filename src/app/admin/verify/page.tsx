@@ -62,8 +62,15 @@ export default function AdminVerifyPage() {
       const scanner = new Html5Qrcode("admin-qr-reader");
       scannerRef.current = scanner;
       await scanner.start(
-        { facingMode: "environment" },
-        { fps: 10, qrbox: { width: 250, height: 250 } },
+        { 
+          facingMode: "environment",
+        },
+        { 
+          fps: 30, // Increased from 10 to 30 for faster scanning (3x faster frame processing)
+          qrbox: { width: 300, height: 300 }, // Increased scanning area from 250x250 for better detection
+          aspectRatio: 1.0, // Square aspect ratio for optimized performance
+          disableFlip: false, // Allow both orientations
+        },
         (decodedText) => {
           if (handledRef.current) return;
           handledRef.current = true;

@@ -13,6 +13,20 @@ const softura = localFont({ src: "../../public/fonts/Softura-Demo.otf" });
 
 const CATEGORIES = ["ALL", "ESPORTS", "CSE", "CIVIL", "MECHANICAL", "EEE", "ROBOTICS", "NON-TECH"];
 
+// Mapping from Events.tsx titles to schedule page event IDs
+const EVENT_TITLE_TO_SCHEDULE_ID: Record<string, number> = {
+  "CODING PREMIERE LEAGUE": 1,
+  "ELECTRIFYING CIRCUIT": 2,
+  "TOWER MAKING": 3,
+  "RE-FAB": 4, // Maps to "Waste to Wealth" in schedule
+  "PATH FOLLOWER": 5,
+  "DIL SE DESIGN": 6,
+  "BRIDGE MAKING": 7,
+  "LATHE WAR": 8,
+  "ROBO TERRAIN": 9, // Maps to "Robo Soccer" in schedule
+  "DANCE BATTLE": 10, // Maps to "Dance & Rap Battle" in schedule
+};
+
 const EVENTS_DATA = [
   { id: 0, category: "ESPORTS", title: "VALORANT TOURNAMENT", date: "March 13th - 14th", description: "Precise gunplay with agent abilities with smart strategy and perfect coordination to secure victory.", image: "/valorant.jpg", prizePool: "TBA" },
   { id: 14, category: "ESPORTS", title: "BGMI", date: "March 13th - 14th", description: "Drop in, gear up, and fight through intense combat zones to be the last team standing", image: "/bgmi.jpg", prizePool: "TBA" },
@@ -242,9 +256,21 @@ export default function Events() {
                                         {event.description}
                                     </p>
                                     <div className="mt-auto pt-2 sm:pt-4 flex flex-col gap-2">
-                                        <button className={`w-full bg-[#d091f8] text-black border-2 border-black rounded-xl py-1.5 sm:py-2 font-bold uppercase text-xs sm:text-sm transition-colors ${softura.className}`}>
+                                        {EVENT_TITLE_TO_SCHEDULE_ID[event.title] ? (
+                                          <Link 
+                                            href={`/schedule#event-${EVENT_TITLE_TO_SCHEDULE_ID[event.title]}`}
+                                            className={`w-full bg-[#d091f8] text-black border-2 border-black rounded-xl py-1.5 sm:py-2 font-bold uppercase text-xs sm:text-sm transition-colors hover:bg-[#c080e8] text-center ${softura.className}`}
+                                          >
                                             View Details
-                                        </button>
+                                          </Link>
+                                        ) : (
+                                          <Link 
+                                            href="/schedule"
+                                            className={`w-full bg-[#d091f8] text-black border-2 border-black rounded-xl py-1.5 sm:py-2 font-bold uppercase text-xs sm:text-sm transition-colors hover:bg-[#c080e8] text-center ${softura.className}`}
+                                          >
+                                            View Details
+                                          </Link>
+                                        )}
                                         <Link href="/events" className={`w-full bg-black text-white border-2 border-black rounded-xl py-1.5 sm:py-2 font-bold uppercase text-xs sm:text-sm transition-colors hover:bg-zinc-800 text-center ${softura.className}`}>
                                             Register
                                         </Link>
@@ -255,6 +281,16 @@ export default function Events() {
                     </AnimatePresence>
                     {/* Right spacer to allow last card to center - only on mobile */}
                     <div className="shrink-0 w-[calc(50%-140px)] sm:hidden" />
+                </div>
+
+                {/* View Schedule Button */}
+                <div className="flex justify-center mt-8">
+                    <Link
+                        href="/schedule"
+                        className={`bg-black text-white px-8 py-3 rounded-full border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,0.2)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,0.2)] hover:translate-x-[3px] hover:translate-y-[3px] transition-all uppercase font-bold text-lg tracking-wider ${softura.className}`}
+                    >
+                        View Schedule
+                    </Link>
                 </div>
             </div>
         </div>
