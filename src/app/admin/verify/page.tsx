@@ -41,6 +41,7 @@ export default function AdminVerifyPage() {
   const scannerRef = useRef<{ stop: () => Promise<void> } | null>(null);
   const handledRef = useRef(false);
   const resultsRef = useRef<HTMLElement | null>(null);
+  const beepAudioRef = useRef<HTMLAudioElement | null>(null);
 
   const fetchBoth = useCallback(async (bid: string) => {
     const [passRes, teamRes] = await Promise.all([
@@ -51,6 +52,18 @@ export default function AdminVerifyPage() {
     setEventTeams(teamRes.teams);
     setUserName(passRes.userName);
     setUserEmail(passRes.userEmail);
+  }, []);
+
+  // Initialize audio for beep sound
+  useEffect(() => {
+    beepAudioRef.current = new Audio("/qr-code-scan-beep.mp3");
+    beepAudioRef.current.volume = 0.9; // Set volume to 90%
+    return () => {
+      if (beepAudioRef.current) {
+        beepAudioRef.current.pause();
+        beepAudioRef.current = null;
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -78,6 +91,13 @@ export default function AdminVerifyPage() {
             try {
               const bid = await resolveToBookingId(decodedText);
               if (bid) {
+                // Play beep sound on successful scan
+                if (beepAudioRef.current) {
+                  beepAudioRef.current.currentTime = 0; // Reset to start
+                  beepAudioRef.current.play().catch(() => {
+                    // Ignore audio play errors (e.g., user interaction required)
+                  });
+                }
                 setShowScanner(false);
                 setError(null);
                 setQuery(bid);
