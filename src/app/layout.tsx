@@ -3,9 +3,10 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
 import { AudioProvider } from "@/components/AudioProvider";
-import CustomCursor from "@/components/CustomCursor2";
+
 import ConditionalInfobar from "@/components/ConditionalInfobar";
 import { Analytics } from "@vercel/analytics/next"
+import CustomCursor2 from "@/components/CustomCursor2";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -36,8 +37,8 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-
-        <CustomCursor />
+        <CustomCursor2 />
+  
         <ConditionalInfobar />
         <AudioProvider>
         <Analytics/>

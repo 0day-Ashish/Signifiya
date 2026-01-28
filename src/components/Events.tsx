@@ -6,6 +6,7 @@ import localFont from "next/font/local";
 import Image from "next/image";
 import FadeIn from "./FadeIn";
 import { motion, AnimatePresence } from "motion/react";
+import { getEventsListingData, getEventTitleToScheduleId } from "@/data/events";
 
 const rampart = localFont({ src: "../../public/fonts/RampartOne-Regular.ttf" });
 const gilton = localFont({ src: "../../public/fonts/GiltonRegular.otf" });
@@ -13,37 +14,11 @@ const softura = localFont({ src: "../../public/fonts/Softura-Demo.otf" });
 
 const CATEGORIES = ["ALL", "ESPORTS", "CSE", "CIVIL", "MECHANICAL", "EEE", "ROBOTICS", "NON-TECH"];
 
-// Mapping from Events.tsx titles to schedule page event IDs
-const EVENT_TITLE_TO_SCHEDULE_ID: Record<string, number> = {
-  "CODING PREMIERE LEAGUE": 1,
-  "ELECTRIFYING CIRCUIT": 2,
-  "TOWER MAKING": 3,
-  "RE-FAB": 4, // Maps to "Waste to Wealth" in schedule
-  "PATH FOLLOWER": 5,
-  "DIL SE DESIGN": 6,
-  "BRIDGE MAKING": 7,
-  "LATHE WAR": 8,
-  "ROBO TERRAIN": 9, // Maps to "Robo Soccer" in schedule
-  "DANCE BATTLE": 10, // Maps to "Dance & Rap Battle" in schedule
-};
+// Get events data from centralized source
+const EVENTS_DATA = getEventsListingData();
 
-const EVENTS_DATA = [
-  { id: 0, category: "ESPORTS", title: "VALORANT TOURNAMENT", date: "March 13th - 14th", description: "Precise gunplay with agent abilities with smart strategy and perfect coordination to secure victory.", image: "/valorant.jpg", prizePool: "TBA" },
-  { id: 14, category: "ESPORTS", title: "BGMI", date: "March 13th - 14th", description: "Drop in, gear up, and fight through intense combat zones to be the last team standing", image: "/bgmi.jpg", prizePool: "TBA" },
-  { id: 1, category: "EEE", title: "ELECTRIFYING CIRCUIT", date: "March 13th - 14th", description: "Students race against the clock to design, build, and troubleshoot complex circuits.", image: "/eee.jpg", prizePool: "TBA" },
-  { id: 2, category: "CIVIL", title: "TOWER MAKING", date: "March 13th - 14th", description: "Build the tallest, strongest tower using creativity, strategy, and skill.", image: "/civil1.jpg", prizePool: "TBA" },
-  { id: 3, category: "CIVIL", title: "BRIDGE MAKING", date: "March 13th - 14th", description: "Build a bridge from limited materials where brains, balance, and bold engineering decide who stands strong under pressure.", image: "/civil2.jpg", prizePool: "TBA" },
-  { id: 4, category: "MECHANICAL", title: "RE-FAB", date: "March 13th - 14th", description: "Participants transform scrap materials into innovative, functional prototypes with suitable design.", image: "/mechanical1.jpg", prizePool: "TBA" },
-  { id: 5, category: "MECHANICAL", title: "LATHE WAR", date: "March 13th - 14th", description: "Participants face off to machine raw materials into perfect components with speed and surgical accuracy.", image: "/lathe-war.jpg", prizePool: "TBA" },
-  { id: 6, category: "CSE", title: "CODING PREMIERE LEAGUE", date: "March 13th - 14th", description: "Teams battle through algorithmic challenges to prove their speed, logic, and coding mastery.", image: "/cse2.jpg", prizePool: "₹25,000" },
-  { id: 7, category: "CSE", title: "DIL SE DESIGN", date: "March 13th - 14th", description: "A UI/UX challenge to craft intuitive, beautiful, and user-centered digital experiences", image: "/cse1.jpg", prizePool: "TBA" },
-  { id: 8, category: "ROBOTICS", title: "ROBO TERRAIN", date: "March 13th - 14th", description: "Custom built bots must navigate a grueling obstacle course of mud, sand, and steep inclines.", image: "/robotics1.jpg", prizePool: "TBA" },
-  { id: 9, category: "ROBOTICS", title: "PATH FOLLOWER", date: "March 13th - 14th", description: "Autonomous bots must navigate a complex, winding track with speed and pinpoint accuracy.", image: "/robotics2.jpg", prizePool: "TBA" },
-  { id: 10, category: "NON-TECH", title: "DANCE BATTLE", date: "March 13th - 14th", description: "Rhythm, style, and attitude collide, bring your best moves, own the stage, and outshine the competition.", image: "/dance-battle.jpg", prizePool: "TBA" },
-  { id: 11, category: "NON-TECH", title: "TREASURE HUNT", date: "March 13th - 14th", description: "Solve puzzles, race against time, and uncover the hidden prize.", image: "/treasure-hunt.jpg", prizePool: "TBA" },
-  { id: 12, category: "NON-TECH", title: "ARM WRESTLING", date: "March 13th - 14th", description: "Lock hands, hold your ground, and power through to pin your opponent down.", image: "/non-tech1.jpg", prizePool: "TBA" },
-  { id: 13, category: "NON-TECH", title: "RAP BATTLE", date: "March 13th - 14th", description: "Rhythm & wordplay collide,drop sharp bars, own the mic, and outflow your opponent.", image: "/rap-battle.jpg", prizePool: "TBA" },
-];
+// Get mapping from event titles to schedule IDs
+const EVENT_TITLE_TO_SCHEDULE_ID = getEventTitleToScheduleId();
 
 export default function Events() {
   const [activeCategory, setActiveCategory] = useState("ALL");

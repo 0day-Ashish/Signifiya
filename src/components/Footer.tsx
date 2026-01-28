@@ -148,7 +148,7 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="w-full bg-black py-6">
+    <footer className="w-full bg-black py-6 px-4">
       <div className="flex flex-col lg:flex-row gap-3">
         {/* Social Icons Grid */}
         <div className="relative grid grid-cols-2 gap-x-5 gap-y-17 w-full lg:w-auto lg:shrink-0 h-auto">
