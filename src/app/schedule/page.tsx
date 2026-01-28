@@ -138,7 +138,10 @@ export default function Schedule() {
     const fetchEvents = async () => {
       try {
         setIsLoading(true);
-        const data = await getScheduleEvents();
+        // Check if nocache param is present to force refresh
+        const urlParams = new URLSearchParams(window.location.search);
+        const forceRefresh = urlParams.get('nocache') === 'true';
+        const data = await getScheduleEvents(forceRefresh);
         setEventsData(data);
       } catch (error) {
         console.error("Error fetching schedule events:", error);

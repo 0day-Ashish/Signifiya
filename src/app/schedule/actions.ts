@@ -9,20 +9,30 @@ export type { DayData, ScheduleEventItem as EventItem };
 /**
  * Get schedule events data with Redis caching
  * Cache TTL: 30 minutes (schedule doesn't change frequently)
+ * 
+ * NOTE: In development, you can bypass cache by adding ?nocache=true to the URL
+ * or by calling invalidateScheduleCache() after making changes to src/data/events.ts
  */
-export async function getScheduleEvents(): Promise<DayData[]> {
+export async function getScheduleEvents(forceRefresh = false): Promise<DayData[]> {
   const cacheKey = CacheKeys.schedule();
 
-  // Try to get from cache first
-  const cached = await getCache<DayData[]>(cacheKey, process.env.NODE_ENV === "development");
-  if (cached) {
-    if (process.env.NODE_ENV === "development") {
-      console.log(`[CACHE] Schedule events served from cache`);
+  // In development, allow bypassing cache with forceRefresh flag
+  if (!forceRefresh && process.env.NODE_ENV !== "development") {
+    // Try to get from cache first
+    const cached = await getCache<DayData[]>(cacheKey, false);
+    if (cached) {
+      return cached;
     }
-    return cached;
+  } else if (!forceRefresh) {
+    // In development, still check cache but log it
+    const cached = await getCache<DayData[]>(cacheKey, true);
+    if (cached) {
+      console.log(`[CACHE] Schedule events served from cache (use ?nocache=true or invalidateScheduleCache() to refresh)`);
+      return cached;
+    }
   }
 
-  // If not cached, derive from shared event data
+  // If not cached or force refresh, derive from shared event data
   const eventsData = getScheduleData();
 
   // Cache it for 30 minutes (CACHE_TTL.LONG)

@@ -270,7 +270,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     description:
       "Rhythm & wordplay collide, drop sharp bars, own the mic, and outflow your opponent.",
     scheduleDescription:
-      "End the fest on a high note with electrifying performances. Treasure hunt and arm wrestling included!",
+      "Rhythm & wordplay collide in this electrifying rap battle. Drop sharp bars, own the mic, and outflow your opponent with clever lyrics and flow.",
     date: "March 13th - 14th",
     image: "/rap-battle.jpg",
     scheduleImage: "/rap-battle.jpg",
