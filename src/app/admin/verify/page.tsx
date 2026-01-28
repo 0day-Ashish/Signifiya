@@ -57,7 +57,7 @@ export default function AdminVerifyPage() {
   // Initialize audio for beep sound
   useEffect(() => {
     beepAudioRef.current = new Audio("/qr-code-scan-beep.mp3");
-    beepAudioRef.current.volume = 0.9; // Set volume to 90%
+    beepAudioRef.current.volume = 0.7; // Set volume to 90%
     return () => {
       if (beepAudioRef.current) {
         beepAudioRef.current.pause();

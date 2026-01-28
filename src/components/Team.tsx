@@ -26,22 +26,23 @@ const SOCIAL_ICONS = [
 ];
 
 const TEAM_MEMBERS = [
-  { id: 8, name: "Hrishav Dey", role: "Execution's Lead", image: "/avatar4.jpg", bio: "Understanding user needs.", color: "#96CEB4" },
-  
-  { id: 10, name: "Digant Mishra", role: "On-Ground Coordinator", image: "/avatar2.jpg", bio: "Telling our story.", color: "#9B59B6" },
-  { id: 11, name: "Arijit De", role: "Financial & Sponsorship Lead", image: "/avatar3.jpg", bio: "Maintaining high quality.", color: "#3498DB" },
-  { id: 12, name: "Snehasish Mondal", role: "Operations Lead", image: "/avatar4.jpg", bio: "Organizing memorable events.", color: "#E67E22" },
-  { id: 20, name: "Ashish R. Das", role: "Tech Lead", image: "/avatar1.jpg", bio: "19, full stack dev, community lead @0DAY", color: "#8E44AD", linkedin: "https://linkedin.com/in/arddev", instagram: "https://instagram.com/ashishh_rd_", github: "https://github.com/0day-Ashish" },
-  { id: 13, name: "Garima Roy", role: "Documentations Lead", image: "/avatar1.jpg", bio: "Protecting our infrastructure.", color: "#2ECC71" },
-  { id: 14, name: "Leeza Bhowal", role: "Design Lead", image: "/avatar2.jpg", bio: "Navigating regulations.", color: "#F1C40F" },
-  { id: 15, name: "Somnath Singha Roy", role: "Support Lead", image: "/avatar3.jpg", bio: "Helping our users succeed.", color: "#1ABC9C" },
-  { id: 16, name: "Srijita Bera", role: "Marketing Lead", image: "/avatar4.jpg", bio: "Accelerating our reach.", color: "#E74C3C" },
-  { id: 17, name: "Siddartha Chakraborty", role: "Esports Lead", image: "/avatar1.jpg", bio: "Developing smart contracts.", color: "#8E44AD" },
-  { id: 18, name: "Samriddhi Sinha", role: "Decorations Lead", image: "/avatar2.jpg", bio: "Developing smart contracts.", color: "#8E44AD" },
-  { id: 19, name: "Ashish Yadav", role: "Blockchain Dev", image: "/avatar3.jpg", bio: "Developing smart contracts.", color: "#8E44AD" },
-  { id: 21, name: "Keshav Maheshwari", role: "Execution Cell", image: "/avatar1.jpg", bio: "Core Committee", color: "#deb3fa", linkedin: "https://linkedin.com/in/sajal-saha-example" },
-  { id: 22, name: "Sampad Ghosh ", role: "Execution Cell", image: "/avatar1.jpg", bio: "Core Committee", color: "#deb3fa", linkedin: "https://linkedin.com/in/sajal-saha-example" },
-  { id: 9, name: "Sudipto Barman", role: "DevOps", image: "/avatar1.jpg", bio: "Ensuring smooth deployments.", color: "#D4A5A5" }
+  { id: 8, name: "Hrishav Dey", role: "Event Advisor", image: "/avatar4.jpg", bio: "The force that turns bold ideas into flawlessly executed reality.", color: "#96CEB4" },
+  { id: 10, name: "Digant Mishra", role: "On-Ground Coordinator", image: "/avatar2.jpg", bio: "The go-to problem solver who keeps the action running seamlessly on the ground.", color: "#9B59B6" },
+  { id: 11, name: "Arijit De", role: "Financial & Sponsorship Lead", image: "/avatar3.jpg", bio: "Driving partnerships and managing resources to power the fest’s biggest ambitions.", color: "#3498DB" },
+  { id: 12, name: "Snehasish Mondal", role: "Operations Lead", image: "/avatar4.jpg", bio: "The backbone of smooth workflows, ensuring every detail runs right on time.", color: "#E67E22" },
+  { id: 18, name: "Samriddhi Sinha", role: "Decorations Lead", image: "/avatar2.jpg", bio: "Transforming spaces into immersive experiences that set the fest’s mood.", color: "#8E44AD" },
+  { id: 20, name: "Ashish R. Das", role: "Tech Lead", image: "/avatar1.jpg", bio: "Architect of innovation, powering the fest with smart tech and seamless systems.", color: "#8E44AD", linkedin: "https://linkedin.com/in/arddev", instagram: "https://instagram.com/ashishh_rd_", github: "https://github.com/0day-Ashish" },
+  { id: 23, name: "Subham Karmakar", role: "Tech Support", image: "/avatar1.jpg", bio: "Architect of innovation, powering the fest with smart tech and seamless systems.", color: "#8E44AD", linkedin: "https://linkedin.com/in/arddev", instagram: "https://instagram.com/ashishh_rd_", github: "https://github.com/0day-Ashish" },
+  { id: 24, name: "Abhisekh Singh", role: "App Development", image: "/avatar1.jpg", bio: "Turning strategies into action with energy, coordination, and commitment.", color: "#D4A5A5" },
+  { id: 13, name: "Garima Roy", role: "Documentations Lead", image: "/avatar1.jpg", bio: "The mind that captures every milestone and detail with clarity and precision.", color: "#2ECC71" },
+  { id: 14, name: "Leeza Bhowal", role: "Design Lead", image: "/avatar2.jpg", bio: "The creative spark behind visuals that give the fest its identity and vibe.", color: "#F1C40F" },
+  { id: 15, name: "Somnath Singha Roy", role: "Support Lead", image: "/avatar3.jpg", bio: "The dependable pillar ensuring help, coordination, and smooth resolutions for everyone.", color: "#1ABC9C" },
+  { id: 16, name: "Srijita Bera", role: "Marketing Lead", image: "/avatar4.jpg", bio: "The voice of the fest, turning ideas into buzz and reach into impact.", color: "#E74C3C" },
+  { id: 17, name: "Siddartha Chakraborty", role: "Esports Lead", image: "/avatar1.jpg", bio: "The strategist behind high-energy battles and next-level competitive gaming.", color: "#8E44AD" },
+  { id: 19, name: "Ashish Yadav", role: "Blockchain Dev", image: "/avatar3.jpg", bio: "Building decentralized solutions that add a future-ready edge to the fest.", color: "#8E44AD" },
+  { id: 21, name: "Keshav Maheshwari", role: "Execution Cell", image: "/avatar1.jpg", bio: "The hands-on executor ensuring plans come alive with precision and speed.", color: "#deb3fa", linkedin: "https://linkedin.com/in/" },
+  { id: 22, name: "Sampad Ghosh ", role: "Execution Cell", image: "/avatar1.jpg", bio: "Turning strategies into action with energy, coordination, and commitment.", color: "#deb3fa", linkedin: "https://linkedin.com/in/" },
+  { id: 9, name: "Sudipto Barman", role: "DevOps", image: "/avatar1.jpg", bio: "Turning strategies into action with energy, coordination, and commitment.", color: "#D4A5A5" }
 ];
 
 export default function Team() {
