@@ -361,8 +361,8 @@ export default function Home() {
       </div>
       <FAQ />
       <NewsletterSupport />
-      <Footer />
       </div>
+      <Footer />
 
       
     </div>

@@ -10,8 +10,8 @@ body {
   scrollbar-width: none;  /* Firefox */
 }
 
-/* Hide default cursor on desktop only – custom cursor is visible */
 @media (min-width: 768px) and (pointer: fine) {
+
   html,
   html *,
   html *::before,

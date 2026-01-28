@@ -54,14 +54,14 @@ export default function Navbar({
     <div>
       {/* Fixed Logo at Right Corner */}
       {!hideLogo && (
-        <div className="fixed top-20 lg:top-16 sm:top-12 left-10 z-50  bg-black  rounded-full">
+        <div className="fixed top-16 left-8 bg-black text-black rounded-full flex items-center justify-center transition-transform duration-300  active:scale-95 active:shadow-none z-50">
           <Link href="/">
             <Image
               src="/logo2.png"
               alt="Logo"
               width={64}
               height={64}
-              className="object-contain"
+              className="object-cover w-10 h-10 sm:w-10 sm:h-10 lg:w-16 lg:h-16"
               priority
             />
           </Link>
