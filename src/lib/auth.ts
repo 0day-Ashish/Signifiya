@@ -1,5 +1,6 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
+import { expo } from "@better-auth/expo";
 import { prisma } from "@/lib/db";
 
 export const auth = betterAuth({
@@ -19,4 +20,11 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
+  plugins: [
+    expo(),
+  ],
+  trustedOrigins: [
+    "exp://",           // Expo Go development
+    "signifiya://",     // Production builds (your app scheme)
+  ],
 });
