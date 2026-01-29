@@ -270,16 +270,21 @@ export default function Home() {
              </div>
           </div>
           
-          {/* Main Content - Timer */}
-          <div className="z-10 mt-32 flex flex-col items-center gap-12 sm:gap-22 relative">
-             {/* SIGNIFIYA Title */}
-             <div className="absolute -top-45 w-full flex flex-col items-center z-30">
+          {/* Main Content - Timer - more top margin on mobile so title, dates and timer sit lower */}
+          <div className="z-10 mt-44 sm:mt-32 flex flex-col items-center gap-12 sm:gap-22 relative">
+             {/* SIGNIFIYA Title, then 13th-14th left and 2026 right below */}
+             <div className="absolute -top-45 w-full flex flex-col items-center z-30 px-4">
                 <h1 className={`text-5xl sm:text-6xl md:text-9xl text-white tracking-widest ${bicubik.className}`}>
                   SIGNIFIYA
                 </h1>
-                <span className={`text-xl sm:text-2xl md:text-3xl text-white tracking-[0.5em] ${bicubik.className} sm:ml-152`}>
-                  {APP_CONFIG.event.year}
-                </span>
+                <div className="w-full max-w-4xl flex flex-row items-center justify-between -mt-2 sm:-mt-5">
+                  <span className={`text-xs sm:text-sm md:text-base text-white/90 tracking-widest ${gilton.className}`}>
+                    13th - 14th March
+                  </span>
+                  <span className={`text-xl sm:text-2xl md:text-3xl text-white tracking-[0.5em] ${bicubik.className}`}>
+                    {APP_CONFIG.event.year}
+                  </span>
+                </div>
              </div>
 
              {/* Lottie Animation Above Timer */}
@@ -295,7 +300,7 @@ export default function Home() {
               <Timer />
             </div>
             
-            <div className="lg:-mt-8 xl:-mt-12">
+            <div className="-mt-6 sm:mt-0 lg:-mt-8 xl:-mt-12">
               {!session ? (
                 <Link 
                   href="/sign-in"
