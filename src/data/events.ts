@@ -108,7 +108,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     coordinators: "Ashish Yadav",
     facultyCoordinators: "",
     lottie:
-      "https://lottie.host/02005934-206e-445a-b62d-045339304381/Construction.lottie",
+      "https://lottie.host/2a0c41bc-2fb9-40e3-b13d-8b721a0abde8/20tioOZNVd.lottie",
     color: "bg-blue-100",
   },
   {
@@ -195,7 +195,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     coordinators: "Aniruddha Biswas",
     facultyCoordinators: "",
     lottie:
-      "https://lottie.host/5d55c618-6fa5-489d-82bf-a9e561c64414/w57drvo4fH.lottie",
+      "",
     color: "bg-orange-100",
   },
   {
@@ -216,7 +216,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     coordinators: "Suman Jana, Soumen Samanta",
     facultyCoordinators: "",
     lottie:
-      "https://lottie.host/5d55c618-6fa5-489d-82bf-a9e561c64414/w57drvo4fH.lottie",
+      "https://lottie.host/84997780-9072-40eb-bf3c-b02910fa01ef/C7GW3im1LR.lottie",
     color: "bg-indigo-100",
   },
   {
@@ -238,7 +238,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     coordinators: "Student Coordinators",
     facultyCoordinators: "",
     lottie:
-      "https://lottie.host/5d55c618-6fa5-489d-82bf-a9e561c64414/w57drvo4fH.lottie",
+      "https://lottie.host/8fe04dad-d3fa-4254-93b7-304f52d3c857/yxrz9HKunG.lottie",
     color: "bg-teal-100",
   },
   {
@@ -259,7 +259,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     coordinators: "Saheb Sir",
     facultyCoordinators: "",
     lottie:
-      "https://lottie.host/5d55c618-6fa5-489d-82bf-a9e561c64414/w57drvo4fH.lottie",
+      "https://lottie.host/8597f901-e7be-4086-9f99-317c1b123a0a/TtUunogZHF.lottie",
     color: "bg-fuchsia-100",
   },
   {
@@ -281,7 +281,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     coordinators: "Saheb Sir",
     facultyCoordinators: "",
     lottie:
-      "https://lottie.host/5d55c618-6fa5-489d-82bf-a9e561c64414/w57drvo4fH.lottie",
+      "https://lottie.host/ce13941b-540c-4118-9e80-ff8ceb9afa1d/bsOQBQ1ZGm.lottie",
     color: "bg-fuchsia-100",
   },
 
@@ -301,7 +301,7 @@ export const ALL_EVENTS: MasterEvent[] = [
       coordinators: "Student Coordinators",
       facultyCoordinators: "",
       lottie:
-        "https://lottie.host/5d55c618-6fa5-489d-82bf-a9e561c64414/w57drvo4fH.lottie",
+        "https://lottie.host/5ef860f5-4e24-4a99-aae2-37cd4f5e9c5d/bFScJO6mZd.lottie",
       color: "bg-gray-100",
   },
   {
@@ -320,7 +320,7 @@ export const ALL_EVENTS: MasterEvent[] = [
       coordinators: "Student Coordinators",
       facultyCoordinators: "",
       lottie:
-        "https://lottie.host/5d55c618-6fa5-489d-82bf-a9e561c64414/w57drvo4fH.lottie",
+        "https://lottie.host/7f2fbfd9-2f59-458a-bd35-5aa6133f3dc7/5yLGpgvIme.lottie",
       color: "bg-gray-100",
   },
   {
@@ -339,7 +339,7 @@ export const ALL_EVENTS: MasterEvent[] = [
       coordinators: "Student Coordinators",
       facultyCoordinators: "",
       lottie:
-        "https://lottie.host/5d55c618-6fa5-489d-82bf-a9e561c64414/w57drvo4fH.lottie",
+        "https://lottie.host/1846995a-7c92-4f8b-b524-cf6bcccd25a0/3ZauGqPRGA.lottie",
       color: "bg-gray-100",
   },
   {
@@ -358,7 +358,7 @@ export const ALL_EVENTS: MasterEvent[] = [
       coordinators: "Student Coordinators",
       facultyCoordinators: "",
       lottie:
-        "https://lottie.host/5d55c618-6fa5-489d-82bf-a9e561c64414/w57drvo4fH.lottie",
+        "https://lottie.host/34b5f811-28e8-4ac1-9f7a-7857fb6cbb50/C28AMF6Pa6.lottie",
       color: "bg-gray-100",
   },
 

@@ -1,10 +1,7 @@
 "use server";
 
 import { getCache, setCache, deleteCache, CacheKeys, CACHE_TTL } from "@/lib/cache";
-import { getScheduleData, type DayData, type ScheduleEventItem } from "@/data/events";
-
-// Re-export types so existing imports still work
-export type { DayData, ScheduleEventItem as EventItem };
+import { getScheduleData, type DayData } from "@/data/events";
 
 /**
  * Get schedule events data with Redis caching

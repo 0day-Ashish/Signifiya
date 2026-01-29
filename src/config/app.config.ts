@@ -44,7 +44,7 @@ export const APP_CONFIG = {
         social: {
           instagram: "https://instagram.com/ashishh_rd_",
           linkedin: "https://linkedin.com/in/arddev",
-          twitter: "https://twitter.com/Ashishrd06",
+          whatsapp: "https://wa.me/918910114007",
         },
       },
       {
@@ -56,9 +56,9 @@ export const APP_CONFIG = {
         image: "/avatar5.jpg",
         color: "#FCD34D",
         social: {
-          instagram: "https://instagram.com/jane",
-          linkedin: "https://linkedin.com/in/jane",
-          twitter: "https://twitter.com/jane",
+          instagram: "https://instagram.com/arijit_.04",
+          linkedin: "https://linkedin.com/in/arijit-de-ba1594358",
+          whatsapp: "https://wa.me/919831093297",
         },
       },
       {
@@ -70,9 +70,9 @@ export const APP_CONFIG = {
         image: "/avatar3.jpg",
         color: "#3B82F6",
         social: {
-          instagram: "https://instagram.com/mike",
-          linkedin: "https://linkedin.com/in/mike",
-          twitter: "https://twitter.com/mike",
+          instagram: "https://instagram.com/_garimaa.07_",
+          linkedin: "https://linkedin.com/in/garima-roy-032277290",
+          whatsapp: "https://wa.me/919073377527",
         },
       },
     ],
