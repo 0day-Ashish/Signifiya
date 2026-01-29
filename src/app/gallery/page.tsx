@@ -24,7 +24,7 @@ const galleryImages = [
   },
   {
     id: 10,
-    src: "/gall12.JPG",
+    src: "/gall12.jpg",
     caption: "The Opening Ceremony",
     category: "CULTURAL",
     size: "large",
@@ -33,7 +33,7 @@ const galleryImages = [
   },
   {
     id: 13,
-    src: "/gall4.JPG",
+    src: "/gall4.jpg",
     caption: "SIGNIFIYA'25",
     category: "CULTURAL",
     size: "large",
@@ -42,7 +42,7 @@ const galleryImages = [
   },
   {
     id: 2,
-    src: "/gall5.JPG",
+    src: "/gall5.jpg",
     caption: "Valorant Grind",
     category: "TECH",
     size: "small",
@@ -69,7 +69,7 @@ const galleryImages = [
   },
   {
     id: 5,
-    src: "/gall21.JPG",
+    src: "/gall21.jpg",
     caption: "Behind The Scenes",
     category: "BTS",
     size: "small",
@@ -87,7 +87,7 @@ const galleryImages = [
   },
   {
     id: 11,
-    src: "/gall8.JPG",
+    src: "/gall8.jpg",
     caption: "Behind The Scenes",
     category: "BTS",
     size: "small",
@@ -96,7 +96,7 @@ const galleryImages = [
   },
   {
     id: 12,
-    src: "/gall7.JPG",
+    src: "/gall7.jpg",
     caption: "Behind The Scenes",
     category: "BTS",
     size: "small",
@@ -105,7 +105,7 @@ const galleryImages = [
   },
   {
     id: 6,
-    src: "/gall9.JPG",
+    src: "/gall9.jpg",
     caption: "Prize Distribution",
     category: "CULTURAL",
     size: "large",
@@ -123,7 +123,7 @@ const galleryImages = [
   },
   {
     id: 15,
-    src: "/gall11.JPG",
+    src: "/gall11.jpg",
     caption: "SIGNIFIYA'22",
     category: "CULTURAL",
     size: "large",
@@ -132,7 +132,7 @@ const galleryImages = [
   },
   {
     id: 7,
-    src: "/gall2.JPG",
+    src: "/gall2.jpg",
     caption: "Gaming Zone",
     category: "TECH",
     size: "small",
@@ -141,7 +141,7 @@ const galleryImages = [
   },
   {
     id: 8,
-    src: "/gall3.JPG",
+    src: "/gall3.jpg",
     caption: "Stalls Squad",
     category: "VIBES",
     size: "small",
