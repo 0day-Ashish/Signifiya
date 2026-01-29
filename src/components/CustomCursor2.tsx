@@ -18,7 +18,7 @@ export default function CustomCursor() {
     const checkIsDesktop = () => {
       const hasPointer = window.matchMedia('(pointer: fine)').matches;
       const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-      setIsDesktop(hasPointer && !isTouchDevice && window.innerWidth >= 768);
+      setIsDesktop(hasPointer && !isTouchDevice && window.innerWidth <= 512);
     };
 
     checkIsDesktop();
@@ -57,7 +57,7 @@ export default function CustomCursor() {
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         className="drop-shadow-[2px_4px_6px_rgba(0,0,0,0.3)]"
-        style={{ transform: 'scaleX(-1)' }}
+        style={{ transform: 'scaleX(1)' }}
       >
         <path
           d="M3 3L10.07 19.97L12.58 12.58L19.97 10.07L3 3Z"
