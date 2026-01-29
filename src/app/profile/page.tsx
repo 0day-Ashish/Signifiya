@@ -377,17 +377,6 @@ export default function Profile() {
         setShowProfileMenu={setShowProfileMenu}
       />
 
-      {/* Back Button */}
-      <Link 
-        href="/"
-        className="fixed top-16 -mt-7 left-8 sm:left-11 z-50 ml-4 sm:ml-0 sm:mt-20 w-9 h-9 sm:w-12 sm:h-12 bg-white text-black rounded-full border-2 border-black flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all active:scale-95 cursor-none"
-      >
-        <svg className="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="19" y1="12" x2="5" y2="12"></line>
-            <polyline points="12 19 5 12 12 5"></polyline>
-        </svg>
-      </Link>
-
       {/* Success Toast */}
       <div className={`fixed top-24 right-8 z-50 transition-all duration-500 transform ${showSuccessToast ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0 pointer-events-none'}`}>
         <div className="bg-[#4caf50] text-white px-6 py-4 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center gap-3">

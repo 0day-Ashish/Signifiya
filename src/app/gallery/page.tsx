@@ -238,7 +238,7 @@ export default function Gallery() {
            hideLogo={false}
          />
       {/* Return Home Link - Fixed below logo */}
-      <div className="fixed top-38 lg:top-34 sm:top-30 left-10 z-20">
+      {/* <div className="fixed top-38 lg:top-34 sm:top-30 left-10 z-20">
         <Link
           href="/"
           className="inline-block w-fit text-black font-mono text-xs font-bold border-2 border-black px-3 py-1 rounded bg-yellow-300 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-y-0.5 hover:shadow-none transition-all"
@@ -246,7 +246,7 @@ export default function Gallery() {
           ← RETURN HOME
         </Link>
       </div>
-      
+       */}
       {/* --- HERO SECTION --- */}
       <div className="p-4 lg:p-6">
         <div className="bg-gradient-to-b from-purple-950 via-purple-600 to-purple-100 min-h-[70vh] lg:min-h-[90vh] w-full rounded-[2rem] flex flex-col justify-center items-center relative overflow-hidden ">

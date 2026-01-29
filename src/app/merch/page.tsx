@@ -122,12 +122,12 @@ export default function MerchPage() {
           ref={merchBoxRef}
           className="bg-[#fff3e0] rounded-[2.5rem] p-8 sm:p-12 m-4 sm:m-4 relative overflow-hidden flex flex-col gap-12 border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"
         >
-          <Link
+          {/* <Link
             href="/"
             className="inline-block fixed w-fit text-black font-mono text-xs font-bold border-2 border-black px-3 py-1 rounded bg-yellow-300 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-y-0.5 hover:shadow-none transition-all mb-6 z-50"
           >
             ← RETURN HOME
-          </Link>
+          </Link> */}
           <div className="flex flex-col sm:mt-0 mt-15 gap-4 text-center">
             <h1 className={`text-4xl sm:text-7xl text-black uppercase leading-[0.9] ${gilton.className}`}>
               SIGNIFIYA <span className="italic">Merchandise</span>

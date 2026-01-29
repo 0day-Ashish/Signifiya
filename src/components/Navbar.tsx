@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useAudio } from "@/components/AudioProvider";
 import Image from "next/image";
 import localFont from "next/font/local";
@@ -18,6 +18,8 @@ export default function Navbar({
   hideLogo = false
 }: any) {
   const router = useRouter();
+  const pathname = usePathname();
+  const isHomePage = pathname === "/";
   const { musicPlaying, audioInitialized, toggleMusic } = useAudio();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [desktopNavPinned, setDesktopNavPinned] = useState(false);
@@ -69,6 +71,19 @@ export default function Navbar({
             />
           </Link>
         </div>
+      )}
+
+      {/* Back Button - Only shows when not on home page */}
+      {!isHomePage && (
+        <button
+          onClick={() => router.back()}
+          className="fixed top-16 md:top-18 left-20 sm:left-20 lg:left-28 w-9 h-9 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-white text-black rounded-full border-2 border-black flex items-center justify-center transition-transform duration-300 hover:scale-105 active:scale-95 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] active:shadow-none z-50"
+        >
+          <svg className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M19 12H5"></path>
+            <path d="M12 19l-7-7 7-7"></path>
+          </svg>
+        </button>
       )}
 
     <div className="fixed top-16 sm:top-16 right-8 sm:right-8 flex flex-col items-end gap-2 sm:gap-4 z-50">
