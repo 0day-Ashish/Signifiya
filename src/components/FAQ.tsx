@@ -12,23 +12,27 @@ const softura = localFont({ src: "../../public/fonts/Softura-Demo.otf" });
 const FAQs = [
   {
     question: "What is Signifiya?",
-    answer: "Signifiya is a decentralized platform designed to empower users with secure and transparent financial tools. We leverage blockchain technology to provide a seamless experience for managing your digital assets."
+    answer: "SIGNIFIYA 2026 is the largest student-driven Techfest of SOET, designed to give students a platform to showcase technical skills, creativity, teamwork, and leadership. It is a two-day event where students compete, collaborate, and learn beyond the classroom."
   },
   {
-    question: "How do I get started?",
-    answer: "Getting started is easy! Simply download our app from the Google Play Store (App Store coming soon) or use our website, create an account, and verify your identity. You'll be ready to explore our features in minutes."
+    question: "Why should I participate in SIGNIFIYA 2026?",
+    answer: "Participation in SIGNIFIYA allows students to apply theoretical knowledge in real competitive scenarios, explore interests beyond their core discipline, develop confidence, communication, and leadership skills, gain exposure to inter-college competition and peer learning. It is both a learning experience and a personal growth opportunity."
   },
   {
-    question: "Is my data secure?",
-    answer: "Absolutely. We prioritize your privacy and security. Your data is encrypted and stored securely, and we never share your personal information with third parties without your consent."
+    question: "What kind of events can students take part in?",
+    answer: "Students can participate in technical events such as robotics, coding challenges, circuit design, and core engineering competitions, gaming events including BGMI and Valorant, non-technical events like dance battles, rap battles, treasure hunts, and arm wrestling. This variety ensures opportunities for students from all interests and skill levels."
   },
   {
-    question: "Are there any fees?",
-    answer: "We strive to keep our fees competitive and transparent. You can view a detailed breakdown of our fee structure on our pricing page or within the app settings."
+    question: "Can students from different branches participate together?",
+    answer: "Yes. SIGNIFIYA actively encourages interdisciplinary participation. Many events allow or require team participation across different branches, promoting collaboration, coordination, and shared problem-solving."
   },
   {
-    question: "How can I contact support?",
-    answer: "Our support team is available 24/7 to assist you. You can reach out to us via the 'Get Support' button in the section below, or join our Discord community for real-time assistance."
+    question: "Is SIGNIFIYA only for Adamas University students?",
+    answer: "No. While Adamas University students form the core participant group, SIGNIFIYA is also open to students from other universities, engineering colleges, polytechnics, and schools, making it a large inter-institutional event."
+  },
+  {
+    question: "Is SIGNIFIYA beneficial for first-year and non-technical students?",
+    answer: "Yes. The inclusion of non-technical and cultural events ensures that students from all years and backgrounds can participate, contribute, and feel involved in the fest."
   }
 ];
 
