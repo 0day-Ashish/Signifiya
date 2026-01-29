@@ -18,7 +18,7 @@ export default function CustomCursor() {
     const checkIsDesktop = () => {
       const hasPointer = window.matchMedia('(pointer: fine)').matches;
       const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-      setIsDesktop(hasPointer && !isTouchDevice && window.innerWidth <= 512);
+      setIsDesktop(hasPointer && !isTouchDevice && window.innerWidth >= 768);
     };
 
     checkIsDesktop();

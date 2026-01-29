@@ -114,7 +114,7 @@ export default function MerchPage() {
         session={session}
         showProfileMenu={showProfileMenu}
         setShowProfileMenu={setShowProfileMenu}
-        hideLogo={true}
+        hideLogo={false}
       />
 
       <main className="flex-1">

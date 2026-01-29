@@ -23,6 +23,7 @@ import Prizes from "@/components/Prizes";
 import Gallery from "@/components/Gallery";
 import Sponsors from "@/components/Sponsors";
 import { APP_CONFIG } from "@/config/app.config";
+import CommunityPartner from "@/components/NewsletterSupport";
 
 const rampart = localFont({ src: "../../public/fonts/RampartOne-Regular.ttf" });
 const gilton = localFont({ src: "../../public/fonts/GiltonRegular.otf" });
@@ -295,48 +296,49 @@ export default function Home() {
           </div>
           
           {/* Main Content - Timer - more top margin on mobile so title, dates and timer sit lower */}
-          <div className="z-10 mt-44 sm:mt-32 flex flex-col items-center gap-12 sm:gap-22 relative">
+          <div className="z-10 flex flex-col items-center gap-6 sm:gap-8 relative px-4 sm:px-0 mt-20 sm:mt-10">
              {/* SIGNIFIYA Title, then 13th-14th left and 2026 right below */}
-             <div className="absolute -top-45 w-full flex flex-col items-center z-30 px-4">
-                <h1 className={`text-5xl sm:text-6xl md:text-9xl text-white tracking-widest ${bicubik.className}`}>
+             <div className="flex flex-col items-center z-30 ">
+                <h1
+                  className={`text-5xl sm:text-6xl md:text-9xl font-extrabold text-white tracking-widest ${bicubik.className}`}
+                  style={{ textShadow: '4px 4px 0px rgba(0,0,0,1)' }}
+                >
                   SIGNIFIYA
                 </h1>
-                <div className="w-full max-w-4xl flex flex-row items-center justify-between -mt-2 sm:-mt-5">
+                <div className="w-full flex flex-row items-center justify-between px-5">
                   <span className={`text-xs sm:text-sm md:text-base text-white/90 tracking-widest ${gilton.className}`}>
                     13th - 14th March
                   </span>
-                  <span className={`text-xl sm:text-2xl md:text-3xl text-white tracking-[0.5em] ${bicubik.className}`}>
+                  <span className={`text-xl sm:text-2xl md:text-3xl text-white tracking-[0.3em] sm:tracking-[0.5em] ${bicubik.className}`}>
                     {APP_CONFIG.event.year}
                   </span>
                 </div>
              </div>
 
              {/* Lottie Animation Above Timer */}
-             <div className="hidden sm:block absolute -top-18 left-1/2 -translate-x-[170%] w-[220px] h-[220px] pointer-events-none z-20">
+             {/* <div className="hidden sm:block absolute -top-50 left-1/2 -translate-x-[170%] w-[220px] h-[220px] pointer-events-none z-20">
                 <DotLottieReact
                   src="https://lottie.host/e28afc4a-f625-49e6-b4b6-a41b4d08a155/f7wuEZYKPl.lottie"
                   loop
                  autoplay
                 />
-             </div>
+             </div> */}
 
-            <div className="-mt-26 sm:mt-0">
-              <Timer />
-            </div>
-            
-            <div className="-mt-6 sm:mt-0 lg:-mt-8 xl:-mt-12">
+            <Timer />
+
+            <div>
               {!session ? (
-                <Link 
+                <Link
                   href="/sign-in"
                   className={`bg-[#deb3fa] text-black px-6 py-2 rounded-full border-2 border-black font-bold text-base uppercase tracking-wider shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 ${gilton.className}`}
                 >
                   Sign In / Sign Up
                 </Link>
               ) : (
-                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
+                <div className="flex flex-row gap-3 sm:gap-4 justify-center items-center">
                   <Link
                     href="#events"
-                    className={`bg-[#deb3fa] text-black px-4 py-2 sm:px-2 sm:py-2 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-black font-bold text-sm sm:text-base uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 ${gilton.className}`}
+                    className={`bg-[#deb3fa] text-black px-4 py-2 sm:px-6 sm:py-3 rounded-xl sm:rounded-2xl border-2 border-black font-bold text-xs sm:text-sm uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 ${gilton.className}`}
                   >
                     {passStatus?.hasEventPass ? "View Events" : "Check Events"}
                   </Link>
@@ -345,7 +347,7 @@ export default function Home() {
                     // User has dual day pass - show "View My Passes"
                     <Link
                       href="/profile"
-                      className={`bg-[#4caf50] text-white px-4 py-2 sm:px-2 sm:py-2 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-black font-bold text-sm sm:text-base uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 ${gilton.className}`}
+                      className={`bg-[#4caf50] text-white px-4 py-2 sm:px-6 sm:py-3 rounded-xl sm:rounded-2xl border-2 border-black font-bold text-xs sm:text-sm uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 ${gilton.className}`}
                     >
                       View My Passes
                     </Link>
@@ -353,7 +355,7 @@ export default function Home() {
                     // User has single day pass - show option to buy another day
                     <Link
                       href="/register"
-                      className={`bg-[#ff9800] text-black px-4 py-2 sm:px-2 sm:py-2 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-black font-bold text-sm sm:text-base uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 ${gilton.className}`}
+                      className={`bg-[#ff9800] text-black px-4 py-2 sm:px-6 sm:py-3 rounded-xl sm:rounded-2xl border-2 border-black font-bold text-xs sm:text-sm uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 ${gilton.className}`}
                     >
                       Buy Another Day
                     </Link>
@@ -361,7 +363,7 @@ export default function Home() {
                     // No visitor pass - show "Visitor's Pass"
                     <Link
                       href="/register"
-                      className={`bg-[#ffffff] text-black px-4 py-2 sm:px-2 sm:py-2 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-black font-bold text-sm sm:text-base uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 ${gilton.className}`}
+                      className={`bg-[#ffffff] text-black px-4 py-2 sm:px-6 sm:py-3 rounded-xl sm:rounded-2xl border-2 border-black font-bold text-xs sm:text-sm uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 ${gilton.className}`}
                     >
                       Visitor&apos;s Pass
                     </Link>
@@ -409,7 +411,7 @@ export default function Home() {
         <Team />
       </div>
       <FAQ />
-      <NewsletterSupport />
+      <CommunityPartner />
       </div>
       <Footer />
 
