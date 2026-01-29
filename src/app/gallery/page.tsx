@@ -15,7 +15,7 @@ const categories = ["ALL", "TECH", "CULTURAL", "VIBES", "BTS"];
 const galleryImages = [
   {
     id: 1,
-    src: "/gall13.jpg",
+    src: "/gall13.JPG",
     caption: "The Opening Ceremony",
     category: "CULTURAL",
     size: "large",
@@ -24,7 +24,7 @@ const galleryImages = [
   },
   {
     id: 10,
-    src: "/gall12.jpg",
+    src: "/gall12.JPG",
     caption: "The Opening Ceremony",
     category: "CULTURAL",
     size: "large",
@@ -33,7 +33,7 @@ const galleryImages = [
   },
   {
     id: 13,
-    src: "/gall4.jpg",
+    src: "/gall4.JPG",
     caption: "SIGNIFIYA'25",
     category: "CULTURAL",
     size: "large",
@@ -42,7 +42,7 @@ const galleryImages = [
   },
   {
     id: 2,
-    src: "/gall5.jpg",
+    src: "/gall5.JPG",
     caption: "Valorant Grind",
     category: "TECH",
     size: "small",
@@ -51,7 +51,7 @@ const galleryImages = [
   },
   {
     id: 3,
-    src: "/gall22.jpg",
+    src: "/gall22.JPG",
     caption: "Drone Arena",
     category: "TECH",
     size: "tall",
@@ -60,7 +60,7 @@ const galleryImages = [
   },
   {
     id: 4,
-    src: "/gall24.jpg",
+    src: "/gall24.JPG",
     caption: "DJ Night Madness",
     category: "VIBES",
     size: "small",
@@ -69,7 +69,7 @@ const galleryImages = [
   },
   {
     id: 5,
-    src: "/gall21.jpg",
+    src: "/gall21.JPG",
     caption: "Behind The Scenes",
     category: "BTS",
     size: "small",
@@ -78,7 +78,7 @@ const galleryImages = [
   },
   {
     id: 14,
-    src: "/gall15.jpg",
+    src: "/gall15.JPG",
     caption: "Behind The Scenes",
     category: "BTS",
     size: "small",
@@ -87,7 +87,7 @@ const galleryImages = [
   },
   {
     id: 11,
-    src: "/gall8.jpg",
+    src: "/gall8.JPG",
     caption: "Behind The Scenes",
     category: "BTS",
     size: "small",
@@ -96,7 +96,7 @@ const galleryImages = [
   },
   {
     id: 12,
-    src: "/gall7.jpg",
+    src: "/gall7.JPG",
     caption: "Behind The Scenes",
     category: "BTS",
     size: "small",
@@ -105,7 +105,7 @@ const galleryImages = [
   },
   {
     id: 6,
-    src: "/gall9.jpg",
+    src: "/gall9.JPG",
     caption: "Prize Distribution",
     category: "CULTURAL",
     size: "large",
@@ -114,7 +114,7 @@ const galleryImages = [
   },
   {
     id: 9,
-    src: "/gall18.jpg",
+    src: "/gall18.JPG",
     caption: "Core Team @2022",
     category: "CULTURAL",
     size: "large",
@@ -123,7 +123,7 @@ const galleryImages = [
   },
   {
     id: 15,
-    src: "/gall11.jpg",
+    src: "/gall11.JPG",
     caption: "SIGNIFIYA'22",
     category: "CULTURAL",
     size: "large",
@@ -132,7 +132,7 @@ const galleryImages = [
   },
   {
     id: 7,
-    src: "/gall2.jpg",
+    src: "/gall2.JPG",
     caption: "Gaming Zone",
     category: "TECH",
     size: "small",
@@ -141,7 +141,7 @@ const galleryImages = [
   },
   {
     id: 8,
-    src: "/gall3.jpg",
+    src: "/gall3.JPG",
     caption: "Stalls Squad",
     category: "VIBES",
     size: "small",
