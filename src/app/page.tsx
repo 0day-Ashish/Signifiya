@@ -8,6 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
+import { getUserPassStatus } from "@/app/actions";
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { useAudio } from "@/components/AudioProvider";
 import { motion, useScroll, useSpring, useTransform, useMotionValue, useVelocity, useAnimationFrame } from "motion/react";
@@ -92,16 +93,32 @@ const Marquee = () => {
 };
 
 export default function Home() {
-  const [preloaderFinished, setPreloaderFinished] = useState(false);
+  // Track if preloader was already shown this session - default to true to prevent flash on SSR
+  const [preloaderFinished, setPreloaderFinished] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const { musicPlaying, audioInitialized, toggleMusic, initializeAudio } = useAudio();
   const [showNavLinks, setShowNavLinks] = useState(false);
   const [session, setSession] = useState<any>(null);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [passStatus, setPassStatus] = useState<{
+    hasVisitorPass: boolean;
+    hasDualDayPass: boolean;
+    hasSingleDayPass: boolean;
+    hasEventPass: boolean;
+    passCount: number;
+  } | null>(null);
   const router = useRouter();
 
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [showProgressBar, setShowProgressBar] = useState(false);
+
+  // Check sessionStorage on mount to determine if preloader should show
+  useEffect(() => {
+    const hasSeenPreloader = sessionStorage.getItem('preloaderShown') === 'true';
+    if (!hasSeenPreloader) {
+      setPreloaderFinished(false); // Show preloader only if not seen this session
+    }
+  }, []);
 
   // Smooth scroll progress
   const { scrollYProgress } = useScroll();
@@ -117,6 +134,12 @@ export default function Home() {
   useEffect(() => {
     if (sessionData) {
       setSession(sessionData);
+      // Fetch pass status when user is logged in
+      if (sessionData.user?.id) {
+        getUserPassStatus(sessionData.user.id).then((status) => {
+          if (status) setPassStatus(status);
+        });
+      }
     }
   }, [sessionData]);
 
@@ -169,8 +192,9 @@ export default function Home() {
 
   const handlePreloaderFinish = () => {
     setPreloaderFinished(true);
+    sessionStorage.setItem('preloaderShown', 'true'); // Mark preloader as shown for this session
     if (!audioInitialized) {
-    setShowModal(true);
+      setShowModal(true);
     }
   };
 
@@ -310,18 +334,38 @@ export default function Home() {
                 </Link>
               ) : (
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
-                  <Link 
+                  <Link
                     href="#events"
                     className={`bg-[#deb3fa] text-black px-4 py-2 sm:px-2 sm:py-2 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-black font-bold text-sm sm:text-base uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 ${gilton.className}`}
                   >
-                    Check Events
+                    {passStatus?.hasEventPass ? "View Events" : "Check Events"}
                   </Link>
-                  <Link 
-                    href="/register"
-                    className={`bg-[#ffffff] text-black px-4 py-2 sm:px-2 sm:py-2 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-black font-bold text-sm sm:text-base uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 ${gilton.className}`}
-                  >
-                    Visitor&apos;s Pass
-                  </Link>
+                  {/* Show different button based on pass status */}
+                  {passStatus?.hasDualDayPass ? (
+                    // User has dual day pass - show "View My Passes"
+                    <Link
+                      href="/profile"
+                      className={`bg-[#4caf50] text-white px-4 py-2 sm:px-2 sm:py-2 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-black font-bold text-sm sm:text-base uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 ${gilton.className}`}
+                    >
+                      View My Passes
+                    </Link>
+                  ) : passStatus?.hasSingleDayPass ? (
+                    // User has single day pass - show option to buy another day
+                    <Link
+                      href="/register"
+                      className={`bg-[#ff9800] text-black px-4 py-2 sm:px-2 sm:py-2 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-black font-bold text-sm sm:text-base uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 ${gilton.className}`}
+                    >
+                      Buy Another Day
+                    </Link>
+                  ) : (
+                    // No visitor pass - show "Visitor's Pass"
+                    <Link
+                      href="/register"
+                      className={`bg-[#ffffff] text-black px-4 py-2 sm:px-2 sm:py-2 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-black font-bold text-sm sm:text-base uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 ${gilton.className}`}
+                    >
+                      Visitor&apos;s Pass
+                    </Link>
+                  )}
                 </div>
               )}
             </div>

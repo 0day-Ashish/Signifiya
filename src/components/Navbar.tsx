@@ -148,9 +148,9 @@ export default function Navbar({
         <div className="flex items-center gap-2 sm:gap-4">
              {session && (
                 <div className="relative">
-                    <button 
+                    <button
                         onClick={() => setShowProfileMenu(!showProfileMenu)}
-                        className="w-9 h-9 sm:w-12 sm:h-12 rounded-full border-2 border-black bg-white overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 relative"
+                      className="w-9 h-9 sm:w-12 sm:h-12 z-60 rounded-full border-2 border-black bg-white overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 relative cursor-pointer"
                     >
                         {session.user?.image ? (
                             <Image 

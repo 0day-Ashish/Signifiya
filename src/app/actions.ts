@@ -596,6 +596,59 @@ export async function registerEventTeam(data: {
   return { success: false, error: "Please use the payment flow" };
 }
 
+/**
+ * Get user's pass and event registration status
+ * Used to determine what options to show on the home page
+ */
+export async function getUserPassStatus(userId: string) {
+  try {
+    if (!userId) return null;
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        generatedPasses: true,
+      },
+    });
+
+    if (!user) return null;
+
+    // Check for visitor passes
+    const passes = user.generatedPasses || [];
+    const hasVisitorPass = passes.length > 0;
+    const hasDualDayPass = passes.some(p =>
+      p.type.toLowerCase().includes("dual") ||
+      p.type.toLowerCase().includes("double")
+    );
+    const hasSingleDayPass = passes.some(p =>
+      p.type.toLowerCase().includes("single") ||
+      p.type.toLowerCase().includes("day 1") ||
+      p.type.toLowerCase().includes("day 2")
+    );
+
+    // Check for event registrations
+    let hasEventPass = false;
+    if (user.bookingId) {
+      const eventTeams = await prisma.participantTeam.findFirst({
+        where: { leaderBookingId: { equals: user.bookingId, mode: "insensitive" } },
+      });
+      hasEventPass = !!eventTeams;
+    }
+
+    return {
+      hasVisitorPass,
+      hasDualDayPass,
+      hasSingleDayPass,
+      hasEventPass,
+      passCount: passes.length,
+      passes: passes.map(p => ({ id: p.id, type: p.type })),
+    };
+  } catch (error) {
+    console.error("getUserPassStatus error:", error);
+    return null;
+  }
+}
+
 export async function subscribeNewsletter(data: { email: string; consent: boolean }) {
   try {
     const email = data.email?.trim();

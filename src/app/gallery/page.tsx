@@ -7,6 +7,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Infobar from "@/components/Infobar";
 import { APP_CONFIG } from "@/config/app.config";
+import { authClient } from "@/lib/auth-client";
 
 const gilton = localFont({ src: "../../../public/fonts/GiltonRegular.otf" });
 const softura = localFont({ src: "../../../public/fonts/Softura-Demo.otf" });
@@ -155,8 +156,10 @@ const galleryImages = [
 
 // Fixed Marquee: Added scale-105 to prevent white gaps on edges when rotated
 const Marquee = () => (
+   
+    
   <div className="w-full relative z-20 py-10 overflow-hidden">
-    <Navbar />
+
     <div className="absolute inset-0 flex items-center bg-yellow-300 border-y-4 border-black transform -rotate-1 scale-105 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
       <div className="animate-marquee whitespace-nowrap flex">
         <span className="text-3xl font-black mx-4 tracking-tighter">
@@ -178,7 +181,19 @@ const Marquee = () => (
 
 // The Main Gallery Page
 export default function Gallery() {
+   const [showNavLinks, setShowNavLinks] = useState(false);
+  const [session, setSession] = useState<any>(null);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [activeFilter, setActiveFilter] = useState("ALL");
+
+  // Get session data
+  const { data: sessionData } = authClient.useSession();
+
+  useEffect(() => {
+    if (sessionData) {
+      setSession(sessionData);
+    }
+  }, [sessionData]);
   const [hearts, setHearts] = useState<{ id: number; imageId: number; x: number; y: number; angle: number; distance: number }[]>([]);
 
   // Filter logic
@@ -215,8 +230,15 @@ export default function Gallery() {
   return (
     // Added overflow-x-hidden to prevent horizontal scrollbars from rotated elements
     <div className="bg-zinc-950 min-h-screen font-sans selection:bg-purple-500 selection:text-white overflow-x-hidden">
+          <Navbar
+           showNavLinks={showNavLinks}
+           session={session}
+           showProfileMenu={showProfileMenu}
+           setShowProfileMenu={setShowProfileMenu}
+           hideLogo={false}
+         />
       {/* Return Home Link - Fixed below logo */}
-      <div className="fixed top-38 lg:top-34 sm:top-30 left-10 z-50">
+      <div className="fixed top-38 lg:top-34 sm:top-30 left-10 z-20">
         <Link
           href="/"
           className="inline-block w-fit text-black font-mono text-xs font-bold border-2 border-black px-3 py-1 rounded bg-yellow-300 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-y-0.5 hover:shadow-none transition-all"

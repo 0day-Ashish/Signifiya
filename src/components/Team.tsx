@@ -32,7 +32,7 @@ const TEAM_MEMBERS = [
   { id: 12, name: "Snehasish Mondal", role: "Operations Lead", image: "/avatar4.jpg", bio: "The backbone of smooth workflows, ensuring every detail runs right on time.", color: "#E67E22" },
   { id: 18, name: "Samriddhi Sinha", role: "Decorations Lead", image: "/avatar2.jpg", bio: "Transforming spaces into immersive experiences that set the fest’s mood.", color: "#8E44AD" },
   { id: 20, name: "Ashish R. Das", role: "Tech Lead", image: "/avatar1.jpg", bio: "Architect of innovation, powering the fest with smart tech and seamless systems.", color: "#8E44AD", linkedin: "https://linkedin.com/in/arddev", instagram: "https://instagram.com/ashishh_rd_", github: "https://github.com/0day-Ashish" },
-  { id: 23, name: "Subham Karmakar", role: "Tech Support", image: "/avatar1.jpg", bio: "Architect of innovation, powering the fest with smart tech and seamless systems.", color: "#8E44AD", linkedin: "https://linkedin.com/in/arddev", instagram: "https://instagram.com/ashishh_rd_", github: "https://github.com/0day-Ashish" },
+  { id: 23, name: "Subham Karmakar", role: "Tech Support", image: "/avatar1.jpg", bio: "Architect of innovation, powering the fest with smart tech and seamless systems.", color: "#8E44AD", linkedin: "https://linkedin.com/in/subham12r", instagram: "https://instagram.com/5ubhamkarmakar", github: "https://github.com/subham12r" },
   { id: 24, name: "Abhisekh Singh", role: "App Development", image: "/avatar1.jpg", bio: "Turning strategies into action with energy, coordination, and commitment.", color: "#D4A5A5" },
   { id: 13, name: "Garima Roy", role: "Documentations Lead", image: "/avatar1.jpg", bio: "The mind that captures every milestone and detail with clarity and precision.", color: "#2ECC71" },
   { id: 14, name: "Leeza Bhowal", role: "Design Lead", image: "/avatar2.jpg", bio: "The creative spark behind visuals that give the fest its identity and vibe.", color: "#F1C40F" },
@@ -102,9 +102,9 @@ export default function Team() {
                             <div 
                                 onMouseEnter={() => setActiveMember(member)}
                                 onClick={() => setActiveMember(member)}
-                                className={`group flex items-center transition-all duration-300 py-1.5 sm:py-2 cursor-none ${activeMember.id === member.id ? 'translate-x-1 sm:translate-x-2' : 'hover:translate-x-2'}`}
+                                className={`group flex items-center transition-all duration-300 py-2 sm:py-5 cursor-none ${activeMember.id === member.id ? 'translate-x-1 sm:translate-x-2' : 'hover:translate-x-2'}`}
                             >
-                                <h3 className={`text-lg sm:text-3xl md:text-[3.5vw] tracking-tighter leading-tight font-bold transition-colors duration-300 ${activeMember.id === member.id ? 'text-black' : 'text-gray-400 group-hover:text-black'}`}>
+                                <h3 className={`text-lg sm:text-3xl md:text-[3.5vw] tracking-tighter leading-7 font-bold transition-colors duration-300 ${activeMember.id === member.id ? 'text-black' : 'text-gray-400 group-hover:text-black'}`}>
                                     {member.name}
                                 </h3>
                             </div>

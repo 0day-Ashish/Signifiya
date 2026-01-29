@@ -626,7 +626,7 @@ export default function Profile() {
                                      </svg>
                                      <p className={`font-bold text-black text-lg ${softura.className}`}>No Events Found</p>
                                      <p className={`text-sm text-gray-600 font-medium max-w-[200px] ${softura.className}`}>You&apos;ve not registered for any event yet.</p>
-                                     <Link href="/" className={`mt-2 text-sm font-bold text-[#9c27b0] underline hover:text-black ${softura.className}`}>Register for events →</Link>
+                                     <Link href="/events" className={`mt-2 text-sm font-bold text-[#9c27b0] underline hover:text-black ${softura.className}`}>Register for events →</Link>
                                  </div>
                              )}
                         </div>

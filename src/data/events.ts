@@ -285,16 +285,24 @@ export const ALL_EVENTS: MasterEvent[] = [
     color: "bg-fuchsia-100",
   },
 
-  // ─── EVENTS-ONLY (not in schedule) ───────────────────────
-  {
+    {
     id: 12,
-    title: "Valorant Tournament",
-    category: "ESPORTS",
-    description:
+      title: "Valorant Tournament",
+      category: "ESPORTS",
+      description:
       "Precise gunplay with agent abilities with smart strategy and perfect coordination to secure victory.",
-    date: "March 13th - 14th",
-    image: "/valorant.jpg",
-    prizePool: "TBA",
+      date: "March 13th - 14th",
+      image: "/valorant.jpg",
+      prizePool: "TBA",
+      day: 2,
+      scheduleDescription: "",
+      time: "March 13th - 14th",
+      venue: "Online",
+      coordinators: "Student Coordinators",
+      facultyCoordinators: "",
+      lottie:
+        "https://lottie.host/5d55c618-6fa5-489d-82bf-a9e561c64414/w57drvo4fH.lottie",
+      color: "bg-gray-100",
   },
   {
     id: 13,
@@ -305,6 +313,15 @@ export const ALL_EVENTS: MasterEvent[] = [
     date: "March 13th - 14th",
     image: "/bgmi.jpg",
     prizePool: "TBA",
+    day: 2,
+          scheduleDescription: "",
+      time: "March 13th - 14th",
+      venue: "Online",
+      coordinators: "Student Coordinators",
+      facultyCoordinators: "",
+      lottie:
+        "https://lottie.host/5d55c618-6fa5-489d-82bf-a9e561c64414/w57drvo4fH.lottie",
+      color: "bg-gray-100",
   },
   {
     id: 14,
@@ -315,9 +332,69 @@ export const ALL_EVENTS: MasterEvent[] = [
     date: "March 13th - 14th",
     image: "/treasure-hunt.jpg",
     prizePool: "TBA",
+    day: 2,
+          scheduleDescription: "",
+      time: "March 13th - 14th",
+      venue: "Online",
+      coordinators: "Student Coordinators",
+      facultyCoordinators: "",
+      lottie:
+        "https://lottie.host/5d55c618-6fa5-489d-82bf-a9e561c64414/w57drvo4fH.lottie",
+      color: "bg-gray-100",
   },
   {
     id: 15,
+    title: "Arm Wrestling",
+    category: "NON-TECH",
+    description:
+      "Lock hands, hold your ground, and power through to pin your opponent down.",
+    date: "March 13th - 14th",
+    image: "/non-tech1.jpg",
+    prizePool: "TBA",
+    day: 2,
+          scheduleDescription: "",
+      time: "March 13th - 14th",
+      venue: "Online",
+      coordinators: "Student Coordinators",
+      facultyCoordinators: "",
+      lottie:
+        "https://lottie.host/5d55c618-6fa5-489d-82bf-a9e561c64414/w57drvo4fH.lottie",
+      color: "bg-gray-100",
+  },
+
+  // ─── EVENTS-ONLY (not in schedule) ───────────────────────
+  {
+    id: 16,
+    title: "Valorant Tournament",
+    category: "ESPORTS",
+    description:
+      "Precise gunplay with agent abilities with smart strategy and perfect coordination to secure victory.",
+    date: "March 13th - 14th",
+    image: "/valorant.jpg",
+    prizePool: "TBA",
+  },
+  {
+    id: 17,
+    title: "BGMI",
+    category: "ESPORTS",
+    description:
+      "Drop in, gear up, and fight through intense combat zones to be the last team standing.",
+    date: "March 13th - 14th",
+    image: "/bgmi.jpg",
+    prizePool: "TBA",
+  },
+  {
+    id: 18,
+    title: "Treasure Hunt",
+    category: "NON-TECH",
+    description:
+      "Solve puzzles, race against time, and uncover the hidden prize.",
+    date: "March 13th - 14th",
+    image: "/treasure-hunt.jpg",
+    prizePool: "TBA",
+  },
+  {
+    id: 19,
     title: "Arm Wrestling",
     category: "NON-TECH",
     description:

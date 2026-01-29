@@ -8,8 +8,8 @@ import Link from "next/link";
 import localFont from "next/font/local";
 import { authClient } from "@/lib/auth-client";
 import { APP_CONFIG } from "@/config/app.config";
-import { getScheduleEvents, type DayData } from "./actions";
-import { getScheduleData } from "@/data/events";
+import { getScheduleEvents } from "./actions";
+import { getScheduleData, type DayData } from "@/data/events";
 
 const gilton = localFont({ src: "../../../public/fonts/GiltonRegular.otf" });
 const softura = localFont({ src: "../../../public/fonts/Softura-Demo.otf" });
@@ -30,7 +30,6 @@ const EventCard = ({ event, index }: { event: any; index: number }) => {
         isTextLeft ? "lg:flex-row" : "lg:flex-row-reverse"
       } justify-between items-center w-full gap-8 lg:gap-16 py-12 lg:py-16 scroll-mt-24`}
     >
-      <Navbar />
       {/* Content Section */}
       <div className="flex flex-col w-full lg:w-1/2 max-w-2xl">
         <div className="flex items-center gap-3 mb-4">
