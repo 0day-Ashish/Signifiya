@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import localFont from "next/font/local";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -214,6 +215,16 @@ export default function Gallery() {
   return (
     // Added overflow-x-hidden to prevent horizontal scrollbars from rotated elements
     <div className="bg-zinc-950 min-h-screen font-sans selection:bg-purple-500 selection:text-white overflow-x-hidden">
+      {/* Return Home Link - Fixed below logo */}
+      <div className="fixed top-38 lg:top-34 sm:top-30 left-10 z-50">
+        <Link
+          href="/"
+          className="inline-block w-fit text-black font-mono text-xs font-bold border-2 border-black px-3 py-1 rounded bg-yellow-300 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-y-0.5 hover:shadow-none transition-all"
+        >
+          ← RETURN HOME
+        </Link>
+      </div>
+      
       {/* --- HERO SECTION --- */}
       <div className="p-4 lg:p-6">
         <div className="bg-gradient-to-b from-purple-950 via-purple-600 to-purple-100 min-h-[70vh] lg:min-h-[90vh] w-full rounded-[2rem] flex flex-col justify-center items-center relative overflow-hidden ">
@@ -226,15 +237,7 @@ export default function Gallery() {
             <span className="bg-white text-black px-4 py-1 font-mono font-bold border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -rotate-2">
                 EST. 2021
               </span>
-              <span className="bg-white text-black px-4 py-1 font-mono font-bold border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -rotate-2">
-                EST. 2022
-              </span>
-              <span className="bg-white text-black px-4 py-1 font-mono font-bold border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -rotate-2">
-                EST. 2023
-              </span>
-              <span className="bg-white text-black px-4 py-1 font-mono font-bold border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -rotate-2">
-                EST. 2025
-              </span>
+              
               <p className={`text-zinc-100 text-center text-lg lg:text-2xl max-w-2xl tracking-tight mt-6 ${softura.className}`}>
                 A collection of chaotic, beautiful, and{" "}
                 <span className="bg-black text-white px-2 italic">
