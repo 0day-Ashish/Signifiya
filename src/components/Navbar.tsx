@@ -20,15 +20,18 @@ export default function Navbar({
   const router = useRouter();
   const { musicPlaying, audioInitialized, toggleMusic } = useAudio();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [desktopNavPinned, setDesktopNavPinned] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
     const checkScreenSize = () => {
       // Use 1024px (lg breakpoint) instead of 640px so iPad (834px) is treated as mobile
       setIsDesktop(window.innerWidth >= 1024);
-      // Close mobile menu when switching to desktop
+      // Close mobile menu when switching to desktop; clear pinned when switching to mobile
       if (window.innerWidth >= 1024) {
         setMobileMenuOpen(false);
+      } else {
+        setDesktopNavPinned(false);
       }
     };
 
@@ -47,8 +50,8 @@ export default function Navbar({
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [showProfileMenu, setShowProfileMenu]);
 
-  // Determine if menu should be visible: on mobile use click state, on desktop use scroll state
-  const isMenuVisible = isDesktop ? showNavLinks : mobileMenuOpen;
+  // Determine if menu should be visible: on mobile use click state; on desktop use scroll state OR pinned (clicked + to keep open)
+  const isMenuVisible = isDesktop ? (showNavLinks || desktopNavPinned) : mobileMenuOpen;
 
   return (
     <div>
@@ -76,7 +79,9 @@ export default function Navbar({
            {/* 3D Circle Toggle Button */}
            <button 
              onClick={() => {
-               if (!isDesktop) {
+               if (isDesktop) {
+                 setDesktopNavPinned((p) => !p);
+               } else {
                  setMobileMenuOpen(!mobileMenuOpen);
                }
              }}
@@ -114,6 +119,8 @@ export default function Navbar({
                   onClick={() => {
                     if (!isDesktop) {
                       setMobileMenuOpen(false);
+                    } else {
+                      setDesktopNavPinned(false);
                     }
                   }}
                   className={`bg-white text-black border-2 border-black px-3 py-1.5 sm:px-6 sm:py-3 text-center uppercase font-bold text-xs sm:text-sm rounded-full shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 whitespace-nowrap ${softura.className}`}
