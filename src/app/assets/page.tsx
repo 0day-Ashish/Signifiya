@@ -269,11 +269,11 @@ export default function AssetsPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {/* Bicubik */}
-              <div className="bg-white border-2 border-black rounded-xl p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+              <div className="bg-white border-2 border-black rounded-xl p-4 sm:p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] overflow-hidden">
                 <p className={`text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 ${softura.className}`}>
                   Hero / Main Title
                 </p>
-                <p className={`text-4xl sm:text-5xl text-black mb-4 ${bicubik.className}`}>
+                <p className={`text-2xl sm:text-5xl text-black mb-4 ${bicubik.className}`}>
                   SIGNIFIYA
                 </p>
                 <p className={`text-sm text-gray-600 ${softura.className}`}>
@@ -282,11 +282,11 @@ export default function AssetsPage() {
               </div>
 
               {/* Gilton */}
-              <div className="bg-white border-2 border-black rounded-xl p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+              <div className="bg-white border-2 border-black rounded-xl p-4 sm:p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] overflow-hidden">
                 <p className={`text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 ${softura.className}`}>
                   Headings / Display
                 </p>
-                <p className={`text-4xl sm:text-5xl text-black mb-4 ${gilton.className}`}>
+                <p className={`text-2xl sm:text-5xl text-black mb-4 ${gilton.className}`}>
                   Explore Events
                 </p>
                 <p className={`text-sm text-gray-600 ${softura.className}`}>
@@ -295,11 +295,11 @@ export default function AssetsPage() {
               </div>
 
               {/* Softura */}
-              <div className="bg-white border-2 border-black rounded-xl p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+              <div className="bg-white border-2 border-black rounded-xl p-4 sm:p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] overflow-hidden">
                 <p className={`text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 ${softura.className}`}>
                   Body / UI Text
                 </p>
-                <p className={`text-2xl sm:text-3xl text-black mb-4 ${softura.className}`}>
+                <p className={`text-lg sm:text-3xl text-black mb-4 ${softura.className}`}>
                   The quick brown fox jumps over the lazy dog
                 </p>
                 <p className={`text-sm text-gray-600 ${softura.className}`}>
@@ -308,11 +308,11 @@ export default function AssetsPage() {
               </div>
 
               {/* BBH Bartle */}
-              <div className="bg-white border-2 border-black rounded-xl p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+              <div className="bg-white border-2 border-black rounded-xl p-4 sm:p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] overflow-hidden">
                 <p className={`text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 ${softura.className}`}>
                   Timer / Preloader
                 </p>
-                <p className={`text-4xl sm:text-5xl text-black mb-4 ${bartle.className}`}>
+                <p className={`text-2xl sm:text-5xl text-black mb-4 ${bartle.className}`}>
                   00:15:30
                 </p>
                 <p className={`text-sm text-gray-600 ${softura.className}`}>
@@ -321,11 +321,11 @@ export default function AssetsPage() {
               </div>
 
               {/* Rampart One */}
-              <div className="bg-white border-2 border-black rounded-xl p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:col-span-2">
+              <div className="bg-white border-2 border-black rounded-xl p-4 sm:p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:col-span-2 overflow-hidden">
                 <p className={`text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 ${softura.className}`}>
                   Card Names / Special
                 </p>
-                <p className={`text-4xl sm:text-5xl text-black mb-4 ${rampart.className}`}>
+                <p className={`text-2xl sm:text-5xl text-black mb-4 ${rampart.className}`}>
                   Team Member
                 </p>
                 <p className={`text-sm text-gray-600 ${softura.className}`}>
