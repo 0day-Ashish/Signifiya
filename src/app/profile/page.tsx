@@ -41,7 +41,7 @@ export default function Profile() {
 
   // Pre-defined Avatars
   const AVATARS = [
-    "/avatar1.jpg",
+    "/avatar9.jpg",
     "/avatar2.jpg",
     "/avatar3.jpg",
     "/avatar4.jpg",

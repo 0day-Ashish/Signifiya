@@ -26,23 +26,23 @@ const SOCIAL_ICONS = [
 ];
 
 const TEAM_MEMBERS = [
-  { id: 8, name: "Hrishav Dey", role: "Event Advisor", image: "/avatar4.jpg", bio: "The force that turns bold ideas into flawlessly executed reality.", color: "#96CEB4" },
-  { id: 10, name: "Digant Mishra", role: "On-Ground Coordinator", image: "/diggufinal.jpeg", bio: "The go-to problem solver who keeps the action running seamlessly on the ground.", color: "#9B59B6" },
-  { id: 11, name: "Arijit De", role: "Financial & Sponsorship Lead", image: "/avatar3.jpg", bio: "Driving partnerships and managing resources to power the fest’s biggest ambitions.", color: "#3498DB" },
-  { id: 12, name: "Snehasish Mondal", role: "Operations Lead", image: "/avatar4.jpg", bio: "The backbone of smooth workflows, ensuring every detail runs right on time.", color: "#E67E22" },
-  { id: 18, name: "Samriddhi Sinha", role: "Decorations Lead", image: "/samriddhi1.webp", bio: "Transforming spaces into immersive experiences that set the fest’s mood.", color: "#8E44AD" },
+  { id: 8, name: "Hrishav Dey", role: "Event Advisor", image: "/avatar4.jpg", bio: "The force that turns bold ideas into flawlessly executed reality.", color: "#96CEB4", linkedin: "https://linkedin.com/in/hrishav-dey-2b2990291/", instagram: "https://instagram.com/hrishav.dey", github: "https://github.com/" },
+  { id: 10, name: "Digant Mishra", role: "On-Ground Coordinator", image: "/diggufinal.jpeg", bio: "The go-to problem solver who keeps the action running seamlessly on the ground.", color: "#9B59B6", linkedin: "https://linkedin.com/in/digant-mishra-2b2990291/", instagram: "https://instagram.com/digant.mishra", github: "https://github.com/" },
+  { id: 11, name: "Arijit De", role: "Financial & Sponsorship Lead", image: "/arijit.jpeg", bio: "Driving partnerships and managing resources to power the fest’s biggest ambitions.", color: "#3498DB", linkedin: "https://linkedin.com/in/arijit-de-ba1594358", instagram: "https://instagram.com/arijit_.04", github: "https://github.com/" },
+  { id: 12, name: "Snehasish Mondal", role: "Operations Lead", image: "/snehasish.jpeg", bio: "The backbone of smooth workflows, ensuring every detail runs right on time.", color: "#E67E22", linkedin: "https://linkedin.com/in/snehasish-mondal-2b2990291/", instagram: "https://instagram.com/snehasish.mondal", github: "https://github.com/" },
+  { id: 18, name: "Samriddhi Sinha", role: "Decorations Lead", image: "/samriddhi1.webp", bio: "Transforming spaces into immersive experiences that set the fest’s mood.", color: "#8E44AD", linkedin: "https://linkedin.com/in/samriddhi-sinha-2b2990291/", instagram: "https://instagram.com/samriddhi.sinha", github: "https://github.com/" },
   { id: 20, name: "Ashish R. Das", role: "Tech Lead", image: "/avatar1.jpg", bio: "Architect of innovation, powering the fest with smart tech and seamless systems.", color: "#8E44AD", linkedin: "https://linkedin.com/in/arddev", instagram: "https://instagram.com/ashishh_rd_", github: "https://github.com/0day-Ashish" },
   { id: 23, name: "Subham Karmakar", role: "Tech Support", image: "/avatar1.jpg", bio: "Architect of innovation, powering the fest with smart tech and seamless systems.", color: "#8E44AD", linkedin: "https://linkedin.com/in/subham12r", instagram: "https://instagram.com/5ubhamkarmakar", github: "https://github.com/subham12r" },
-  { id: 24, name: "Abhisekh Singh", role: "App Development", image: "/avatar1.jpg", bio: "Turning strategies into action with energy, coordination, and commitment.", color: "#D4A5A5" },
-  { id: 13, name: "Garima Roy", role: "Documentations Lead", image: "/garimaaa.jpeg", bio: "The mind that captures every milestone and detail with clarity and precision.", color: "#2ECC71" },
-  { id: 14, name: "Leeza Bhowal", role: "Design Lead", image: "/avatar2.jpg", bio: "The creative spark behind visuals that give the fest its identity and vibe.", color: "#F1C40F" },
+  { id: 24, name: "Abhisekh Singh", role: "App Development", image: "/avatar1.jpg", bio: "Turning strategies into action with energy, coordination, and commitment.", color: "#D4A5A5", linkedin: "https://linkedin.com/in/abhisekhsingh", instagram: "https://instagram.com/abhisekhsingh", github: "https://github.com/abhisekhsingh" },
+  { id: 13, name: "Garima Roy", role: "Documentations Lead", image: "/garimaaa.jpeg", bio: "The mind that captures every milestone and detail with clarity and precision.", color: "#2ECC71", linkedin: "https://linkedin.com/in/garima-roy-032277290", instagram: "https://instagram.com/_garimaa.07_", github: "https://github.com/" },
+  { id: 14, name: "Leeza Bhowal", role: "Design Lead", image: "/avatar2.jpg", bio: "The creative spark behind visuals that give the fest its identity and vibe.", color: "#F1C40F", linkedin: "https://linkedin.com/in/leeza-bhowal-2b2990291/", instagram: "https://instagram.com/leeza.bhowal", github: "https://github.com/" },
   { id: 15, name: "Somnath Singha Roy", role: "Support Lead", image: "/avatar3.jpg", bio: "The dependable pillar ensuring help, coordination, and smooth resolutions for everyone.", color: "#1ABC9C" },
-  { id: 16, name: "Srijita Bera", role: "Marketing Lead", image: "/srijita.jpeg", bio: "The voice of the fest, turning ideas into buzz and reach into impact.", color: "#E74C3C" },
-  { id: 17, name: "Siddartha Chakraborty", role: "Esports Lead", image: "/avatar1.jpg", bio: "The strategist behind high-energy battles and next-level competitive gaming.", color: "#8E44AD" },
+  { id: 16, name: "Srijita Bera", role: "Marketing Lead", image: "/srijita.jpeg", bio: "The voice of the fest, turning ideas into buzz and reach into impact.", color: "#E74C3C", linkedin: "https://linkedin.com/in/srijita-bera-ab5578291/", instagram: "https://instagram.com/veilof_mist", github: "https://github.com/" },
+  { id: 17, name: "Siddartha Chakraborty", role: "Esports Lead", image: "/avatar1.jpg", bio: "The strategist behind high-energy battles and next-level competitive gaming.", color: "#8E44AD", linkedin: "https://linkedin.com/in/siddartha-chakraborty-0b0554291/", instagram: "https://instagram.com/siddartha_chakraborty", github: "https://github.com/" },
   { id: 19, name: "Ashish Yadav", role: "Blockchain Dev", image: "/avatar3.jpg", bio: "Building decentralized solutions that add a future-ready edge to the fest.", color: "#8E44AD" },
-  { id: 21, name: "Keshav Maheshwari", role: "Execution Cell", image: "/avatar1.jpg", bio: "The hands-on executor ensuring plans come alive with precision and speed.", color: "#deb3fa", linkedin: "https://linkedin.com/in/" },
-  { id: 22, name: "Sampad Ghosh ", role: "Execution Cell", image: "/avatar1.jpg", bio: "Turning strategies into action with energy, coordination, and commitment.", color: "#deb3fa", linkedin: "https://linkedin.com/in/" },
-  { id: 9, name: "Sudipto Barman", role: "DevOps", image: "/avatar1.jpg", bio: "Turning strategies into action with energy, coordination, and commitment.", color: "#D4A5A5" }
+  { id: 21, name: "Keshav Maheshwari", role: "Execution Cell", image: "/avatar1.jpg", bio: "The hands-on executor ensuring plans come alive with precision and speed.", color: "#deb3fa", linkedin: "https://linkedin.com/in/", instagram: "https://instagram.com/keshav.maheshwari", github: "https://github.com/" },
+  { id: 22, name: "Sampad Ghosh ", role: "Execution Cell", image: "/avatar1.jpg", bio: "Turning strategies into action with energy, coordination, and commitment.", color: "#deb3fa", linkedin: "https://linkedin.com/in/", instagram: "https://instagram.com/sampad.ghosh", github: "https://github.com/" },
+  { id: 9, name: "Sudipto Barman", role: "DevOps", image: "/avatar1.jpg", bio: "Turning strategies into action with energy, coordination, and commitment.", color: "#D4A5A5", linkedin: "https://linkedin.com/in/", instagram: "https://instagram.com/sudipto.barman", github: "https://github.com/" }
 ];
 
 export default function Team() {
@@ -54,8 +54,6 @@ export default function Team() {
   useGSAP(() => {
     if (!containerRef.current || !listRef.current) return;
 
-    // Pin the section while scrolling through the list; list advances with page scroll.
-    // On mobile: section stays pinned until all names are scrolled, then section scrolls away.
     ScrollTrigger.create({
       trigger: containerRef.current,
       start: "center center",
@@ -71,7 +69,7 @@ export default function Team() {
             duration: 0.1,
             overwrite: true
           });
-          // On mobile/touch: update active member from scroll progress (no hover)
+          
           if (typeof window !== "undefined" && window.innerWidth < 768) {
             const idx = Math.min(Math.floor(progress * TEAM_MEMBERS.length), TEAM_MEMBERS.length - 1);
             setActiveMember(TEAM_MEMBERS[idx]);

@@ -94,8 +94,8 @@ const Marquee = () => {
 };
 
 export default function Home() {
-  // Track if preloader was already shown this session - default to true to prevent flash on SSR
-  const [preloaderFinished, setPreloaderFinished] = useState(true);
+  // null = not yet determined, false = show preloader, true = preloader done
+  const [preloaderFinished, setPreloaderFinished] = useState<boolean | null>(null);
   const [showModal, setShowModal] = useState(false);
   const { musicPlaying, audioInitialized, toggleMusic, initializeAudio } = useAudio();
   const [showNavLinks, setShowNavLinks] = useState(false);
@@ -116,9 +116,8 @@ export default function Home() {
   // Check sessionStorage on mount to determine if preloader should show
   useEffect(() => {
     const hasSeenPreloader = sessionStorage.getItem('preloaderShown') === 'true';
-    if (!hasSeenPreloader) {
-      setPreloaderFinished(false); // Show preloader only if not seen this session
-    }
+    // Set to false to show preloader, or true to skip it
+    setPreloaderFinished(hasSeenPreloader);
   }, []);
 
   // Smooth scroll progress
@@ -216,9 +215,14 @@ export default function Home() {
     }
   };
 
+  // Show black screen while determining preloader state (prevents flash)
+  if (preloaderFinished === null) {
+    return <div className="min-h-screen bg-black" />;
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-black">
-      {!preloaderFinished && <Preloader onFinish={handlePreloaderFinish} />}
+      {preloaderFinished === false && <Preloader onFinish={handlePreloaderFinish} />}
 
       {/* Music Choice Modal */}
       {showModal && (
