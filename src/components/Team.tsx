@@ -43,7 +43,7 @@ const TEAM_MEMBERS = [
   { id: 19, name: "Ashish Yadav", role: "Blockchain Dev", image: "/avatar3.jpg", bio: "Building decentralized solutions that add a future-ready edge to the fest.", color: "#8E44AD" },
   { id: 21, name: "Keshav Maheshwari", role: "Execution Cell", image: "/avatar1.jpg", bio: "The hands-on executor ensuring plans come alive with precision and speed.", color: "#deb3fa", linkedin: "https://linkedin.com/in/", instagram: "https://instagram.com/keshav.maheshwari", github: "https://github.com/" },
   { id: 22, name: "Sampad Ghosh ", role: "Execution Cell", image: "/avatar1.jpg", bio: "Turning strategies into action with energy, coordination, and commitment.", color: "#deb3fa", linkedin: "https://linkedin.com/in/", instagram: "https://instagram.com/sampad.ghosh", github: "https://github.com/" },
-  { id: 23, name: "Arnab Mondal", role: "Social Media Head", image: "/avatar1.jpg", bio: "Turning strategies into action with energy, coordination, and commitment.", color: "#deb3fa", linkedin: "https://linkedin.com/in/", instagram: "https://instagram.com/sampad.ghosh", github: "https://github.com/" },
+  { id: 25, name: "Arnab Mondal", role: "Social Media Head", image: "/avatar1.jpg", bio: "Turning strategies into action with energy, coordination, and commitment.", color: "#deb3fa", linkedin: "https://linkedin.com/in/", instagram: "https://instagram.com/sampad.ghosh", github: "https://github.com/" },
 ];
 
 export default function Team() {

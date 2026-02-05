@@ -16,7 +16,7 @@ async function guard() {
 export async function getAdminDashboardStats() {
   await guard();
   const cacheKey = CacheKeys.adminStats();
-  
+
   // Try cache first
   const cached = await getCache<{
     userCount: number;
@@ -28,7 +28,7 @@ export async function getAdminDashboardStats() {
     visitorRevenue: number;
     teamRevenue: number;
   }>(cacheKey, process.env.NODE_ENV === "development");
-  
+
   if (cached) {
     if (process.env.NODE_ENV === "development") {
       console.log(`[CACHE] Admin stats served from cache`);
@@ -47,7 +47,7 @@ export async function getAdminDashboardStats() {
     prisma.participantTeam.aggregate({ where: { status: "verified" }, _sum: { totalAmount: true } }),
   ]);
   const totalRevenue = (visitorRevenue._sum.amount || 0) + (teamRevenue._sum.totalAmount || 0);
-  
+
   const stats = {
     userCount,
     visitorCount,
@@ -61,7 +61,7 @@ export async function getAdminDashboardStats() {
 
   // Cache for 5 minutes (short TTL for real-time feel)
   await setCache(cacheKey, stats, CACHE_TTL.MEDIUM, process.env.NODE_ENV === "development");
-  
+
   if (process.env.NODE_ENV === "development") {
     console.log(`[CACHE] Admin stats cached for ${CACHE_TTL.MEDIUM}s`);
   }
@@ -83,6 +83,7 @@ const userSearchWhere = (q: string) => ({
   OR: [
     { name: { contains: q, mode: "insensitive" as const } },
     { email: { contains: q, mode: "insensitive" as const } },
+    { bookingId: { contains: q, mode: "insensitive" as const } },
   ],
 });
 
@@ -92,7 +93,7 @@ export async function getUserSuggestions(query: string) {
   if (!q || q.length < 2) return [];
   return prisma.user.findMany({
     where: userSearchWhere(q),
-    select: { id: true, name: true, email: true, role: true },
+    select: { id: true, name: true, email: true, bookingId: true, role: true },
     orderBy: { createdAt: "desc" },
     take: 10,
   });
@@ -104,7 +105,7 @@ export async function getUsers(params?: { search?: string; limit?: number; offse
   const [users, total] = await Promise.all([
     prisma.user.findMany({
       where,
-      select: { id: true, name: true, email: true, collegeName: true, mobileNo: true, image: true, role: true, createdAt: true },
+      select: { id: true, name: true, email: true, bookingId: true, collegeName: true, mobileNo: true, image: true, role: true, createdAt: true },
       orderBy: { createdAt: "desc" },
       take: params?.limit ?? 100,
       skip: params?.offset ?? 0,
@@ -234,14 +235,14 @@ export async function deleteOrganizingMember(id: string) {
 export async function getRevenueBreakdown() {
   await guard();
   const cacheKey = CacheKeys.adminRevenue();
-  
+
   // Try cache first
   const cached = await getCache<{
     visitor: { total: number; count: number };
     team: { total: number; count: number };
     grandTotal: number;
   }>(cacheKey);
-  
+
   if (cached) {
     return cached;
   }
@@ -259,7 +260,7 @@ export async function getRevenueBreakdown() {
       where: { status: "verified" },
     }),
   ]);
-  
+
   const revenue = {
     visitor: { total: visitorAgg._sum.amount || 0, count: visitorAgg._count },
     team: { total: teamAgg._sum.totalAmount || 0, count: teamAgg._count },
@@ -350,10 +351,10 @@ export async function getVisitorRegistrations(params?: { limit?: number; offset?
 export async function updateVisitorStatus(id: string, status: "pending" | "verified" | "rejected") {
   await guard();
   await prisma.visitorRegistration.update({ where: { id }, data: { status } });
-  
+
   // Invalidate cache immediately for real-time data
   await invalidateAdminStatsCache();
-  
+
   revalidatePath("/admin/revenue");
   revalidatePath("/admin");
 }
@@ -361,10 +362,10 @@ export async function updateVisitorStatus(id: string, status: "pending" | "verif
 export async function updateParticipantTeamStatus(id: string, status: "pending" | "verified" | "rejected") {
   await guard();
   await prisma.participantTeam.update({ where: { id }, data: { status } });
-  
+
   // Invalidate cache immediately for real-time data
   await invalidateAdminStatsCache();
-  
+
   revalidatePath("/admin/revenue");
   revalidatePath("/admin/teams");
   revalidatePath("/admin");
@@ -556,4 +557,184 @@ export async function deleteCountdownDate(id: string) {
   await prisma.countdownDate.delete({ where: { id } });
   revalidatePath("/admin/countdown");
   revalidatePath("/");
+}
+
+// --- Attendees (All verified people) ---
+// --- Attendees (Grouped) ---
+export type AttendeeItem = {
+  id: string;
+  name: string;
+  email: string | null;
+  role: "Visitor" | "Team Leader";
+  detail: string; // Pass type or Team Name
+  college: string | null;
+  phone: string | null;
+  lastAttendedAt: Date;
+  isDual?: boolean;
+  attendance: {
+    label: string;
+    date: Date;
+    type: "day1" | "day2" | "event";
+  }[];
+  teamMembers?: {
+    id: string;
+    name: string;
+    email: string | null;
+    attendedAt: Date;
+  }[];
+};
+
+export async function getAttendees(params?: { search?: string; limit?: number; offset?: number }) {
+  await guard();
+  const search = params?.search?.trim().toLowerCase();
+
+  // 1. Visitor Passes
+  const passes = await prisma.pass.findMany({
+    where: {
+      OR: [
+        { verifiedAt: { not: null } },
+        { verifiedDay1At: { not: null } },
+        { verifiedDay2At: { not: null } },
+      ],
+      ...(search ? {
+        user: {
+          OR: [
+            { name: { contains: search, mode: "insensitive" } },
+            { email: { contains: search, mode: "insensitive" } },
+          ]
+        }
+      } : {})
+    },
+    include: {
+      user: { select: { name: true, email: true, collegeName: true, mobileNo: true } },
+      visitorRegistration: { select: { college: true, phone: true } }
+    },
+    orderBy: { createdAt: "desc" },
+    take: 1000,
+  });
+
+  // 2. Teams (fetch leaders who attended OR teams where members attended if we want to show them under leader even if leader didn't attend? 
+  // The requirement says "team leader's name... when clicked... team members show up". 
+  // We'll fetch teams where leader attended OR any member attended, to be safe, but usually leader attends.
+  // Let's stick to "Leaders who attended" as primary entry point for now to keep it clean, 
+  // or maybe just fetch all teams that have ANY attendance.
+  // Let's fetch teams where leader attended, and attach members. 
+  // If leader didn't attend, we technically shouldn't show the leader as "Attendee". 
+  // But if members attended, where do they go?
+  // Use case implies "Attendees Section". If a member attended but leader didn't, we should probably list them?
+  // The user said: "keep the team leader's name on the attendee section , when clicked on it , team members details show show up".
+  // This implies the group head is the leader.
+
+  const teams = await prisma.participantTeam.findMany({
+    where: {
+      OR: [
+        { leaderAttendedAt: { not: null } },
+        { members: { some: { attendedAt: { not: null } } } } // Include team if any member attended
+      ],
+      ...(search ? {
+        OR: [
+          { leaderName: { contains: search, mode: "insensitive" } },
+          { leaderEmail: { contains: search, mode: "insensitive" } },
+          { members: { some: { name: { contains: search, mode: "insensitive" } } } }
+        ]
+      } : {})
+    },
+    include: {
+      members: {
+        where: { attendedAt: { not: null } }, // Only verified members
+        select: { id: true, name: true, email: true, attendedAt: true }
+      }
+    },
+    take: 500,
+  });
+
+  const items: AttendeeItem[] = [];
+
+  // Process Passes
+  for (const p of passes) {
+    const user = p.user;
+    const reg = p.visitorRegistration;
+    const attendanceRecords = [];
+
+    if (p.verifiedDay1At) attendanceRecords.push({ label: "Day 1", date: p.verifiedDay1At, type: "day1" as const });
+    if (p.verifiedDay2At) attendanceRecords.push({ label: "Day 2", date: p.verifiedDay2At, type: "day2" as const });
+    if (p.verifiedAt && !p.verifiedDay1At && !p.verifiedDay2At) {
+      attendanceRecords.push({ label: "Verified", date: p.verifiedAt, type: "day1" as const }); // Legacy/Single
+    }
+
+    if (attendanceRecords.length === 0) continue;
+
+    // Sort attendance desc
+    attendanceRecords.sort((a, b) => b.date.getTime() - a.date.getTime());
+    const lastAttended = attendanceRecords[0].date;
+
+    // Check if Dual
+    // The check: "Dual day pass" | "Double Day Pass" etc.
+    // If it has both day 1 and day 2, it's definitely dual in practice.
+    // Or if type says so.
+    const isDual = p.type.toLowerCase().includes("dual") || p.type.toLowerCase().includes("double");
+
+    items.push({
+      id: `pass-${p.id}`,
+      name: user.name,
+      email: user.email,
+      role: "Visitor",
+      detail: p.type,
+      college: reg?.college || user.collegeName,
+      phone: reg?.phone || user.mobileNo,
+      lastAttendedAt: lastAttended,
+      isDual: isDual,
+      attendance: attendanceRecords
+    });
+  }
+
+  // Process Teams
+  for (const t of teams) {
+    const leaderAttended = t.leaderAttendedAt;
+    const memberRecords = t.members.map(m => ({
+      id: m.id,
+      name: m.name,
+      email: m.email,
+      attendedAt: m.attendedAt! // strict because of where clause
+    }));
+
+    // If leader didn't attend but members did, we still show the Team Leader row (as the group header)
+    // effectively saying "Team X (Leader Y)"
+    // But if leader didn't attend, 'lastAttendedAt' might be member's time.
+
+    let lastAttended = leaderAttended;
+    // Find latest member time if leader null or member later
+    for (const m of memberRecords) {
+      if (!lastAttended || m.attendedAt > lastAttended) {
+        lastAttended = m.attendedAt;
+      }
+    }
+
+    if (!lastAttended) continue; // Should not happen given query
+
+    items.push({
+      id: `team-${t.id}`,
+      name: t.leaderName,
+      email: t.leaderEmail,
+      role: "Team Leader",
+      detail: t.teamName,
+      college: t.college,
+      phone: t.leaderPhone,
+      lastAttendedAt: lastAttended,
+      isDual: false,
+      attendance: leaderAttended ? [{ label: "Leader Verified", date: leaderAttended, type: "event" }] : [],
+      teamMembers: memberRecords
+    });
+  }
+
+  // Sort
+  items.sort((a, b) => b.lastAttendedAt.getTime() - a.lastAttendedAt.getTime());
+
+  // Pagination
+  const limit = params?.limit ?? 50;
+  const offset = params?.offset ?? 0;
+  const total = items.length;
+  const sliced = items.slice(offset, offset + limit);
+
+  return { attendees: sliced, total };
 }
