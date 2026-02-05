@@ -75,10 +75,10 @@ export default function AdminVerifyPage() {
       const scanner = new Html5Qrcode("admin-qr-reader");
       scannerRef.current = scanner;
       await scanner.start(
-        { 
+        {
           facingMode: "environment",
         },
-        { 
+        {
           fps: 30, // Increased from 10 to 30 for faster scanning (3x faster frame processing)
           qrbox: { width: 300, height: 300 }, // Increased scanning area from 250x250 for better detection
           aspectRatio: 1.0, // Square aspect ratio for optimized performance
@@ -123,7 +123,7 @@ export default function AdminVerifyPage() {
             }
           })();
         },
-        () => {}
+        () => { }
       );
     })().catch((err: unknown) => {
       setError(err instanceof Error ? err.message : "Could not start camera");
@@ -131,7 +131,7 @@ export default function AdminVerifyPage() {
     });
 
     return () => {
-      scannerRef.current?.stop().catch(() => {});
+      scannerRef.current?.stop().catch(() => { });
       scannerRef.current = null;
     };
   }, [showScanner, fetchBoth]);
@@ -293,7 +293,7 @@ export default function AdminVerifyPage() {
                   </div>
                   <div className="divide-y divide-zinc-800">
                     {passes.map((p) => {
-                      const isDual = p.type === "Dual day pass" || p.type === "Dual Day Pass";
+                      const isDual = p.type === "Dual day pass" || p.type === "Dual Day Pass" || p.type === "Double Day Pass";
                       const isDay2Only = p.type === "Day 2 Pass";
                       const isSingleDay = p.type === "Single day pass" || p.type === "Day 1 Pass";
                       const attended1 = p.verifiedDay1At ?? (isDual ? null : (isSingleDay ? p.verifiedAt : null));

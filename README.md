@@ -296,4 +296,4 @@ This project is proprietary software for Signifiya, SOET, Adamas University.
 
 ---
 
-**Designed & Developed by [ard.dev](https://github.com/arddev) & [subham12r](https://github.com/subham12r)**
+**Designed & Developed by [ard.dev](https://github.com/0day-Ashish) & [subham12r](https://github.com/subham12r)**

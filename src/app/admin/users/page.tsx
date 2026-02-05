@@ -42,6 +42,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams?: 
             <thead>
               <tr className="border-b-2 border-zinc-800 bg-[#deb3fa]">
                 <th className={`px-4 py-3 font-bold text-black ${softura.className}`}>Name</th>
+                <th className={`px-4 py-3 font-bold text-black ${softura.className}`}>Booking ID</th>
                 <th className={`px-4 py-3 font-bold text-black ${softura.className}`}>Email</th>
                 <th className={`px-4 py-3 font-bold text-black ${softura.className}`}>College</th>
                 <th className={`px-4 py-3 font-bold text-black ${softura.className}`}>Mobile</th>
@@ -54,6 +55,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams?: 
               {users.map((u) => (
                 <tr key={u.id} className="border-b border-zinc-800/50 hover:bg-zinc-800/50 transition-colors">
                   <td className={`px-4 py-3 text-white font-medium ${softura.className}`}>{u.name}</td>
+                  <td className={`px-4 py-3 text-zinc-300 font-mono text-xs ${softura.className}`}>{u.bookingId || "—"}</td>
                   <td className={`px-4 py-3 text-zinc-300 ${softura.className}`}>{u.email}</td>
                   <td className={`px-4 py-3 text-zinc-400 ${softura.className}`}>{u.collegeName || "—"}</td>
                   <td className={`px-4 py-3 text-zinc-400 ${softura.className}`}>{u.mobileNo || "—"}</td>

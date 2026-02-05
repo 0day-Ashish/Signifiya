@@ -142,7 +142,7 @@ export default function AssetsPage() {
                 <div className="bg-white p-8 flex items-center justify-center min-h-[200px] sm:min-h-[280px]">
                   <div className="relative w-40 h-40 sm:w-56 sm:h-56">
                     <Image
-                      src="/logo2.png"
+                      src="/logo1.png"
                       alt="Signifiya Logo"
                       fill
                       className="object-contain"
