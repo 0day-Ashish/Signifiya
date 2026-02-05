@@ -223,3 +223,15 @@ model OrganizingMember {
 
   @@map("organizing_member")
 }
+
+// Countdown target date for hero section timer
+model CountdownDate {
+  id        String   @id @default(uuid())
+  targetDate DateTime
+  label     String?  // optional label like "Event Start"
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("countdown_date")
+}

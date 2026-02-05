@@ -497,3 +497,63 @@ export async function markEventTeamMemberAttended(memberId: string) {
   });
   revalidatePath("/admin/verify");
 }
+
+// --- Countdown date management ---
+export async function getCountdownDate() {
+  await guard();
+  return prisma.countdownDate.findFirst({
+    where: { isActive: true },
+    orderBy: { createdAt: "desc" },
+  });
+}
+
+export async function getAllCountdownDates() {
+  await guard();
+  return prisma.countdownDate.findMany({
+    orderBy: { createdAt: "desc" },
+  });
+}
+
+export async function createCountdownDate(data: { targetDate: Date; label?: string }) {
+  await guard();
+  // Deactivate all existing countdown dates
+  await prisma.countdownDate.updateMany({
+    data: { isActive: false },
+  });
+  // Create new active countdown date
+  const countdown = await prisma.countdownDate.create({
+    data: {
+      targetDate: data.targetDate,
+      label: data.label,
+      isActive: true,
+    },
+  });
+  revalidatePath("/admin/countdown");
+  revalidatePath("/");
+  return countdown;
+}
+
+export async function updateCountdownDate(id: string, data: { targetDate?: Date; label?: string; isActive?: boolean }) {
+  await guard();
+  // If setting this one as active, deactivate others
+  if (data.isActive) {
+    await prisma.countdownDate.updateMany({
+      where: { id: { not: id } },
+      data: { isActive: false },
+    });
+  }
+  const countdown = await prisma.countdownDate.update({
+    where: { id },
+    data,
+  });
+  revalidatePath("/admin/countdown");
+  revalidatePath("/");
+  return countdown;
+}
+
+export async function deleteCountdownDate(id: string) {
+  await guard();
+  await prisma.countdownDate.delete({ where: { id } });
+  revalidatePath("/admin/countdown");
+  revalidatePath("/");
+}

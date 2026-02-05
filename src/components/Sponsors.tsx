@@ -24,7 +24,7 @@ export default function Sponsors() {
             <FadeIn>
                 <div className="flex flex-col gap-4 text-center">
                     <h2 className={`text-5xl sm:text-7xl text-black uppercase leading-[0.9] ${gilton.className}`}>
-                        Past <span className="italic">Sponsors</span>
+                        Current <span className="italic">Sponsors</span>
                     </h2>
                     <p className={`text-xl text-gray-600 font-medium max-w-2xl mx-auto ${softura.className}`}>
                         Powered by the best in the industry.
@@ -32,7 +32,7 @@ export default function Sponsors() {
                 </div>
             </FadeIn>
 
-            <FadeIn delay={200}>
+            {/* <FadeIn delay={200}>
                 <div className="w-full relative flex items-center justify-center -mt-18 sm:-mt-58 md:-mt-28 lg:-mt-58 overflow-visible">
                     <Image
                         src="/sponsors.png"
@@ -42,7 +42,7 @@ export default function Sponsors() {
                         className="w-[120%] sm:w-full h-auto object-contain scale-110 sm:scale-100"
                     />
                 </div>
-            </FadeIn>
+            </FadeIn> */}
             
             <div className="flex justify-center mt-4">
                 <Link href="/sponsors">

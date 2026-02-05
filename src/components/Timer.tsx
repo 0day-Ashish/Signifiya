@@ -13,19 +13,34 @@ export default function Timer() {
     minutes: 0,
     seconds: 0,
   });
+  const [targetDate, setTargetDate] = useState<Date | null>(null);
 
+  // Fetch the countdown target date from API
   useEffect(() => {
-    // Set target date to 30 days from now (persisted if possible, but simpler for now just static 30 days from render or fixed future date)
-    // To make it consistent across reloads, we should pick a fixed future date.
-    // Let's set it to roughly 30 days from now: March 1st 2026? Today is Jan 16 2026.
-    // 30 days from Jan 16 is Feb 15.
-    
-    const targetDate = new Date();
-    targetDate.setDate(targetDate.getDate() + 30); 
+    const fetchTargetDate = async () => {
+      try {
+        const res = await fetch("/api/countdown");
+        const data = await res.json();
+        if (data.targetDate) {
+          setTargetDate(new Date(data.targetDate));
+        }
+      } catch (error) {
+        // Fallback to 30 days from now if API fails
+        const fallback = new Date();
+        fallback.setDate(fallback.getDate() + 30);
+        setTargetDate(fallback);
+      }
+    };
+    fetchTargetDate();
+  }, []);
+
+  // Calculate and update the countdown
+  useEffect(() => {
+    if (!targetDate) return;
 
     const calculateTimeLeft = () => {
       const difference = +targetDate - +new Date();
-      
+
       if (difference > 0) {
         setTimeLeft({
           days: Math.floor(difference / (1000 * 60 * 60 * 24)),
@@ -33,6 +48,8 @@ export default function Timer() {
           minutes: Math.floor((difference / 1000 / 60) % 60),
           seconds: Math.floor((difference / 1000) % 60),
         });
+      } else {
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
       }
     };
 
@@ -40,7 +57,7 @@ export default function Timer() {
     const timer = setInterval(calculateTimeLeft, 1000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [targetDate]);
 
   return (
     <div className={`flex flex-col items-center gap-2 ${bartle.className}`}>
