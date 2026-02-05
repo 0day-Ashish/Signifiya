@@ -27,6 +27,7 @@ const SOCIAL_ICONS = [
 
 const TEAM_MEMBERS = [
   { id: 8, name: "Hrishav Dey", role: "Event Advisor", image: "/avatar4.jpg", bio: "The force that turns bold ideas into flawlessly executed reality.", color: "#96CEB4", linkedin: "https://linkedin.com/in/hrishav-dey-2b2990291/", instagram: "https://instagram.com/hrishav.dey", github: "https://github.com/" },
+  { id: 9, name: "Sudipto Barman", role: "DevOps", image: "/avatar1.jpg", bio: "Turning strategies into action with energy, coordination, and commitment.", color: "#D4A5A5", linkedin: "https://linkedin.com/in/", instagram: "https://instagram.com/sudipto.barman", github: "https://github.com/" },
   { id: 10, name: "Digant Mishra", role: "On-Ground Coordinator", image: "/diggufinal.jpeg", bio: "The go-to problem solver who keeps the action running seamlessly on the ground.", color: "#9B59B6", linkedin: "https://linkedin.com/in/digant-mishra-2b2990291/", instagram: "https://instagram.com/digant.mishra", github: "https://github.com/" },
   { id: 11, name: "Arijit De", role: "Financial & Sponsorship Lead", image: "/arijit.jpeg", bio: "Driving partnerships and managing resources to power the fest’s biggest ambitions.", color: "#3498DB", linkedin: "https://linkedin.com/in/arijit-de-ba1594358", instagram: "https://instagram.com/arijit_.04", github: "https://github.com/" },
   { id: 12, name: "Snehasish Mondal", role: "Operations Lead", image: "/snehasish.jpeg", bio: "The backbone of smooth workflows, ensuring every detail runs right on time.", color: "#E67E22", linkedin: "https://linkedin.com/in/snehasish-mondal-2b2990291/", instagram: "https://instagram.com/snehasish.mondal", github: "https://github.com/" },
@@ -42,7 +43,7 @@ const TEAM_MEMBERS = [
   { id: 19, name: "Ashish Yadav", role: "Blockchain Dev", image: "/avatar3.jpg", bio: "Building decentralized solutions that add a future-ready edge to the fest.", color: "#8E44AD" },
   { id: 21, name: "Keshav Maheshwari", role: "Execution Cell", image: "/avatar1.jpg", bio: "The hands-on executor ensuring plans come alive with precision and speed.", color: "#deb3fa", linkedin: "https://linkedin.com/in/", instagram: "https://instagram.com/keshav.maheshwari", github: "https://github.com/" },
   { id: 22, name: "Sampad Ghosh ", role: "Execution Cell", image: "/avatar1.jpg", bio: "Turning strategies into action with energy, coordination, and commitment.", color: "#deb3fa", linkedin: "https://linkedin.com/in/", instagram: "https://instagram.com/sampad.ghosh", github: "https://github.com/" },
-  { id: 9, name: "Sudipto Barman", role: "DevOps", image: "/avatar1.jpg", bio: "Turning strategies into action with energy, coordination, and commitment.", color: "#D4A5A5", linkedin: "https://linkedin.com/in/", instagram: "https://instagram.com/sudipto.barman", github: "https://github.com/" }
+  { id: 23, name: "Arnab Mondal", role: "Social Media Head", image: "/avatar1.jpg", bio: "Turning strategies into action with energy, coordination, and commitment.", color: "#deb3fa", linkedin: "https://linkedin.com/in/", instagram: "https://instagram.com/sampad.ghosh", github: "https://github.com/" },
 ];
 
 export default function Team() {
