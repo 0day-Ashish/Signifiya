@@ -82,13 +82,7 @@ export default function Prizes() {
             <div className="absolute top-10 left-10 w-12 h-12 border-4 border-black rounded-full bg-[#FCD34D] hidden sm:block animate-bounce" style={{ animationDuration: '3s' }}></div>
             
             {/* New Lottie Animation - Right Side */}
-            <div className="absolute -right-10 bottom-0 w-[300px] h-[300px] pointer-events-none z-10 hidden sm:block">
-                 <DotLottieReact
-                   src="https://lottie.host/63950b54-c863-4651-b3d0-cf9b30cb54d3/foQ5NaHbZg.lottie"
-                   loop
-                   autoplay
-                 />
-            </div>
+            
         </div>
     </section>
   );

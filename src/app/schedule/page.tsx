@@ -19,21 +19,19 @@ const bicubik = localFont({ src: "../../../public/fonts/Bicubik.otf" });
 // Fallback data derived from the same shared source
 const fallbackEventsData = getScheduleData();
 
-// EventCard component
+// EventCard component (Commented out for now)
+/*
 const EventCard = ({ event, index }: { event: any; index: number }) => {
   const isTextLeft = index % 2 === 0;
 
   return (
     <div
       id={`event-${event.id}`}
-      className={`flex flex-col ${
-        isTextLeft ? "lg:flex-row" : "lg:flex-row-reverse"
-      } justify-between items-center w-full gap-8 lg:gap-16 py-12 lg:py-16 scroll-mt-24`}
+      className={`flex flex-col ${isTextLeft ? "lg:flex-row" : "lg:flex-row-reverse"
+        } justify-between items-center w-full gap-8 lg:gap-16 py-12 lg:py-16 scroll-mt-24`}
     >
-      {/* Content Section */}
       <div className="flex flex-col w-full lg:w-1/2 max-w-2xl">
         <div className="flex items-center gap-3 mb-4">
-          {/* Blocky Badge */}
           <span
             className={`px-4 py-1.5 text-sm font-bold uppercase tracking-wider text-black border-2 border-black bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-lg`}
           >
@@ -51,7 +49,6 @@ const EventCard = ({ event, index }: { event: any; index: number }) => {
           {event.description}
         </p>
 
-        {/* Metadata Badges (Blocky Style) */}
         <div className="flex flex-wrap gap-4 mt-8 font-mono text-sm">
           <div
             className={`flex items-center px-4 py-3 border-2 border-black rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] ${event.color}`}
@@ -65,7 +62,6 @@ const EventCard = ({ event, index }: { event: any; index: number }) => {
           </div>
         </div>
 
-        {/* Coordinators Section */}
         <div className="mt-8 pt-6 border-t-2 border-dashed border-zinc-300">
           <div className="flex flex-col sm:flex-row gap-6 sm:gap-8">
             <div className="flex-1">
@@ -84,17 +80,13 @@ const EventCard = ({ event, index }: { event: any; index: number }) => {
         </div>
       </div>
 
-      {/* Visual/Image Section */}
       <div className="relative w-full lg:w-1/2 flex justify-center items-center min-h-[400px]">
         <div className="relative w-[300px] h-[300px] lg:w-[400px] lg:h-[400px]">
-          {/* Back Image (Solid Block Color) */}
           <div
             className={`absolute inset-0 ${event.color} border-3 border-black transform rotate-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] z-10 rounded-2xl`}
           >
-            {/* Decorative pattern or just solid color */}
           </div>
 
-          {/* Main Image Container */}
           <div className="absolute inset-0 bg-white p-2 border-3 border-black transform -rotate-3 hover:rotate-0 transition-transform duration-300 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] z-20 rounded-2xl overflow-hidden">
             <div className="relative w-full h-full border border-black rounded-xl overflow-hidden">
               <Image
@@ -106,12 +98,10 @@ const EventCard = ({ event, index }: { event: any; index: number }) => {
             </div>
           </div>
 
-          {/* Floating Sticker/Lottie */}
           <div className="absolute -bottom-10 -left-10 z-30 w-32 h-32 lg:w-48 lg:h-48 pointer-events-none drop-shadow-2xl">
             <DotLottieReact src={event.lottie} loop autoplay />
           </div>
 
-          {/* Decorative Element (Star/Circle) */}
           <div className="absolute -top-6 -right-6 z-30 bg-black text-white w-14 h-14 flex items-center justify-center rounded-full font-bold text-2xl border-2 border-white shadow-lg">
             ✦
           </div>
@@ -120,6 +110,7 @@ const EventCard = ({ event, index }: { event: any; index: number }) => {
     </div>
   );
 };
+*/
 
 // --- 3. MAIN PAGE COMPONENT ---
 export default function Schedule() {
@@ -212,7 +203,7 @@ export default function Schedule() {
         setShowProfileMenu={setShowProfileMenu}
         hideLogo={false}
       />
-      
+
       {/* Return Home Link - Fixed below logo */}
       {/* <div className="fixed top-38 lg:top-34 sm:top-30 left-10 z-50">
         <Link
@@ -222,7 +213,7 @@ export default function Schedule() {
           ← RETURN HOME
         </Link>
       </div> */}
-      
+
       {/* Hero Section - Preserved Layout, Updated "Container" Style */}
       <div className="bg-gradient-to-b from-purple-950 via-purple-600 to-purple-100 min-h-[85vh] p-6 w-full rounded-[2rem] flex flex-col justify-center items-center relative overflow-hidden mb-8">
         <div className="z-10 flex flex-col items-center">
@@ -245,19 +236,30 @@ export default function Schedule() {
         </div>
       </div>
 
-      {/* Days Loop */}
+      {/* Placeholder Text */}
+      <div className="bg-[#fff1f2] min-h-[50vh] mb-8 rounded-[2rem] p-6 lg:p-12 flex items-center justify-center border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+        <div className="text-center">
+          <h2 className={`text-4xl lg:text-6xl font-black uppercase text-black mb-4 ${bicubik.className}`}>
+            Declaring Soon
+          </h2>
+          <p className={`text-xl lg:text-2xl text-black font-bold tracking-widest uppercase ${softura.className}`}>
+            Stay Tuned!
+          </p>
+        </div>
+      </div>
+
+      {/* Days Loop (Commented out for now) */}
+      {/* 
       {isLoading ? (
         <div className="bg-[#fff1f2] min-h-screen mb-8 rounded-[2rem] p-6 lg:p-12 flex items-center justify-center">
           <p className="text-black text-xl">Loading schedule...</p>
         </div>
       ) : (
         eventsData.map((dayData, dayIndex) => (
-        // The White "Block" Container
         <div
           key={dayIndex}
           className="bg-[#fff1f2] min-h-screen mb-8 rounded-[2rem] p-6 lg:p-12 relative overflow-visible"
         >
-          {/* Day Header - Absolute Positioned as requested */}
           <div className="w-full h-full relative mb-24">
             <div className="absolute top-0 lg:top-0 right-0 flex flex-col items-end">
               <h1 className="text-sm lg:text-lg text-black font-mono font-bold tracking-widest bg-yellow-300 px-3 py-1 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-lg mb-2 transform rotate-2">
@@ -272,7 +274,6 @@ export default function Schedule() {
             </div>
           </div>
 
-          {/* Events Grid */}
           <div className="flex flex-col gap-12 mt-32 lg:mt-40">
             {dayData.items.map((event, index) => (
               <EventCard key={event.id} event={event} index={index} />
@@ -280,7 +281,8 @@ export default function Schedule() {
           </div>
         </div>
       ))
-      )}
+      )} 
+      */}
 
       <Footer />
 

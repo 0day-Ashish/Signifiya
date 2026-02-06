@@ -7,7 +7,7 @@ export default function Infobar() {
       <Link href="/events" className="underline  cursor-pointer">
         REGISTRATIONS
       </Link>
-      . LIVE NOW.
+      . STARTING SOON.
     </span>
   );
 

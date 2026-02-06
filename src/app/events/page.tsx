@@ -213,7 +213,7 @@ export default function EventRegistration() {
     const vals = watch();
     const eventId = vals.selectedEvents?.[0];
     const ev = eventsList.find((e) => e.id === eventId);
-    
+
     try {
       // Create Razorpay order
       const orderRes = await createEventRazorpayOrder({
@@ -381,8 +381,20 @@ export default function EventRegistration() {
           </div>
 
           <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
+            {/* Main content placeholder */}
+            <div className="flex-1 flex flex-col items-center justify-center p-8">
+              <div className="text-center">
+                <h2 className="text-4xl lg:text-6xl font-black uppercase text-black mb-4">
+                  Starting Soon
+                </h2>
+                <p className="text-xl lg:text-2xl text-black font-bold tracking-widest uppercase">
+                  Stay Tuned!
+                </p>
+              </div>
+            </div>
+
+            {/* Commented out for future launch
             <AnimatePresence mode="wait">
-              {/* --- STEP 1: LEADER INFO --- */}
               {step === 1 && (
                 <motion.div
                   key="step1"
@@ -514,7 +526,6 @@ export default function EventRegistration() {
                 </motion.div>
               )}
 
-              {/* --- STEP 2: EVENT SELECTION --- */}
               {step === 2 && (
                 <motion.div
                   key="step2"
@@ -580,7 +591,6 @@ export default function EventRegistration() {
                     >
                       BACK
                     </Button>
-                    {/* UPDATED: Manual Submission */}
                     <Button
                       onClick={onSubmitStep2}
                       className="flex-2 bg-black text-white font-bold py-6 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_#eab308] hover:shadow-[2px_2px_0px_0px_#eab308] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
@@ -591,7 +601,6 @@ export default function EventRegistration() {
                 </motion.div>
               )}
 
-              {/* --- STEP 3 & 4 remain mostly the same, ensuring buttons use onClick={onSubmitStepX} --- */}
               {step === 3 && (
                 <motion.div
                   key="step3"
@@ -600,7 +609,6 @@ export default function EventRegistration() {
                   exit={{ x: -20, opacity: 0 }}
                   className="space-y-6"
                 >
-                  {/* ... (UI matches Step 3 provided previously) ... */}
                   <div className="bg-blue-100 border-2 border-black p-3 rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
                     <p className="font-bold text-xs uppercase">
                       Step 3/4: Add Team Members
@@ -716,7 +724,6 @@ export default function EventRegistration() {
                       EXP: {formatTime(timeLeft)}
                     </p>
                   </div>
-                  {/* Receipt Summary */}
                   <div className="bg-white border-2 border-black p-4 rounded-xl font-mono text-sm relative">
                     <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-black rounded-full"></div>
                     <h3 className="text-center font-bold border-b-2 border-dashed border-black pb-2 mb-2">
@@ -799,11 +806,12 @@ export default function EventRegistration() {
                     onClick={() => (window.location.href = "/")}
                     className="mt-4 bg-black text-white font-bold px-8 py-4 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] hover:shadow-none hover:translate-y-1 transition-all"
                   >
-                    BACK TO HOME
+                    RETURN TO HOME
                   </Button>
                 </motion.div>
               )}
             </AnimatePresence>
+            */}
           </div>
         </div>
 

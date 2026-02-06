@@ -264,8 +264,21 @@ export default function Register() {
             </div>
           </div>
 
+          {/* Placeholder Text */}
+          <div className="flex-1 flex flex-col items-center justify-center p-8 ">
+            <div className="text-center">
+              <h2 className="text-4xl lg:text-6xl font-black uppercase text-black mb-4">
+                Starting Soon
+              </h2>
+              <p className="text-xl lg:text-2xl text-black font-bold tracking-widest uppercase">
+                Stay Tuned!
+              </p>
+            </div>
+          </div>
+
+          {/* Commented out form for future launch
           <AnimatePresence mode="wait">
-            {/* --- STEP 1: DETAILS --- */}
+            
             {step === 1 && (
               <motion.div
                 key="step1"
@@ -457,7 +470,7 @@ export default function Register() {
               </motion.div>
             )}
 
-            {/* --- STEP 2: PAYMENT --- */}
+            
             {step === 2 && (
               <motion.div
                 key="step2"
@@ -503,7 +516,7 @@ export default function Register() {
               </motion.div>
             )}
 
-            {/* --- STEP 3: SUCCESS --- */}
+            
             {step === 3 && (
               <motion.div
                 key="step3"
@@ -561,6 +574,7 @@ export default function Register() {
               </motion.div>
             )}
           </AnimatePresence>
+          */}
         </div>
 
         {/* --- RIGHT SIDE: VISUAL --- */}
