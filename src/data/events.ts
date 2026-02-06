@@ -183,7 +183,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     category: "CIVIL",
     department: "Civil",
     description:
-      "Electrifying performances by the best college bands from across the region.",
+      "Design. Build. Sustain. Use your engineering skills to craft a bridge that can withstand the heaviest loads using limited resources.",
     scheduleDescription:
       "Bridge the gap between theory and reality. Build a truss bridge that can withstand maximum load.",
     date: "March 13th - 14th",

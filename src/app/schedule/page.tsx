@@ -218,7 +218,7 @@ export default function Schedule() {
       <div className="bg-gradient-to-b from-purple-950 via-purple-600 to-purple-100 min-h-[85vh] p-6 w-full rounded-[2rem] flex flex-col justify-center items-center relative overflow-hidden mb-8">
         <div className="z-10 flex flex-col items-center">
           <h1 className={`text-[18vw] lg:text-[12vw] tracking-wider text-white leading-none text-center select-none ${gilton.className}`}>
-            Events
+            Schedule
           </h1>
           <div className="mt-4 lg:mt-0 lg:absolute lg:bottom-10 lg:right-10">
             <span className={`tracking-wider text-white font-black text-3xl lg:text-4xl text-shadow-lg ${bicubik.className}`}>

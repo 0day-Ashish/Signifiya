@@ -7,13 +7,14 @@ import { useRouter, usePathname } from "next/navigation";
 import { useAudio } from "@/components/AudioProvider";
 import Image from "next/image";
 import localFont from "next/font/local";
+import { toast } from "sonner";
 
 const softura = localFont({ src: "../../public/fonts/Softura-Demo.otf" });
 
-export default function Navbar({ 
-  showNavLinks, 
-  session, 
-  showProfileMenu, 
+export default function Navbar({
+  showNavLinks,
+  session,
+  showProfileMenu,
   setShowProfileMenu,
   hideLogo = false
 }: any) {
@@ -86,22 +87,22 @@ export default function Navbar({
         </button>
       )}
 
-    <div className="fixed top-16 sm:top-16 right-8 sm:right-8 flex flex-col items-end gap-2 sm:gap-4 z-50">
+      <div className="fixed top-16 sm:top-16 right-8 sm:right-8 flex flex-col items-end gap-2 sm:gap-4 z-50">
 
-      <div className="flex items-start gap-2 sm:gap-4">
-         {/* Navigation Menu Container */}
-         <div className="relative group/nav z-50">
-           {/* 3D Circle Toggle Button */}
-           <button 
-             onClick={() => {
-               if (isDesktop) {
-                 setDesktopNavPinned((p) => !p);
-               } else {
-                 setMobileMenuOpen(!mobileMenuOpen);
-               }
-             }}
-             className="relative w-9 h-9 sm:w-12 sm:h-12 bg-white text-black rounded-full border-2 border-black flex items-center justify-center transition-transform duration-300 hover:scale-105 active:scale-95 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] z-20"
-           >
+        <div className="flex items-start gap-2 sm:gap-4">
+          {/* Navigation Menu Container */}
+          <div className="relative group/nav z-50">
+            {/* 3D Circle Toggle Button */}
+            <button
+              onClick={() => {
+                if (isDesktop) {
+                  setDesktopNavPinned((p) => !p);
+                } else {
+                  setMobileMenuOpen(!mobileMenuOpen);
+                }
+              }}
+              className="relative w-9 h-9 sm:w-12 sm:h-12 bg-white text-black rounded-full border-2 border-black flex items-center justify-center transition-transform duration-300 hover:scale-105 active:scale-95 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] z-20"
+            >
               <div className="relative w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center">
                 {/* Plus Icon */}
                 <span className={`absolute inset-0 flex items-center justify-center transition-transform duration-300 ease-in-out lg:group-hover/nav:rotate-90 lg:group-hover/nav:opacity-0 ${isMenuVisible ? 'rotate-90 opacity-0' : 'rotate-0 opacity-100'}`}>
@@ -117,10 +118,10 @@ export default function Navbar({
                   </svg>
                 </span>
               </div>
-           </button>
+            </button>
 
-           {/* Menu - Vertical on Mobile/Tablet, Horizontal on Desktop (lg and above) */}
-           <div className={`absolute top-full lg:top-0 right-0 lg:right-full mt-2 lg:mt-0 lg:pr-4 flex flex-col lg:flex-row items-stretch lg:items-center gap-2 lg:gap-3 transition-all duration-300 ease-out lg:group-hover/nav:opacity-100 lg:group-hover/nav:translate-y-0 lg:group-hover/nav:visible ${isMenuVisible ? 'opacity-100 translate-y-0 visible' : 'opacity-0 -translate-y-4 lg:-translate-y-4 invisible'}`}>
+            {/* Menu - Vertical on Mobile/Tablet, Horizontal on Desktop (lg and above) */}
+            <div className={`absolute top-full lg:top-0 right-0 lg:right-full mt-2 lg:mt-0 lg:pr-4 flex flex-col lg:flex-row items-stretch lg:items-center gap-2 lg:gap-3 transition-all duration-300 ease-out lg:group-hover/nav:opacity-100 lg:group-hover/nav:translate-y-0 lg:group-hover/nav:visible ${isMenuVisible ? 'opacity-100 translate-y-0 visible' : 'opacity-0 -translate-y-4 lg:-translate-y-4 invisible'}`}>
               {[
                 { name: 'Gallery', href: '/gallery' },
                 { name: 'Merchandise', href: '/merch' },
@@ -128,8 +129,8 @@ export default function Navbar({
                 { name: 'Events', href: '/#events' },
                 { name: 'FAQ', href: '/#faq' }
               ].map((item, index) => (
-                <Link 
-                  key={item.name} 
+                <Link
+                  key={item.name}
                   href={item.href}
                   onClick={() => {
                     if (!isDesktop) {
@@ -144,10 +145,13 @@ export default function Navbar({
                   {item.name}
                 </Link>
               ))}
-           </div>
-         </div>
+            </div>
+          </div>
 
-         <button className="group relative bg-black px-4 py-2 sm:px-8 sm:py-3 rounded-full border-2 border-transparent hover:border-black hover:bg-[#deb3fa] hover:scale-105 transition-all duration-300 overflow-hidden">
+          <button
+            onClick={() => toast.info("Coming soon! 🚀")}
+            className="group relative bg-black px-4 py-2 sm:px-8 sm:py-3 rounded-full border-2 border-transparent hover:border-black hover:bg-[#deb3fa] hover:scale-105 transition-all duration-300 overflow-hidden"
+          >
             <div className="relative h-4 sm:h-5 overflow-hidden flex flex-col justify-center items-center">
               <span className={`block text-white uppercase font-extrabold text-xs sm:text-base transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:-translate-y-full ${softura.className}`}>
                 Launch App
@@ -156,81 +160,81 @@ export default function Navbar({
                 Launch App
               </span>
             </div>
-         </button>
-      </div>
+          </button>
+        </div>
 
         {/* Music Control & Profile Container */}
         <div className="flex items-center gap-2 sm:gap-4">
-             {session && (
-                <div className="relative">
-                    <button
-                        onClick={() => setShowProfileMenu(!showProfileMenu)}
-                      className="w-9 h-9 sm:w-12 sm:h-12 z-60 rounded-full border-2 border-black bg-white overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 relative cursor-pointer"
-                    >
-                        {session.user?.image ? (
-                            <Image 
-                                src={session.user.image} 
-                                alt="Profile" 
-                                fill 
-                                className="object-cover"
-                            />
-                        ) : (
-                            <div className="w-full h-full bg-[#deb3fa] flex items-center justify-center font-bold text-base sm:text-xl text-black">
-                                {session.user?.name?.charAt(0).toUpperCase() || "U"}
-                            </div>
-                        )}
-                    </button>
+          {session && (
+            <div className="relative">
+              <button
+                onClick={() => setShowProfileMenu(!showProfileMenu)}
+                className="w-9 h-9 sm:w-12 sm:h-12 z-60 rounded-full border-2 border-black bg-white overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 relative cursor-pointer"
+              >
+                {session.user?.image ? (
+                  <Image
+                    src={session.user.image}
+                    alt="Profile"
+                    fill
+                    className="object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-[#deb3fa] flex items-center justify-center font-bold text-base sm:text-xl text-black">
+                    {session.user?.name?.charAt(0).toUpperCase() || "U"}
+                  </div>
+                )}
+              </button>
 
-                    {showProfileMenu && (
-                      <div className="absolute top-full right-0 mt-2 sm:mt-4 bg-white border-4 border-black rounded-2xl p-3 sm:p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] w-56 sm:w-64 flex flex-col gap-2 z-60">
-                           <div className="text-center border-b-2 border-black pb-2 mb-2">
-                              <p className="font-bold text-sm sm:text-base text-black truncate">{session.user?.name}</p>
-                              <p className="text-xs text-gray-600 truncate">{session.user?.email}</p>
-                           </div>
-                           
-                           <Link href="/profile" className="w-full bg-[#deb3fa] text-black font-bold py-1.5 sm:py-2 rounded-lg border-2 border-black hover:bg-[#d091f8] transition-colors text-xs sm:text-sm uppercase text-center">
-                              Your Profile
-                           </Link>
-                           
-                           <button 
-                              onClick={async () => {
-                                  await authClient.signOut();
-                                  setShowProfileMenu(false);
-                                  router.push("/");
-                                  window.location.reload();
-                              }}
-                              className="w-full bg-gray-200 text-black font-bold py-1.5 sm:py-2 rounded-lg border-2 border-black hover:bg-gray-300 transition-colors text-xs sm:text-sm uppercase mt-2"
-                           >
-                              Sign Out
-                           </button>
-                           <p className="hidden sm:block text-[10px] text-zinc-500 text-center mt-1 pt-2 border-t border-zinc-200">
-                              Press esc to close
-                           </p>
-                      </div>
-                  )}
-              </div>
+              {showProfileMenu && (
+                <div className="absolute top-full right-0 mt-2 sm:mt-4 bg-white border-4 border-black rounded-2xl p-3 sm:p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] w-56 sm:w-64 flex flex-col gap-2 z-60">
+                  <div className="text-center border-b-2 border-black pb-2 mb-2">
+                    <p className="font-bold text-sm sm:text-base text-black truncate">{session.user?.name}</p>
+                    <p className="text-xs text-gray-600 truncate">{session.user?.email}</p>
+                  </div>
+
+                  <Link href="/profile" className="w-full bg-[#deb3fa] text-black font-bold py-1.5 sm:py-2 rounded-lg border-2 border-black hover:bg-[#d091f8] transition-colors text-xs sm:text-sm uppercase text-center">
+                    Your Profile
+                  </Link>
+
+                  <button
+                    onClick={async () => {
+                      await authClient.signOut();
+                      setShowProfileMenu(false);
+                      router.push("/");
+                      window.location.reload();
+                    }}
+                    className="w-full bg-gray-200 text-black font-bold py-1.5 sm:py-2 rounded-lg border-2 border-black hover:bg-gray-300 transition-colors text-xs sm:text-sm uppercase mt-2"
+                  >
+                    Sign Out
+                  </button>
+                  <p className="hidden sm:block text-[10px] text-zinc-500 text-center mt-1 pt-2 border-t border-zinc-200">
+                    Press esc to close
+                  </p>
+                </div>
+              )}
+            </div>
           )}
 
           {/* Music Control Button */}
           {audioInitialized && (
-          <button 
+            <button
               onClick={toggleMusic}
               className="w-9 h-9 sm:w-12 sm:h-12 bg-white text-black rounded-full border-2 border-black flex items-center justify-center transition-transform duration-300 hover:scale-105 active:scale-95 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]"
-          >
+            >
               {musicPlaying ? (
-              <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor" stroke="none">
                   <rect x="6" y="4" width="4" height="16" rx="1" />
                   <rect x="14" y="4" width="4" height="16" rx="1" />
-              </svg>
+                </svg>
               ) : (
-              <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor" stroke="none">
                   <path d="M5 3.868v16.264a1 1 0 001.574.832l12.198-8.132a1 1 0 000-1.664L6.574 3.036A1 1 0 005 3.868z" />
-              </svg>
+                </svg>
               )}
-          </button>
+            </button>
           )}
+        </div>
       </div>
-      </div>
-          </div>  
+    </div>
   );
 }
