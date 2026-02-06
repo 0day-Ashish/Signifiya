@@ -59,7 +59,7 @@ export const ALL_EVENTS: MasterEvent[] = [
       "An exhilarating coding competition where participants showcase their programming skills, problem-solving abilities, and creativity.",
     date: "March 13th - 14th",
     image: "/cse2.jpg",
-    prizePool: "\u20B925,000",
+    prizePool: "TBA",      
     day: 1,
     time: "10:00 AM - 1:00 PM",
     venue: "Computer Lab A",

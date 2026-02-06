@@ -65,8 +65,8 @@ export default function Timer() {
         {[
           { label: "DAYS", value: timeLeft.days },
           { label: "HOURS", value: timeLeft.hours },
-          { label: "MINUTES", value: timeLeft.minutes },
-          { label: "SECONDS", value: timeLeft.seconds },
+          { label: "MINS", value: timeLeft.minutes },
+          { label: "SEC", value: timeLeft.seconds },
         ].map((item, index) => (
           <div key={index} className="flex flex-col items-center">
             <span className="text-xl sm:text-4xl md:text-5xl font-bold text-white leading-none drop-shadow-[4px_4px_0px_rgba(0,0,0,1)]">
