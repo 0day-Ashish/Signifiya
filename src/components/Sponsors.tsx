@@ -43,6 +43,13 @@ export default function Sponsors() {
                     />
                 </div>
             </FadeIn> */}
+              <div className="flex items-center justify-center">
+                  <h1>
+                      <span className="text-3xl sm:text-3xl font-medium">
+                            To be announced soon!
+                      </span>
+                  </h1>
+            </div>
             
             <div className="flex justify-center mt-4">
                 <Link href="/sponsors">
