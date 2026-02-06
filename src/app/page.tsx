@@ -380,7 +380,7 @@ export default function Home() {
           </div>
 
           {/* Lottie Animation at Bottom of Hero */}
-          <div className="absolute bottom-0 lg:bottom-[-30px] xl:bottom-[-40px] w-full flex flex-col items-center justify-center z-0 pointer-events-none">
+          <div className="relative mt-8 sm:mt-0 sm:absolute sm:bottom-0 lg:bottom-[-30px] xl:bottom-[-40px] w-full flex flex-col items-center justify-center z-0 pointer-events-none">
             <p className={`text-black/60 text-[10px] sm:text-xs md:text-sm font-bold tracking-widest uppercase text-center max-w-lg mb-[-10px] sm:mb-[-50px] ${softura.className}`}>
               SOET&apos;s awaited fest is back with even more fun n exciting plans ! Glide down to explore our fest
             </p>
