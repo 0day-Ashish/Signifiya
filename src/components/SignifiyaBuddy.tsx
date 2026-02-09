@@ -70,9 +70,30 @@ export default function SignifiyaBuddy() {
         </FadeIn>
 
         <FadeIn delay={200}>
-          <p className={`text-xl sm:text-2xl text-gray-800 font-medium max-w-2xl mx-auto uppercase tracking-wider ${softura.className} relative z-10`}>
-            Coming Soon...
-          </p>
+          <div className="relative z-10 flex flex-col items-center gap-6 mt-8">
+            {/* First Prize - Top of Triangle */}
+            <div className="flex justify-center">
+              <div className="bg-white rounded-2xl border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-8 w-48 h-48 flex flex-col items-center justify-center gap-3">
+                <div className={`text-6xl font-bold text-black ${bartle.className}`}>?</div>
+                <div className={`text-sm font-bold text-black uppercase ${softura.className}`}>1st Prize</div>
+              </div>
+            </div>
+
+            {/* Second and Third Prizes - Bottom Row */}
+            <div className="flex flex-row gap-6 justify-center">
+              {/* Second Prize */}
+              <div className="bg-white rounded-2xl border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-6 w-40 h-40 flex flex-col items-center justify-center gap-2">
+                <div className={`text-5xl font-bold text-black ${bartle.className}`}>?</div>
+                <div className={`text-xs font-bold text-black uppercase ${softura.className}`}>2nd Prize</div>
+              </div>
+
+              {/* Third Prize */}
+              <div className="bg-white rounded-2xl border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-6 w-40 h-40 flex flex-col items-center justify-center gap-2">
+                <div className={`text-5xl font-bold text-black ${bartle.className}`}>?</div>
+                <div className={`text-xs font-bold text-black uppercase ${softura.className}`}>3rd Prize</div>
+              </div>
+            </div>
+          </div>
         </FadeIn>
 
         {/* Decorative Elements */}

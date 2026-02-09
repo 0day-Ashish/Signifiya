@@ -3,12 +3,10 @@
 import { useState, useRef, useEffect } from "react";
 import localFont from "next/font/local";
 import Image from "next/image";
-import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
-import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { useAudio } from "@/components/AudioProvider";
-import { motion, useScroll, useSpring, useTransform, useMotionValue, useVelocity, useAnimationFrame } from "motion/react";
+import { motion, useTransform, useMotionValue, useVelocity, useAnimationFrame } from "motion/react";
 
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
@@ -20,7 +18,6 @@ const CONTACT_MEMBERS = APP_CONFIG.contact.members;
 
 const rampart = localFont({ src: "../../../public/fonts/RampartOne-Regular.ttf" });
 const gilton = localFont({ src: "../../../public/fonts/GiltonRegular.otf" });
-const bicubik = localFont({ src: "../../../public/fonts/Bicubik.otf" });
 const softura = localFont({ src: "../../../public/fonts/Softura-Demo.otf" });
 
 interface ContactMember {
