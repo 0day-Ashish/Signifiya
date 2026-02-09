@@ -223,7 +223,7 @@ export default function Footer() {
                     { label: "EVENTS", href: "/schedule" },
                     { label: "CONTACT", href: "/contact" },
                     { label: "FAQ", href: "#faq" },
-                    { label: "RULES & REGULATIONS", href: "#" }
+                    { label: "RULES & REGULATIONS", href: "/terms" }
                   ].map((item) => (
                     <Link
                       key={item.label}
@@ -242,7 +242,7 @@ export default function Footer() {
                 <div className="flex flex-col gap-2 min-w-[200px] order-1 sm:order-2">
                   {[
                     { label: "ASSETS", href: "/assets" },
-                    { label: "TERMS OF SERVICE", href: "#" }
+                    { label: "TERMS OF SERVICE", href: "/terms" }
                   ].map((item) => (
                     <Link
                       key={item.label}
