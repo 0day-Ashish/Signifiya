@@ -26,26 +26,28 @@ const SOCIAL_ICONS = [
 ];
 
 const TEAM_MEMBERS = [
-  { id: 27, name: "Mr. Nisarga Chand", role: "Faculty Lead", image: "/avatar4.jpg", bio: "Assistant Professor, ECE, SOET", color: "#96CEB4", linkedin: "https://linkedin.com/in/hrishav-dey-2b2990291/", instagram: "https://instagram.com/hrishav.dey", github: "https://github.com/" },
-  { id: 26, name: "Ms. Soodipa Chakraborty ", role: "Faculty Lead", image: "/avatar2.jpg", bio: "Assistant Professor, ECE, SOET", color: "#96CEB4", linkedin: "https://linkedin.com/in/hrishav-dey-2b2990291/", instagram: "https://instagram.com/hrishav.dey", github: "https://github.com/" },
-  { id: 8, name: "Hrishav Dey", role: "Event Advisor", image: "/avatar4.jpg", bio: "The force that turns bold ideas into flawlessly executed reality.", color: "#96CEB4", linkedin: "https://linkedin.com/in/hrishav-dey-2b2990291/", instagram: "https://instagram.com/hrishav.dey", github: "https://github.com/" },
-  { id: 9, name: "Sudipto Barman", role: "DevOps", image: "/avatar2.jpg", bio: "Turning strategies into action with energy, coordination, and commitment.", color: "#D4A5A5", linkedin: "https://linkedin.com/in/", instagram: "https://instagram.com/sudipto.barman", github: "https://github.com/" },
-  { id: 10, name: "Digant Mishra", role: "On-Ground Coordinator", image: "/diggufinal.jpeg", bio: "The go-to problem solver who keeps the action running seamlessly on the ground.", color: "#9B59B6", linkedin: "https://linkedin.com/in/digant-mishra-2b2990291/", instagram: "https://instagram.com/digant.mishra", github: "https://github.com/" },
-  { id: 11, name: "Arijit De", role: "Financial & Sponsorship Lead", image: "/arijit.jpeg", bio: "Driving partnerships and managing resources to power the fest’s biggest ambitions.", color: "#3498DB", linkedin: "https://linkedin.com/in/arijit-de-ba1594358", instagram: "https://instagram.com/arijit_.04", github: "https://github.com/" },
+  { id: 27, name: "Mr. Nisarga Chand", role: "Faculty Lead", image: "/1.jpg", bio: "Assistant Professor, ECE, SOET", color: "#96CEB4", linkedin: "https://linkedin.com/in/hrishav-dey-2b2990291/", instagram: "https://instagram.com/hrishav.dey", github: "https://github.com/" },
+  { id: 26, name: "Ms. Soodipa Chakraborty ", role: "Faculty Lead", image: "/1.jpg", bio: "Assistant Professor, ECE, SOET", color: "#96CEB4", linkedin: "https://linkedin.com/in/hrishav-dey-2b2990291/", instagram: "https://instagram.com/hrishav.dey", github: "https://github.com/" },
+  { id: 28, name: "Mr. Prabhat Das", role: "Tech Mentor", image: "/1.jpg", bio: "Assistant Professor, ECE, SOET", color: "#96CEB4", linkedin: "https://linkedin.com/in/prabhatd/", instagram: "https://instagram.com/hrishav.dey", github: "https://github.com/" },
+  { id: 8, name: "Hrishav Dey", role: "Event Advisor", image: "/avatar4.jpg", bio: "The force that turns bold ideas into flawlessly executed reality.", color: "#96CEB4", linkedin: "https://linkedin.com/in/hrishav-dey-2b2990291/", instagram: "https://instagram.com/hrishav.dey" },
+  
+  { id: 10, name: "Digant Mishra", role: "On-Ground Coordinator", image: "/diggufinal.jpeg", bio: "The go-to problem solver who keeps the action running seamlessly on the ground.", color: "#9B59B6", linkedin: "https://linkedin.com/in/digant-mishra-2b2990291/", instagram: "https://instagram.com/digantt._" },
+  { id: 11, name: "Arijit De", role: "Financial & Sponsorship Lead", image: "/arijit.jpeg", bio: "Driving partnerships and managing resources to power the fest’s biggest ambitions.", color: "#3498DB", linkedin: "https://linkedin.com/in/arijit-de-ba1594358", instagram: "https://instagram.com/arijit_.04" },
   { id: 12, name: "Snehasish Mondal", role: "Operations Lead", image: "/snehasish.jpeg", bio: "The backbone of smooth workflows, ensuring every detail runs right on time.", color: "#E67E22", linkedin: "https://linkedin.com/in/snehasish-mondal-2b2990291/", instagram: "https://instagram.com/snehasish.mondal", github: "https://github.com/" },
   { id: 18, name: "Samriddhi Sinha", role: "Decorations Lead", image: "/samriddhi1.webp", bio: "Transforming spaces into immersive experiences that set the fest’s mood.", color: "#8E44AD", linkedin: "https://linkedin.com/in/samriddhi-sinha-2b2990291/", instagram: "https://instagram.com/samriddhi.sinha", github: "https://github.com/" },
-  { id: 20, name: "Ashish R. Das", role: "Tech Lead", image: "/avatar1.jpg", bio: "Architect of innovation, powering the fest with smart tech and seamless systems.", color: "#8E44AD", linkedin: "https://linkedin.com/in/arddev", instagram: "https://instagram.com/ashishh_rd_", github: "https://github.com/0day-Ashish" },
+  { id: 25, name: "Arnab Mandal", role: "Social Media Head", image: "/1.jpg", bio: "Turning strategies into action with energy, coordination, and commitment.", color: "#deb3fa", linkedin: "https://linkedin.com/in/", instagram: "https://instagram.com/sampad.ghosh", github: "https://github.com/" },
+  { id: 20, name: "Ashish R. Das", role: "Tech Lead", image: "/avatar1.jpg", bio: "19, full stack web3 dev, community lead @0DAY", color: "#8E44AD", linkedin: "https://linkedin.com/in/arddev", instagram: "https://instagram.com/ashishh_rd_", github: "https://github.com/0day-Ashish" },
   { id: 23, name: "Subham Karmakar", role: "Tech Support", image: "/subham.png", bio: "Architect of innovation, powering the fest with smart tech and seamless systems.", color: "#8E44AD", linkedin: "https://linkedin.com/in/subham12r", instagram: "https://instagram.com/5ubhamkarmakar", github: "https://github.com/subham12r" },
-  { id: 24, name: "Abhisekh Singh", role: "App Development", image: "/avatar2.jpg", bio: "Turning strategies into action with energy, coordination, and commitment.", color: "#D4A5A5", linkedin: "https://linkedin.com/in/abhisekhsingh", instagram: "https://instagram.com/abhisekhsingh", github: "https://github.com/abhisekhsingh" },
+  { id: 24, name: "Abhisekh Singh", role: "App Development", image: "/1.jpg", bio: "Turning strategies into action with energy, coordination, and commitment.", color: "#D4A5A5", linkedin: "https://linkedin.com/in/abhisekhsingh", instagram: "https://instagram.com/abhisekhsingh", github: "https://github.com/abhisekhsingh" },
   { id: 13, name: "Garima Roy", role: "Documentations Lead", image: "/garimaaa.jpeg", bio: "The mind that captures every milestone and detail with clarity and precision.", color: "#2ECC71", linkedin: "https://linkedin.com/in/garima-roy-032277290", instagram: "https://instagram.com/_garimaa.07_", github: "https://github.com/" },
   { id: 14, name: "Leeza Bhowal", role: "Design Lead", image: "/avatar2.jpg", bio: "The creative spark behind visuals that give the fest its identity and vibe.", color: "#F1C40F", linkedin: "https://linkedin.com/in/leeza-bhowal-2b2990291/", instagram: "https://instagram.com/leeza.bhowal", github: "https://github.com/" },
-  { id: 15, name: "Somnath Singha Roy", role: "Support Lead", image: "/avatar3.jpg", bio: "The dependable pillar ensuring help, coordination, and smooth resolutions for everyone.", color: "#1ABC9C" },
-  { id: 16, name: "Srijita Bera", role: "Marketing Lead", image: "/srijita.jpeg", bio: "The voice of the fest, turning ideas into buzz and reach into impact.", color: "#E74C3C", linkedin: "https://linkedin.com/in/srijita-bera-ab5578291/", instagram: "https://instagram.com/veilof_mist", github: "https://github.com/" },
-  { id: 17, name: "Siddartha Chakraborty", role: "Esports Lead", image: "/avatar2.jpg", bio: "The strategist behind high-energy battles and next-level competitive gaming.", color: "#8E44AD", linkedin: "https://linkedin.com/in/siddartha-chakraborty-0b0554291/", instagram: "https://instagram.com/siddartha_chakraborty", github: "https://github.com/" },
-  { id: 19, name: "Ashish Yadav", role: "Blockchain Dev", image: "/avatar1.jpg", bio: "Building decentralized solutions that add a future-ready edge to the fest.", color: "#8E44AD" },
-  { id: 21, name: "Keshav Maheshwari", role: "Execution Cell", image: "/avatar1.jpg", bio: "The hands-on executor ensuring plans come alive with precision and speed.", color: "#deb3fa", linkedin: "https://linkedin.com/in/", instagram: "https://instagram.com/keshav.maheshwari", github: "https://github.com/" },
-  { id: 22, name: "Sampad Ghosh ", role: "Execution Cell", image: "/avatar1.jpg", bio: "Turning strategies into action with energy, coordination, and commitment.", color: "#deb3fa", linkedin: "https://linkedin.com/in/", instagram: "https://instagram.com/sampad.ghosh", github: "https://github.com/" },
-  { id: 25, name: "Arnab Mondal", role: "Social Media Head", image: "/avatar1.jpg", bio: "Turning strategies into action with energy, coordination, and commitment.", color: "#deb3fa", linkedin: "https://linkedin.com/in/", instagram: "https://instagram.com/sampad.ghosh", github: "https://github.com/" },
+  { id: 16, name: "Srijita Bera", role: "Marketing Lead", image: "/srijita.jpeg", bio: "The voice of the fest, turning ideas into buzz and reach into impact.", color: "#E74C3C", linkedin: "https://linkedin.com/in/srijita-bera-ab5578291/", instagram: "https://instagram.com/veilof_mist", github: "https://github.com/Srijiiii" },
+  { id: 17, name: "Siddartha Chakraborty", role: "Esports Lead", image: "/siddartha_test 1.png", bio: "The strategist behind high-energy battles and next-level competitive gaming.", color: "#8E44AD", linkedin: "https://linkedin.com/in/siddarthachakraborty/", instagram: "https://instagram.com/siddarthachk", github: "https://github.com/siddarthachk" },
+  { id: 21, name: "Keshav Maheshwari", role: "Execution Cell", image: "/1.jpg", bio: "The hands-on executor ensuring plans come alive with precision and speed.", color: "#deb3fa", linkedin: "https://linkedin.com/in/", instagram: "https://instagram.com/keshav.maheshwari", github: "https://github.com/" },
+  { id: 22, name: "Sampad Ghosh ", role: "Execution Cell", image: "/1.jpg", bio: "Turning strategies into action with energy, coordination, and commitment.", color: "#deb3fa", linkedin: "https://linkedin.com/in/", instagram: "https://instagram.com/sampad.ghosh", github: "https://github.com/" },
+  { id: 9, name: "Sudipto Barman", role: "Ex Support", image: "/1.jpg", bio: "Turning strategies into action with energy, coordination, and commitment.", color: "#D4A5A5", linkedin: "https://linkedin.com/in/", instagram: "https://instagram.com/sudipto.barman", github: "https://github.com/" },
+  { id: 19, name: "Titas Sarkar", role: "Ex Support", image: "/1.jpg", bio: "Building decentralized solutions that add a future-ready edge to the fest.", color: "#8E44AD" },
+  { id: 15, name: "Somnath Singha Roy", role: "Ex Support", image: "/1.jpg", bio: "The dependable pillar ensuring help, coordination, and smooth resolutions for everyone.", color: "#1ABC9C" }
 ];
 
 export default function Team() {
@@ -72,7 +74,7 @@ export default function Team() {
             duration: 0.1,
             overwrite: true
           });
-          
+
           if (typeof window !== "undefined" && window.innerWidth < 768) {
             const idx = Math.min(Math.floor(progress * TEAM_MEMBERS.length), TEAM_MEMBERS.length - 1);
             setActiveMember(TEAM_MEMBERS[idx]);
@@ -84,115 +86,114 @@ export default function Team() {
 
   return (
     <section ref={containerRef} className="w-full bg-black py-3 h-screen overflow-hidden flex items-center justify-center">
-        <div className="bg-[#f3e5f5] rounded-[2.5rem] p-4 sm:p-8 md:p-12 w-full h-full flex flex-col md:flex-row gap-4 md:gap-12 relative overflow-hidden">
-            
-            {/* Left Side: Scrollable Member List — on mobile: below card (order-2) */}
-            <div className="flex-1 min-h-0 z-10 flex flex-col order-2 md:order-1 md:h-full">
-                <FadeIn>
-                    <h2 className={`text-4xl sm:text-6xl text-black uppercase mb-4 mt-5 sm:mt-0 md:mb-8 shrink-0 ${gilton.className}`}>
-                        Meet The <span className="italic">Team</span>
-                    </h2>
-                </FadeIn>
-                
-                <div 
-                    ref={listRef} 
-                    className="flex-1 flex flex-col gap-3 sm:gap-6 min-h-0 pr-2 md:pr-4 overflow-hidden"
+      <div className="bg-[#f3e5f5] rounded-[2.5rem] p-4 sm:p-8 md:p-12 w-full h-full flex flex-col md:flex-row gap-4 md:gap-12 relative overflow-hidden">
+
+        {/* Left Side: Scrollable Member List — on mobile: below card (order-2) */}
+        <div className="flex-1 min-h-0 z-10 flex flex-col order-2 md:order-1 md:h-full">
+          <FadeIn>
+            <h2 className={`text-4xl sm:text-6xl text-black uppercase mb-4 mt-5 sm:mt-0 md:mb-8 shrink-0 ${gilton.className}`}>
+              Meet The <span className="italic">Team</span>
+            </h2>
+          </FadeIn>
+
+          <div
+            ref={listRef}
+            className="flex-1 flex flex-col gap-3 sm:gap-6 min-h-0 pr-2 md:pr-4 overflow-hidden"
+          >
+            {TEAM_MEMBERS.map((member, index) => (
+              <div key={member.id}>
+                <div
+                  onMouseEnter={() => setActiveMember(member)}
+                  onClick={() => setActiveMember(member)}
+                  className={`group flex items-center transition-all duration-300 py-2 sm:py-5 cursor-none ${activeMember.id === member.id ? 'translate-x-1 sm:translate-x-2' : 'hover:translate-x-2'}`}
                 >
-                    {TEAM_MEMBERS.map((member, index) => (
-                        <div key={member.id}>
-                            <div 
-                                onMouseEnter={() => setActiveMember(member)}
-                                onClick={() => setActiveMember(member)}
-                                className={`group flex items-center transition-all duration-300 py-2 sm:py-5 cursor-none ${activeMember.id === member.id ? 'translate-x-1 sm:translate-x-2' : 'hover:translate-x-2'}`}
-                            >
-                                <h3 className={`text-lg sm:text-3xl md:text-[3.5vw] tracking-tighter leading-7 font-bold transition-colors duration-300 ${activeMember.id === member.id ? 'text-black' : 'text-gray-400 group-hover:text-black'}`}>
-                                    {member.name}
-                                </h3>
-                            </div>
-                        </div>
-                    ))}
+                  <h3 className={`text-lg sm:text-3xl md:text-[3.5vw] tracking-tighter leading-7 font-bold transition-colors duration-300 ${activeMember.id === member.id ? 'text-black' : 'text-gray-400 group-hover:text-black'}`}>
+                    {member.name}
+                  </h3>
                 </div>
-            </div>
-
-
-            {/* Right Side: Sticky Profile Card Display */}
-            <div className="flex-1 flex items-center justify-center z-10 relative h-full mt-5 mb-5 sm:mt-0 sm:mb-0">
-                <div ref={cardRef} className="relative w-full max-w-sm h-full flex items-center justify-center">
-                    {/* Background Shape for Active Card */}
-                    <div 
-                        className="absolute inset-0 bg-white/50 rounded-full blur-3xl transition-all duration-500 z-0"
-                        style={{ backgroundColor: `${activeMember.color}40` }} 
-                    />
-
-                    {/* The Card */}
-                    {TEAM_MEMBERS.map((member) => (
-                        <div 
-                            key={member.id}
-                            className={`absolute transition-all duration-500 ease-out transform ${
-                                activeMember.id === member.id 
-                                ? 'opacity-100 translate-y-0 scale-100 rotate-0 z-10' 
-                                : 'opacity-0 translate-y-8 scale-95 rotate-6 pointer-events-none z-0'
-                            }`}
-                        >
-                            <div className="bg-white border-4 border-black p-6 rounded-3xl shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] flex flex-col items-center gap-4 text-center w-[320px]">
-                                <div 
-                                    className="w-32 h-32 rounded-full border-4 border-black overflow-hidden relative shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
-                                    style={{ backgroundColor: member.color }}
-                                >
-                                    <Image 
-                                        src={member.image} 
-                                        alt={member.name} 
-                                        fill 
-                                        className="object-cover"
-                                    />
-                                </div>
-                                
-                                <div>
-                                    <h3 className={`text-2xl text-black ${rampart.className}`}>
-                                        {member.name}
-                                    </h3>
-                                    <p className={`text-sm font-bold uppercase tracking-wider text-gray-500 mt-1 ${softura.className}`}>
-                                        {member.role}
-                                    </p>
-                                </div>
-
-                                <p className={`text-lg text-black font-medium leading-tight ${gilton.className}`}>
-                                    {member.bio}
-                                </p>
-
-                                <div className="flex gap-2 mt-2">
-                                    {(isDrOrProf(member.name)
-                                      ? SOCIAL_ICONS.filter((s) => s.name === "LinkedIn")
-                                      : SOCIAL_ICONS
-                                    ).map((social) => {
-                                      const m = member as { instagram?: string; linkedin?: string; github?: string };
-                                      const url = m[social.key];
-                                      const icon = (
-                                        <>
-                                          <span className="sr-only">{social.name}</span>
-                                          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none">
-                                            <path d={social.path} fillRule={social.fillRule as "evenodd" | undefined} clipRule={social.fillRule as "evenodd" | undefined} />
-                                          </svg>
-                                        </>
-                                      );
-                                      const cn = "w-8 h-8 rounded-full border-2 border-black flex items-center justify-center transition-all cursor-none";
-                                      return url ? (
-                                        <a key={social.name} href={url} target="_blank" rel="noopener noreferrer" className={cn} style={{ color: social.color }} aria-label={social.name}>
-                                          {icon}
-                                        </a>
-                                      ) : (
-                                        <span key={social.name} className={cn} style={{ color: social.color }} aria-hidden>
-                                          {icon}
-                                        </span>
-                                      );
-                                    })}
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
+              </div>
+            ))}
+          </div>
         </div>
+
+
+        {/* Right Side: Sticky Profile Card Display */}
+        <div className="flex-1 flex items-center justify-center z-10 relative h-full mt-5 mb-5 sm:mt-0 sm:mb-0">
+          <div ref={cardRef} className="relative w-full max-w-sm h-full flex items-center justify-center">
+            {/* Background Shape for Active Card */}
+            <div
+              className="absolute inset-0 bg-white/50 rounded-full blur-3xl transition-all duration-500 z-0"
+              style={{ backgroundColor: `${activeMember.color}40` }}
+            />
+
+            {/* The Card */}
+            {TEAM_MEMBERS.map((member) => (
+              <div
+                key={member.id}
+                className={`absolute transition-all duration-500 ease-out transform ${activeMember.id === member.id
+                    ? 'opacity-100 translate-y-0 scale-100 rotate-0 z-10'
+                    : 'opacity-0 translate-y-8 scale-95 rotate-6 pointer-events-none z-0'
+                  }`}
+              >
+                <div className="bg-white border-4 border-black p-6 rounded-3xl shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] flex flex-col items-center gap-4 text-center w-[320px]">
+                  <div
+                    className="w-32 h-32 rounded-full border-4 border-black overflow-hidden relative shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+                    style={{ backgroundColor: member.color }}
+                  >
+                    <Image
+                      src={member.image}
+                      alt={member.name}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+
+                  <div>
+                    <h3 className={`text-2xl text-black ${rampart.className}`}>
+                      {member.name}
+                    </h3>
+                    <p className={`text-sm font-bold uppercase tracking-wider text-gray-500 mt-1 ${softura.className}`}>
+                      {member.role}
+                    </p>
+                  </div>
+
+                  <p className={`text-lg text-black font-medium leading-tight ${gilton.className}`}>
+                    {member.bio}
+                  </p>
+
+                  <div className="flex gap-2 mt-2">
+                    {(isDrOrProf(member.name)
+                      ? SOCIAL_ICONS.filter((s) => s.name === "LinkedIn")
+                      : SOCIAL_ICONS
+                    ).map((social) => {
+                      const m = member as { instagram?: string; linkedin?: string; github?: string };
+                      const url = m[social.key];
+                      const icon = (
+                        <>
+                          <span className="sr-only">{social.name}</span>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                            <path d={social.path} fillRule={social.fillRule as "evenodd" | undefined} clipRule={social.fillRule as "evenodd" | undefined} />
+                          </svg>
+                        </>
+                      );
+                      const cn = "w-8 h-8 rounded-full border-2 border-black flex items-center justify-center transition-all cursor-none";
+                      return url ? (
+                        <a key={social.name} href={url} target="_blank" rel="noopener noreferrer" className={cn} style={{ color: social.color }} aria-label={social.name}>
+                          {icon}
+                        </a>
+                      ) : (
+                        <span key={social.name} className={cn} style={{ color: social.color }} aria-hidden>
+                          {icon}
+                        </span>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
     </section>
   );
 }
