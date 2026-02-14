@@ -55,7 +55,7 @@ export default function Sponsors() {
                         <div className="flex flex-row flex-wrap items-center justify-center gap-12 py-4">
                             {/* CSI Logo */}
                             <Image
-                                src="/csi.png"
+                                src="/csi.avif"
                                 alt="CSI - Computer Society of India"
                                 width={200}
                                 height={90}
