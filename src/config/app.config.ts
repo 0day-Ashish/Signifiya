@@ -37,7 +37,7 @@ export const APP_CONFIG = {
         id: 1,
         name: "Ashish R. Das",
         role: "Lead Developer",
-        email: "ard@signifiya.in",
+        email: "0day.ashish@gmail.com",
         phone: "+91 8910114007",
         image: "/avatar1.jpg",
         color: "#deb3fa",
@@ -53,7 +53,7 @@ export const APP_CONFIG = {
         role: "Finance Head",
         email: "arijit@signifiya.in",
         phone: "+91 9831093297",
-        image: "/avatar5.jpg",
+        image: "/arijit.jpeg",
         color: "#FCD34D",
         social: {
           instagram: "https://instagram.com/arijit_.04",
