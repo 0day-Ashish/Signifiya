@@ -361,6 +361,44 @@ export const ALL_EVENTS: MasterEvent[] = [
         "https://lottie.host/34b5f811-28e8-4ac1-9f7a-7857fb6cbb50/C28AMF6Pa6.lottie",
       color: "bg-gray-100",
   },
+    {
+    id: 16,
+    title: "Free Fire",
+    category: "ESPORTS",
+    description:
+      "Lock hands, hold your ground, and power through to pin your opponent down.",
+    date: "March 27th - 28th",
+    image: "/freefire.jpg",
+    prizePool: "TBA",
+    day: 2,
+          scheduleDescription: "",
+      time: "March 27th - 28th",
+      venue: "Online",
+      coordinators: "Student Coordinators",
+      facultyCoordinators: "",
+      lottie:
+        "https://lottie.host/34b5f811-28e8-4ac1-9f7a-7857fb6cbb50/C28AMF6Pa6.lottie",
+      color: "bg-gray-100",
+  },
+      {
+    id: 17,
+    title: "EFootball Tournament",
+    category: "ESPORTS",
+    description:
+      "Lock hands, hold your ground, and power through to pin your opponent down.",
+    date: "March 27th - 28th",
+    image: "/efootbal.jpg",
+    prizePool: "TBA",
+    day: 2,
+          scheduleDescription: "",
+      time: "March 27th - 28th",
+      venue: "Online",
+      coordinators: "Student Coordinators",
+      facultyCoordinators: "",
+      lottie:
+        "https://lottie.host/34b5f811-28e8-4ac1-9f7a-7857fb6cbb50/C28AMF6Pa6.lottie",
+      color: "bg-gray-100",
+  },
 
   // ─── EVENTS-ONLY (not in schedule) ───────────────────────
   
