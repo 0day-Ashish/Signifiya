@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { getPassesByBookingId, getEventTeamsByBookingId, markPassAttended, markEventTeamLeaderAttended, markEventTeamMemberAttended, resolveToBookingId } from "../actions";
+import { getVerificationLookup, markPassAttended, markEventTeamLeaderAttended, markEventTeamMemberAttended } from "../actions";
 
 type PassRow = {
   id: string;
@@ -43,15 +43,14 @@ export default function AdminVerifyPage() {
   const resultsRef = useRef<HTMLElement | null>(null);
   const beepAudioRef = useRef<HTMLAudioElement | null>(null);
 
-  const fetchBoth = useCallback(async (bid: string) => {
-    const [passRes, teamRes] = await Promise.all([
-      getPassesByBookingId(bid),
-      getEventTeamsByBookingId(bid),
-    ]);
-    setPasses(passRes.passes);
-    setEventTeams(teamRes.teams);
-    setUserName(passRes.userName);
-    setUserEmail(passRes.userEmail);
+  const runLookup = useCallback(async (input: string) => {
+    const res = await getVerificationLookup(input);
+    setQuery(res.bookingId ?? input.trim());
+    setPasses(res.passes);
+    setEventTeams(res.teams);
+    setUserName(res.userName);
+    setUserEmail(res.userEmail);
+    return res.bookingId;
   }, []);
 
   // Initialize audio for beep sound
@@ -79,17 +78,23 @@ export default function AdminVerifyPage() {
           facingMode: "environment",
         },
         {
-          fps: 30, // Increased from 10 to 30 for faster scanning (3x faster frame processing)
-          qrbox: { width: 300, height: 300 }, // Increased scanning area from 250x250 for better detection
-          aspectRatio: 1.0, // Square aspect ratio for optimized performance
-          disableFlip: false, // Allow both orientations
+          fps: 24,
+          qrbox: { width: 260, height: 260 },
+          aspectRatio: 1.0,
+          disableFlip: true,
+          videoConstraints: {
+            facingMode: { ideal: "environment" },
+            width: { ideal: 720 },
+            height: { ideal: 720 },
+          },
         },
         (decodedText) => {
           if (handledRef.current) return;
           handledRef.current = true;
           void (async () => {
             try {
-              const bid = await resolveToBookingId(decodedText);
+              setLoading(true);
+              const bid = await runLookup(decodedText);
               if (bid) {
                 // Play beep sound on successful scan
                 if (beepAudioRef.current) {
@@ -100,11 +105,8 @@ export default function AdminVerifyPage() {
                 }
                 setShowScanner(false);
                 setError(null);
-                setQuery(bid);
                 setSearched(false);
-                setLoading(true);
                 try {
-                  await fetchBoth(bid);
                   setSearched(true);
                   setTimeout(() => resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 80);
                 } catch (e) {
@@ -116,10 +118,12 @@ export default function AdminVerifyPage() {
               } else {
                 setShowScanner(false);
                 setError("QR not recognized. Use a visitor or event pass QR.");
+                setLoading(false);
               }
             } catch (e) {
               setShowScanner(false);
               setError(e instanceof Error ? e.message : "Resolve failed");
+              setLoading(false);
             }
           })();
         },
@@ -134,10 +138,10 @@ export default function AdminVerifyPage() {
       scannerRef.current?.stop().catch(() => { });
       scannerRef.current = null;
     };
-  }, [showScanner, fetchBoth]);
+  }, [showScanner, runLookup]);
 
   const handleLookup = async () => {
-    const bid = query.trim();
+    const bid = query.trim().toUpperCase();
     if (!bid) {
       setError("Enter a Booking ID");
       return;
@@ -146,7 +150,7 @@ export default function AdminVerifyPage() {
     setSearched(false);
     setLoading(true);
     try {
-      await fetchBoth(bid);
+      await runLookup(bid);
       setSearched(true);
     } catch (e: unknown) {
       setPasses([]);
@@ -166,7 +170,7 @@ export default function AdminVerifyPage() {
     try {
       await markPassAttended(passId, day);
       const bid = query.trim();
-      if (bid) await fetchBoth(bid);
+      if (bid) await runLookup(bid);
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Failed to mark attended");
     } finally {
@@ -180,7 +184,7 @@ export default function AdminVerifyPage() {
     try {
       await markEventTeamLeaderAttended(teamId);
       const bid = query.trim();
-      if (bid) await fetchBoth(bid);
+      if (bid) await runLookup(bid);
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Failed to mark leader attended");
     } finally {
@@ -194,7 +198,7 @@ export default function AdminVerifyPage() {
     try {
       await markEventTeamMemberAttended(memberId);
       const bid = query.trim();
-      if (bid) await fetchBoth(bid);
+      if (bid) await runLookup(bid);
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Failed to mark member attended");
     } finally {

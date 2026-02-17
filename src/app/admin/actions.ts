@@ -420,8 +420,7 @@ export async function markPassAttended(passId: string, day: "day1" | "day2") {
 }
 
 // --- Resolve QR code (SP-xxx, EP-xxx) or plain string to booking ID for verification ---
-export async function resolveToBookingId(value: string): Promise<string | null> {
-  await guard();
+async function resolveToBookingIdInternal(value: string): Promise<string | null> {
   const v = value?.trim();
   if (!v || v.length < 3) return null;
 
@@ -447,6 +446,69 @@ export async function resolveToBookingId(value: string): Promise<string | null> 
   }
 
   return v;
+}
+
+export async function resolveToBookingId(value: string): Promise<string | null> {
+  await guard();
+  return resolveToBookingIdInternal(value);
+}
+
+// --- Fast path for admin verify page (single roundtrip for QR/manual lookup) ---
+export async function getVerificationLookup(value: string) {
+  await guard();
+  const bid = await resolveToBookingIdInternal(value);
+  if (!bid || bid.length < 5) {
+    return { bookingId: null, passes: [], teams: [], userName: null, userEmail: null };
+  }
+
+  const [passes, teams] = await Promise.all([
+    prisma.pass.findMany({
+      where: { userBookingId: { equals: bid, mode: "insensitive" } },
+      include: { user: { select: { name: true, email: true } } },
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.participantTeam.findMany({
+      where: { leaderBookingId: { equals: bid, mode: "insensitive" } },
+      include: { members: true, events: { include: { event: true } } },
+      orderBy: { createdAt: "desc" },
+    }),
+  ]);
+
+  const user = passes[0]?.user ?? null;
+
+  return {
+    bookingId: bid,
+    passes: passes.map((p) => ({
+      id: p.id,
+      type: p.type,
+      userBookingId: p.userBookingId,
+      validUntil: p.validUntil,
+      verifiedAt: p.verifiedAt,
+      verifiedBy: p.verifiedBy,
+      verifiedDay1At: p.verifiedDay1At,
+      verifiedDay2At: p.verifiedDay2At,
+      qrCode: p.qrCode,
+    })),
+    teams: teams.map((t) => ({
+      id: t.id,
+      teamName: t.teamName,
+      leaderName: t.leaderName,
+      leaderEmail: t.leaderEmail,
+      leaderAttendedAt: t.leaderAttendedAt,
+      leaderAttendedBy: t.leaderAttendedBy,
+      eventNames: t.events.map((e) => e.event.name).join(", "),
+      qrCode: t.qrCode,
+      members: t.members.map((m) => ({
+        id: m.id,
+        name: m.name,
+        college: m.college,
+        attendedAt: m.attendedAt,
+        attendedBy: m.attendedBy,
+      })),
+    })),
+    userName: user?.name ?? null,
+    userEmail: user?.email ?? null,
+  };
 }
 
 // --- Event teams by Booking ID (verification: event passes) ---
