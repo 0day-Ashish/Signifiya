@@ -17,7 +17,7 @@ const categories = ["ALL", "TECH", "CULTURAL", "VIBES", "BTS"];
 const galleryImages = [
   {
     id: 1,
-    src: "/gall13.JPG",
+    src: "/gall13.jpg",
     caption: "The Opening Ceremony",
     category: "CULTURAL",
     size: "large",
@@ -53,7 +53,7 @@ const galleryImages = [
   },
   {
     id: 3,
-    src: "/gall22.JPG",
+    src: "/gall22.jpg",
     caption: "Drone Arena",
     category: "TECH",
     size: "tall",
@@ -62,7 +62,7 @@ const galleryImages = [
   },
   {
     id: 4,
-    src: "/gall24.JPG",
+    src: "/gall24.jpg",
     caption: "DJ Night Madness",
     category: "VIBES",
     size: "small",
@@ -80,7 +80,7 @@ const galleryImages = [
   },
   {
     id: 14,
-    src: "/gall15.JPG",
+    src: "/gall15.jpg",
     caption: "Behind The Scenes",
     category: "BTS",
     size: "small",
@@ -116,7 +116,7 @@ const galleryImages = [
   },
   {
     id: 9,
-    src: "/gall18.JPG",
+    src: "/gall18.jpg",
     caption: "Core Team @2022",
     category: "CULTURAL",
     size: "large",
@@ -417,3 +417,4 @@ export default function Gallery() {
     </div>
   );
 }
+

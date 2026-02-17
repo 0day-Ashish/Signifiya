@@ -28,15 +28,19 @@ export default function Events() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const firstSetRef = useRef<HTMLDivElement>(null);
   const isJumpingRef = useRef(false);
+  const isHoveredRef = useRef(false);
+  const autoScrollRafRef = useRef<number | null>(null);
+  const lastFrameTimeRef = useRef<number | null>(null);
 
   const filteredEvents = activeCategory === "ALL" 
     ? EVENTS_DATA 
     : EVENTS_DATA.filter(event => event.category === activeCategory);
+  const isAllCategory = activeCategory === "ALL";
 
   // Infinite loop: when scroll passes boundaries, jump to equivalent position in another copy
   // Only apply loop logic when activeCategory is "ALL"
   const handleScroll = useCallback(() => {
-    if (activeCategory !== "ALL") return; // No loop for filtered categories
+    if (!isAllCategory) return; // No loop for filtered categories
     
     const container = scrollContainerRef.current;
     const firstSet = firstSetRef.current;
@@ -71,7 +75,7 @@ export default function Events() {
         isJumpingRef.current = false;
       }, 50);
     }
-  }, [activeCategory]);
+  }, [isAllCategory]);
 
   // Start in the middle set when category changes so loop has room both ways (after layout)
   // Only apply loop positioning for "ALL" category
@@ -80,7 +84,7 @@ export default function Events() {
       const container = scrollContainerRef.current;
       if (!container) return;
       
-      if (activeCategory === "ALL") {
+      if (isAllCategory) {
         // For "ALL" category: start in middle set for infinite loop
         const firstSet = firstSetRef.current;
         if (!firstSet) return;
@@ -109,7 +113,40 @@ export default function Events() {
       }
     }, 100);
     return () => clearTimeout(t);
-  }, [activeCategory]);
+  }, [isAllCategory]);
+
+  // Auto-scroll the events rail for infinite sliding; pause on hover.
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const SPEED_PX_PER_SECOND = 45;
+
+    const tick = (timestamp: number) => {
+      if (lastFrameTimeRef.current == null) {
+        lastFrameTimeRef.current = timestamp;
+      }
+
+      const delta = timestamp - lastFrameTimeRef.current;
+      lastFrameTimeRef.current = timestamp;
+
+      if (isAllCategory && !isHoveredRef.current && !isJumpingRef.current) {
+        container.scrollLeft += (SPEED_PX_PER_SECOND * delta) / 1000;
+      }
+
+      autoScrollRafRef.current = window.requestAnimationFrame(tick);
+    };
+
+    autoScrollRafRef.current = window.requestAnimationFrame(tick);
+
+    return () => {
+      if (autoScrollRafRef.current != null) {
+        window.cancelAnimationFrame(autoScrollRafRef.current);
+      }
+      autoScrollRafRef.current = null;
+      lastFrameTimeRef.current = null;
+    };
+  }, [isAllCategory]);
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollContainerRef.current) {
@@ -239,10 +276,16 @@ export default function Events() {
                 <div 
                     ref={scrollContainerRef}
                     onScroll={handleScroll}
-                    className="flex gap-0 overflow-x-auto scrollbar-hide pb-4 min-h-[450px] sm:min-h-[500px] snap-x snap-mandatory"
+                    onMouseEnter={() => {
+                      isHoveredRef.current = true;
+                    }}
+                    onMouseLeave={() => {
+                      isHoveredRef.current = false;
+                    }}
+                    className={`flex gap-0 overflow-x-auto scrollbar-hide pb-4 min-h-[450px] sm:min-h-[500px] ${isAllCategory ? 'snap-none' : 'snap-x snap-mandatory'}`}
                     style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                 >
-                    {activeCategory === "ALL" ? (
+                    {isAllCategory ? (
                         // For "ALL" category: render multiple copies for infinite loop
                         Array.from({ length: LOOP_COPIES }, (_, copyIndex) => (
                             <div
@@ -432,3 +475,5 @@ export default function Events() {
     </section>
   );
 }
+
+
