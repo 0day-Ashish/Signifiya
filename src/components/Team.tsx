@@ -1,199 +1,234 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import localFont from "next/font/local";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import FadeIn from "./FadeIn";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import {
+  ChevronLeft,
+  ChevronRight,
+  GithubIcon,
+  InstagramIcon,
+  LinkedinIcon,
+  Pause,
+  Play,
+  Star,
+} from "lucide-react";
+import localFont from "next/font/local";
 
-gsap.registerPlugin(ScrollTrigger);
-
-const rampart = localFont({ src: "../../public/fonts/RampartOne-Regular.ttf" });
+type TeamMember = {
+  id: number;
+  name: string;
+  role: string;
+  image: string;
+  instagram?: string;
+  linkedin?: string;
+  github?: string;
+};
 const gilton = localFont({ src: "../../public/fonts/GiltonRegular.otf" });
 const softura = localFont({ src: "../../public/fonts/Softura-Demo.otf" });
-
-function isDrOrProf(name: string): boolean {
-  const n = name.toLowerCase();
-  return n.includes("dr.") || n.includes("prof.") || n.includes("mr.") || n.includes("ms.");
-}
-
-const SOCIAL_ICONS = [
-  { name: "Instagram", key: "instagram" as const, color: "#E4405F", path: "M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zm0 10.162a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z", fillRule: "evenodd" },
-  { name: "LinkedIn", key: "linkedin" as const, color: "#0077B5", path: "M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" },
-  { name: "Github", key: "github" as const, color: "#000000", path: "M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" },
-];
-
-const TEAM_MEMBERS = [
-  { id: 27, name: "Mr. Nisarga Chand", role: "Faculty Lead", image: "/1.jpg", bio: "Assistant Professor, ECE, SOET", color: "#96CEB4", linkedin: "https://linkedin.com/in/hrishav-dey-2b2990291/", instagram: "https://instagram.com/hrishav.dey", github: "https://github.com/" },
-  { id: 26, name: "Ms. Soodipa Chakraborty ", role: "Faculty Lead", image: "/1.jpg", bio: "Assistant Professor, ECE, SOET", color: "#96CEB4", linkedin: "https://linkedin.com/in/hrishav-dey-2b2990291/", instagram: "https://instagram.com/hrishav.dey", github: "https://github.com/" },
-  { id: 28, name: "Mr. Prabhat Das", role: "Tech Mentor", image: "/1.jpg", bio: "Assistant Professor, ECE, SOET", color: "#96CEB4", linkedin: "https://linkedin.com/in/prabhatd/", instagram: "https://instagram.com/hrishav.dey", github: "https://github.com/" },
-  { id: 8, name: "Hrishav Dey", role: "Event Advisor", image: "/avatar4.jpg", bio: "The force that turns bold ideas into flawlessly executed reality.", color: "#96CEB4", linkedin: "https://linkedin.com/in/hrishav-dey-2b2990291/", instagram: "https://instagram.com/hrishav.dey" },
-  
-  { id: 10, name: "Digant Mishra", role: "On-Ground Coordinator", image: "/diggufinal.jpeg", bio: "The go-to problem solver who keeps the action running seamlessly on the ground.", color: "#9B59B6", linkedin: "https://linkedin.com/in/digant-mishra-2b2990291/", instagram: "https://instagram.com/digantt._" },
-  { id: 11, name: "Arijit De", role: "Financial & Sponsorship Lead", image: "/arijit.jpeg", bio: "Driving partnerships and managing resources to power the fest’s biggest ambitions.", color: "#3498DB", linkedin: "https://linkedin.com/in/arijit-de-ba1594358", instagram: "https://instagram.com/arijit_.04" },
-  { id: 12, name: "Snehasish Mondal", role: "Operations Lead", image: "/snehasish.jpeg", bio: "The backbone of smooth workflows, ensuring every detail runs right on time.", color: "#E67E22", linkedin: "https://linkedin.com/in/snehasish-mondal-2b2990291/", instagram: "https://instagram.com/snehasish.mondal", github: "https://github.com/" },
-  { id: 18, name: "Samriddhi Sinha", role: "Decorations Lead", image: "/samriddhi1.webp", bio: "Transforming spaces into immersive experiences that set the fest’s mood.", color: "#8E44AD", linkedin: "https://linkedin.com/in/samriddhi-sinha-2b2990291/", instagram: "https://instagram.com/samriddhi.sinha", github: "https://github.com/" },
-  { id: 25, name: "Arnab Mandal", role: "Social Media Head", image: "/1.jpg", bio: "Turning strategies into action with energy, coordination, and commitment.", color: "#deb3fa", linkedin: "https://linkedin.com/in/", instagram: "https://instagram.com/sampad.ghosh", github: "https://github.com/" },
-  { id: 20, name: "Ashish R. Das", role: "Tech Lead", image: "/avatar1.jpg", bio: "19, full stack web3 dev, community lead @0DAY", color: "#8E44AD", linkedin: "https://linkedin.com/in/arddev", instagram: "https://instagram.com/ashishh_rd_", github: "https://github.com/0day-Ashish" },
-  { id: 23, name: "Subham Karmakar", role: "Tech Support", image: "/subham.png", bio: "Architect of innovation, powering the fest with smart tech and seamless systems.", color: "#8E44AD", linkedin: "https://linkedin.com/in/subham12r", instagram: "https://instagram.com/5ubhamkarmakar", github: "https://github.com/subham12r" },
-  { id: 24, name: "Abhisekh Singh", role: "App Development", image: "/1.jpg", bio: "Turning strategies into action with energy, coordination, and commitment.", color: "#D4A5A5", linkedin: "https://linkedin.com/in/abhisekhsingh", instagram: "https://instagram.com/abhisekhsingh", github: "https://github.com/abhisekhsingh" },
-  { id: 13, name: "Garima Roy", role: "Documentations Lead", image: "/garimaaa.jpeg", bio: "The mind that captures every milestone and detail with clarity and precision.", color: "#2ECC71", linkedin: "https://linkedin.com/in/garima-roy-032277290", instagram: "https://instagram.com/_garimaa.07_", github: "https://github.com/" },
-  { id: 14, name: "Leeza Bhowal", role: "Design Lead", image: "/avatar2.jpg", bio: "The creative spark behind visuals that give the fest its identity and vibe.", color: "#F1C40F", linkedin: "https://linkedin.com/in/leeza-bhowal-2b2990291/", instagram: "https://instagram.com/leeza.bhowal", github: "https://github.com/" },
-  { id: 16, name: "Srijita Bera", role: "Marketing Lead", image: "/srijita.jpeg", bio: "The voice of the fest, turning ideas into buzz and reach into impact.", color: "#E74C3C", linkedin: "https://linkedin.com/in/srijita-bera-ab5578291/", instagram: "https://instagram.com/veilof_mist", github: "https://github.com/Srijiiii" },
-  { id: 17, name: "Siddartha Chakraborty", role: "Esports Lead", image: "/siddartha_test 1.png", bio: "The strategist behind high-energy battles and next-level competitive gaming.", color: "#8E44AD", linkedin: "https://linkedin.com/in/siddarthachakraborty/", instagram: "https://instagram.com/siddarthachk", github: "https://github.com/siddarthachk" },
-  { id: 21, name: "Keshav Maheshwari", role: "Execution Cell", image: "/1.jpg", bio: "The hands-on executor ensuring plans come alive with precision and speed.", color: "#deb3fa", linkedin: "https://linkedin.com/in/", instagram: "https://instagram.com/keshav.maheshwari", github: "https://github.com/" },
-  { id: 22, name: "Sampad Ghosh ", role: "Execution Cell", image: "/1.jpg", bio: "Turning strategies into action with energy, coordination, and commitment.", color: "#deb3fa", linkedin: "https://linkedin.com/in/", instagram: "https://instagram.com/sampad.ghosh", github: "https://github.com/" },
-  { id: 9, name: "Sudipto Barman", role: "Ex Support", image: "/1.jpg", bio: "Turning strategies into action with energy, coordination, and commitment.", color: "#D4A5A5", linkedin: "https://linkedin.com/in/", instagram: "https://instagram.com/sudipto.barman", github: "https://github.com/" },
-  { id: 19, name: "Titas Sarkar", role: "Ex Support", image: "/1.jpg", bio: "Building decentralized solutions that add a future-ready edge to the fest.", color: "#8E44AD" },
-  { id: 15, name: "Somnath Singha Roy", role: "Ex Support", image: "/1.jpg", bio: "The dependable pillar ensuring help, coordination, and smooth resolutions for everyone.", color: "#1ABC9C" }
+const TEAM_MEMBERS: TeamMember[] = [
+  { id: 27, name: "Nisarga Chand", role: "Faculty Lead", image: "/team/Nisarga.jpeg", linkedin: "https://linkedin.com/in/hrishav-dey-2b2990291/", instagram: "https://instagram.com/hrishav.dey", github: "https://github.com/" },
+  { id: 26, name: "Soodipa Chakraborty", role: "Faculty Lead", image: "/team/Soodipa.jpg", linkedin: "https://linkedin.com/in/hrishav-dey-2b2990291/", instagram: "https://instagram.com/hrishav.dey", github: "https://github.com/" },
+  { id: 28, name: "Prabhat Das", role: "Tech Mentor", image: "/team/Prabhat.jpg", linkedin: "https://linkedin.com/in/prabhatd/", instagram: "https://instagram.com/hrishav.dey", github: "https://github.com/" },
+  { id: 8, name: "Hrishav Dey", role: "Event Advisor", image: "/avatar4.jpg", linkedin: "https://linkedin.com/in/hrishav-dey-2b2990291/", instagram: "https://instagram.com/hrishav.dey" },
+  { id: 10, name: "Digant Mishra", role: "On-Ground Coordinator", image: "/team/Digant.jpeg", linkedin: "https://linkedin.com/in/digant-mishra-2b2990291/", instagram: "https://instagram.com/digantt._" },
+  { id: 11, name: "Arijit De", role: "Financial & Sponsorship Lead", image: "/team/Arijit.jpg", linkedin: "https://linkedin.com/in/arijit-de-ba1594358", instagram: "https://instagram.com/arijit_.04" },
+  { id: 12, name: "Snehasish Mondal", role: "Operations Lead", image: "/team/Snehasish.jpg", linkedin: "https://linkedin.com/in/snehasish-mondal-2b2990291/", instagram: "https://instagram.com/snehasish.mondal", github: "https://github.com/" },
+  { id: 18, name: "Samriddhi Sinha", role: "Decorations Lead", image: "/team/Samriddhi.jpeg", linkedin: "https://linkedin.com/in/samriddhi-sinha-2b2990291/", instagram: "https://instagram.com/samriddhi.sinha", github: "https://github.com/" },
+  { id: 25, name: "Arnab Mandal", role: "Social Media Head", image: "/team/Arnab.jpeg", linkedin: "https://linkedin.com/in/", instagram: "https://instagram.com/sampad.ghosh", github: "https://github.com/" },
+  { id: 20, name: "Ashish R. Das", role: "Tech Lead", image: "/team/Ashish.jpeg", linkedin: "https://linkedin.com/in/arddev", instagram: "https://instagram.com/ashishh_rd_", github: "https://github.com/0day-Ashish" },
+  { id: 23, name: "Subham Karmakar", role: "Tech Support", image: "/team/Subham.jpeg", linkedin: "https://linkedin.com/in/subham12r", instagram: "https://instagram.com/5ubhamkarmakar", github: "https://github.com/subham12r" },
+  { id: 24, name: "Abhisekh Singh", role: "App Development", image: "/1.jpg", linkedin: "https://linkedin.com/in/abhisekhsingh", instagram: "https://instagram.com/abhisekhsingh", github: "https://github.com/abhisekhsingh" },
+  { id: 13, name: "Garima Roy", role: "Documentations Lead", image: "/team/Garima.jpeg", linkedin: "https://linkedin.com/in/garima-roy-032277290", instagram: "https://instagram.com/_garimaa.07_", github: "https://github.com/" },
+  { id: 14, name: "Leeza Bhowal", role: "Design Lead", image: "/team/Leeza.jpg", linkedin: "https://linkedin.com/in/leeza-bhowal-2b2990291/", instagram: "https://instagram.com/leeza.bhowal", github: "https://github.com/" },
+  { id: 16, name: "Srijita Bera", role: "Marketing Lead", image: "/team/Srijita.jpeg", linkedin: "https://linkedin.com/in/srijita-bera-ab5578291/", instagram: "https://instagram.com/veilof_mist", github: "https://github.com/Srijiiii" },
+  { id: 17, name: "Siddartha Chakraborty", role: "Esports Lead", image: "/team/Siddartha.jpg", linkedin: "https://linkedin.com/in/siddarthachakraborty/", instagram: "https://instagram.com/siddarthachk", github: "https://github.com/siddarthachk" },
+  { id: 21, name: "Keshav Maheshwari", role: "Execution Cell", image: "/team/Keshav.jpg", linkedin: "https://linkedin.com/in/", instagram: "https://instagram.com/keshav.maheshwari", github: "https://github.com/" },
+  { id: 22, name: "Sampad Ghosh", role: "Execution Cell", image: "/team/Sampad.jpg", linkedin: "https://linkedin.com/in/", instagram: "https://instagram.com/sampad.ghosh", github: "https://github.com/" },
+  { id: 9, name: "Sudipto Barman", role: "Ex Support", image: "/team/Sudipto.jpg", linkedin:" https://linkedin.com/in/sudipto-barman-3b5b4b3b5/", instagram:" https://instagram.com/sudipto.barman" , github:" https://github.com/sudiptobarman" },
+  { id: 19, name:"Titas Sarkar" , role:"Ex Support" , image:"/team/Titas.jpg"},
+  { id: 15, name: "Somnath Singha Roy", role: "Ex Support", image: "/1.jpg" },
 ];
 
 export default function Team() {
-  const [activeMember, setActiveMember] = useState(TEAM_MEMBERS[0]);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const listRef = useRef<HTMLDivElement>(null);
-  const cardRef = useRef<HTMLDivElement>(null);
+  const marqueeMembers = [...TEAM_MEMBERS, ...TEAM_MEMBERS];
+  const trackRef = useRef<HTMLDivElement>(null);
+  const frameRef = useRef<number | null>(null);
+  const offsetRef = useRef(0);
+  const singleSetWidthRef = useRef(0);
+  const directionRef = useRef(-1);
+  const pausedRef = useRef(false);
+  const [isPaused, setIsPaused] = useState(false);
 
-  useGSAP(() => {
-    if (!containerRef.current || !listRef.current) return;
+  useEffect(() => {
+    const updateSingleSetWidth = () => {
+      if (!trackRef.current) return;
+      singleSetWidthRef.current = trackRef.current.scrollWidth / 2;
+    };
 
-    ScrollTrigger.create({
-      trigger: containerRef.current,
-      start: "center center",
-      end: `+=${TEAM_MEMBERS.length * 50}`,
-      pin: true,
-      scrub: 0.5,
-      onUpdate: (self) => {
-        if (listRef.current) {
-          const progress = self.progress;
-          const maxScroll = Math.max(0, listRef.current.scrollHeight - listRef.current.clientHeight);
-          gsap.to(listRef.current, {
-            scrollTop: progress * maxScroll,
-            duration: 0.1,
-            overwrite: true
-          });
+    updateSingleSetWidth();
+    window.addEventListener("resize", updateSingleSetWidth);
 
-          if (typeof window !== "undefined" && window.innerWidth < 768) {
-            const idx = Math.min(Math.floor(progress * TEAM_MEMBERS.length), TEAM_MEMBERS.length - 1);
-            setActiveMember(TEAM_MEMBERS[idx]);
-          }
+    const step = () => {
+      if (trackRef.current && !pausedRef.current && singleSetWidthRef.current > 0) {
+        offsetRef.current += directionRef.current * 0.8;
+
+        if (offsetRef.current <= -singleSetWidthRef.current) {
+          offsetRef.current += singleSetWidthRef.current;
+        } else if (offsetRef.current > 0) {
+          offsetRef.current -= singleSetWidthRef.current;
         }
+
+        trackRef.current.style.transform = `translate3d(${offsetRef.current}px, 0, 0)`;
       }
-    });
-  }, { scope: containerRef });
+
+      frameRef.current = requestAnimationFrame(step);
+    };
+
+    frameRef.current = requestAnimationFrame(step);
+
+    return () => {
+      window.removeEventListener("resize", updateSingleSetWidth);
+      if (frameRef.current) cancelAnimationFrame(frameRef.current);
+    };
+  }, []);
+
+  const nudgeByCards = (cards: number) => {
+    if (!singleSetWidthRef.current) return;
+    const step = 296; // card width + gap
+    offsetRef.current += cards * step;
+
+    while (offsetRef.current <= -singleSetWidthRef.current) {
+      offsetRef.current += singleSetWidthRef.current;
+    }
+    while (offsetRef.current > 0) {
+      offsetRef.current -= singleSetWidthRef.current;
+    }
+
+    if (trackRef.current) {
+      trackRef.current.style.transform = `translate3d(${offsetRef.current}px, 0, 0)`;
+    }
+  };
+
+  const togglePause = () => {
+    const next = !pausedRef.current;
+    pausedRef.current = next;
+    setIsPaused(next);
+  };
 
   return (
-    <section ref={containerRef} className="w-full bg-black py-3 h-screen overflow-hidden flex items-center justify-center">
-      <div className="bg-[#f3e5f5] rounded-[2.5rem] p-4 sm:p-8 md:p-12 w-full h-full flex flex-col md:flex-row gap-4 md:gap-12 relative overflow-hidden">
-
-        {/* Left Side: Scrollable Member List — on mobile: below card (order-2) */}
-        <div className="flex-1 min-h-0 z-10 flex flex-col order-2 md:order-1 md:h-full">
-          <FadeIn>
-            <h2 className={`text-4xl sm:text-6xl text-black uppercase mb-4 mt-5 sm:mt-0 md:mb-8 shrink-0 ${gilton.className}`}>
-              Meet The <span className="italic">Team</span>
-            </h2>
-          </FadeIn>
-
-          <div
-            ref={listRef}
-            className="flex-1 flex flex-col gap-3 sm:gap-6 min-h-0 pr-2 md:pr-4 overflow-hidden"
-          >
-            {TEAM_MEMBERS.map((member, index) => (
-              <div key={member.id}>
-                <div
-                  onMouseEnter={() => setActiveMember(member)}
-                  onClick={() => setActiveMember(member)}
-                  className={`group flex items-center transition-all duration-300 py-2 sm:py-5 cursor-none ${activeMember.id === member.id ? 'translate-x-1 sm:translate-x-2' : 'hover:translate-x-2'}`}
-                >
-                  <h3 className={`text-lg sm:text-3xl md:text-[3.5vw] tracking-tighter leading-7 font-bold transition-colors duration-300 ${activeMember.id === member.id ? 'text-black' : 'text-gray-400 group-hover:text-black'}`}>
-                    {member.name}
-                  </h3>
-                </div>
-              </div>
-            ))}
-          </div>
+    <section className="w-full bg-black py-3">
+      <div className="mx-3 rounded-[2.5rem] border-4 border-black bg-[#f3e5f5] px-5 py-8 sm:px-8 md:px-12">
+        <div className="text-center">
+          <h2 className={`${gilton.className} text-4xl font-black uppercase tracking-[0.08em] text-black sm:text-6xl`}>Signifiya Team</h2>
+          <p className={`${softura.className} text-lg  `}>The people who made Signifiya possible</p>
         </div>
 
+        <div className="mt-7 rounded-[2rem]  p-4 sm:p-6">
+          <div className="mb-4 flex justify-end gap-2">
+            <button
+              type="button"
+              onClick={() => nudgeByCards(1)}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-lg border-2 border-black bg-[#ffe45e] text-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none"
+              aria-label="Show previous cards"
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+            <button
+              type="button"
+              onClick={togglePause}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-lg border-2 border-black bg-white text-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none"
+              aria-label={isPaused ? "Play marquee" : "Pause marquee"}
+            >
+              {isPaused ? <Play className="h-5 w-5" /> : <Pause className="h-5 w-5" />}
+            </button>
+            <button
+              type="button"
+              onClick={() => nudgeByCards(-1)}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-lg border-2 border-black bg-[#7dc8ff] text-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none"
+              aria-label="Show next cards"
+            >
+              <ChevronRight className="h-5 w-5" />
+            </button>
+          </div>
 
-        {/* Right Side: Sticky Profile Card Display */}
-        <div className="flex-1 flex items-center justify-center z-10 relative h-full mt-5 mb-5 sm:mt-0 sm:mb-0">
-          <div ref={cardRef} className="relative w-full max-w-sm h-full flex items-center justify-center">
-            {/* Background Shape for Active Card */}
-            <div
-              className="absolute inset-0 bg-white/50 rounded-full blur-3xl transition-all duration-500 z-0"
-              style={{ backgroundColor: `${activeMember.color}40` }}
-            />
-
-            {/* The Card */}
-            {TEAM_MEMBERS.map((member) => (
-              <div
-                key={member.id}
-                className={`absolute transition-all duration-500 ease-out transform ${activeMember.id === member.id
-                    ? 'opacity-100 translate-y-0 scale-100 rotate-0 z-10'
-                    : 'opacity-0 translate-y-8 scale-95 rotate-6 pointer-events-none z-0'
-                  }`}
-              >
-                <div className="bg-white border-4 border-black p-6 rounded-3xl shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] flex flex-col items-center gap-4 text-center w-[320px]">
-                  <div
-                    className="w-32 h-32 rounded-full border-4 border-black overflow-hidden relative shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
-                    style={{ backgroundColor: member.color }}
-                  >
+          <div className="team-cards-marquee">
+            <div ref={trackRef} className="team-cards-track pb-10">
+              {marqueeMembers.map((member, idx) => (
+                <article
+                  key={`${member.id}-${idx}`}
+                  className="w-[300px] shrink-0 rounded-2xl border-4 border-black bg-[#fffaf0] p-3 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"
+                >
+                  <div className="relative mb-3 overflow-hidden rounded-xl border-4 border-black">
                     <Image
                       src={member.image}
                       alt={member.name}
-                      fill
-                      className="object-cover"
+                      width={400}
+                      height={280}
+                      className="h-52 w-full object-cover"
                     />
+          
                   </div>
 
-                  <div>
-                    <h3 className={`text-2xl text-black ${rampart.className}`}>
-                      {member.name}
-                    </h3>
-                    <p className={`text-sm font-bold uppercase tracking-wider text-gray-500 mt-1 ${softura.className}`}>
-                      {member.role}
-                    </p>
-                  </div>
-
-                  <p className={`text-lg text-black font-medium leading-tight ${gilton.className}`}>
-                    {member.bio}
+                  <h4 className="text-xl font-black leading-tight text-black">{member.name}</h4>
+                  <p className="inline-block text-sm font-black italic font-medium tracking-tighter text-black">
+                    {member.role}
                   </p>
 
-                  <div className="flex gap-2 mt-2">
-                    {(isDrOrProf(member.name)
-                      ? SOCIAL_ICONS.filter((s) => s.name === "LinkedIn")
-                      : SOCIAL_ICONS
-                    ).map((social) => {
-                      const m = member as { instagram?: string; linkedin?: string; github?: string };
-                      const url = m[social.key];
-                      const icon = (
-                        <>
-                          <span className="sr-only">{social.name}</span>
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none">
-                            <path d={social.path} fillRule={social.fillRule as "evenodd" | undefined} clipRule={social.fillRule as "evenodd" | undefined} />
-                          </svg>
-                        </>
-                      );
-                      const cn = "w-8 h-8 rounded-full border-2 border-black flex items-center justify-center transition-all cursor-none";
-                      return url ? (
-                        <a key={social.name} href={url} target="_blank" rel="noopener noreferrer" className={cn} style={{ color: social.color }} aria-label={social.name}>
-                          {icon}
-                        </a>
-                      ) : (
-                        <span key={social.name} className={cn} style={{ color: social.color }} aria-hidden>
-                          {icon}
-                        </span>
-                      );
-                    })}
+                  <div className="mt-3 flex items-center gap-2">
+                    {member.github && (
+                      <a
+                        href={member.github}
+                        target="_blank"
+                        rel="noreferrer"
+                        aria-label={`${member.name} GitHub`}
+                        className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-black bg-white shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none"
+                      >
+                        <GithubIcon className="h-4 w-4 text-black" />
+                      </a>
+                    )}
+                    {member.instagram && (
+                      <a
+                        href={member.instagram}
+                        target="_blank"
+                        rel="noreferrer"
+                        aria-label={`${member.name} Instagram`}
+                        className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-black bg-[#ff8ecf] shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none"
+                      >
+                        <InstagramIcon className="h-4 w-4 text-black" />
+                      </a>
+                    )}
+                    {member.linkedin && (
+                      <a
+                        href={member.linkedin}
+                        target="_blank"
+                        rel="noreferrer"
+                        aria-label={`${member.name} LinkedIn`}
+                        className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-black bg-[#7dc8ff] shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none"
+                      >
+                        <LinkedinIcon className="h-4 w-4 text-black" />
+                      </a>
+                    )}
                   </div>
-                </div>
-              </div>
-            ))}
+                </article>
+              ))}
+            </div>
           </div>
         </div>
       </div>
+
+      <style jsx>{`
+        .team-cards-marquee {
+          overflow: hidden;
+          width: 100%;
+        }
+
+        .team-cards-track {
+          display: flex;
+          gap: 1rem;
+          width: max-content;
+          will-change: transform;
+        }
+      `}</style>
     </section>
   );
 }

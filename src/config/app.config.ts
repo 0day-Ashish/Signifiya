@@ -10,8 +10,8 @@ export const APP_CONFIG = {
     year: "2026",
     fullName: "SIGNIFIYA'26",
     dates: {
-      day1: "13th March, 2026",
-      day2: "14th March, 2026",
+      day1: "27th March, 2026",
+      day2: "28th March, 2026",
     },
     established: "2021",
   },

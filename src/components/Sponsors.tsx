@@ -7,15 +7,29 @@ import FadeIn from "./FadeIn";
 const gilton = localFont({ src: "../../public/fonts/GiltonRegular.otf" });
 const softura = localFont({ src: "../../public/fonts/Softura-Demo.otf" });
 
-// Placeholder sponsors data
-const SPONSORS = [
-    { id: 1, name: "Sponsor 1", logo: "/.png" },
-    { id: 2, name: "Sponsor 2", logo: "/.png" },
-    { id: 3, name: "Sponsor 3", logo: "/.png" },
-    { id: 4, name: "Sponsor 4", logo: "/.png" },
-    { id: 5, name: "Sponsor 5", logo: "/.png" },
-    { id: 6, name: "Sponsor 6", logo: "/.png" },
+const SPONSOR_LOGO_FILES = [
+    "arun.png",
+    "axis.jpeg",
+    "burgerking.png",
+    "Domino.png",
+    "jawa.jpeg",
+    "nikon.png",
+    "Redbull.png",
 ];
+
+const toSponsorName = (filename: string) => {
+    const base = filename.replace(/\.[^/.]+$/, "");
+    return base
+        .replace(/[-_]+/g, " ")
+        .replace(/([a-z])([A-Z])/g, "$1 $2")
+        .replace(/\b\w/g, (c) => c.toUpperCase());
+};
+
+const SPONSORS = SPONSOR_LOGO_FILES.map((file, index) => ({
+    id: index + 1,
+    name: toSponsorName(file),
+    logo: `/logos/${file}`,
+}));
 
 export default function Sponsors() {
     return (
@@ -32,17 +46,27 @@ export default function Sponsors() {
                     </div>
                 </FadeIn>
 
-                {/* <FadeIn delay={200}>
-                <div className="w-full relative flex items-center justify-center -mt-18 sm:-mt-58 md:-mt-28 lg:-mt-58 overflow-visible">
-                    <Image
-                        src="/sponsors.png"
-                        alt="Sponsors"
-                        width={1200}
-                        height={800}
-                        className="w-[120%] sm:w-full h-auto object-contain scale-110 sm:scale-100"
-                    />
-                </div>
-            </FadeIn> */}
+                <FadeIn delay={200}>
+                    <div className="w-full flex items-center justify-center flex-col gap-8">
+                        <div className="mt-2 max-w-4xl grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
+                            {SPONSORS.map((sponsor) => (
+                                <div
+                                    key={sponsor.id}
+                                    className="h-24 rounded-xl  flex items-center justify-center"
+                                >
+                                    <Image
+                                        src={sponsor.logo}
+                                        alt={sponsor.name}
+                                        width={160}
+                                        height={80}
+                                        className="max-h-full w-auto object-contain"
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </FadeIn>
+         
 
                 {/* Community Partners Section */}
                 <FadeIn delay={300}>

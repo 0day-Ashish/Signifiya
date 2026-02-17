@@ -313,7 +313,7 @@ export default function Home() {
               </h1>
               <div className="w-full flex flex-row items-center justify-between px-5">
                 <span className={`text-xs sm:text-sm md:text-base text-white/90 tracking-widest ${gilton.className}`}>
-                  13th - 14th March
+                  27th - 28th March
                 </span>
                 <span className={`text-xl sm:text-2xl md:text-3xl text-white tracking-[0.3em] sm:tracking-[0.5em] ${bicubik.className}`}>
                   {APP_CONFIG.event.year}
