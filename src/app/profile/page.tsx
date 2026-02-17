@@ -4,8 +4,10 @@ import { useState, useRef, useEffect } from "react";
 import { authClient } from "@/lib/auth-client";
 import { APP_CONFIG } from "@/config/app.config";
 import { uploadAvatar, updateUserProfile, getUserProfile } from "@/app/actions";
+import html2canvas from "html2canvas-pro";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import VisitorCard from "@/components/Visitors-Pass";
 import localFont from "next/font/local";
 import Image from "next/image";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
@@ -38,6 +40,7 @@ export default function Profile() {
   const [showQrForPassId, setShowQrForPassId] = useState<string | null>(null);
   const [showEventPassDetail, setShowEventPassDetail] = useState<{ id: string; teamName: string; eventName: string; eventDate: string | Date | null; status: string; qrCode?: string | null; leaderBookingId?: string | null; leaderName?: string; members?: { name: string }[] } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const passCardRef = useRef<HTMLDivElement>(null);
 
   // Pre-defined Avatars
   const AVATARS = [
@@ -219,6 +222,15 @@ export default function Profile() {
     }
   };
 
+  const handleDownloadModalPass = async () => {
+    if (!passCardRef.current) return;
+    const canvas = await html2canvas(passCardRef.current, { backgroundColor: null });
+    const link = document.createElement("a");
+    link.download = "visitor-pass.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  };
+
   return (
     <>
       <style dangerouslySetInnerHTML={{__html: `
@@ -295,24 +307,55 @@ export default function Profile() {
         const p = passes.find((x: { id: string }) => x.id === showQrForPassId);
         if (!p) return null;
         const qrData = p.qrCode || p.id;
+        const passBookingId = p.userBookingId || p.bookingId || bookingId;
+        const passHolderName = formData.name || session?.user?.name || "Visitor";
         return (
           <div className="fixed inset-0 z-70 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-            <div className="bg-white p-6 sm:p-8 rounded-4xl border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] flex flex-col gap-6 items-center max-w-sm w-full">
+            <div className="bg-white p-5 sm:p-6 rounded-4xl border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] flex flex-col gap-4 items-center w-full max-w-[460px] max-h-[92dvh] overflow-y-auto overflow-x-hidden">
               <div className="flex justify-between items-center w-full">
                 <h2 className={`text-xl text-black ${gilton.className}`}>My Pass</h2>
-                <button
-                  onClick={() => setShowQrForPassId(null)}
-                  className="w-10 h-10 flex items-center justify-center rounded-full border-2 border-black bg-red-200 hover:bg-red-300 transition-colors"
-                >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={handleDownloadModalPass}
+                    className="w-10 h-10 flex items-center justify-center rounded-full border-2 border-black bg-[#deb3fa] hover:bg-[#c98bf2] transition-colors"
+                    title="Download pass"
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                      <polyline points="7 10 12 15 17 10"></polyline>
+                      <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                  </button>
+                  <button
+                    onClick={() => setShowQrForPassId(null)}
+                    className="w-10 h-10 flex items-center justify-center rounded-full border-2 border-black bg-red-200 hover:bg-red-300 transition-colors"
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                  </button>
+                </div>
               </div>
-              <div className="aspect-square w-48 h-48 bg-white border-2 border-black rounded-xl flex items-center justify-center overflow-hidden">
-                <img src={`${APP_CONFIG.services.qrCodeApi}?size=200x200&data=${encodeURIComponent(qrData)}`} alt="Pass QR" className="w-full h-full object-contain" />
+              <div ref={passCardRef} className="w-full flex justify-center">
+                {passBookingId ? (
+                  <VisitorCard
+                    name={passHolderName}
+                    bookingId={passBookingId}
+                    qrCode={qrData}
+                    passTypeLabel={p.type}
+                    embedded
+                    compact
+                    showDownload={false}
+                  />
+                ) : (
+                  <div className="w-full space-y-4">
+                    <div className="aspect-square w-48 h-48 mx-auto bg-white border-2 border-black rounded-xl flex items-center justify-center overflow-hidden">
+                      <img src={`${APP_CONFIG.services.qrCodeApi}?size=200x200&data=${encodeURIComponent(qrData)}`} alt="Pass QR" className="w-full h-full object-contain" />
+                    </div>
+                    <p className={`font-bold text-black uppercase text-center ${softura.className}`}>{p.type}</p>
+                    <p className={`text-sm text-gray-600 text-center ${softura.className}`}>Valid until: {new Date(p.validUntil).toLocaleDateString()}</p>
+                  </div>
+                )}
               </div>
-              <p className={`font-bold text-black uppercase ${softura.className}`}>{p.type}</p>
-              {(p.userBookingId || p.bookingId) && <p className={`text-sm font-mono text-zinc-600 ${softura.className}`}>Booking ID: {p.userBookingId || p.bookingId}</p>}
-              <p className={`text-sm text-gray-600 ${softura.className}`}>Valid until: {new Date(p.validUntil).toLocaleDateString()}</p>
             </div>
           </div>
         );
@@ -641,10 +684,10 @@ export default function Profile() {
                                             {(pass.userBookingId || pass.bookingId) && <p className={`text-xs text-zinc-500 font-mono ${softura.className}`}>Booking ID: {pass.userBookingId || pass.bookingId}</p>}
                                             <p className={`text-xs text-gray-600 font-medium ${softura.className}`}>Valid until: {new Date(pass.validUntil).toLocaleDateString()}</p>
                                          </div>
-                                         <button type="button" onClick={() => setShowQrForPassId(pass.id)} className={`bg-black text-white text-xs px-3 py-1 rounded-full font-bold uppercase hover:bg-gray-800 transition-colors ${softura.className}`}>Show QR</button>
-                                     </div>
-                                 ))
-                             ) : (
+                                         <button type="button" onClick={() => setShowQrForPassId(pass.id)} className={`bg-black text-white text-xs px-3 py-1 rounded-full font-bold uppercase hover:bg-gray-800 transition-colors ${softura.className}`}>View Pass</button>
+                                      </div>
+                                  ))
+                              ) : (
                                  <div className="flex-1 flex flex-col items-center justify-center text-center gap-2 py-8 opacity-60">
                                      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400">
                                         <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>

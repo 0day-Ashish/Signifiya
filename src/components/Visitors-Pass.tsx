@@ -17,9 +17,21 @@ interface VisitorCardProps {
   passTypeLabel?: string;
   /** When true, use compact layout for embedding in register success etc. */
   embedded?: boolean;
+  /** Hide download CTA when rendering inside small containers like modals */
+  showDownload?: boolean;
+  /** Smaller embedded layout for constrained spaces */
+  compact?: boolean;
 }
 
-export default function VisitorCard({ name, bookingId, qrCode, passTypeLabel, embedded }: VisitorCardProps) {
+export default function VisitorCard({
+  name,
+  bookingId,
+  qrCode,
+  passTypeLabel,
+  embedded,
+  showDownload = true,
+  compact = false,
+}: VisitorCardProps) {
   const ticketRef = useRef<HTMLDivElement>(null);
 
   const handleDownload = async () => {
@@ -33,13 +45,13 @@ export default function VisitorCard({ name, bookingId, qrCode, passTypeLabel, em
   };
 
   const wrapperClass = embedded
-    ? "flex flex-col items-center p-4"
+    ? `flex w-full flex-col items-center ${compact ? "p-0" : "p-4"}`
     : "flex min-h-screen flex-col items-center justify-between p-4 sm:p-8 md:p-24 bg-zinc-900";
 
   return (
     <main className={wrapperClass}>
       <div ref={ticketRef} className="w-full max-w-[400px] h-full bg-[#d400ff] rounded-[20px] p-1">
-        <div className="w-full h-[500px] sm:h-[600px] bg-zinc-950 px-4 sm:px-8 rounded-[18px] shadow-[0px_0px_10px_2px_rgba(0,0,255,0.8)] backdrop-blur-2xl relative overflow-hidden">
+        <div className={`w-full ${compact ? "h-[460px] sm:h-[520px]" : "h-[500px] sm:h-[600px]"} bg-zinc-950 px-4 sm:px-8 rounded-[18px] shadow-[0px_0px_10px_2px_rgba(0,0,255,0.8)] backdrop-blur-2xl relative overflow-hidden`}>
           {/* Background */}
           <div className="absolute top-0 left-0 w-full h-full pb-20 z-0">
             <Image src="/logo2.png" alt="Signifiya Logo" width={50} height={50} className="absolute top-2 left-2 bg-transparent backdrop-blur-3xl outline-white/10 outline rounded-full" />
@@ -67,10 +79,10 @@ export default function VisitorCard({ name, bookingId, qrCode, passTypeLabel, em
           </div>
 
           {/* QR (unique, for admin verification) and Booking ID — above background */}
-          <div className="absolute bottom-12 sm:bottom-16 left-4 right-4 sm:left-8 sm:right-8 z-20 flex flex-col justify-start items-start gap-2">
+          <div className={`absolute ${compact ? "bottom-8 sm:bottom-10" : "bottom-12 sm:bottom-16"} left-4 right-4 sm:left-8 sm:right-8 z-20 flex flex-col justify-start items-start gap-2`}>
             <div className="flex flex-row justify-center gap-4 sm:gap-8">
               <div className="shrink-0 p-2 border bg-white border-zinc-800 rounded-md border-dashed">
-                <QRCodeCanvas value={qrCode} size={100} />
+                <QRCodeCanvas value={qrCode} size={compact ? 92 : 100} />
               </div>
               <div className="gap-2 sm:gap-4 flex flex-col min-w-0 flex-1">
                 <div className="flex flex-col leading-tight min-w-0">
@@ -83,14 +95,16 @@ export default function VisitorCard({ name, bookingId, qrCode, passTypeLabel, em
           </div>
         </div>
       </div>
-      <div className="w-full max-w-[400px] px-4 py-2 mt-2 flex justify-center items-center">
-        <button
-          onClick={handleDownload}
-          className="w-full px-4 py-4 text-sm font-bold tracking-tighter text-zinc-400 rounded-[18px] bg-black cursor-pointer hover:text-white hover:bg-zinc-950 active:scale-[0.98] active:translate-y-0.5 shadow-[0px_0px_10px_2px_rgba(0,0,255,0.8)] backdrop-blur-2xl transition-all duration-300 ease-in-out flex justify-center items-center"
-        >
-          Download Ticket
-        </button>
-      </div>
+      {showDownload && (
+        <div className="w-full max-w-[400px] px-4 py-2 mt-2 flex justify-center items-center">
+          <button
+            onClick={handleDownload}
+            className="w-full px-4 py-4 text-sm font-bold tracking-tighter text-zinc-400 rounded-[18px] bg-black cursor-pointer hover:text-white hover:bg-zinc-950 active:scale-[0.98] active:translate-y-0.5 shadow-[0px_0px_10px_2px_rgba(0,0,255,0.8)] backdrop-blur-2xl transition-all duration-300 ease-in-out flex justify-center items-center"
+          >
+            Download Ticket
+          </button>
+        </div>
+      )}
     </main>
   );
 }
