@@ -462,47 +462,43 @@ export default function EventRegistration() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {eventsList.map((event) => {
-                      const isSelected = selectedEventIds.includes(event.id);
-                      const isDisabled = selectedEventIds.length >= 1 && !isSelected;
-                      return (
-                        <div
-                          key={event.id}
-                          onClick={() => !isDisabled && toggleEvent(event.id)}
-                          className={`
-                                    relative p-4 rounded-xl border-2 border-black transition-all duration-200
-                                    ${isDisabled ? "cursor-not-allowed opacity-50 bg-zinc-100" : "cursor-pointer"}
-                                    ${isSelected ? `${event.color} shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] translate-x-0 translate-y-0` : isDisabled ? "" : "bg-white hover:bg-zinc-50 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)]"}
-                                `}
-                        >
-                          <div className="flex justify-between items-start mb-2">
-                            <div
-                              className={`w-5 h-5 border-2 border-black rounded flex items-center justify-center ${isSelected ? "bg-black" : "bg-white"}`}
-                            >
-                              {isSelected && (
-                                <span className="text-white text-xs">✓</span>
-                              )}
-                            </div>
-                            <span className="font-mono text-xs font-bold bg-white border border-black px-2 py-0.5 rounded shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                              ₹{event.price}
-                            </span>
-                          </div>
-                          <h3 className="font-black text-lg leading-tight uppercase">
-                            {event.name}
-                          </h3>
-                          <p className="text-xs font-medium text-zinc-600 mt-1">
-                            {event.type}
-                          </p>
-                        </div>
-                      );
-                    })}
+                  className="space-y-4"
+                >
+                  <p className="font-bold text-xs uppercase text-zinc-500">
+                    Step 2/4: Select Event
+                  </p>
+                  <div className="space-y-3 h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                     {eventsList.map((ev) => {
+                       const isSelected = selectedEventIds.includes(ev.id);
+                       return (
+                         <div
+                           key={ev.id}
+                           onClick={() => toggleEvent(ev.id)}
+                           className={`cursor-none border-2 p-4 rounded-xl transition-all relative overflow-hidden ${
+                             isSelected
+                               ? "border-black bg-[#deb3fa] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+                               : "border-zinc-300 bg-white hover:border-zinc-400"
+                           }`}
+                         >
+                           <div className="flex justify-between items-start relative z-10">
+                              <div>
+                                 <h3 className={`font-black text-lg uppercase ${isSelected ? "text-black" : "text-zinc-400"}`}>
+                                   {ev.name}
+                                 </h3>
+                                 <p className={`text-xs font-bold mt-1 ${isSelected ? "text-black/70" : "text-zinc-300"}`}>
+                                   {ev.date}
+                                 </p>
+                              </div>
+                              <div className={`px-2 py-1 rounded text-xs font-bold border-2 ${isSelected ? "bg-black text-white border-black" : "bg-zinc-100 text-zinc-400 border-zinc-200"}`}>
+                                 ₹{ev.price}
+                              </div>
+                           </div>
+                         </div>
+                       );
+                     })}
                   </div>
-                  {errors.selectedEvents && (
-                    <p className="text-red-500 font-bold text-center bg-red-100 border border-red-500 p-2 rounded">
-                      {errors.selectedEvents.message}
-                    </p>
-                  )}
 
-                  <div className="flex gap-4 pt-4">
+                  <div className="flex gap-4">
                     <Button
                       onClick={() => setStep(1)}
                       variant="outline"
@@ -512,9 +508,9 @@ export default function EventRegistration() {
                     </Button>
                     <Button
                       onClick={onSubmitStep2}
-                      className="flex-2 bg-black text-white font-bold py-6 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_#eab308] hover:shadow-[2px_2px_0px_0px_#eab308] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
+                      className="flex-[2] bg-black text-white font-bold py-6 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_#a855f7] hover:shadow-[2px_2px_0px_0px_#a855f7] hover:translate-y-[2px] hover:shadow-none transition-all"
                     >
-                      NEXT: TEAM DETAILS →
+                      NEXT: ADD TEAM →
                     </Button>
                   </div>
                 </motion.div>
@@ -526,90 +522,48 @@ export default function EventRegistration() {
                   initial={{ x: 20, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
                   exit={{ x: -20, opacity: 0 }}
-                  className="space-y-6"
+                  className="space-y-4"
                 >
-                  <div className="bg-blue-100 border-2 border-black p-3 rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                    <p className="font-bold text-xs uppercase">
-                      Step 3/4: Add Team Members
-                    </p>
+                  <p className="font-bold text-xs uppercase text-zinc-500">
+                    Step 3/4: Add Team Members (Optional)
+                  </p>
+                  
+                  <div className="bg-amber-100 border-2 border-amber-400 p-3 rounded-xl mb-4">
+                     <p className="text-amber-800 text-xs font-bold"> Note: Team leader is automatically included. Add other members here.</p>
                   </div>
+
                   <div className="space-y-4">
                     {fields.map((field, index) => (
-                      <div
-                        key={field.id}
-                        className="p-4 bg-zinc-50 border-2 border-black rounded-xl relative group"
-                      >
-                        <div className="absolute -top-3 left-4 bg-black text-white text-xs font-bold px-2 py-1 rounded">
-                          MEMBER {index + 1}
-                        </div>
-                        {index > 0 && (
-                          <button
-                            type="button"
-                            onClick={() => remove(index)}
-                            className="absolute -top-3 -right-2 bg-red-500 text-white w-6 h-6 rounded-full border-2 border-black flex items-center justify-center font-bold shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:scale-110"
-                          >
-                            ×
-                          </button>
-                        )}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-                          <div>
-                            <Label className={labelStyles}>Full Name</Label>
-                            <Input
-                              {...register(`members.${index}.name` as const)}
-                              className={inputStyles}
-                              placeholder="Name"
-                            />
-                            {errors.members?.[index]?.name && (
-                              <p className="text-red-500 text-xs font-bold mt-1">{errors.members[index]?.name?.message}</p>
-                            )}
-                          </div>
-                          <div>
-                            <Label className={labelStyles}>College Name</Label>
-                            <Input
-                              {...register(`members.${index}.college` as const)}
-                              className={inputStyles}
-                              placeholder="College"
-                            />
-                            {errors.members?.[index]?.college && (
-                              <p className="text-red-500 text-xs font-bold mt-1">{errors.members[index]?.college?.message}</p>
-                            )}
-                          </div>
-                          <div>
-                            <Label className={labelStyles}>Phone</Label>
-                            <Input
-                              {...register(`members.${index}.phone` as const)}
-                              className={inputStyles}
-                              placeholder="9876543210"
-                            />
-                            {errors.members?.[index]?.phone && (
-                              <p className="text-red-500 text-xs font-bold mt-1">{errors.members[index]?.phone?.message}</p>
-                            )}
-                          </div>
-                          <div>
-                            <Label className={labelStyles}>Email</Label>
-                            <Input
-                              {...register(`members.${index}.email` as const)}
-                              type="email"
-                              className={inputStyles}
-                              placeholder="email@example.com"
-                            />
-                            {errors.members?.[index]?.email && (
-                              <p className="text-red-500 text-xs font-bold mt-1">{errors.members[index]?.email?.message}</p>
-                            )}
-                          </div>
-                        </div>
+                      <div key={field.id} className="bg-white border-2 border-black p-4 rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] relative">
+                         <button
+                           type="button"
+                           onClick={() => remove(index)}
+                           className="absolute -top-3 -right-3 w-8 h-8 flex items-center justify-center bg-red-500 border-2 border-black rounded-full text-white hover:bg-red-600 transition-colors z-10"
+                         >
+                           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                         </button>
+                         <h4 className="font-bold text-xs uppercase mb-3 text-zinc-400">Member {index + 1}</h4>
+                         <div className="grid gap-3">
+                            <Input {...register(`members.${index}.name`)} className={inputStyles} placeholder="Name" />
+                            <Input {...register(`members.${index}.college`)} className={inputStyles} placeholder="College" />
+                            <div className="grid grid-cols-2 gap-3">
+                               <Input {...register(`members.${index}.email`)} className={inputStyles} placeholder="Email" />
+                               <Input {...register(`members.${index}.phone`)} className={inputStyles} placeholder="Phone" />
+                            </div>
+                         </div>
                       </div>
                     ))}
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => append({ name: "", college: "", phone: "", email: "" })}
-                    className="w-full py-3 border-2 border-dashed border-black rounded-xl font-bold uppercase text-zinc-500 hover:bg-zinc-100 hover:text-black transition-colors"
-                  >
-                    + Add Another Member
-                  </button>
 
-                  <div className="flex gap-4 pt-4">
+                  <Button
+                    type="button"
+                    onClick={() => append({ name: "", college: "", email: "", phone: "" })}
+                    className="w-full bg-white text-black font-bold py-4 rounded-xl border-2 border-dashed border-zinc-400 hover:border-black hover:bg-zinc-50 transition-all uppercase"
+                  >
+                    + Add Member
+                  </Button>
+
+                  <div className="flex gap-4 mt-6">
                     <Button
                       onClick={() => setStep(2)}
                       variant="outline"
@@ -618,10 +572,10 @@ export default function EventRegistration() {
                       BACK
                     </Button>
                     <Button
-                      onClick={onSubmitStep3}
-                      className="flex-[2] bg-black text-white font-bold py-6 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_#3b82f6] hover:shadow-[2px_2px_0px_0px_#3b82f6] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
+                      onClick={() => setStep(4)} // To Payment
+                      className="flex-[2] bg-black text-white font-bold py-6 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_#a855f7] hover:shadow-[2px_2px_0px_0px_#a855f7] hover:translate-y-[2px] hover:shadow-none transition-all"
                     >
-                      PROCEED TO PAY →
+                      NEXT: PAYMENT →
                     </Button>
                   </div>
                 </motion.div>
@@ -716,38 +670,41 @@ export default function EventRegistration() {
 
               {step === 5 && (
                 <motion.div
-                  initial={{ scale: 0.8, opacity: 0 }}
+                  key="step5"
+                  initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
-                  className="flex flex-col items-center text-center space-y-6 py-6"
+                  className="space-y-6 text-center"
                 >
-                  <div className="w-20 h-20 bg-green-400 border-4 border-black rounded-full flex items-center justify-center shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
-                    <span className="text-3xl">🏆</span>
+                  <div className="bg-[#4caf50] text-white p-6 rounded-4xl border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+                    <h2 className={`text-4xl font-black uppercase mb-2 ${gilton.className}`}>
+                      Registration Successful!
+                    </h2>
+                    <p className="font-medium text-white/90">
+                      Your team registration is pending verification.
+                    </p>
+                     <p className="text-sm mt-2 opacity-80">
+                        Check your profile for the event pass once approved.
+                     </p>
                   </div>
-                  <h2 className="text-3xl font-black uppercase">Registration Successful!</h2>
-                  {createdEventPass && (
-                    <div className="w-full max-w-[400px]">
-                      <EventCard
-                        teamLeadName={createdEventPass.teamLeadName}
-                        eventName={createdEventPass.eventName}
-                        bookingId={createdEventPass.bookingId}
-                        teamName={createdEventPass.teamName}
-                        eventTime={createdEventPass.eventTime}
-                        qrCode={createdEventPass.qrCode}
-                        members={createdEventPass.members}
-                        embedded
-                      />
-                    </div>
-                  )}
-                  <Button
-                    onClick={() => (window.location.href = "/")}
-                    className="mt-4 bg-black text-white font-bold px-8 py-4 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] hover:shadow-none hover:translate-y-1 transition-all"
-                  >
-                    RETURN TO HOME
-                  </Button>
+
+                  <div className="flex justify-center gap-4">
+                    <Button 
+                      onClick={() => router.push("/profile")}
+                      className="bg-black text-white px-8 py-4 rounded-xl font-bold border-2 border-black shadow-[4px_4px_0px_0px_#a855f7] hover:shadow-none hover:translate-y-[2px]"
+                    >
+                      GO TO PROFILE
+                    </Button>
+                    <Button
+                      onClick={() => window.location.reload()}
+                      variant="outline" 
+                      className="bg-white px-8 py-4 rounded-xl font-bold border-2 border-black"
+                    >
+                      REGISTER ANOTHER
+                    </Button>
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
-            */}
           </div>
         </div>
 
