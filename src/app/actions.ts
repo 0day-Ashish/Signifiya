@@ -355,17 +355,73 @@ export async function verifyRazorpayPayment(data: {
  * Legacy function - kept for backward compatibility
  * Now redirects to payment flow
  */
-export async function purchaseVisitorPass(data: {
-  bookingId: string;   
+export async function submitVisitorRegistration(data: {
+  bookingId: string;
   name: string;
   email: string;
   phone: string;
   college: string;
   passType: string;
-  sessionUserId: string; 
+  sessionUserId: string;
+  utrId: string;
 }) {
-  // This function is now deprecated - use createRazorpayOrder instead
-  return { success: false, error: "Please use the payment flow" };
+  try {
+    const { bookingId: rawBookingId, name, email, phone, college, passType, sessionUserId, utrId } = data;
+    const bid = rawBookingId?.trim();
+
+    if (!bid || !name?.trim() || !email?.trim() || !phone?.trim() || !college?.trim() || !passType || !sessionUserId || !utrId?.trim()) {
+      return { success: false, error: "All fields including Transaction/UTR ID are required" };
+    }
+
+    const owner = await prisma.user.findUnique({ where: { bookingId: bid } });
+    if (!owner) return { success: false, error: "Invalid Booking ID" };
+    if (owner.id !== sessionUserId) return { success: false, error: "This Booking ID does not belong to your account" };
+
+    // Type guard to ensure passType is valid
+    if (!(passType in PASS_AMOUNTS)) {
+      return { success: false, error: "Invalid pass type" };
+    }
+
+    const amount = PASS_AMOUNTS[passType as PassType];
+    const typeLabel = PASS_TYPE_LABELS[passType as PassType];
+    if (amount == null || !typeLabel) return { success: false, error: "Invalid pass type" };
+
+    const userBookingId = owner.bookingId!;
+
+    // Create visitor registration with PENDING status
+    const reg = await prisma.visitorRegistration.create({
+      data: {
+        name: name.trim(),
+        email: email.trim().toLowerCase(),
+        phone: phone.trim(),
+        college: college.trim(),
+        passType,
+        amount,
+        status: "pending", // Manual verification required
+        paymentProofUrl: utrId.trim(), // Storing UTR as proof URL for now
+        userId: owner.id,
+        userBookingId,
+      },
+    });
+
+    // Invalidate caches for real-time updates
+    await invalidateUserProfileCache(owner.id);
+
+    revalidatePath("/admin");
+    revalidatePath("/admin/revenue");
+    revalidatePath("/profile");
+
+    return {
+      success: true,
+      visitorRegistration: reg,
+    };
+  } catch (error: any) {
+    console.error("submitVisitorRegistration error:", error);
+    // Check for unique constraint violation on bookingId if applicable, though we removed unique constraint on bookingId in VisitorRegistration in schema logic previously or it might still be there. 
+    // Schema says: bookingId String? @unique // legacy per-reg id. 
+    // We are NOT setting legacy bookingId here, so it should be fine.
+    return { success: false, error: error?.message || "Registration failed" };
+  }
 }
 
 export async function submitIssue(data: {

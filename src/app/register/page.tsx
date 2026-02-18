@@ -51,7 +51,8 @@ export default function Register() {
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [payError, setPayError] = useState<string | null>(null);
-  const [createdPass, setCreatedPass] = useState<{ type: string; qrCode: string; id: string; userBookingId?: string; name?: string } | null>(null);
+  const [utrId, setUtrId] = useState("");
+  const [showConfetti, setShowConfetti] = useState(false);
 
   const { data: session } = authClient.useSession();
 
@@ -70,33 +71,29 @@ export default function Register() {
     setStep(2);
   };
 
-  // Load Razorpay script
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://checkout.razorpay.com/v1/checkout.js";
-    script.async = true;
-    document.body.appendChild(script);
-
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
+  const calculateTotal = () => {
+    const type = watch("passType") || "single";
+    return PASS_AMOUNTS[type];
+  };
 
   const handleConfirmRegister = async () => {
     const values = watch();
-    if (!values?.bookingId || !values?.firstName || !values?.lastName || !values?.email || !values?.phone || !values?.college) {
-      setPayError("Please complete step 1 (including Booking ID) first.");
+    if (!utrId || utrId.trim().length < 4) {
+      setPayError("Please enter a valid Transaction ID / UTR.");
       return;
     }
+
     if (!session?.user?.id) {
       window.location.href = "/sign-in?callbackUrl=/register";
       return;
     }
+
     setPayError(null);
     setIsLoading(true);
+
     try {
-      // Create Razorpay order
-      const orderRes = await createRazorpayOrder({
+      const { submitVisitorRegistration } = await import("@/app/actions");
+      const res = await submitVisitorRegistration({
         bookingId: values.bookingId.trim(),
         name: `${values.firstName} ${values.lastName}`.trim(),
         email: values.email,
@@ -104,110 +101,21 @@ export default function Register() {
         college: values.college,
         passType: values.passType || "single",
         sessionUserId: session.user.id,
+        utrId: utrId.trim(),
       });
 
-      if (!orderRes.success || !orderRes.orderId || !orderRes.amount) {
-        setPayError(orderRes.error || "Failed to create payment order.");
+      if (!res.success) {
+        setPayError(res.error || "Submission failed. Please try again.");
         setIsLoading(false);
         return;
       }
 
-      // Initialize Razorpay checkout
-      const options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "",
-        amount: orderRes.amount * 100, // Amount in paise
-        currency: "INR",
-        name: "SIGNIFIYA'26",
-        description: `${PASS_LABELS[values.passType || "single"]} - Visitor Pass`,
-        order_id: orderRes.orderId,
-        handler: async function (response: any) {
-          // Payment successful - verify and create pass
-          setIsLoading(true);
-          try {
-            const verifyRes = await verifyRazorpayPayment({
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-              bookingId: values.bookingId.trim(),
-              name: `${values.firstName} ${values.lastName}`.trim(),
-              email: values.email,
-              phone: values.phone,
-              college: values.college,
-              passType: values.passType || "single",
-              sessionUserId: session.user.id,
-            });
-
-            if (!verifyRes.success) {
-              setPayError(verifyRes.error || "Payment verification failed.");
-              setIsLoading(false);
-              return;
-            }
-
-            if (verifyRes.pass) {
-              const userName = verifyRes.visitorRegistration?.name || `${values.firstName} ${values.lastName}`.trim() || "Visitor";
-              const uid = verifyRes.pass.userBookingId ?? (verifyRes.pass as { userBookingId?: string | null }).userBookingId ?? undefined;
-              setCreatedPass({
-                type: verifyRes.pass.type,
-                qrCode: verifyRes.pass.qrCode || verifyRes.pass.id,
-                id: verifyRes.pass.id,
-                userBookingId: uid ?? undefined,
-                name: userName,
-              });
-            }
-            setStep(3);
-          } catch (error: any) {
-            setPayError(error?.message || "Payment verification failed.");
-          } finally {
-            setIsLoading(false);
-          }
-        },
-        prefill: {
-          name: `${values.firstName} ${values.lastName}`.trim(),
-          email: values.email,
-          contact: values.phone,
-        },
-        theme: {
-          color: "#9c27b0",
-        },
-        config: {
-          display: {
-            blocks: {
-              banks: {
-                name: "All Payment Methods",
-                instruments: [
-                  {
-                    method: "upi",
-                  },
-                  {
-                    method: "card",
-                  },
-                  {
-                    method: "netbanking",
-                  },
-                  {
-                    method: "wallet",
-                  },
-                ],
-              },
-            },
-            sequence: ["block.banks"],
-            preferences: {
-              show_default_blocks: true,
-            },
-          },
-        },
-        modal: {
-          ondismiss: function () {
-            setIsLoading(false);
-          },
-        },
-      };
-
-      // Open Razorpay checkout
-      const razorpay = (window as any).Razorpay(options);
-      razorpay.open();
+      // Success
+      setShowConfetti(true);
+      setStep(3);
+      setIsLoading(false);
     } catch (error: any) {
-      setPayError(error?.message || "Failed to initialize payment.");
+      setPayError(error?.message || "Something went wrong.");
       setIsLoading(false);
     }
   };
@@ -264,21 +172,8 @@ export default function Register() {
             </div>
           </div>
 
-          {/* Placeholder Text */}
-          <div className="flex-1 flex flex-col items-center justify-center p-8 ">
-            <div className="text-center">
-              <h2 className="text-4xl lg:text-6xl font-black uppercase text-black mb-4">
-                Starting Soon
-              </h2>
-              <p className="text-xl lg:text-2xl text-black font-bold tracking-widest uppercase">
-                Stay Tuned!
-              </p>
-            </div>
-          </div>
-
-          {/* Commented out form for future launch
           <AnimatePresence mode="wait">
-            
+            {/* STEP 1: Details Form */}
             {step === 1 && (
               <motion.div
                 key="step1"
@@ -470,7 +365,7 @@ export default function Register() {
               </motion.div>
             )}
 
-            
+            {/* STEP 2: QR Code and UTR */}
             {step === 2 && (
               <motion.div
                 key="step2"
@@ -489,34 +384,56 @@ export default function Register() {
 
                 <div className="bg-zinc-100 border-2 border-black p-4 rounded-xl mb-6">
                   <p className="font-bold text-sm text-zinc-700">
-                    {PASS_LABELS[watch("passType") || "single"]} — ₹{PASS_AMOUNTS[watch("passType") || "single"]}
+                    PAYING FOR: {PASS_LABELS[watch("passType") || "single"]}
                   </p>
-                  <p className="text-xs text-zinc-600 mt-2">
-                    Click below to proceed with secure payment via Razorpay.
-                  </p>
+                  <p className="text-3xl font-black text-black mt-1">₹{calculateTotal()}</p>
                 </div>
 
-                {!session?.user && (
-                  <div className="bg-amber-100 border-2 border-amber-600 p-4 rounded-xl mb-4">
-                    <p className="font-bold text-sm text-amber-900">Sign in required.</p>
-                    <p className="text-xs text-amber-800 mt-1">Sign in to complete registration and save your pass to Profile.</p>
-                    <Link href="/sign-in?callbackUrl=/register" className="inline-block mt-2 text-sm font-bold text-amber-900 underline">Sign in →</Link>
-                  </div>
-                )}
+                <div className="flex flex-col items-center mb-6">
+                   <div className="relative w-48 h-48 border-4 border-black rounded-xl overflow-hidden shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4">
+                     <Image src="/qr.jpeg" alt="Payment QR Code" fill className="object-contain p-2" />
+                   </div>
+                   <p className="text-sm font-bold text-center text-zinc-600 max-w-xs">
+                     Scan this QR code with any UPI app to pay.
+                   </p>
+                </div>
 
-                {payError && <p className="text-red-600 font-bold text-sm mb-4">{payError}</p>}
+                <div className="space-y-4">
+                   <div>
+                     <Label className={labelStyles}>Enter Transaction / UTR ID</Label>
+                     <Input
+                       value={utrId}
+                       onChange={(e) => setUtrId(e.target.value)}
+                       className={inputStyles}
+                       placeholder="Enter 12-digit UTR ID"
+                     />
+                     <p className="text-xs text-zinc-500 mt-1">
+                       Usually starts with banking ref no. or 'UPI...'
+                     </p>
+                   </div>
 
-                <Button
-                  className="w-full bg-green-500 text-black font-black text-lg py-6 rounded-xl border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:bg-green-400 transition-all active:shadow-none disabled:opacity-60"
-                  disabled={isLoading || !session?.user}
-                  onClick={handleConfirmRegister}
-                >
-                  {isLoading ? "PROCESSING…" : `PAY ₹${PASS_AMOUNTS[watch("passType") || "single"]} & REGISTER`}
-                </Button>
+                   {!session?.user && (
+                     <div className="bg-amber-100 border-2 border-amber-600 p-4 rounded-xl mb-4">
+                       <p className="font-bold text-sm text-amber-900">Sign in required.</p>
+                       <p className="text-xs text-amber-800 mt-1">Sign in to complete registration.</p>
+                       <Link href="/sign-in?callbackUrl=/register" className="inline-block mt-2 text-sm font-bold text-amber-900 underline">Sign in →</Link>
+                     </div>
+                   )}
+
+                   {payError && <p className="text-red-600 font-bold text-sm bg-red-50 p-2 border-l-4 border-red-600">{payError}</p>}
+
+                   <Button
+                     className="w-full bg-green-500 text-black font-black text-lg py-6 rounded-xl border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:bg-green-400 transition-all active:shadow-none disabled:opacity-60 disabled:cursor-not-allowed"
+                     disabled={isLoading || !session?.user || !utrId}
+                     onClick={handleConfirmRegister}
+                   >
+                     {isLoading ? "SUBMITTING..." : "SUBMIT PAYMENT DETAILS →"}
+                   </Button>
+                </div>
               </motion.div>
             )}
 
-            
+            {/* STEP 3: Success */}
             {step === 3 && (
               <motion.div
                 key="step3"
@@ -538,43 +455,33 @@ export default function Register() {
                 </div>
 
                 <h2 className="text-4xl sm:text-5xl font-black text-black tracking-tighter mb-4 uppercase">
-                  You&apos;re In!
+                  Thank You!
                 </h2>
 
-                <p className="text-zinc-600 font-medium mb-4 max-w-sm">
-                  Your visitor pass is ready. Download it or view in <strong>Profile → My Passes</strong>.
+                <p className="text-zinc-800 font-bold text-lg mb-6 max-w-md mx-auto leading-relaxed">
+                  Thank You for Registering. We will review and send your pass to your email soon.
+                  <span className="block mt-2 text-zinc-600 font-medium text-base">
+                    You can also check your <Link href="/profile" className="underline font-bold text-black">Profile</Link> section for ticket status.
+                  </span>
                 </p>
 
-                {createdPass && createdPass.userBookingId && (
-                  <div className="w-full max-w-[400px] mb-4">
-                    <VisitorCard
-                      name={createdPass.name || "Visitor"}
-                      bookingId={createdPass.userBookingId}
-                      qrCode={createdPass.qrCode}
-                      passTypeLabel={createdPass.type}
-                      embedded
-                    />
-                  </div>
-                )}
-
-                <div className="flex flex-col sm:flex-row gap-3 w-full max-w-sm mt-2">
+                <div className="flex flex-col sm:flex-row gap-3 w-full max-w-sm mt-4">
                   <Link
-                    href="/profile"
+                    href="/"
                     className="flex-1 bg-black text-white font-bold py-3 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-zinc-800 transition-all text-center"
                   >
-                    View in My Passes
+                    RETURN HOME
                   </Link>
-                  <Button
-                    onClick={() => (window.location.href = "/")}
-                    className="bg-zinc-200 text-black font-bold px-6 py-3 rounded-xl border-2 border-black hover:bg-zinc-300 transition-all"
+                  <Link
+                    href="/profile"
+                    className="flex-1 bg-white text-black font-bold py-3 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-zinc-50 transition-all text-center"
                   >
-                    RETURN TO HOME
-                  </Button>
+                    GO TO PROFILE
+                  </Link>
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
-          */}
         </div>
 
         {/* --- RIGHT SIDE: VISUAL --- */}
