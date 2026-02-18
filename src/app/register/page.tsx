@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { createRazorpayOrder, verifyRazorpayPayment } from "@/app/actions";
 
@@ -53,8 +54,27 @@ export default function Register() {
   const [payError, setPayError] = useState<string | null>(null);
   const [utrId, setUtrId] = useState("");
   const [showConfetti, setShowConfetti] = useState(false);
+  const router = useRouter();
 
-  const { data: session } = authClient.useSession();
+  const { data: session, isPending } = authClient.useSession();
+
+  useEffect(() => {
+    if (!isPending && !session) {
+      router.push("/sign-in?callbackUrl=/register");
+    }
+  }, [session, isPending, router]);
+
+  if (isPending) {
+     return (
+       <div className="flex items-center justify-center min-h-screen bg-zinc-950">
+         <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+       </div>
+     );
+  }
+
+  if (!session) {
+    return null; // Will redirect via useEffect
+  }
 
   const {
     register,
