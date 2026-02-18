@@ -72,9 +72,11 @@ export default function Register() {
      );
   }
 
-  if (!session) {
-    return null; // Will redirect via useEffect
-  }
+  // Debugging session state
+  console.log("Register Page - Session:", session, "IsPending:", isPending);
+
+  // Removed early return null to avoid black screen flicker. 
+  // useEffect will handle redirect if session is missing.
 
   const {
     register,
