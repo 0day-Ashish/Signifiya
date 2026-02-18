@@ -43,8 +43,8 @@ const galleryImages = Array.from({ length: 51 }, (_, index) => {
 
 // Fixed Marquee: Added scale-105 to prevent white gaps on edges when rotated
 const Marquee = () => (
-   
-    
+
+
   <div className="w-full relative z-20 py-10 overflow-hidden">
 
     <div className="absolute inset-0 flex items-center bg-yellow-300 border-y-4 border-black transform -rotate-1 scale-105 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
@@ -68,7 +68,7 @@ const Marquee = () => (
 
 // The Main Gallery Page
 export default function Gallery() {
-   const [showNavLinks, setShowNavLinks] = useState(false);
+  const [showNavLinks, setShowNavLinks] = useState(false);
   const [session, setSession] = useState<any>(null);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [activeFilter, setActiveFilter] = useState("ALL");
@@ -117,13 +117,13 @@ export default function Gallery() {
   return (
     // Added overflow-x-hidden to prevent horizontal scrollbars from rotated elements
     <div className="bg-zinc-950 min-h-screen font-sans selection:bg-purple-500 selection:text-white overflow-x-hidden">
-          <Navbar
-           showNavLinks={showNavLinks}
-           session={session}
-           showProfileMenu={showProfileMenu}
-           setShowProfileMenu={setShowProfileMenu}
-           hideLogo={false}
-         />
+      <Navbar
+        showNavLinks={showNavLinks}
+        session={session}
+        showProfileMenu={showProfileMenu}
+        setShowProfileMenu={setShowProfileMenu}
+        hideLogo={false}
+      />
       {/* Return Home Link - Fixed below logo */}
       {/* <div className="fixed top-38 lg:top-34 sm:top-30 left-10 z-20">
         <Link
@@ -143,10 +143,10 @@ export default function Gallery() {
             </h1>
 
             <div className="mt-6 flex flex-col items-center">
-            <span className="bg-white text-black px-4 py-1 font-mono font-bold border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -rotate-2">
+              <span className="bg-white text-black px-4 py-1 font-mono font-bold border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -rotate-2">
                 EST. 2021
               </span>
-              
+
               <p className={`text-zinc-100 text-center text-lg lg:text-2xl max-w-2xl tracking-tight mt-6 ${softura.className}`}>
                 A collection of chaotic, beautiful, and{" "}
                 <span className="bg-black text-white px-2 italic">
@@ -176,11 +176,10 @@ export default function Gallery() {
                 onClick={() => setActiveFilter(cat)}
                 className={`
                 px-6 py-2 lg:px-8 lg:py-3 font-black text-base lg:text-lg border-4 border-black rounded-xl transition-all duration-200 ${softura.className}
-                ${
-                  activeFilter === cat
+                ${activeFilter === cat
                     ? "bg-purple-500 text-white shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] translate-x-[2px] translate-y-[2px]"
                     : "bg-white text-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1"
-                }
+                  }
               `}
               >
                 {cat}
@@ -231,7 +230,7 @@ export default function Gallery() {
                     </h3>
                   </div>
                   {/* Like/Heart Button */}
-                  <button 
+                  <button
                     onClick={(e) => handleHeartClick(e, img.id)}
                     className="bg-red-500 text-white w-10 h-10 border-2 border-black rounded-full flex items-center justify-center shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-y-1 active:shadow-none transition-all hover:bg-red-600 relative z-30"
                   >
@@ -246,7 +245,7 @@ export default function Gallery() {
           ))}
         </div>
       </div>
-        <Footer />
+      <Footer />
 
       {/* Heart Confetti */}
       {hearts.map((heart) => {
