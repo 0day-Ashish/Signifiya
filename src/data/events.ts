@@ -311,7 +311,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     description:
       "Drop in, gear up, and fight through intense combat zones to be the last team standing.",
     date: "March 27th - 28th",
-    image: "/bgmi.jpg",
+    image: "/bgmi-01.jpg",
     prizePool: "TBA",
     day: 2,
           scheduleDescription: "",

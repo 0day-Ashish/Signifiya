@@ -12,145 +12,32 @@ import { authClient } from "@/lib/auth-client";
 const gilton = localFont({ src: "../../../public/fonts/GiltonRegular.otf" });
 const softura = localFont({ src: "../../../public/fonts/Softura-Demo.otf" });
 
-const categories = ["ALL", "TECH", "CULTURAL", "VIBES", "BTS"];
+const galleryCategories = ["TECH", "CULTURAL", "VIBES", "BTS"] as const;
+const categories = ["ALL", ...galleryCategories];
+const imageColors = [
+  "bg-purple-200",
+  "bg-yellow-200",
+  "bg-blue-200",
+  "bg-pink-200",
+  "bg-green-200",
+  "bg-orange-200",
+  "bg-red-200",
+  "bg-teal-200",
+] as const;
+const imageRotations = ["rotate-2", "-rotate-1", "rotate-1", "-rotate-2", "rotate-3", "-rotate-3"] as const;
 
-const galleryImages = [
-  {
-    id: 1,
-    src: "/gall13.jpg",
-    caption: "The Opening Ceremony",
-    category: "CULTURAL",
-    size: "large",
-    color: "bg-purple-200",
-    rotation: "rotate-2",
-  },
-  {
-    id: 10,
-    src: "/gall12.jpg",
-    caption: "The Opening Ceremony",
-    category: "CULTURAL",
-    size: "large",
-    color: "bg-purple-200",
-    rotation: "rotate-2",
-  },
-  {
-    id: 13,
-    src: "/gall4.jpg",
-    caption: "SIGNIFIYA'25",
-    category: "CULTURAL",
-    size: "large",
-    color: "bg-purple-200",
-    rotation: "rotate-2",
-  },
-  {
-    id: 2,
-    src: "/gall5.jpg",
-    caption: "Valorant Grind",
-    category: "TECH",
-    size: "small",
-    color: "bg-yellow-200",
-    rotation: "-rotate-1",
-  },
-  {
-    id: 3,
-    src: "/gall22.jpg",
-    caption: "Drone Arena",
-    category: "TECH",
-    size: "tall",
-    color: "bg-blue-200",
-    rotation: "rotate-1",
-  },
-  {
-    id: 4,
-    src: "/gall24.jpg",
-    caption: "DJ Night Madness",
-    category: "VIBES",
-    size: "small",
-    color: "bg-pink-200",
-    rotation: "-rotate-2",
-  },
-  {
-    id: 5,
-    src: "/gall21.jpg",
-    caption: "Behind The Scenes",
-    category: "BTS",
-    size: "small",
-    color: "bg-green-200",
-    rotation: "rotate-3",
-  },
-  {
-    id: 14,
-    src: "/gall15.jpg",
-    caption: "Behind The Scenes",
-    category: "BTS",
-    size: "small",
-    color: "bg-green-200",
-    rotation: "rotate-3",
-  },
-  {
-    id: 11,
-    src: "/gall8.jpg",
-    caption: "Behind The Scenes",
-    category: "BTS",
-    size: "small",
-    color: "bg-green-200",
-    rotation: "rotate-3",
-  },
-  {
-    id: 12,
-    src: "/gall7.jpg",
-    caption: "Behind The Scenes",
-    category: "BTS",
-    size: "small",
-    color: "bg-green-200",
-    rotation: "rotate-3",
-  },
-  {
-    id: 6,
-    src: "/gall9.jpg",
-    caption: "Prize Distribution",
-    category: "CULTURAL",
-    size: "large",
-    color: "bg-orange-200",
-    rotation: "-rotate-1",
-  },
-  {
-    id: 9,
-    src: "/gall18.jpg",
-    caption: "Core Team @2022",
-    category: "CULTURAL",
-    size: "large",
-    color: "bg-orange-200",
-    rotation: "-rotate-1",
-  },
-  {
-    id: 15,
-    src: "/gall11.jpg",
-    caption: "SIGNIFIYA'22",
-    category: "CULTURAL",
-    size: "large",
-    color: "bg-orange-200",
-    rotation: "-rotate-1",
-  },
-  {
-    id: 7,
-    src: "/gall2.jpg",
-    caption: "Gaming Zone",
-    category: "TECH",
-    size: "small",
-    color: "bg-red-200",
-    rotation: "rotate-2",
-  },
-  {
-    id: 8,
-    src: "/gall3.jpg",
-    caption: "Stalls Squad",
-    category: "VIBES",
-    size: "small",
-    color: "bg-teal-200",
-    rotation: "-rotate-3",
-  },
-];
+const galleryImages = Array.from({ length: 51 }, (_, index) => {
+  const id = index + 1;
+  return {
+    id,
+    src: `/gallery/gallery-${String(id).padStart(2, "0")}.jpeg`,
+    caption: `Gallery Moment ${id}`,
+    category: galleryCategories[index % galleryCategories.length],
+    size: id % 11 === 0 ? "tall" : id % 5 === 0 ? "large" : "small",
+    color: imageColors[index % imageColors.length],
+    rotation: imageRotations[index % imageRotations.length],
+  };
+});
 
 // --- 2. COMPONENTS ---
 
