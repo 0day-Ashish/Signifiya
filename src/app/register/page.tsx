@@ -64,19 +64,8 @@ export default function Register() {
     }
   }, [session, isPending, router]);
 
-  if (isPending) {
-     return (
-       <div className="flex items-center justify-center min-h-screen bg-zinc-950">
-         <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
-       </div>
-     );
-  }
-
   // Debugging session state
   console.log("Register Page - Session:", session, "IsPending:", isPending);
-
-  // Removed early return null to avoid black screen flicker. 
-  // useEffect will handle redirect if session is missing.
 
   const {
     register,
@@ -88,6 +77,15 @@ export default function Register() {
     resolver: zodResolver(formSchema),
     defaultValues: { agreement: false, bookingId: "", passType: "single" },
   });
+  
+  // NOTE: isPending check MUST be AFTER hooks like useForm to avoid Render Error
+  if (isPending) {
+     return (
+       <div className="flex items-center justify-center min-h-screen bg-zinc-950">
+         <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+       </div>
+     );
+  }
 
   const onSubmit = (data: FormData) => {
     setStep(2);
