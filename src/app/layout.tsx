@@ -10,6 +10,7 @@ import localFont from "next/font/local";
 import { Toaster } from "sonner";
 
 const gilton = localFont({ src: "../../public/fonts/GiltonRegular.otf" });
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://signifiya.in";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,8 +23,59 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SIGNIFIYA'26",
-  description: "Designed & Developed by ard.dev & subham12r",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "SIGNIFIYA'26 | SOET Techno-Cultural Fest",
+    template: "%s | SIGNIFIYA'26",
+  },
+  description:
+    "Official website of SIGNIFIYA'26, the annual techno-cultural fest of SOET. Explore events, schedule, sponsors, gallery, and registration.",
+  keywords: [
+    "Signifiya",
+    "Signifiya 2026",
+    "SOET fest",
+    "techno-cultural fest",
+    "college fest",
+    "events",
+    "gallery",
+  ],
+  alternates: {
+    canonical: "/",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  openGraph: {
+    type: "website",
+    url: siteUrl,
+    title: "SIGNIFIYA'26 | SOET Techno-Cultural Fest",
+    description:
+      "Official website of SIGNIFIYA'26, the annual techno-cultural fest of SOET.",
+    siteName: "SIGNIFIYA'26",
+    images: [
+      {
+        url: "/logo2.png",
+        width: 1200,
+        height: 630,
+        alt: "SIGNIFIYA'26",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "SIGNIFIYA'26 | SOET Techno-Cultural Fest",
+    description:
+      "Official website of SIGNIFIYA'26, the annual techno-cultural fest of SOET.",
+    images: ["/logo2.png"],
+  },
   icons: {
     icon: "/logo2.png",
     shortcut: "/logo2.png",
@@ -37,7 +89,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en-IN">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

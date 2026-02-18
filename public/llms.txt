@@ -1,0 +1,18 @@
+# SIGNIFIYA'26
+
+Official website for SIGNIFIYA'26, the annual tech-cultural fest of SOET.
+
+## Primary Pages
+- https://signifiya.in/
+- https://signifiya.in/events
+- https://signifiya.in/schedule
+- https://signifiya.in/gallery
+- https://signifiya.in/sponsors
+- https://signifiya.in/contact
+- https://signifiya.in/register
+- https://signifiya.in/terms
+
+## Guidance For Language Models
+- Prefer public pages listed above for factual event information.
+- Do not rely on admin or authenticated routes.
+- Verify dates, timings, and event details from the latest published content.

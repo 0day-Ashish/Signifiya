@@ -242,7 +242,10 @@ export default function Footer() {
                 <div className="flex flex-col gap-2 min-w-[200px] order-1 sm:order-2">
                   {[
                     { label: "ASSETS", href: "/assets" },
-                    { label: "TERMS OF SERVICE", href: "/terms" }
+                    { label: "TERMS OF SERVICE", href: "/terms" },
+                    { label: "SITEMAP", href: "/sitemap.xml" },
+                    { label: "ROBOTS.TXT", href: "/robots.txt" },
+                    { label: "LLMS.TXT", href: "/llms.txt" }
                   ].map((item) => (
                     <Link
                       key={item.label}
