@@ -12,6 +12,10 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import localFont from "next/font/local";
+
+const gilton = localFont({ src: "../../../public/fonts/GiltonRegular.otf" });
+const softura = localFont({ src: "../../../public/fonts/Softura-Demo.otf" });
 import EventCard from "@/components/Events-Pass";
 import { createEventRazorpayOrder, verifyEventRazorpayPayment } from "@/app/actions";
 import { APP_CONFIG } from "@/config/app.config";
@@ -23,6 +27,7 @@ const eventsList = [
     name: "Coding Premier League",
     price: 150,
     type: "Team (1-3)",
+    date: "March 27-28",
     color: "bg-purple-100",
   },
   {
@@ -30,6 +35,7 @@ const eventsList = [
     name: `Hackathon ${APP_CONFIG.event.year}`,
     price: 300,
     type: "Team (2-4)",
+    date: "March 27-28",
     color: "bg-yellow-100",
   },
   {
@@ -37,6 +43,7 @@ const eventsList = [
     name: "Robo Wars",
     price: 200,
     type: "Team (2-5)",
+    date: "March 27-28",
     color: "bg-red-100",
   },
   {
@@ -44,6 +51,7 @@ const eventsList = [
     name: "Dil Se Design",
     price: 100,
     type: "Solo",
+    date: "March 27-28",
     color: "bg-blue-100",
   },
   {
@@ -51,6 +59,7 @@ const eventsList = [
     name: "Valorant Tournament",
     price: 500,
     type: "Team (5)",
+    date: "March 27-28",
     color: "bg-green-100",
   },
   {
@@ -58,6 +67,7 @@ const eventsList = [
     name: "Tech Quiz",
     price: 50,
     type: "Team (2)",
+    date: "March 27-28",
     color: "bg-orange-100",
   },
 ];
@@ -92,7 +102,10 @@ const inputStyles =
 const labelStyles =
   "text-black font-bold uppercase text-xs tracking-wider mb-1 block";
 
+import { useRouter } from "next/navigation";
+
 export default function EventRegistration() {
+  const router = useRouter();
   const [step, setStep] = useState(1);
   const [timeLeft, setTimeLeft] = useState(900);
   const [isLoading, setIsLoading] = useState(false);
@@ -300,19 +313,7 @@ export default function EventRegistration() {
           </div>
 
           <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
-            {/* Main content placeholder */}
-            <div className="flex-1 flex flex-col items-center justify-center p-8">
-              <div className="text-center">
-                <h2 className="text-4xl lg:text-6xl font-black uppercase text-black mb-4">
-                  Starting Soon
-                </h2>
-                <p className="text-xl lg:text-2xl text-black font-bold tracking-widest uppercase">
-                  Stay Tuned!
-                </p>
-              </div>
-            </div>
-
-            {/* Commented out for future launch
+            {/* Form Steps */}
             <AnimatePresence mode="wait">
               {step === 1 && (
                 <motion.div
@@ -451,17 +452,6 @@ export default function EventRegistration() {
                   initial={{ x: 20, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
                   exit={{ x: -20, opacity: 0 }}
-                  className="space-y-6"
-                >
-                  <div className="bg-yellow-100 border-2 border-black p-3 rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex justify-between items-center">
-                    <p className="font-bold text-xs uppercase">
-                      Step 2/4: Choose Your Battles
-                    </p>
-                    <p className="font-black text-sm">TOTAL: ₹{totalCost}</p>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {eventsList.map((event) => {
                   className="space-y-4"
                 >
                   <p className="font-bold text-xs uppercase text-zinc-500">
