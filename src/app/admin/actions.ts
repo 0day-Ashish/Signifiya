@@ -348,9 +348,41 @@ export async function getVisitorRegistrations(params?: { limit?: number; offset?
 }
 
 // --- Update status for revenue/verification ---
+// --- Update status for revenue/verification ---
 export async function updateVisitorStatus(id: string, status: "pending" | "verified" | "rejected") {
   await guard();
-  await prisma.visitorRegistration.update({ where: { id }, data: { status } });
+  
+  // 1. Update status
+  const registration = await prisma.visitorRegistration.update({
+    where: { id },
+    data: { status },
+  });
+
+  // 2. If verified, create Pass
+  if (status === "verified" && registration.userId) {
+    // Check if pass already exists to avoid duplicates
+    const existingPass = await prisma.pass.findFirst({
+      where: { 
+        visitorRegistrationId: id 
+      }
+    });
+
+    if (!existingPass) {
+      // Create Pass
+      const pass = await prisma.pass.create({
+        data: {
+          type: registration.passType, // Assuming passType matches enum or string
+          visitorRegistrationId: id,
+          userId: registration.userId,
+          userBookingId: registration.bookingId, // Use registration booking ID
+          validUntil: new Date("2026-12-31"), // Set appropriate validity
+          qrCode: `SP-${registration.bookingId}`, // Generate unique QR code data
+          verifiedAt: new Date(),
+          verifiedBy: "admin-action", 
+        }
+      });
+    }
+  }
 
   // Invalidate cache immediately for real-time data
   await invalidateAdminStatsCache();
