@@ -30,7 +30,7 @@ const TEAM_MEMBERS: TeamMember[] = [
   { id: 2, name: "Soodipa Chakraborty", role: "Faculty Lead", image: "/team/Soodipa.jpg", linkedin: "https://linkedin.com/in/hrishav-dey-2b2990291/", instagram: "https://instagram.com/hrishav.dey", github: "https://github.com/" },
   { id: 3, name: "Prabhat Das", role: "Tech Mentor", image: "/team/Prabhat.jpg", linkedin: "https://linkedin.com/in/prabhatd/", instagram: "https://instagram.com/hrishav.dey", github: "https://github.com/" },
   { id: 4, name: "Hrishav Dey", role: "Event Advisor", image: "/avatar4.jpg", linkedin: "https://linkedin.com/in/hrishav-dey-2b2990291/", instagram: "https://instagram.com/hrishav.dey" },
-  { id: 5, name: "Digant Mishra", role: "On-Ground Coordinator", image: "/team/Digant.jpeg", linkedin: "https://linkedin.com/in/digant-mishra-2b2990291/", instagram: "https://instagram.com/digantt._" },
+  { id: 5, name: "Digant Mishra", role: "Administratiion Head", image: "/team/Digant.jpeg", linkedin: "https://linkedin.com/in/digant-mishra-2b2990291/", instagram: "https://instagram.com/digantt._" },
   { id: 6, name: "Arijit De", role: "Financial & Sponsorship Lead", image: "/team/Arijit.jpg", linkedin: "https://linkedin.com/in/arijit-de-ba1594358", instagram: "https://instagram.com/arijit_.04" },
   { id: 7, name: "Siddartha Chakraborty", role: "Esports Lead", image: "/team/Siddharth-01.jpeg", linkedin: "https://linkedin.com/in/siddarthachakraborty/", instagram: "https://instagram.com/siddarthachk", github: "https://github.com/siddarthachk" },
   { id: 8, name: "Snehasish Mondal", role: "Operations Lead", image: "/team/Snehasish.jpg", linkedin: "https://linkedin.com/in/snehasish-mondal-2b2990291/", instagram: "https://instagram.com/snehasish.mondal", github: "https://github.com/" },
