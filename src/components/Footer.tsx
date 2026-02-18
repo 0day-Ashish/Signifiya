@@ -220,7 +220,7 @@ export default function Footer() {
                   {[
                     { label: "HOME", href: "/" },
                     { label: "BECOME A SPONSOR", href: "/sponsors" },
-                    { label: "EVENTS", href: "/schedule" },
+                    { label: "SCHEDULE", href: "/schedule" },
                     { label: "CONTACT", href: "/contact" },
                     { label: "FAQ", href: "#faq" },
                     { label: "RULES & REGULATIONS", href: "/terms" }

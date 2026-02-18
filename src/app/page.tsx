@@ -8,7 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
-import { getUserPassStatus } from "@/app/actions";
+import { getUserPassStatus, getUserProfile } from "@/app/actions";
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { useAudio } from "@/components/AudioProvider";
 import { motion, useScroll, useSpring, useTransform, useMotionValue, useVelocity, useAnimationFrame } from "motion/react";
@@ -103,6 +103,7 @@ export default function Home() {
   const [showNavLinks, setShowNavLinks] = useState(false);
   const [session, setSession] = useState<any>(null);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [userProfile, setUserProfile] = useState<any>(null);
   const [passStatus, setPassStatus] = useState<{
     hasVisitorPass: boolean;
     hasDualDayPass: boolean;
@@ -136,8 +137,11 @@ export default function Home() {
   useEffect(() => {
     if (sessionData) {
       setSession(sessionData);
-      // Fetch pass status when user is logged in
+      // Fetch user profile and pass status when user is logged in
       if (sessionData.user?.id) {
+        getUserProfile(sessionData.user.id).then((profile) => {
+          if (profile) setUserProfile(profile);
+        });
         getUserPassStatus(sessionData.user.id).then((status) => {
           if (status) setPassStatus(status);
         });
@@ -331,6 +335,20 @@ export default function Home() {
              </div> */}
 
             <Timer />
+
+            {/* Booking ID Display - Only show if user is logged in */}
+            {session?.user && (
+              <div className="flex justify-center mt-4">
+                <div className={`bg-white/90 backdrop-blur-sm px-6 py-3 rounded-2xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] ${softura.className}`}>
+                  <div className="flex flex-col items-center gap-1">
+                    <span className="text-xs font-bold text-gray-600 uppercase tracking-wider">Your Booking ID</span>
+                    <span className="text-lg font-bold text-black tracking-wider font-mono">
+                      {userProfile?.bookingId || "Loading..."}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
 
             <div>
               {!session ? (
