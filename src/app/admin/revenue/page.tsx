@@ -122,6 +122,7 @@ export default async function AdminRevenuePage({ searchParams }: { searchParams?
                   <th className={`px-4 py-3 font-bold text-black ${softura.className}`}>Team</th>
                   <th className={`px-4 py-3 font-bold text-black ${softura.className}`}>Leader email</th>
                   <th className={`px-4 py-3 font-bold text-black ${softura.className}`}>Amount</th>
+                  <th className={`px-4 py-3 font-bold text-black ${softura.className}`}>UTR</th>
                   <th className={`px-4 py-3 font-bold text-black ${softura.className}`}>Status</th>
                   <th className={`px-4 py-3 font-bold text-black ${softura.className}`}>Date</th>
                   <th className={`px-4 py-3 font-bold text-black ${softura.className}`}>Actions</th>
@@ -133,6 +134,7 @@ export default async function AdminRevenuePage({ searchParams }: { searchParams?
                     <td className={`px-4 py-3 text-white font-medium ${softura.className}`}>{t.teamName}</td>
                     <td className={`px-4 py-3 text-zinc-400 ${softura.className}`}>{t.leaderEmail}</td>
                     <td className={`px-4 py-3 font-mono text-[#FCD34D] font-bold`}>₹{t.totalAmount}</td>
+                    <td className={`px-4 py-3 font-mono text-[#FCD34D] font-bold text-xs`}>{t.paymentProofUrl || "—"}</td>
                     <td className="px-4 py-3">
                       <span className={`px-2 py-1 rounded-lg text-xs font-bold border-2 border-black ${softura.className} ${
                         t.status === "verified" ? "bg-[#4caf50] text-white" : 

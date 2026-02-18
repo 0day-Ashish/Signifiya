@@ -97,6 +97,7 @@ export default function EventRegistration() {
   const [timeLeft, setTimeLeft] = useState(900);
   const [isLoading, setIsLoading] = useState(false);
   const [payError, setPayError] = useState<string | null>(null);
+  const [utrId, setUtrId] = useState("");
   const [totalCost, setTotalCost] = useState(0);
   const [createdEventPass, setCreatedEventPass] = useState<{
     teamLeadName: string;
@@ -208,6 +209,11 @@ export default function EventRegistration() {
   };
 
   const handleFinalSubmit = async () => {
+    if (!utrId || utrId.length < 4) {
+      setPayError("Please enter a valid UTR ID");
+      return;
+    }
+
     setIsLoading(true);
     setPayError(null);
     const vals = watch();
@@ -215,8 +221,8 @@ export default function EventRegistration() {
     const ev = eventsList.find((e) => e.id === eventId);
 
     try {
-      // Create Razorpay order
-      const orderRes = await createEventRazorpayOrder({
+      const { submitEventRegistrationManual } = await import("@/app/actions");
+      const res = await submitEventRegistrationManual({
         teamName: vals.teamName,
         leaderName: vals.leaderName,
         leaderEmail: vals.email,
@@ -227,106 +233,19 @@ export default function EventRegistration() {
         eventPrice: ev?.price || 0,
         members: (vals.members || []).map((m) => ({ name: m?.name, college: m?.college, phone: m?.phone, email: m?.email })),
         totalAmount: totalCost,
+        utrId: utrId.trim(),
       });
 
-      if (!orderRes.success || !orderRes.orderId || !orderRes.amount) {
-        setPayError(orderRes.error || "Failed to create payment order.");
+      if (!res.success) {
+        setPayError(res.error || "Registration failed. Please try again.");
         setIsLoading(false);
         return;
       }
 
-      // Initialize Razorpay checkout
-      const options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "",
-        amount: orderRes.amount * 100, // Amount in paise
-        currency: "INR",
-        name: "SIGNIFIYA'26",
-        description: `${ev?.name || "Event"} - Team Registration`,
-        order_id: orderRes.orderId,
-        handler: async function (response: any) {
-          // Payment successful - verify and create team
-          setIsLoading(true);
-          try {
-            const verifyRes = await verifyEventRazorpayPayment({
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-              teamName: vals.teamName,
-              leaderName: vals.leaderName,
-              leaderEmail: vals.email,
-              leaderPhone: vals.phone,
-              college: vals.college,
-              bookingId: vals.bookingId,
-              eventName: ev?.name || "",
-              eventPrice: ev?.price || 0,
-              members: (vals.members || []).map((m) => ({ name: m?.name, college: m?.college, phone: m?.phone, email: m?.email })),
-              totalAmount: totalCost,
-            });
-
-            if (!verifyRes.success) {
-              setPayError(verifyRes.error || "Payment verification failed.");
-              setIsLoading(false);
-              return;
-            }
-
-            if (verifyRes.pass) {
-              setCreatedEventPass(verifyRes.pass);
-            }
-            setStep(5);
-            toast.success("Registration Successful!", { description: `Welcome to ${APP_CONFIG.event.fullName}.` });
-          } catch (error: any) {
-            setPayError(error?.message || "Payment verification failed.");
-          } finally {
-            setIsLoading(false);
-          }
-        },
-        prefill: {
-          name: vals.leaderName,
-          email: vals.email,
-          contact: vals.phone,
-        },
-        theme: {
-          color: "#9c27b0",
-        },
-        config: {
-          display: {
-            blocks: {
-              banks: {
-                name: "All Payment Methods",
-                instruments: [
-                  {
-                    method: "upi",
-                  },
-                  {
-                    method: "card",
-                  },
-                  {
-                    method: "netbanking",
-                  },
-                  {
-                    method: "wallet",
-                  },
-                ],
-              },
-            },
-            sequence: ["block.banks"],
-            preferences: {
-              show_default_blocks: true,
-            },
-          },
-        },
-        modal: {
-          ondismiss: function () {
-            setIsLoading(false);
-          },
-        },
-      };
-
-      // Open Razorpay checkout
-      const razorpay = (window as any).Razorpay(options);
-      razorpay.open();
+      setStep(5);
+      toast.success("Registration Successful!", { description: "Verified manually by admin." });
     } catch (error: any) {
-      setPayError(error?.message || "Failed to initialize payment.");
+      setPayError(error?.message || "Something went wrong.");
       setIsLoading(false);
     }
   };
@@ -750,13 +669,30 @@ export default function EventRegistration() {
                     </div>
                   )}
 
-                  <div className="bg-zinc-100 border-2 border-black p-4 rounded-xl">
-                    <p className="font-bold text-sm text-zinc-700 mb-2">
-                      Total Amount: ₹{totalCost}
-                    </p>
-                    <p className="text-xs text-zinc-600">
-                      Click below to proceed with secure payment via Razorpay.
-                    </p>
+                  <div className="bg-zinc-100 border-2 border-black p-4 rounded-xl text-center">
+                     <p className="font-bold text-sm text-zinc-700 mb-2">
+                       Total Amount: ₹{totalCost}
+                     </p>
+                     
+                     <div className="relative w-48 h-48 border-4 border-black rounded-xl overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mx-auto mb-4 bg-white">
+                        <Image src="/qr.jpeg" alt="Payment QR Code" fill className="object-contain p-2" />
+                     </div>
+                     <p className="text-xs font-bold text-zinc-600">
+                       Scan to pay via UPI
+                     </p>
+                  </div>
+
+                  <div>
+                     <Label className={labelStyles}>Enter Transaction / UTR ID</Label>
+                     <Input
+                       value={utrId}
+                       onChange={(e) => setUtrId(e.target.value)}
+                       className={inputStyles}
+                       placeholder="Enter 12-digit UTR ID"
+                     />
+                     <p className="text-xs text-zinc-500 mt-1">
+                       Usually starts with banking ref no. or 'UPI...'
+                     </p>
                   </div>
 
                   <div className="flex gap-4">
@@ -769,10 +705,10 @@ export default function EventRegistration() {
                     </Button>
                     <Button
                       onClick={handleFinalSubmit}
-                      disabled={isLoading}
+                      disabled={isLoading || !utrId || utrId.length < 4}
                       className="flex-[2] bg-green-500 text-black font-bold py-6 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all disabled:opacity-60"
                     >
-                      {isLoading ? "PROCESSING…" : `PAY ₹${totalCost} & REGISTER`}
+                      {isLoading ? "VERIFYING…" : "SUBMIT PAYMENT DETAILS →"}
                     </Button>
                   </div>
                 </motion.div>

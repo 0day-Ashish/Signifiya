@@ -279,7 +279,7 @@ export async function getParticipantTeamsForRevenue(params?: { limit?: number; o
   const offset = params?.offset ?? 0;
   const [teams, total] = await Promise.all([
     prisma.participantTeam.findMany({
-      select: { id: true, teamName: true, leaderEmail: true, totalAmount: true, status: true, createdAt: true },
+      select: { id: true, teamName: true, leaderEmail: true, totalAmount: true, status: true, paymentProofUrl: true, createdAt: true },
       orderBy: { createdAt: "desc" },
       take: limit,
       skip: offset,

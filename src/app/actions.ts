@@ -609,25 +609,122 @@ export async function verifyEventRazorpayPayment(data: {
     revalidatePath("/admin/teams");
     revalidatePath("/admin/events");
     revalidatePath("/admin/revenue");
-    revalidatePath("/events");
-
-    const memberNames = (members || []).filter((m) => m?.name?.trim()).map((m) => ({ name: m!.name!.trim() }));
+    revalidatePath("/profile");
 
     return {
       success: true,
       pass: {
-        teamLeadName: leaderName.trim(),
-        eventName,
-        bookingId: bookingId.trim(),
-        teamName: teamName.trim(),
-        eventTime,
-        qrCode,
-        members: memberNames,
+        teamLeadName: team.leaderName,
+        eventName: event.name,
+        bookingId: team.leaderBookingId || "",
+        teamName: team.teamName,
+        eventTime: team.eventTime || "",
+        qrCode: team.qrCode || "",
+        members: members.map((m: any) => ({ name: m.name })),
       },
     };
   } catch (error: any) {
     console.error("verifyEventRazorpayPayment error:", error);
     return { success: false, error: error?.message || "Payment verification failed" };
+  }
+}
+
+/**
+ * Manual Event Registration with UTR
+ */
+export async function submitEventRegistrationManual(data: {
+  teamName: string;
+  leaderName: string;
+  leaderEmail: string;
+  leaderPhone: string;
+  college: string;
+  bookingId: string;
+  eventName: string;
+  eventPrice: number;
+  members: { name?: string; college?: string; phone?: string; email?: string }[];
+  totalAmount: number;
+  utrId: string;
+}) {
+  try {
+    const {
+      teamName,
+      leaderName,
+      leaderEmail,
+      leaderPhone,
+      college,
+      bookingId,
+      eventName,
+      eventPrice,
+      members,
+      totalAmount,
+      utrId
+    } = data;
+
+    if (!teamName?.trim() || !leaderName?.trim() || !leaderEmail?.trim() || !leaderPhone?.trim() || !college?.trim() || !bookingId?.trim() || !eventName?.trim() || !utrId?.trim()) {
+      return { success: false, error: "All fields including UTR ID are required" };
+    }
+
+    const qrCode = `EP-${randomUUID()}`;
+    const eventTime = "10:00 AM - 5:00 PM";
+
+    // Find or create event (ensure event exists)
+    let event = await prisma.event.findFirst({ where: { name: eventName } });
+    if (!event) {
+      event = await prisma.event.create({
+        data: { name: eventName, price: eventPrice, date: new Date() },
+      });
+    }
+
+    // Create Team with PENDING status
+    const team = await prisma.participantTeam.create({
+      data: {
+        teamName: teamName.trim(),
+        leaderName: leaderName.trim(),
+        leaderEmail: leaderEmail.trim().toLowerCase(),
+        leaderPhone: leaderPhone.trim(),
+        leaderBookingId: bookingId.trim(),
+        college: college.trim(),
+        totalAmount: Number(totalAmount) || 0,
+        status: "pending", // Pending manual verification
+        paymentProofUrl: utrId.trim(),
+        qrCode,
+        eventTime,
+      },
+    });
+
+    // Add Members
+    for (const m of members || []) {
+      if (!m?.name?.trim()) continue;
+      await prisma.participantTeamMember.create({
+        data: {
+          teamId: team.id,
+          name: m.name.trim(),
+          college: m.college?.trim() || null,
+          phone: m.phone?.trim() || null,
+          email: m.email?.trim() || null,
+        },
+      });
+    }
+
+    // Link Team to Event
+    await prisma.participantTeamEvent.create({
+      data: {
+        teamId: team.id,
+        eventId: event.id,
+      },
+    });
+
+    // Invalidate caches
+    revalidatePath("/admin/revenue");
+    revalidatePath("/profile");
+
+    return {
+      success: true,
+      teamId: team.id,
+    };
+  } catch (error: any) {
+    console.error("submitEventRegistrationManual error:", error);
+    return { success: false, error: error?.message || "Registration failed" };
   }
 }
 
