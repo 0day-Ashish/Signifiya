@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import localFont from "next/font/local";
 
 const bartle = localFont({ src: "../../public/fonts/BBHBartle-Regular.ttf" });
-const gilton = localFont({ src: "../../public/fonts/GiltonRegular.otf" });
+const TARGET_DATE = new Date("2026-03-27T00:00:00+05:30");
 
 export default function Timer() {
   const [timeLeft, setTimeLeft] = useState({
@@ -13,33 +13,11 @@ export default function Timer() {
     minutes: 0,
     seconds: 0,
   });
-  const [targetDate, setTargetDate] = useState<Date | null>(null);
-
-  // Fetch the countdown target date from API
-  useEffect(() => {
-    const fetchTargetDate = async () => {
-      try {
-        const res = await fetch("/api/countdown");
-        const data = await res.json();
-        if (data.targetDate) {
-          setTargetDate(new Date(data.targetDate));
-        }
-      } catch (error) {
-        // Fallback to 30 days from now if API fails
-        const fallback = new Date();
-        fallback.setDate(fallback.getDate() + 30);
-        setTargetDate(fallback);
-      }
-    };
-    fetchTargetDate();
-  }, []);
 
   // Calculate and update the countdown
   useEffect(() => {
-    if (!targetDate) return;
-
     const calculateTimeLeft = () => {
-      const difference = +targetDate - +new Date();
+      const difference = +TARGET_DATE - +new Date();
 
       if (difference > 0) {
         setTimeLeft({
@@ -57,7 +35,7 @@ export default function Timer() {
     const timer = setInterval(calculateTimeLeft, 1000);
 
     return () => clearInterval(timer);
-  }, [targetDate]);
+  }, []);
 
   return (
     <div className={`flex flex-col items-center gap-2 ${bartle.className}`}>

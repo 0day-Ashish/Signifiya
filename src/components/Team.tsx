@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import Image from "next/image";
 import {
   ChevronLeft,
@@ -10,7 +10,6 @@ import {
   LinkedinIcon,
   Pause,
   Play,
-  Star,
 } from "lucide-react";
 import localFont from "next/font/local";
 
@@ -52,11 +51,16 @@ const TEAM_MEMBERS: TeamMember[] = [
 export default function Team() {
   const marqueeMembers = [...TEAM_MEMBERS, ...TEAM_MEMBERS];
   const trackRef = useRef<HTMLDivElement>(null);
+  const marqueeRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef<number | null>(null);
   const offsetRef = useRef(0);
   const singleSetWidthRef = useRef(0);
   const directionRef = useRef(-1);
   const pausedRef = useRef(false);
+  const isDraggingRef = useRef(false);
+  const wasPausedBeforeDragRef = useRef(false);
+  const dragStartXRef = useRef(0);
+  const dragStartOffsetRef = useRef(0);
   const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
@@ -93,8 +97,12 @@ export default function Team() {
   }, []);
 
   const nudgeByCards = (cards: number) => {
-    if (!singleSetWidthRef.current) return;
-    const step = 296; // card width + gap
+    if (!singleSetWidthRef.current || !trackRef.current) return;
+    const firstCard = trackRef.current.querySelector("article");
+    const cardWidth = firstCard instanceof HTMLElement ? firstCard.offsetWidth : 260;
+    const trackStyle = window.getComputedStyle(trackRef.current);
+    const gap = parseFloat(trackStyle.columnGap || trackStyle.gap || "12") || 12;
+    const step = cardWidth + gap;
     offsetRef.current += cards * step;
 
     while (offsetRef.current <= -singleSetWidthRef.current) {
@@ -115,16 +123,53 @@ export default function Team() {
     setIsPaused(next);
   };
 
+  const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (!trackRef.current) return;
+
+    isDraggingRef.current = true;
+    wasPausedBeforeDragRef.current = pausedRef.current;
+    dragStartXRef.current = event.clientX;
+    dragStartOffsetRef.current = offsetRef.current;
+    pausedRef.current = true;
+    setIsPaused(true);
+
+    event.currentTarget.setPointerCapture(event.pointerId);
+  };
+
+  const handlePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (!isDraggingRef.current || !trackRef.current || !singleSetWidthRef.current) return;
+
+    const deltaX = event.clientX - dragStartXRef.current;
+    offsetRef.current = dragStartOffsetRef.current + deltaX;
+
+    while (offsetRef.current <= -singleSetWidthRef.current) {
+      offsetRef.current += singleSetWidthRef.current;
+    }
+    while (offsetRef.current > 0) {
+      offsetRef.current -= singleSetWidthRef.current;
+    }
+
+    trackRef.current.style.transform = `translate3d(${offsetRef.current}px, 0, 0)`;
+  };
+
+  const handlePointerUp = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (!isDraggingRef.current) return;
+    isDraggingRef.current = false;
+    pausedRef.current = wasPausedBeforeDragRef.current;
+    setIsPaused(wasPausedBeforeDragRef.current);
+    event.currentTarget.releasePointerCapture(event.pointerId);
+  };
+
   return (
-    <section className="w-full bg-black py-3">
-      <div className="mx-3 rounded-[2.5rem] border-4 border-black bg-[#f3e5f5] px-5 py-8 sm:px-8 md:px-12">
+    <section className="w-full bg-black pb-3">
+      <div className=" rounded-[2.5rem] border-4 border-black bg-[#f3e5f5] px-4 py-8 sm:px-8 md:px-12">
         <div className="text-center">
           <h2 className={`${gilton.className} text-4xl font-black uppercase tracking-[0.08em] text-black sm:text-6xl`}>Signifiya Team</h2>
           <p className={`${softura.className} text-lg  `}>The people who made Signifiya possible</p>
         </div>
 
-        <div className="mt-7 rounded-[2rem]  p-4 sm:p-6">
-          <div className="mb-4 flex justify-end gap-2">
+        <div className="mt-4 rounded-[2rem] p-3 sm:mt-7 sm:p-6">
+          <div className="mb-3 flex justify-end gap-2 sm:mb-4">
             <button
               type="button"
               onClick={() => nudgeByCards(1)}
@@ -151,12 +196,19 @@ export default function Team() {
             </button>
           </div>
 
-          <div className="team-cards-marquee">
-            <div ref={trackRef} className="team-cards-track pb-10">
+          <div
+            ref={marqueeRef}
+            className="team-cards-marquee"
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            onPointerCancel={handlePointerUp}
+          >
+            <div ref={trackRef} className="team-cards-track pb-6 sm:pb-10">
               {marqueeMembers.map((member, idx) => (
                 <article
                   key={`${member.id}-${idx}`}
-                  className="w-[300px] shrink-0 rounded-2xl border-4 border-black bg-[#fffaf0] p-3 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"
+                  className="w-[min(82vw,250px)] sm:w-[300px] shrink-0 rounded-2xl border-4 border-black bg-[#fffaf0] p-3 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"
                 >
                   <div className="relative mb-3 overflow-hidden rounded-xl border-4 border-black">
                     <Image
@@ -220,13 +272,26 @@ export default function Team() {
         .team-cards-marquee {
           overflow: hidden;
           width: 100%;
+          touch-action: pan-y;
+          cursor: grab;
+        }
+
+        .team-cards-marquee:active {
+          cursor: grabbing;
         }
 
         .team-cards-track {
           display: flex;
-          gap: 1rem;
+          gap: 0.75rem;
           width: max-content;
           will-change: transform;
+          user-select: none;
+        }
+
+        @media (min-width: 640px) {
+          .team-cards-track {
+            gap: 1rem;
+          }
         }
       `}</style>
     </section>

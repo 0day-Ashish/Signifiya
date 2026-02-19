@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, type PointerEvent as ReactPointerEvent } from "react";
 import Link from "next/link";
 import localFont from "next/font/local";
 import Image from "next/image";
@@ -31,6 +31,9 @@ export default function Events() {
   const isHoveredRef = useRef(false);
   const autoScrollRafRef = useRef<number | null>(null);
   const lastFrameTimeRef = useRef<number | null>(null);
+  const isDraggingRef = useRef(false);
+  const dragStartXRef = useRef(0);
+  const dragStartScrollLeftRef = useRef(0);
 
   const filteredEvents = activeCategory === "ALL" 
     ? EVENTS_DATA 
@@ -210,6 +213,34 @@ export default function Events() {
     }
   };
 
+  const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    isDraggingRef.current = true;
+    dragStartXRef.current = event.clientX;
+    dragStartScrollLeftRef.current = container.scrollLeft;
+    isHoveredRef.current = true;
+    container.setPointerCapture(event.pointerId);
+  };
+
+  const handlePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const container = scrollContainerRef.current;
+    if (!container || !isDraggingRef.current) return;
+
+    const deltaX = event.clientX - dragStartXRef.current;
+    container.scrollLeft = dragStartScrollLeftRef.current - deltaX;
+  };
+
+  const handlePointerUp = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const container = scrollContainerRef.current;
+    if (!container || !isDraggingRef.current) return;
+
+    isDraggingRef.current = false;
+    isHoveredRef.current = false;
+    container.releasePointerCapture(event.pointerId);
+  };
+
 
   return (
     <section id="events" className="w-full bg-black pb-3">
@@ -282,7 +313,11 @@ export default function Events() {
                     onMouseLeave={() => {
                       isHoveredRef.current = false;
                     }}
-                    className={`flex gap-0 overflow-x-auto scrollbar-hide pb-4 min-h-[450px] sm:min-h-[500px] ${isAllCategory ? 'snap-none' : 'snap-x snap-mandatory'}`}
+                    onPointerDown={handlePointerDown}
+                    onPointerMove={handlePointerMove}
+                    onPointerUp={handlePointerUp}
+                    onPointerCancel={handlePointerUp}
+                    className={`flex gap-0 overflow-x-auto scrollbar-hide pb-4 min-h-[450px] sm:min-h-[500px] cursor-grab active:cursor-grabbing touch-pan-y ${isAllCategory ? 'snap-none' : 'snap-x snap-mandatory'}`}
                     style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                 >
                     {isAllCategory ? (
@@ -294,7 +329,7 @@ export default function Events() {
                                 className="flex gap-4 sm:gap-8 shrink-0"
                             >
                                 {/* Left spacer to allow first card to center - only on mobile */}
-                                <div className="shrink-0 w-[calc(50%-140px)] sm:hidden" />
+                                <div className="shrink-0 w-[calc(50%-125px)] sm:hidden" />
                                 <AnimatePresence mode="popLayout">
                                     {filteredEvents.map((event, eventIndex) => {
                                         // Check if this is Arm Wrestling (last event) or Coding Premier League (first event)
@@ -314,7 +349,7 @@ export default function Events() {
                                             exit={{ opacity: 0, scale: 0.9 }}
                                             transition={{ duration: 0.2 }}
                                             key={`${event.id}-${copyIndex}`}
-                                            className={`event-card bg-white rounded-3xl border-4 border-black overflow-hidden flex flex-col shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all group shrink-0 w-[280px] sm:w-[320px] md:w-[350px] snap-center ${shouldAddGapAfter ? 'mr-4 sm:mr-6' : ''} ${shouldAddGapBefore ? 'ml-4 sm:ml-6' : ''}`}
+                                            className={`event-card bg-white rounded-3xl border-4 border-black overflow-hidden flex flex-col shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all group shrink-0 w-[250px] sm:w-[320px] md:w-[350px] snap-center ${shouldAddGapAfter ? 'mr-4 sm:mr-6' : ''} ${shouldAddGapBefore ? 'ml-4 sm:ml-6' : ''}`}
                                         >
                                             {/* Image Container */}
                                             <div className="relative h-40 sm:h-48 w-full border-b-4 border-black">
@@ -371,7 +406,7 @@ export default function Events() {
                                     })}
                                 </AnimatePresence>
                                 {/* Right spacer to allow last card to center - only on mobile */}
-                                <div className="shrink-0 w-[calc(50%-140px)] sm:hidden" />
+                                <div className="shrink-0 w-[calc(50%-125px)] sm:hidden" />
                             </div>
                         ))
                     ) : (
@@ -381,7 +416,7 @@ export default function Events() {
                             className="flex gap-4 sm:gap-8 shrink-0"
                         >
                             {/* Left spacer to allow first card to center - only on mobile */}
-                            <div className="shrink-0 w-[calc(50%-140px)] sm:hidden" />
+                            <div className="shrink-0 w-[calc(50%-125px)] sm:hidden" />
                             <AnimatePresence mode="popLayout">
                                 {filteredEvents.map((event) => (
                                     <motion.div
@@ -391,7 +426,7 @@ export default function Events() {
                                         exit={{ opacity: 0, scale: 0.9 }}
                                         transition={{ duration: 0.2 }}
                                         key={event.id}
-                                        className="event-card bg-white rounded-3xl border-4 border-black overflow-hidden flex flex-col shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all group shrink-0 w-[280px] sm:w-[320px] md:w-[350px] snap-center"
+                                        className="event-card bg-white rounded-3xl border-4 border-black overflow-hidden flex flex-col shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all group shrink-0 w-[250px] sm:w-[320px] md:w-[350px] snap-center"
                                     >
                                         {/* Image Container */}
                                         <div className="relative h-40 sm:h-48 w-full border-b-4 border-black">
@@ -447,7 +482,7 @@ export default function Events() {
                                 ))}
                             </AnimatePresence>
                             {/* Right spacer to allow last card to center - only on mobile */}
-                            <div className="shrink-0 w-[calc(50%-140px)] sm:hidden" />
+                            <div className="shrink-0 w-[calc(50%-125px)] sm:hidden" />
                         </div>
                     )}
                 </div>

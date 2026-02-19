@@ -33,7 +33,7 @@ const SPONSORS = SPONSOR_LOGO_FILES.map((file, index) => ({
 
 export default function Sponsors() {
     return (
-        <section id="sponsors" className="w-full bg-black pb-3">
+        <section id="sponsors" className="w-full bg-black ">
             <div className="bg-white rounded-[2.5rem] p-8 sm:p-12 relative overflow-hidden flex flex-col gap-12 border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
                 <FadeIn>
                     <div className="flex flex-col gap-4 text-center">

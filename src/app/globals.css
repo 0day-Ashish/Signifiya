@@ -6,10 +6,6 @@
 body {
   background-color: black;
   color: black;
-  -ms-overflow-style: none;
-  /* IE and Edge */
-  scrollbar-width: none;
-  /* Firefox */
 }
 
 @media (min-width: 768px) and (pointer: fine) {
@@ -33,22 +29,62 @@ body {
   color: white !important;
 }
 
-/* Hide scrollbar for Chrome, Safari and Opera */
-body::-webkit-scrollbar {
-  display: none;
+/* Global scrollbar theme */
+:root {
+  --scrollbar-size: 14px;
+  --scrollbar-track: transparent;
+  --scrollbar-track-border: transparent;
+  --scrollbar-thumb: #bdbdc2;
+  --scrollbar-thumb-hover: #d6d6dc;
+  --scrollbar-thumb-active: #ececf1;
+}
+
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+html::-webkit-scrollbar {
+  width: var(--scrollbar-size);
+  height: var(--scrollbar-size);
+}
+
+html::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-left: 0;
+  border-right: 0;
+}
+
+html::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #cfcfd4 0%, var(--scrollbar-thumb) 100%);
+  border: 3px solid transparent;
+  background-clip: padding-box;
+  border-radius: 999px;
+}
+
+html::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #e6e6ec 0%, var(--scrollbar-thumb-hover) 100%);
+}
+
+html::-webkit-scrollbar-thumb:active {
+  background: var(--scrollbar-thumb-active);
+}
+
+html::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 /* Custom Scrollbar Utility */
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: #52525b transparent;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
   overflow-y: auto;
   /* Ensure overflow is auto */
 }
 
 /* Webkit Scrollbar Styling (Chrome, Safari, Edge) */
 .custom-scrollbar::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
   /* Slightly wider for better usability */
   display: block;
   /* Force display */
@@ -56,20 +92,18 @@ body::-webkit-scrollbar {
 
 .custom-scrollbar::-webkit-scrollbar-track {
   background: transparent;
+  border-radius: 999px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #a1a1aa;
-  /* zinc-400 */
-  border-radius: 20px;
+  background: linear-gradient(180deg, #d4d4d8 0%, var(--scrollbar-thumb) 100%);
+  border-radius: 999px;
   border: 2px solid transparent;
-  /* Creates padding effect */
-  background-clip: content-box;
+  background-clip: padding-box;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: #52525b;
-  /* zinc-600 */
+  background: linear-gradient(180deg, #ececf1 0%, var(--scrollbar-thumb-hover) 100%);
 }
 
 @keyframes marquee {
