@@ -9,6 +9,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { createRazorpayOrder, verifyRazorpayPayment } from "@/app/actions";
+import { getUserProfile } from "@/app/actions";
 
 import VisitorCard from "@/components/Visitors-Pass";
 import { Button } from "@/components/ui/button";
@@ -54,6 +55,8 @@ export default function Register() {
   const [payError, setPayError] = useState<string | null>(null);
   const [utrId, setUtrId] = useState("");
   const [showConfetti, setShowConfetti] = useState(false);
+  const [isPrefillLoading, setIsPrefillLoading] = useState(false);
+  const [isBookingIdPrefilled, setIsBookingIdPrefilled] = useState(false);
   const router = useRouter();
 
   const { data: session, isPending } = authClient.useSession();
@@ -77,6 +80,45 @@ export default function Register() {
     resolver: zodResolver(formSchema),
     defaultValues: { agreement: false, bookingId: "", passType: "single" },
   });
+
+  useEffect(() => {
+    const prefillFromDb = async () => {
+      if (isPending || !session?.user?.id) return;
+      setIsPrefillLoading(true);
+      try {
+        const userProfile: any = await getUserProfile(session.user.id);
+        const fullName = (userProfile?.name || session.user.name || "").trim();
+        const [firstName = "", ...rest] = fullName.split(/\s+/);
+        const lastName = rest.join(" ");
+
+        if (userProfile?.bookingId) {
+          setValue("bookingId", userProfile.bookingId, { shouldValidate: true });
+          setIsBookingIdPrefilled(true);
+        }
+        if (firstName) {
+          setValue("firstName", firstName, { shouldValidate: true });
+        }
+        if (lastName) {
+          setValue("lastName", lastName, { shouldValidate: true });
+        }
+        if (session.user.email) {
+          setValue("email", session.user.email, { shouldValidate: true });
+        }
+        if (userProfile?.mobileNo) {
+          setValue("phone", String(userProfile.mobileNo).replace(/\D/g, "").slice(0, 10), {
+            shouldValidate: true,
+          });
+        }
+        if (userProfile?.collegeName) {
+          setValue("college", userProfile.collegeName, { shouldValidate: true });
+        }
+      } finally {
+        setIsPrefillLoading(false);
+      }
+    };
+
+    prefillFromDb();
+  }, [session, isPending, setValue]);
   
   // NOTE: isPending check MUST be AFTER hooks like useForm to avoid Render Error
   if (isPending) {
@@ -216,7 +258,9 @@ export default function Register() {
                       {...register("bookingId")}
                       className={inputStyles}
                       placeholder="SGF26-XXXXXXXX"
+                      readOnly={isBookingIdPrefilled}
                       onChange={(e) => {
+                        if (isBookingIdPrefilled) return;
                         let value = e.target.value.toUpperCase();
                         // Remove any characters that aren't alphanumeric or hyphen
                         value = value.replace(/[^A-Z0-9-]/g, '');
@@ -238,7 +282,17 @@ export default function Register() {
                         setValue("bookingId", value, { shouldValidate: true });
                       }}
                     />
-                    <p className="text-xs text-zinc-500 mt-1">Find it in <Link href="/profile" className="underline font-semibold text-zinc-700">Profile</Link>. Sign in and visit Profile first if you don&apos;t have one.</p>
+                    <p className="text-xs text-zinc-500 mt-1">
+                      {isPrefillLoading
+                        ? "Loading Booking ID from database..."
+                        : "Booking ID auto-fills from your profile. If missing, visit "}
+                      {!isPrefillLoading && (
+                        <>
+                          <Link href="/profile" className="underline font-semibold text-zinc-700">Profile</Link>
+                          {" and complete your details."}
+                        </>
+                      )}
+                    </p>
                     {errors.bookingId && (
                       <p className="text-red-600 font-bold text-xs mt-1 bg-red-100 inline-block px-1 border border-red-600">
                         {errors.bookingId.message}

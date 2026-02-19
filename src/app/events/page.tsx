@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { toast } from "sonner";
+import { authClient } from "@/lib/auth-client";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,6 +20,7 @@ const softura = localFont({ src: "../../../public/fonts/Softura-Demo.otf" });
 import EventCard from "@/components/Events-Pass";
 import { createEventRazorpayOrder, verifyEventRazorpayPayment } from "@/app/actions";
 import { APP_CONFIG } from "@/config/app.config";
+import { getUserProfile } from "@/app/actions";
 
 // ... (Configuration Data remains the same) ...
 const eventsList = [
@@ -106,9 +108,13 @@ import { useRouter } from "next/navigation";
 
 export default function EventRegistration() {
   const router = useRouter();
+  const { data: sessionData, isPending: isSessionPending } = authClient.useSession();
+  const eventListRef = React.useRef<HTMLDivElement>(null);
   const [step, setStep] = useState(1);
   const [timeLeft, setTimeLeft] = useState(900);
   const [isLoading, setIsLoading] = useState(false);
+  const [isPrefillLoading, setIsPrefillLoading] = useState(false);
+  const [isBookingIdPrefilled, setIsBookingIdPrefilled] = useState(false);
   const [payError, setPayError] = useState<string | null>(null);
   const [utrId, setUtrId] = useState("");
   const [totalCost, setTotalCost] = useState(0);
@@ -153,6 +159,42 @@ export default function EventRegistration() {
     }, 0);
     setTotalCost(total);
   }, [selectedEventIds]);
+
+  useEffect(() => {
+    const prefillFromDb = async () => {
+      if (isSessionPending || !sessionData?.user?.id) return;
+      setIsPrefillLoading(true);
+      try {
+        const userProfile: any = await getUserProfile(sessionData.user.id);
+        if (!userProfile) return;
+
+        if (userProfile.bookingId) {
+          setValue("bookingId", userProfile.bookingId, { shouldValidate: true });
+          setIsBookingIdPrefilled(true);
+        }
+        if (userProfile.name) {
+          setValue("leaderName", userProfile.name, { shouldValidate: true });
+        } else if (sessionData.user.name) {
+          setValue("leaderName", sessionData.user.name, { shouldValidate: true });
+        }
+        if (sessionData.user.email) {
+          setValue("email", sessionData.user.email, { shouldValidate: true });
+        }
+        if (userProfile.mobileNo) {
+          setValue("phone", String(userProfile.mobileNo).replace(/\D/g, "").slice(0, 10), {
+            shouldValidate: true,
+          });
+        }
+        if (userProfile.collegeName) {
+          setValue("college", userProfile.collegeName, { shouldValidate: true });
+        }
+      } finally {
+        setIsPrefillLoading(false);
+      }
+    };
+
+    prefillFromDb();
+  }, [sessionData, isSessionPending, setValue]);
 
   // Load Razorpay script
   useEffect(() => {
@@ -272,9 +314,17 @@ export default function EventRegistration() {
     }
   };
 
+  const handleEventListWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    const el = eventListRef.current;
+    if (!el) return;
+    e.preventDefault();
+    e.stopPropagation();
+    el.scrollTop += e.deltaY;
+  };
+
   return (
-    <div className="bg-zinc-950 min-h-screen flex items-center justify-center p-4 lg:p-8 font-sans overflow-x-hidden">
-      <div className="bg-white rounded-[2rem] w-full max-w-full overflow-hidden flex flex-col lg:flex-row min-h-[85vh]">
+    <div className="bg-zinc-950 h-screen max-h-screen flex items-center justify-center p-4 lg:p-8 font-sans overflow-hidden">
+      <div className="bg-white rounded-[2rem] w-full max-w-full h-full max-h-full overflow-hidden flex flex-col lg:flex-row min-h-[85vh]">
         <div className="flex-1 flex flex-col p-6 lg:p-10 relative overflow-hidden">
           <div className="flex flex-col mb-6">
             <Link
@@ -312,7 +362,7 @@ export default function EventRegistration() {
             </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
+          <div className={`flex-1 pr-2 custom-scrollbar ${step === 2 ? "overflow-y-hidden" : "overflow-y-auto"}`}>
             {/* Form Steps */}
             <AnimatePresence mode="wait">
               {step === 1 && (
@@ -407,7 +457,9 @@ export default function EventRegistration() {
                       {...register("bookingId")}
                       className={inputStyles}
                       placeholder="SGF26-XXXXXXXX"
+                      readOnly={isBookingIdPrefilled}
                       onChange={(e) => {
+                        if (isBookingIdPrefilled) return;
                         let value = e.target.value.toUpperCase();
                         // Remove any characters that aren't alphanumeric or hyphen
                         value = value.replace(/[^A-Z0-9-]/g, '');
@@ -429,7 +481,17 @@ export default function EventRegistration() {
                         setValue("bookingId", value, { shouldValidate: true });
                       }}
                     />
-                    <p className="text-xs text-zinc-500 mt-1">Find it in <Link href="/profile" className="underline font-semibold text-zinc-700">Profile</Link>. Sign in and visit Profile first if you don&apos;t have one.</p>
+                    <p className="text-xs text-zinc-500 mt-1">
+                      {isPrefillLoading
+                        ? "Loading Booking ID from database..."
+                        : "Booking ID auto-fills from your profile. If missing, visit "}
+                      {!isPrefillLoading && (
+                        <>
+                          <Link href="/profile" className="underline font-semibold text-zinc-700">Profile</Link>
+                          {" and complete your details."}
+                        </>
+                      )}
+                    </p>
                     {errors.bookingId && (
                       <p className="text-red-500 text-xs font-bold mt-1 bg-red-50 p-1 border border-red-200 inline-block">
                         {errors.bookingId.message}
@@ -453,11 +515,12 @@ export default function EventRegistration() {
                   animate={{ x: 0, opacity: 1 }}
                   exit={{ x: -20, opacity: 0 }}
                   className="space-y-4"
+                  onWheelCapture={handleEventListWheel}
                 >
                   <p className="font-bold text-xs uppercase text-zinc-500">
                     Step 2/4: Select Event
                   </p>
-                  <div className="space-y-3 h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                  <div ref={eventListRef} className="space-y-3 h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                      {eventsList.map((ev) => {
                        const isSelected = selectedEventIds.includes(ev.id);
                        return (
