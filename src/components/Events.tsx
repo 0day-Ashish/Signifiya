@@ -214,6 +214,12 @@ export default function Events() {
   };
 
   const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
+    // Check if the target is a button, link, or inside one
+    const target = event.target as HTMLElement;
+    if (target.closest('a') || target.closest('button')) {
+      return;
+    }
+
     const container = scrollContainerRef.current;
     if (!container) return;
 
