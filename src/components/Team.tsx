@@ -27,6 +27,7 @@ const softura = localFont({ src: "../../public/fonts/Softura-Demo.otf" });
 const TEAM_MEMBERS: TeamMember[] = [
   { id: 1, name: "Nisarga Chand", role: "Faculty Lead", image: "/team/Nisarga.jpeg", linkedin: "https://www.linkedin.com/in/nisarga-chand-48634667/", instagram: "https://www.instagram.com/nisarga_chand/" },
   { id: 2, name: "Soodipa Chakraborty", role: "Faculty Lead", image: "/team/Soodipa.jpg", linkedin: "https://www.linkedin.com/in/soodipachakraborty/", instagram: "https://www.instagram.com/soodipa_c" },
+  { id: 20, name: " Dr. Soumitra Roy", role: "Faculty Lead", image: "/team/SR.jpg", linkedin: "https://www.linkedin.com/in/soumitra-roy-8987b91a/", instagram: "https://www.instagram.com/" },
   { id: 3, name: "Prabhat Das", role: "Tech Mentor", image: "/team/Prabhat.jpg", linkedin: "https://www.linkedin.com/in/prabhatd/", github: "https://github.com/prabhatdash/" },
   { id: 4, name: "Hrishav Dey", role: "Event Advisor", image: "/avatar4.jpg", linkedin: "https://linkedin.com/in/hrishav-dey-2b2990291/", instagram: "https://instagram.com/hrishav.dey" },
   { id: 5, name: "Digant Mishra", role: "Administratiion Head", image: "/team/Digant.jpeg", linkedin: "https://www.linkedin.com/in/digant-m-a325b61a4", instagram: "https://instagram.com/digant._", github: "https://github.com/diggu92" },
