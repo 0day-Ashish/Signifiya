@@ -35,8 +35,8 @@ export default function Events() {
   const dragStartXRef = useRef(0);
   const dragStartScrollLeftRef = useRef(0);
 
-  const filteredEvents = activeCategory === "ALL" 
-    ? EVENTS_DATA 
+  const filteredEvents = activeCategory === "ALL"
+    ? EVENTS_DATA
     : EVENTS_DATA.filter(event => event.category === activeCategory);
   const isAllCategory = activeCategory === "ALL";
 
@@ -44,7 +44,7 @@ export default function Events() {
   // Only apply loop logic when activeCategory is "ALL"
   const handleScroll = useCallback(() => {
     if (!isAllCategory) return; // No loop for filtered categories
-    
+
     const container = scrollContainerRef.current;
     const firstSet = firstSetRef.current;
     if (!container || !firstSet || isJumpingRef.current) return;
@@ -86,7 +86,7 @@ export default function Events() {
     const t = setTimeout(() => {
       const container = scrollContainerRef.current;
       if (!container) return;
-      
+
       if (isAllCategory) {
         // For "ALL" category: start in middle set for infinite loop
         const firstSet = firstSetRef.current;
@@ -155,35 +155,35 @@ export default function Events() {
     if (scrollContainerRef.current) {
       const container = scrollContainerRef.current;
       const isMobile = window.innerWidth < 640;
-      
+
       if (isMobile) {
         // On mobile: center the next/previous card
         const containerWidth = container.getBoundingClientRect().width;
         const cards = container.querySelectorAll('.event-card');
-        
+
         if (cards.length === 0) return;
-        
+
         // Find the currently centered card
         let currentIndex = 0;
         let minDistance = Infinity;
-        
+
         cards.forEach((card, index) => {
           const cardRect = card.getBoundingClientRect();
           const cardCenter = cardRect.left + cardRect.width / 2;
           const containerCenter = container.getBoundingClientRect().left + containerWidth / 2;
           const distance = Math.abs(cardCenter - containerCenter);
-          
+
           if (distance < minDistance) {
             minDistance = distance;
             currentIndex = index;
           }
         });
-        
+
         // Calculate next/previous index
-        const nextIndex = direction === 'right' 
+        const nextIndex = direction === 'right'
           ? Math.min(currentIndex + 1, cards.length - 1)
           : Math.max(currentIndex - 1, 0);
-        
+
         // Get the target card
         const targetCard = cards[nextIndex] as HTMLElement;
         if (targetCard) {
@@ -191,7 +191,7 @@ export default function Events() {
           const cardLeft = targetCard.offsetLeft;
           const containerCenter = containerWidth / 2;
           const targetScroll = cardLeft - containerCenter + (cardWidth / 2);
-          
+
           container.scrollTo({
             left: targetScroll,
             behavior: 'smooth'
@@ -201,10 +201,10 @@ export default function Events() {
         // On large screens: simple scroll by card width
         const scrollAmount = 400;
         const currentScroll = container.scrollLeft;
-        const targetScroll = direction === 'left' 
-          ? currentScroll - scrollAmount 
+        const targetScroll = direction === 'left'
+          ? currentScroll - scrollAmount
           : currentScroll + scrollAmount;
-        
+
         container.scrollTo({
           left: targetScroll,
           behavior: 'smooth'
@@ -216,6 +216,9 @@ export default function Events() {
   const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
     // Check if the target is a button, link, or inside one
     const target = event.target as HTMLElement;
+
+    // If we're clicking a link or button, let the default browser behavior happen
+    // On mobile, this prevents the slider from capturing the pointer and blocking the tap
     if (target.closest('a') || target.closest('button')) {
       return;
     }
@@ -223,11 +226,21 @@ export default function Events() {
     const container = scrollContainerRef.current;
     if (!container) return;
 
+    // Only start dragging if it's left click (0) or touch
+    if (event.pointerType === 'mouse' && event.button !== 0) return;
+
     isDraggingRef.current = true;
     dragStartXRef.current = event.clientX;
     dragStartScrollLeftRef.current = container.scrollLeft;
     isHoveredRef.current = true;
-    container.setPointerCapture(event.pointerId);
+
+    // Using setPointerCapture on mobile can sometimes prevent click events from firing 
+    // on child elements if not careful, but we need it for smooth swiping outside links
+    try {
+      container.setPointerCapture(event.pointerId);
+    } catch (e) {
+      // Ignore if pointer capture fails (common on some mobile browsers during fast taps)
+    }
   };
 
   const handlePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
@@ -242,269 +255,291 @@ export default function Events() {
     const container = scrollContainerRef.current;
     if (!container || !isDraggingRef.current) return;
 
-    isDraggingRef.current = false;
+    // We don't reset isDraggingRef immediately so handleClickCapture can read it
+    // It will be reset in a setTimeout
     isHoveredRef.current = false;
-    container.releasePointerCapture(event.pointerId);
+
+    try {
+      container.releasePointerCapture(event.pointerId);
+    } catch (e) { }
+
+    // Reset drag state after a short delay so click event can be captured and prevented if it was a drag
+    setTimeout(() => {
+      isDraggingRef.current = false;
+    }, 50);
+  };
+
+  // Prevent accidental clicks on links when the user was actually dragging/swiping
+  const handleClickCapture = (e: React.MouseEvent) => {
+    // If the drag distance was significant, prevent the click
+    const dragDistance = Math.abs(e.clientX - dragStartXRef.current);
+    if (isDraggingRef.current && dragDistance > 5) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
   };
 
 
   return (
     <section id="events" className="w-full bg-black pb-3">
-        <div className="bg-[#fff3e0] rounded-[2.5rem] p-8 sm:p-12 relative overflow-hidden flex flex-col gap-12 border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-            <FadeIn>
-                <div className="flex flex-col gap-4 text-center">
-                    <h2 className={`text-5xl sm:text-7xl text-black uppercase leading-[0.9] ${gilton.className}`}>
-                        SIGNIFIYA <span className="italic">Events</span>
-                    </h2>
-                    <p className={`text-xl text-gray-600 font-medium max-w-2xl mx-auto ${softura.className}`}>
-                        Discover the diverse range of events happening at Signifiya'26.
-                    </p>
-                    <p className={`text-base text-gray-600 font-medium max-w-2xl mx-auto ${softura.className}`}>
-                        *Events are not limited to any department or domain, anybody can participate in any of our events without any restrictions, read terms & conditions thoroughly.*
-                    </p>
-                </div>
-            </FadeIn>
+      <div className="bg-[#fff3e0] rounded-[2.5rem] p-8 sm:p-12 relative overflow-hidden flex flex-col gap-12 border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+        <FadeIn>
+          <div className="flex flex-col gap-4 text-center">
+            <h2 className={`text-5xl sm:text-7xl text-black uppercase leading-[0.9] ${gilton.className}`}>
+              SIGNIFIYA <span className="italic">Events</span>
+            </h2>
+            <p className={`text-xl text-gray-600 font-medium max-w-2xl mx-auto ${softura.className}`}>
+              Discover the diverse range of events happening at Signifiya'26.
+            </p>
+            <p className={`text-base text-gray-600 font-medium max-w-2xl mx-auto ${softura.className}`}>
+              *Events are not limited to any department or domain, anybody can participate in any of our events without any restrictions, read terms & conditions thoroughly.*
+            </p>
+          </div>
+        </FadeIn>
 
-            {/* Category Filter */}
-            <div className="flex flex-wrap justify-center gap-4">
-                {CATEGORIES.map((category) => (
-                    <button
-                        key={category}
-                        onClick={() => setActiveCategory(category)}
-                        className={`
+        {/* Category Filter */}
+        <div className="flex flex-wrap justify-center gap-4">
+          {CATEGORIES.map((category) => (
+            <button
+              key={category}
+              onClick={() => setActiveCategory(category)}
+              className={`
                             px-6 py-2 rounded-full border-2 border-black font-bold text-sm uppercase tracking-wider transition-all duration-200
-                            ${activeCategory === category 
-                                ? 'bg-black text-white shadow-[4px_4px_0px_0px_rgba(255,255,255,0.5)] translate-x-[2px] translate-y-[2px]' 
-                                : 'bg-white text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]'
-                            }
+                            ${activeCategory === category
+                  ? 'bg-black text-white shadow-[4px_4px_0px_0px_rgba(255,255,255,0.5)] translate-x-[2px] translate-y-[2px]'
+                  : 'bg-white text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]'
+                }
                             ${softura.className}
                         `}
-                    >
-                        {category}
-                    </button>
-                ))}
-            </div>
-
-            {/* Events Horizontal Scroll Container */}
-            <div className="relative">
-                {/* Left Arrow Button */}
-                <button
-                    onClick={() => scroll('left')}
-                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-black text-white w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all flex items-center justify-center"
-                    aria-label="Scroll left"
-                >
-                    <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                    </svg>
-                </button>
-
-                {/* Right Arrow Button */}
-                <button
-                    onClick={() => scroll('right')}
-                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-black text-white w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all flex items-center justify-center"
-                    aria-label="Scroll right"
-                >
-                    <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                </button>
-
-                {/* Horizontal Scrolling Events Container - infinite loop only for "ALL" category */}
-                <div 
-                    ref={scrollContainerRef}
-                    onScroll={handleScroll}
-                    onMouseEnter={() => {
-                      isHoveredRef.current = true;
-                    }}
-                    onMouseLeave={() => {
-                      isHoveredRef.current = false;
-                    }}
-                    onPointerDown={handlePointerDown}
-                    onPointerMove={handlePointerMove}
-                    onPointerUp={handlePointerUp}
-                    onPointerCancel={handlePointerUp}
-                    className={`flex gap-0 overflow-x-auto scrollbar-hide pb-4 min-h-[450px] sm:min-h-[500px] cursor-grab active:cursor-grabbing touch-pan-y ${isAllCategory ? 'snap-none' : 'snap-x snap-mandatory'}`}
-                    style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-                >
-                    {isAllCategory ? (
-                        // For "ALL" category: render multiple copies for infinite loop
-                        Array.from({ length: LOOP_COPIES }, (_, copyIndex) => (
-                            <div
-                                key={copyIndex}
-                                ref={copyIndex === 0 ? firstSetRef : undefined}
-                                className="flex gap-4 sm:gap-8 shrink-0"
-                            >
-                                {/* Left spacer to allow first card to center - only on mobile */}
-                                <div className="shrink-0 w-[calc(50%-125px)] sm:hidden" />
-                                <AnimatePresence mode="popLayout">
-                                    {filteredEvents.map((event, eventIndex) => {
-                                        // Check if this is Arm Wrestling (last event) or Coding Premier League (first event)
-                                        // Add gap between them in the loop
-                                        const isArmWrestling = event.id === 15;
-                                        const isCodingPremierLeague = event.id === 1;
-                                        const isLastEvent = eventIndex === filteredEvents.length - 1;
-                                        const isFirstEvent = eventIndex === 0;
-                                        const shouldAddGapAfter = isArmWrestling && isLastEvent; // Add margin-right to Arm Wrestling
-                                        const shouldAddGapBefore = isCodingPremierLeague && isFirstEvent; // Add margin-left to Coding Premier League
-                                        
-                                        return (
-                                        <motion.div
-                                            layout
-                                            initial={{ opacity: 0, scale: 0.9 }}
-                                            animate={{ opacity: 1, scale: 1 }}
-                                            exit={{ opacity: 0, scale: 0.9 }}
-                                            transition={{ duration: 0.2 }}
-                                            key={`${event.id}-${copyIndex}`}
-                                            className={`event-card bg-white rounded-3xl border-4 border-black overflow-hidden flex flex-col shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all group shrink-0 w-[250px] sm:w-[320px] md:w-[350px] snap-center ${shouldAddGapAfter ? 'mr-4 sm:mr-6' : ''} ${shouldAddGapBefore ? 'ml-4 sm:ml-6' : ''}`}
-                                        >
-                                            {/* Image Container */}
-                                            <div className="relative h-40 sm:h-48 w-full border-b-4 border-black">
-                                                <Image
-                                                    src={event.image}
-                                                    alt={event.title}
-                                                    fill
-                                                    className="object-cover transition-transform duration-500 group-hover:scale-110"
-                                                />
-                                                <div className="absolute top-4 right-4 bg-black text-white text-xs font-bold px-3 py-1 rounded-full border border-white">
-                                                    {event.category}
-                                                </div>
-                                            </div>
-                                            
-                                            {/* Content */}
-                                            <div className="p-4 sm:p-6 flex flex-col flex-1 gap-3 sm:gap-4">
-                                                <div>
-                                                    <h3 className={`text-xl sm:text-2xl text-black uppercase leading-none mb-2 ${gilton.className}`}>
-                                                        {event.title}
-                                                    </h3>
-                                                    <p className={`text-xs sm:text-sm text-gray-500 font-bold uppercase tracking-widest ${softura.className}`}>
-                                                        {event.date}
-                                                    </p>
-                                                    <span className={`inline-block mt-1.5 px-2 sm:px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs sm:text-sm font-bold ${softura.className}`}>
-                                                        Prize pool: {event.prizePool}
-                                                    </span>
-                                                </div>
-                                                <p className={`text-sm sm:text-base text-gray-800 font-medium leading-snug line-clamp-3 ${softura.className}`}>
-                                                    {event.description}
-                                                </p>
-                                                <div className="mt-auto pt-2 sm:pt-4 flex flex-col gap-2">
-                                                    {EVENT_TITLE_TO_SCHEDULE_ID[event.title] ? (
-                                                      <Link 
-                                                        href={`/schedule#event-${EVENT_TITLE_TO_SCHEDULE_ID[event.title]}`}
-                                                        className={`w-full bg-[#d091f8] text-black border-2 border-black rounded-xl py-1.5 sm:py-2 font-bold uppercase text-xs sm:text-sm transition-colors hover:bg-[#c080e8] text-center ${softura.className}`}
-                                                      >
-                                                        View Details
-                                                      </Link>
-                                                    ) : (
-                                                      <Link 
-                                                        href="/schedule"
-                                                        className={`w-full bg-[#d091f8] text-black border-2 border-black rounded-xl py-1.5 sm:py-2 font-bold uppercase text-xs sm:text-sm transition-colors hover:bg-[#c080e8] text-center ${softura.className}`}
-                                                      >
-                                                        View Details
-                                                      </Link>
-                                                    )}
-                                                    <Link href="/events" className={`w-full bg-black text-white border-2 border-black rounded-xl py-1.5 sm:py-2 font-bold uppercase text-xs sm:text-sm transition-colors hover:bg-zinc-800 text-center ${softura.className}`}>
-                                                        Register
-                                                    </Link>
-                                                </div>
-                                            </div>
-                                        </motion.div>
-                                        );
-                                    })}
-                                </AnimatePresence>
-                                {/* Right spacer to allow last card to center - only on mobile */}
-                                <div className="shrink-0 w-[calc(50%-125px)] sm:hidden" />
-                            </div>
-                        ))
-                    ) : (
-                        // For filtered categories: render single set (no loop)
-                        <div
-                            ref={firstSetRef}
-                            className="flex gap-4 sm:gap-8 shrink-0"
-                        >
-                            {/* Left spacer to allow first card to center - only on mobile */}
-                            <div className="shrink-0 w-[calc(50%-125px)] sm:hidden" />
-                            <AnimatePresence mode="popLayout">
-                                {filteredEvents.map((event) => (
-                                    <motion.div
-                                        layout
-                                        initial={{ opacity: 0, scale: 0.9 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        exit={{ opacity: 0, scale: 0.9 }}
-                                        transition={{ duration: 0.2 }}
-                                        key={event.id}
-                                        className="event-card bg-white rounded-3xl border-4 border-black overflow-hidden flex flex-col shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all group shrink-0 w-[250px] sm:w-[320px] md:w-[350px] snap-center"
-                                    >
-                                        {/* Image Container */}
-                                        <div className="relative h-40 sm:h-48 w-full border-b-4 border-black">
-                                            <Image
-                                                src={event.image}
-                                                alt={event.title}
-                                                fill
-                                                className="object-cover transition-transform duration-500 group-hover:scale-110"
-                                            />
-                                            <div className="absolute top-4 right-4 bg-black text-white text-xs font-bold px-3 py-1 rounded-full border border-white">
-                                                {event.category}
-                                            </div>
-                                        </div>
-                                        
-                                        {/* Content */}
-                                        <div className="p-4 sm:p-6 flex flex-col flex-1 gap-3 sm:gap-4">
-                                            <div>
-                                                <h3 className={`text-xl sm:text-2xl text-black uppercase leading-none mb-2 ${gilton.className}`}>
-                                                    {event.title}
-                                                </h3>
-                                                <p className={`text-xs sm:text-sm text-gray-500 font-bold uppercase tracking-widest ${softura.className}`}>
-                                                    {event.date}
-                                                </p>
-                                                <span className={`inline-block mt-1.5 px-2 sm:px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs sm:text-sm font-bold ${softura.className}`}>
-                                                    Prize pool: {event.prizePool}
-                                                </span>
-                                            </div>
-                                            <p className={`text-sm sm:text-base text-gray-800 font-medium leading-snug line-clamp-3 ${softura.className}`}>
-                                                {event.description}
-                                            </p>
-                                            <div className="mt-auto pt-2 sm:pt-4 flex flex-col gap-2">
-                                                {EVENT_TITLE_TO_SCHEDULE_ID[event.title] ? (
-                                                  <Link 
-                                                    href={`/schedule#event-${EVENT_TITLE_TO_SCHEDULE_ID[event.title]}`}
-                                                    className={`w-full bg-[#d091f8] text-black border-2 border-black rounded-xl py-1.5 sm:py-2 font-bold uppercase text-xs sm:text-sm transition-colors hover:bg-[#c080e8] text-center ${softura.className}`}
-                                                  >
-                                                    View Details
-                                                  </Link>
-                                                ) : (
-                                                  <Link 
-                                                    href="/schedule"
-                                                    className={`w-full bg-[#d091f8] text-black border-2 border-black rounded-xl py-1.5 sm:py-2 font-bold uppercase text-xs sm:text-sm transition-colors hover:bg-[#c080e8] text-center ${softura.className}`}
-                                                  >
-                                                    View Details
-                                                  </Link>
-                                                )}
-                                                <Link href="/events" className={`w-full bg-black text-white border-2 border-black rounded-xl py-1.5 sm:py-2 font-bold uppercase text-xs sm:text-sm transition-colors hover:bg-zinc-800 text-center ${softura.className}`}>
-                                                    Register
-                                                </Link>
-                                            </div>
-                                        </div>
-                                    </motion.div>
-                                ))}
-                            </AnimatePresence>
-                            {/* Right spacer to allow last card to center - only on mobile */}
-                            <div className="shrink-0 w-[calc(50%-125px)] sm:hidden" />
-                        </div>
-                    )}
-                </div>
-
-                {/* View Schedule Button */}
-                <div className="flex justify-center mt-8">
-                    <Link
-                        href="/schedule"
-                        className={`bg-black text-white px-8 py-3 rounded-full border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,0.2)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,0.2)] hover:translate-x-[3px] hover:translate-y-[3px] transition-all uppercase font-bold text-lg tracking-wider ${softura.className}`}
-                    >
-                        View Schedule
-                    </Link>
-                </div>
-            </div>
+            >
+              {category}
+            </button>
+          ))}
         </div>
-        <style jsx>{`
+
+        {/* Events Horizontal Scroll Container */}
+        <div className="relative">
+          {/* Left Arrow Button */}
+          <button
+            onClick={() => scroll('left')}
+            onPointerDown={(e) => { e.stopPropagation(); }}
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-black text-white w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all flex items-center justify-center cursor-pointer pointer-events-auto"
+            aria-label="Scroll left"
+          >
+            <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+
+          {/* Right Arrow Button */}
+          <button
+            onClick={() => scroll('right')}
+            onPointerDown={(e) => { e.stopPropagation(); }}
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-black text-white w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all flex items-center justify-center cursor-pointer pointer-events-auto"
+            aria-label="Scroll right"
+          >
+            <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+
+          {/* Horizontal Scrolling Events Container - infinite loop only for "ALL" category */}
+          <div
+            ref={scrollContainerRef}
+            onScroll={handleScroll}
+            onMouseEnter={() => {
+              isHoveredRef.current = true;
+            }}
+            onMouseLeave={() => {
+              isHoveredRef.current = false;
+            }}
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            onPointerCancel={handlePointerUp}
+            onClickCapture={handleClickCapture}
+            className={`flex gap-0 overflow-x-auto scrollbar-hide pb-4 min-h-[450px] sm:min-h-[500px] cursor-grab active:cursor-grabbing touch-pan-y ${isAllCategory ? 'snap-none' : 'snap-x snap-mandatory'}`}
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          >
+            {isAllCategory ? (
+              // For "ALL" category: render multiple copies for infinite loop
+              Array.from({ length: LOOP_COPIES }, (_, copyIndex) => (
+                <div
+                  key={copyIndex}
+                  ref={copyIndex === 0 ? firstSetRef : undefined}
+                  className="flex gap-4 sm:gap-8 shrink-0"
+                >
+                  {/* Left spacer to allow first card to center - only on mobile */}
+                  <div className="shrink-0 w-[calc(50%-125px)] sm:hidden" />
+                  <AnimatePresence mode="popLayout">
+                    {filteredEvents.map((event, eventIndex) => {
+                      // Check if this is Arm Wrestling (last event) or Coding Premier League (first event)
+                      // Add gap between them in the loop
+                      const isArmWrestling = event.id === 15;
+                      const isCodingPremierLeague = event.id === 1;
+                      const isLastEvent = eventIndex === filteredEvents.length - 1;
+                      const isFirstEvent = eventIndex === 0;
+                      const shouldAddGapAfter = isArmWrestling && isLastEvent; // Add margin-right to Arm Wrestling
+                      const shouldAddGapBefore = isCodingPremierLeague && isFirstEvent; // Add margin-left to Coding Premier League
+
+                      return (
+                        <motion.div
+                          layout
+                          initial={{ opacity: 0, scale: 0.9 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.9 }}
+                          transition={{ duration: 0.2 }}
+                          key={`${event.id}-${copyIndex}`}
+                          className={`event-card bg-white rounded-3xl border-4 border-black overflow-hidden flex flex-col shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all group shrink-0 w-[250px] sm:w-[320px] md:w-[350px] snap-center ${shouldAddGapAfter ? 'mr-4 sm:mr-6' : ''} ${shouldAddGapBefore ? 'ml-4 sm:ml-6' : ''}`}
+                        >
+                          {/* Image Container */}
+                          <div className="relative h-40 sm:h-48 w-full border-b-4 border-black">
+                            <Image
+                              src={event.image}
+                              alt={event.title}
+                              fill
+                              className="object-cover transition-transform duration-500 group-hover:scale-110"
+                            />
+                            <div className="absolute top-4 right-4 bg-black text-white text-xs font-bold px-3 py-1 rounded-full border border-white">
+                              {event.category}
+                            </div>
+                          </div>
+
+                          {/* Content */}
+                          <div className="p-4 sm:p-6 flex flex-col flex-1 gap-3 sm:gap-4">
+                            <div>
+                              <h3 className={`text-xl sm:text-2xl text-black uppercase leading-none mb-2 ${gilton.className}`}>
+                                {event.title}
+                              </h3>
+                              <p className={`text-xs sm:text-sm text-gray-500 font-bold uppercase tracking-widest ${softura.className}`}>
+                                {event.date}
+                              </p>
+                              <span className={`inline-block mt-1.5 px-2 sm:px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs sm:text-sm font-bold ${softura.className}`}>
+                                Prize pool: {event.prizePool}
+                              </span>
+                            </div>
+                            <p className={`text-sm sm:text-base text-gray-800 font-medium leading-snug line-clamp-3 ${softura.className}`}>
+                              {event.description}
+                            </p>
+                            <div className="mt-auto pt-2 sm:pt-4 flex flex-col gap-2">
+                              {EVENT_TITLE_TO_SCHEDULE_ID[event.title] ? (
+                                <Link
+                                  href={`/schedule#event-${EVENT_TITLE_TO_SCHEDULE_ID[event.title]}`}
+                                  className={`w-full bg-[#d091f8] text-black border-2 border-black rounded-xl py-1.5 sm:py-2 font-bold uppercase text-xs sm:text-sm transition-colors hover:bg-[#c080e8] text-center ${softura.className}`}
+                                >
+                                  View Details
+                                </Link>
+                              ) : (
+                                <Link
+                                  href="/schedule"
+                                  className={`w-full bg-[#d091f8] text-black border-2 border-black rounded-xl py-1.5 sm:py-2 font-bold uppercase text-xs sm:text-sm transition-colors hover:bg-[#c080e8] text-center ${softura.className}`}
+                                >
+                                  View Details
+                                </Link>
+                              )}
+                              <Link href="/events" className={`w-full bg-black text-white border-2 border-black rounded-xl py-1.5 sm:py-2 font-bold uppercase text-xs sm:text-sm transition-colors hover:bg-zinc-800 text-center ${softura.className}`}>
+                                Register
+                              </Link>
+                            </div>
+                          </div>
+                        </motion.div>
+                      );
+                    })}
+                  </AnimatePresence>
+                  {/* Right spacer to allow last card to center - only on mobile */}
+                  <div className="shrink-0 w-[calc(50%-125px)] sm:hidden" />
+                </div>
+              ))
+            ) : (
+              // For filtered categories: render single set (no loop)
+              <div
+                ref={firstSetRef}
+                className="flex gap-4 sm:gap-8 shrink-0"
+              >
+                {/* Left spacer to allow first card to center - only on mobile */}
+                <div className="shrink-0 w-[calc(50%-125px)] sm:hidden" />
+                <AnimatePresence mode="popLayout">
+                  {filteredEvents.map((event) => (
+                    <motion.div
+                      layout
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.9 }}
+                      transition={{ duration: 0.2 }}
+                      key={event.id}
+                      className="event-card bg-white rounded-3xl border-4 border-black overflow-hidden flex flex-col shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all group shrink-0 w-[250px] sm:w-[320px] md:w-[350px] snap-center"
+                    >
+                      {/* Image Container */}
+                      <div className="relative h-40 sm:h-48 w-full border-b-4 border-black">
+                        <Image
+                          src={event.image}
+                          alt={event.title}
+                          fill
+                          className="object-cover transition-transform duration-500 group-hover:scale-110"
+                        />
+                        <div className="absolute top-4 right-4 bg-black text-white text-xs font-bold px-3 py-1 rounded-full border border-white">
+                          {event.category}
+                        </div>
+                      </div>
+
+                      {/* Content */}
+                      <div className="p-4 sm:p-6 flex flex-col flex-1 gap-3 sm:gap-4">
+                        <div>
+                          <h3 className={`text-xl sm:text-2xl text-black uppercase leading-none mb-2 ${gilton.className}`}>
+                            {event.title}
+                          </h3>
+                          <p className={`text-xs sm:text-sm text-gray-500 font-bold uppercase tracking-widest ${softura.className}`}>
+                            {event.date}
+                          </p>
+                          <span className={`inline-block mt-1.5 px-2 sm:px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs sm:text-sm font-bold ${softura.className}`}>
+                            Prize pool: {event.prizePool}
+                          </span>
+                        </div>
+                        <p className={`text-sm sm:text-base text-gray-800 font-medium leading-snug line-clamp-3 ${softura.className}`}>
+                          {event.description}
+                        </p>
+                        <div className="mt-auto pt-2 sm:pt-4 flex flex-col gap-2">
+                          {EVENT_TITLE_TO_SCHEDULE_ID[event.title] ? (
+                            <Link
+                              href={`/schedule#event-${EVENT_TITLE_TO_SCHEDULE_ID[event.title]}`}
+                              className={`w-full bg-[#d091f8] text-black border-2 border-black rounded-xl py-1.5 sm:py-2 font-bold uppercase text-xs sm:text-sm transition-colors hover:bg-[#c080e8] text-center ${softura.className}`}
+                            >
+                              View Details
+                            </Link>
+                          ) : (
+                            <Link
+                              href="/schedule"
+                              className={`w-full bg-[#d091f8] text-black border-2 border-black rounded-xl py-1.5 sm:py-2 font-bold uppercase text-xs sm:text-sm transition-colors hover:bg-[#c080e8] text-center ${softura.className}`}
+                            >
+                              View Details
+                            </Link>
+                          )}
+                          <Link href="/events" className={`w-full bg-black text-white border-2 border-black rounded-xl py-1.5 sm:py-2 font-bold uppercase text-xs sm:text-sm transition-colors hover:bg-zinc-800 text-center ${softura.className}`}>
+                            Register
+                          </Link>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+                {/* Right spacer to allow last card to center - only on mobile */}
+                <div className="shrink-0 w-[calc(50%-125px)] sm:hidden" />
+              </div>
+            )}
+          </div>
+
+          {/* View Schedule Button */}
+          <div className="flex justify-center mt-8">
+            <Link
+              href="/schedule"
+              className={`bg-black text-white px-8 py-3 rounded-full border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,0.2)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,0.2)] hover:translate-x-[3px] hover:translate-y-[3px] transition-all uppercase font-bold text-lg tracking-wider ${softura.className}`}
+            >
+              View Schedule
+            </Link>
+          </div>
+        </div>
+      </div>
+      <style jsx>{`
             .scrollbar-hide::-webkit-scrollbar {
                 display: none;
             }
