@@ -116,7 +116,11 @@ export async function getUserProfile(userId: string) {
         // @ts-ignore
         registeredEvents: true,
         // @ts-ignore
-        generatedPasses: true
+        generatedPasses: {
+          include: {
+            visitorRegistration: true
+          }
+        }
       }
     });
     if (!user) return null;
