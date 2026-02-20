@@ -1,10 +1,9 @@
-"use client";
-
-import { useState, useEffect } from "react";
+import { useState, useEffect, useTransition } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import localFont from "next/font/local";
+import { invalidateAdminStatsCache } from "../actions";
 
 const gilton = localFont({ src: "../../../../public/fonts/GiltonRegular.otf" });
 const softura = localFont({ src: "../../../../public/fonts/Softura-Demo.otf" });
@@ -22,6 +21,8 @@ export default function AdminShell({
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   // Close mobile sidebar on route change
   useEffect(() => {
@@ -43,6 +44,13 @@ export default function AdminShell({
   const isActive = (href: string) => {
     if (href === "/admin") return pathname === "/admin";
     return pathname?.startsWith(href);
+  };
+
+  const handleRefresh = async () => {
+    startTransition(async () => {
+      await invalidateAdminStatsCache();
+      router.refresh();
+    });
   };
 
   const asideContent = (
@@ -68,21 +76,30 @@ export default function AdminShell({
             key={href}
             href={href}
             onClick={() => setSidebarOpen(false)}
-            className={`block px-4 py-2.5 rounded-xl text-sm font-bold mb-1 transition-all ${softura.className} ${
-              isActive(href)
+            className={`block px-4 py-2.5 rounded-xl text-sm font-bold mb-1 transition-all ${softura.className} ${isActive(href)
                 ? "bg-[#deb3fa] text-black border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
                 : "text-zinc-400 hover:bg-zinc-800 hover:text-white border-2 border-transparent"
-            }`}
+              }`}
           >
             {label}
           </Link>
         ))}
       </nav>
-      <div className="p-3 border-t-2 border-zinc-800 bg-zinc-900">
+      <div className="p-3 border-t-2 border-zinc-800 bg-zinc-900 flex flex-col gap-2">
+        <button
+          onClick={handleRefresh}
+          disabled={isPending}
+          className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold bg-white text-black border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:bg-zinc-100 hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-y-0 active:shadow-none transition-all disabled:opacity-50 disabled:cursor-not-allowed ${softura.className}`}
+        >
+          <svg className={`w-4 h-4 ${isPending ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          {isPending ? "Refreshing..." : "Refresh Data"}
+        </button>
         <Link
           href="/"
           onClick={() => setSidebarOpen(false)}
-          className={`block px-4 py-2.5 rounded-xl text-sm font-bold text-zinc-500 hover:bg-[#deb3fa] hover:text-black border-2 border-transparent hover:border-black transition-all ${softura.className}`}
+          className={`block px-4 py-2.5 rounded-xl text-center text-sm font-bold text-zinc-500 hover:bg-[#deb3fa] hover:text-black border-2 border-transparent hover:border-black transition-all ${softura.className}`}
         >
           ← Back to site
         </Link>
@@ -107,12 +124,16 @@ export default function AdminShell({
         <span className={`font-black text-sm uppercase tracking-tight text-black truncate ${gilton.className}`}>
           Signifiya Admin
         </span>
-        <Link
-          href="/"
-          className={`text-xs font-bold text-black/70 hover:text-black ${softura.className}`}
+        <button
+          onClick={handleRefresh}
+          disabled={isPending}
+          className={`p-2 rounded-lg text-black hover:bg-black/10 transition-colors disabled:opacity-50`}
+          aria-label="Refresh"
         >
-          Back
-        </Link>
+          <svg className={`w-5 h-5 ${isPending ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+        </button>
       </header>
 
       {/* Mobile: backdrop when drawer open */}
@@ -127,9 +148,8 @@ export default function AdminShell({
 
       {/* Mobile: slide-over drawer */}
       <aside
-        className={`md:hidden fixed inset-y-0 left-0 z-50 w-64 max-w-[85vw] bg-zinc-900 border-r-2 border-black flex flex-col transform transition-transform duration-200 ease-out ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`md:hidden fixed inset-y-0 left-0 z-50 w-64 max-w-[85vw] bg-zinc-900 border-r-2 border-black flex flex-col transform transition-transform duration-200 ease-out ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         {asideContent}
       </aside>
