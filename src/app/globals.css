@@ -10,10 +10,10 @@ body {
 
 @media (min-width: 768px) and (pointer: fine) {
 
-  html,
-  html *,
-  html *::before,
-  html *::after {
+  html[data-custom-cursor="true"],
+  html[data-custom-cursor="true"] *,
+  html[data-custom-cursor="true"] *::before,
+  html[data-custom-cursor="true"] *::after {
     cursor: none !important;
   }
 }

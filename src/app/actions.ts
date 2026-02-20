@@ -104,7 +104,7 @@ export async function getUserProfile(userId: string) {
 
     const cacheKey = CacheKeys.userProfile(userId);
 
-    // Try cache first
+    // Try cache first (profile info only — events/passes are fetched separately in real-time)
     const cached = await getCache<any>(cacheKey);
     if (cached) {
       return cached;
@@ -112,16 +112,6 @@ export async function getUserProfile(userId: string) {
 
     let user = await prisma.user.findUnique({
       where: { id: userId },
-      include: {
-        // @ts-ignore
-        registeredEvents: true,
-        // @ts-ignore
-        generatedPasses: {
-          include: {
-            visitorRegistration: true
-          }
-        }
-      }
     });
     if (!user) return null;
 
@@ -140,6 +130,40 @@ export async function getUserProfile(userId: string) {
         }
       }
     }
+
+    const profile = { ...user };
+
+    // Cache profile info for 5 minutes
+    await setCache(cacheKey, profile, CACHE_TTL.MEDIUM);
+
+    return profile;
+  } catch (error) {
+    console.error("Get profile error:", error);
+    return null;
+  }
+}
+
+/**
+ * Get user's registered event teams and passes — always fetched fresh (no cache)
+ */
+export async function getUserEventsAndPasses(userId: string) {
+  try {
+    if (!userId) return { registeredEventTeams: [], generatedPasses: [] };
+
+    // Get user's bookingId for team lookup
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        bookingId: true,
+        // @ts-ignore
+        generatedPasses: {
+          include: {
+            visitorRegistration: true
+          }
+        }
+      }
+    });
+    if (!user) return { registeredEventTeams: [], generatedPasses: [] };
 
     // Registered event teams (ParticipantTeam where leaderBookingId = user.bookingId)
     let registeredEventTeams: { id: string; teamName: string; eventName: string; eventDate: Date | null; status: string; qrCode: string | null; leaderBookingId: string | null; leaderName: string; members: { name: string }[] }[] = [];
@@ -165,15 +189,13 @@ export async function getUserProfile(userId: string) {
       });
     }
 
-    const profile = { ...user, registeredEventTeams };
-
-    // Cache for 5 minutes (user-specific data)
-    await setCache(cacheKey, profile, CACHE_TTL.MEDIUM);
-
-    return profile;
+    return {
+      registeredEventTeams,
+      generatedPasses: (user as any).generatedPasses ?? [],
+    };
   } catch (error) {
-    console.error("Get profile error:", error);
-    return null;
+    console.error("Get events/passes error:", error);
+    return { registeredEventTeams: [], generatedPasses: [] };
   }
 }
 

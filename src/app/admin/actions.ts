@@ -398,7 +398,18 @@ export async function updateVisitorStatus(id: string, status: "pending" | "verif
 
 export async function updateParticipantTeamStatus(id: string, status: "pending" | "verified" | "rejected") {
   await guard();
-  await prisma.participantTeam.update({ where: { id }, data: { status } });
+  const team = await prisma.participantTeam.update({ where: { id }, data: { status } });
+
+  // Invalidate the team leader's profile cache so the status change shows immediately
+  if (team.leaderBookingId) {
+    const user = await prisma.user.findFirst({
+      where: { bookingId: { equals: team.leaderBookingId, mode: "insensitive" } },
+      select: { id: true },
+    });
+    if (user) {
+      await deleteCache(CacheKeys.userProfile(user.id));
+    }
+  }
 
   // Invalidate cache immediately for real-time data
   await invalidateAdminStatsCache();

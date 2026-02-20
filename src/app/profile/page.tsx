@@ -3,11 +3,12 @@
 import { useState, useRef, useEffect } from "react";
 import { authClient } from "@/lib/auth-client";
 import { APP_CONFIG } from "@/config/app.config";
-import { uploadAvatar, updateUserProfile, getUserProfile } from "@/app/actions";
+import { uploadAvatar, updateUserProfile, getUserProfile, getUserEventsAndPasses } from "@/app/actions";
 import html2canvas from "html2canvas-pro";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import VisitorCard from "@/components/Visitors-Pass";
+import EventCard from "@/components/Events-Pass";
 import localFont from "next/font/local";
 import Image from "next/image";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
@@ -41,6 +42,7 @@ export default function Profile() {
   const [showEventPassDetail, setShowEventPassDetail] = useState<{ id: string; teamName: string; eventName: string; eventDate: string | Date | null; status: string; qrCode?: string | null; leaderBookingId?: string | null; leaderName?: string; members?: { name: string }[] } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const passCardRef = useRef<HTMLDivElement>(null);
+  const eventPassCardRef = useRef<HTMLDivElement>(null);
 
   // Pre-defined Avatars
   const AVATARS = [
@@ -120,8 +122,11 @@ export default function Profile() {
           name: sessionData.user.name || "",
         }));
 
-        // Fetch extra fields from DB
-        const userProfile: any = await getUserProfile(sessionData.user.id);
+        // Fetch profile (cached) and events/passes (real-time) in parallel
+        const [userProfile, eventsAndPasses]: [any, any] = await Promise.all([
+          getUserProfile(sessionData.user.id),
+          getUserEventsAndPasses(sessionData.user.id),
+        ]);
         if (userProfile) {
           setFormData(prev => ({
             ...prev,
@@ -131,8 +136,6 @@ export default function Profile() {
             mobileNo: userProfile.mobileNo || "",
           }));
           setBookingId(userProfile.bookingId ?? null);
-          if (userProfile.registeredEventTeams) setEvents(userProfile.registeredEventTeams);
-          if (userProfile.generatedPasses) setPasses(userProfile.generatedPasses);
 
           // Also update session image if DB has newer one
           if (userProfile.image && userProfile.image !== sessionData.user.image) {
@@ -142,6 +145,9 @@ export default function Profile() {
             }));
           }
         }
+        // Events and passes are always fetched fresh from DB (no cache)
+        if (eventsAndPasses.registeredEventTeams) setEvents(eventsAndPasses.registeredEventTeams);
+        if (eventsAndPasses.generatedPasses) setPasses(eventsAndPasses.generatedPasses);
         setLoading(false);
       } else {
         setLoading(false);
@@ -222,6 +228,15 @@ export default function Profile() {
     }
   };
 
+  const handleDownloadEventPass = async () => {
+    if (!eventPassCardRef.current) return;
+    const canvas = await html2canvas(eventPassCardRef.current, { backgroundColor: null });
+    const link = document.createElement("a");
+    link.download = "event-pass.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  };
+
   const handleDownloadModalPass = async () => {
     if (!passCardRef.current) return;
     const canvas = await html2canvas(passCardRef.current, { backgroundColor: null });
@@ -249,55 +264,46 @@ export default function Profile() {
       `}} />
       <div className="min-h-screen flex flex-col bg-black">
 
-        {/* Event Pass Detail Modal (View on registered event) */}
+        {/* Event Pass Detail Modal (View on registered event) — uses same card style as day pass */}
         {showEventPassDetail && (
           <div className="fixed inset-0 z-70 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-            <div className="bg-white p-6 sm:p-8 rounded-4xl border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] flex flex-col gap-6 items-center max-w-sm w-full max-h-[90vh] overflow-y-auto">
+            <div className="bg-white p-5 sm:p-6 rounded-4xl border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] flex flex-col gap-4 items-center w-full max-w-[460px] max-h-[92dvh] overflow-y-auto overflow-x-hidden">
               <div className="flex justify-between items-center w-full">
                 <h2 className={`text-xl text-black ${gilton.className}`}>Event Pass</h2>
-                <button
-                  onClick={() => setShowEventPassDetail(null)}
-                  className="w-10 h-10 flex items-center justify-center rounded-full border-2 border-black bg-red-200 hover:bg-red-300 transition-colors"
-                >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={handleDownloadEventPass}
+                    className="w-10 h-10 flex items-center justify-center rounded-full border-2 border-black bg-[#deb3fa] hover:bg-[#c98bf2] transition-colors"
+                    title="Download pass"
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                      <polyline points="7 10 12 15 17 10"></polyline>
+                      <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                  </button>
+                  <button
+                    onClick={() => setShowEventPassDetail(null)}
+                    className="w-10 h-10 flex items-center justify-center rounded-full border-2 border-black bg-red-200 hover:bg-red-300 transition-colors"
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                  </button>
+                </div>
               </div>
-              <div className="w-full space-y-4">
-                <div>
-                  <p className={`text-xs font-bold uppercase text-zinc-500 ${softura.className}`}>Event</p>
-                  <p className={`font-bold text-black ${softura.className}`}>{showEventPassDetail.eventName}</p>
-                </div>
-                <div>
-                  <p className={`text-xs font-bold uppercase text-zinc-500 ${softura.className}`}>Team</p>
-                  <p className={`font-bold text-black ${softura.className}`}>{showEventPassDetail.teamName}</p>
-                </div>
-                <div>
-                  <p className={`text-xs font-bold uppercase text-zinc-500 ${softura.className}`}>Booking ID</p>
-                  <p className={`font-mono font-bold text-black ${softura.className}`}>{showEventPassDetail.leaderBookingId || "—"}</p>
-                </div>
-              </div>
-              <div className="aspect-square w-48 h-48 bg-white border-2 border-black rounded-xl flex items-center justify-center overflow-hidden shrink-0">
-                <img
-                  src={`${APP_CONFIG.services.qrCodeApi}?size=200x200&data=${encodeURIComponent(showEventPassDetail.qrCode || showEventPassDetail.id)}`}
-                  alt="Event pass QR"
-                  className="w-full h-full object-contain"
+              <div ref={eventPassCardRef} className="w-full flex justify-center">
+                <EventCard
+                  teamLeadName={showEventPassDetail.leaderName || "—"}
+                  eventName={showEventPassDetail.eventName}
+                  bookingId={showEventPassDetail.leaderBookingId || "—"}
+                  teamName={showEventPassDetail.teamName}
+                  eventTime=""
+                  qrCode={showEventPassDetail.qrCode || showEventPassDetail.id}
+                  members={showEventPassDetail.members}
+                  embedded
+                  compact
+                  showDownload={false}
                 />
-              </div>
-              <div className="w-full space-y-3 border-t-2 border-zinc-200 pt-4">
-                <div>
-                  <p className={`text-xs font-bold uppercase text-zinc-500 ${softura.className}`}>Team lead</p>
-                  <p className={`font-medium text-black ${softura.className}`}>{showEventPassDetail.leaderName || "—"}</p>
-                </div>
-                {showEventPassDetail.members && showEventPassDetail.members.length > 0 && (
-                  <div>
-                    <p className={`text-xs font-bold uppercase text-zinc-500 ${softura.className}`}>Team members</p>
-                    <ul className={`mt-1 space-y-1 font-medium text-black ${softura.className}`}>
-                      {showEventPassDetail.members.map((m, i) => (
-                        <li key={i}>{m.name}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
               </div>
             </div>
           </div>
@@ -647,7 +653,13 @@ export default function Profile() {
                             </p>
                             <span className={`inline-block mt-1 text-[10px] font-bold uppercase px-2 py-0.5 rounded ${ev.status === "verified" ? "bg-green-200 text-green-800" : ev.status === "rejected" ? "bg-red-200 text-red-800" : "bg-amber-200 text-amber-800"} ${softura.className}`}>{ev.status}</span>
                           </div>
-                          <button type="button" onClick={() => setShowEventPassDetail(ev)} className={`bg-black text-white text-xs px-3 py-1 rounded-full font-bold uppercase hover:bg-gray-800 transition-colors ${softura.className}`}>View</button>
+                          {ev.status === "verified" ? (
+                            <button type="button" onClick={() => setShowEventPassDetail(ev)} className={`bg-black text-white text-xs px-3 py-1 rounded-full font-bold uppercase hover:bg-gray-800 transition-colors ${softura.className}`}>View</button>
+                          ) : (
+                            <span className={`text-[10px] font-bold uppercase px-3 py-1 rounded-full ${ev.status === "rejected" ? "bg-red-100 text-red-700 border border-red-300" : "bg-amber-100 text-amber-700 border border-amber-300"} ${softura.className}`}>
+                              {ev.status === "rejected" ? "Rejected" : "Awaiting Verification"}
+                            </span>
+                          )}
                         </div>
                       ))
                     ) : (

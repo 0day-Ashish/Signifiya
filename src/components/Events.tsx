@@ -217,6 +217,10 @@ export default function Events() {
     // Check if the target is a button, link, or inside one
     const target = event.target as HTMLElement;
 
+    // Pause auto-scroll on ANY pointer contact (including taps on links/buttons)
+    // so the container doesn't move under the user's finger on mobile.
+    isHoveredRef.current = true;
+
     // If we're clicking a link or button, let the default browser behavior happen
     // On mobile, this prevents the slider from capturing the pointer and blocking the tap
     if (target.closest('a') || target.closest('button')) {
@@ -232,7 +236,6 @@ export default function Events() {
     isDraggingRef.current = true;
     dragStartXRef.current = event.clientX;
     dragStartScrollLeftRef.current = container.scrollLeft;
-    isHoveredRef.current = true;
 
     // Using setPointerCapture on mobile can sometimes prevent click events from firing 
     // on child elements if not careful, but we need it for smooth swiping outside links
@@ -252,12 +255,11 @@ export default function Events() {
   };
 
   const handlePointerUp = (event: ReactPointerEvent<HTMLDivElement>) => {
+    // Always resume auto-scroll on pointer up (covers link/button taps too)
+    isHoveredRef.current = false;
+
     const container = scrollContainerRef.current;
     if (!container || !isDraggingRef.current) return;
-
-    // We don't reset isDraggingRef immediately so handleClickCapture can read it
-    // It will be reset in a setTimeout
-    isHoveredRef.current = false;
 
     try {
       container.releasePointerCapture(event.pointerId);
