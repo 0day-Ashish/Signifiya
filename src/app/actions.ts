@@ -303,8 +303,8 @@ export async function verifyRazorpayPayment(data: {
     if (amount == null || !typeLabel) return { success: false, error: "Invalid pass type" };
 
     const validUntil = new Date(Date.now() + 60 * 24 * 60 * 60 * 1000);
-    const qrCode = `SP-${randomUUID()}`;
     const userBookingId = owner.bookingId!;
+    const qrCode = userBookingId; // QR encodes the user's booking ID directly
 
     // Create visitor registration
     const reg = await prisma.visitorRegistration.create({

@@ -306,8 +306,8 @@ export default function Profile() {
       {showQrForPassId && (() => {
         const p = passes.find((x: { id: string }) => x.id === showQrForPassId);
         if (!p) return null;
-        const qrData = p.qrCode || p.id;
         const passBookingId = p.userBookingId || p.bookingId || bookingId;
+        const qrData = passBookingId || p.qrCode || p.id; // QR should encode the participant's booking ID
         const passHolderName = formData.name || session?.user?.name || "Visitor";
         return (
           <div className="fixed inset-0 z-70 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">

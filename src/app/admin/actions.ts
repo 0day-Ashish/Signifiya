@@ -371,12 +371,12 @@ export async function updateVisitorStatus(id: string, status: "pending" | "verif
       // Create Pass
       const pass = await prisma.pass.create({
         data: {
-          type: registration.passType, // Assuming passType matches enum or string
+          type: registration.passType,
           visitorRegistrationId: id,
           userId: registration.userId,
-          userBookingId: registration.bookingId, // Use registration booking ID
-          validUntil: new Date("2026-12-31"), // Set appropriate validity
-          qrCode: `SP-${registration.bookingId}`, // Generate unique QR code data
+          userBookingId: registration.userBookingId || registration.bookingId, // User's booking ID
+          validUntil: new Date("2026-12-31"),
+          qrCode: registration.userBookingId || registration.bookingId || `SP-${id}`, // QR encodes booking ID directly
           verifiedAt: new Date(),
           verifiedBy: "admin-action", 
         }
