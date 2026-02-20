@@ -279,9 +279,14 @@ export default function AdminVerifyPage() {
                   </div>
                   <div className="divide-y divide-zinc-800">
                     {passes.map((p) => {
-                      const isDual = p.type === "Double Day Pass";
-                      const isSingleDay = p.type === "Single Day Pass";
-                      const attended1 = p.verifiedDay1At ?? (isDual ? null : (isSingleDay ? p.verifiedAt : null));
+                      const isDual = p.type === "Double Day Pass" || p.type === "Dual Day Pass" || p.type === "Dual day pass";
+                      const isSingleDay = p.type === "Single Day Pass" || p.type === "Single day pass";
+
+                      // Fix: if verifiedBy is "admin-action", then the verifiedAt timestamp was just the pass generation timestamp,
+                      // and does NOT mean the user attended the event. We must rely on verifiedDay1At in this case.
+                      // For older passes lacking verifiedDay1At, we fallback to verifiedAt ONLY if it wasn't auto-set by "admin-action"
+                      // or if we have no other choice. Actually, best fix is to just check verifiedDay1At, but for pure backwards compatibility:
+                      const attended1 = p.verifiedDay1At || (p.verifiedBy !== "admin-action" ? p.verifiedAt : null);
                       const attended2 = p.verifiedDay2At;
 
                       return (

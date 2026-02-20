@@ -3,7 +3,7 @@
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth-server";
 import { revalidatePath } from "next/cache";
-import { getCache, setCache, CacheKeys, CACHE_TTL, deleteCache } from "@/lib/cache";
+import { getCache, setCache, deleteCache, CacheKeys, CACHE_TTL } from "@/lib/cache";
 
 // --- Auth guard: all functions return null or throw if not admin ---
 async function guard() {
@@ -380,11 +380,13 @@ export async function updateVisitorStatus(id: string, status: "pending" | "verif
           userBookingId: registration.userBookingId || registration.bookingId, // User's booking ID
           validUntil: new Date("2026-03-28T23:59:59.999Z"),
           qrCode: registration.userBookingId || registration.bookingId || `SP-${id}`, // QR encodes booking ID directly
-          verifiedAt: new Date(),
-          verifiedBy: "admin-action",
         }
       });
+      console.log(`[Admin] Generated Pass ${pass.id} for user ${registration.userId}`);
     }
+
+    // Invalidate user profile cache so the new pass shows up in /profile
+    await deleteCache(CacheKeys.userProfile(registration.userId));
   }
 
   // Invalidate cache immediately for real-time data
