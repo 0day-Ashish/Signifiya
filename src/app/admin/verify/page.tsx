@@ -2,6 +2,9 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { getVerificationLookup, markPassAttended, markEventTeamLeaderAttended, markEventTeamMemberAttended } from "../actions";
+import dynamic from "next/dynamic";
+
+const Scanner = dynamic(() => import('@yudiel/react-qr-scanner').then((mod) => mod.Scanner), { ssr: false });
 
 type PassRow = {
   id: string;
@@ -65,80 +68,50 @@ export default function AdminVerifyPage() {
     };
   }, []);
 
+  const handleQRScan = (detectedCodes: { rawValue: string }[]) => {
+    if (detectedCodes.length === 0 || handledRef.current) return;
+    const decodedText = detectedCodes[0].rawValue;
+    handledRef.current = true;
+
+    void (async () => {
+      try {
+        setLoading(true);
+        const bid = await runLookup(decodedText);
+        if (bid) {
+          if (beepAudioRef.current) {
+            beepAudioRef.current.currentTime = 0;
+            beepAudioRef.current.play().catch(() => { });
+          }
+          setShowScanner(false);
+          setError(null);
+          setSearched(false);
+          try {
+            setSearched(true);
+            setTimeout(() => resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 80);
+          } catch (e) {
+            setError(e instanceof Error ? e.message : "Lookup failed");
+            setSearched(true);
+          } finally {
+            setLoading(false);
+          }
+        } else {
+          setShowScanner(false);
+          setError("QR not recognized. Use a visitor or event pass QR.");
+          setLoading(false);
+        }
+      } catch (e) {
+        setShowScanner(false);
+        setError(e instanceof Error ? e.message : "Resolve failed");
+        setLoading(false);
+      }
+    })();
+  };
+
   useEffect(() => {
-    if (!showScanner) return;
-    handledRef.current = false;
-
-    (async () => {
-      const { Html5Qrcode } = await import("html5-qrcode");
-      const scanner = new Html5Qrcode("admin-qr-reader");
-      scannerRef.current = scanner;
-      await scanner.start(
-        {
-          facingMode: "environment",
-        },
-        {
-          fps: 24,
-          qrbox: { width: 260, height: 260 },
-          aspectRatio: 1.0,
-          disableFlip: true,
-          videoConstraints: {
-            facingMode: { ideal: "environment" },
-            width: { ideal: 720 },
-            height: { ideal: 720 },
-          },
-        },
-        (decodedText) => {
-          if (handledRef.current) return;
-          handledRef.current = true;
-          void (async () => {
-            try {
-              setLoading(true);
-              const bid = await runLookup(decodedText);
-              if (bid) {
-                // Play beep sound on successful scan
-                if (beepAudioRef.current) {
-                  beepAudioRef.current.currentTime = 0; // Reset to start
-                  beepAudioRef.current.play().catch(() => {
-                    // Ignore audio play errors (e.g., user interaction required)
-                  });
-                }
-                setShowScanner(false);
-                setError(null);
-                setSearched(false);
-                try {
-                  setSearched(true);
-                  setTimeout(() => resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 80);
-                } catch (e) {
-                  setError(e instanceof Error ? e.message : "Lookup failed");
-                  setSearched(true);
-                } finally {
-                  setLoading(false);
-                }
-              } else {
-                setShowScanner(false);
-                setError("QR not recognized. Use a visitor or event pass QR.");
-                setLoading(false);
-              }
-            } catch (e) {
-              setShowScanner(false);
-              setError(e instanceof Error ? e.message : "Resolve failed");
-              setLoading(false);
-            }
-          })();
-        },
-        () => { }
-      );
-    })().catch((err: unknown) => {
-      setError(err instanceof Error ? err.message : "Could not start camera");
-      setShowScanner(false);
-    });
-
-    return () => {
-      scannerRef.current?.stop().catch(() => { });
-      scannerRef.current = null;
-    };
-  }, [showScanner, runLookup]);
+    if (showScanner) {
+      handledRef.current = false;
+    }
+  }, [showScanner]);
 
   const handleLookup = async () => {
     const bid = query.trim().toUpperCase();
@@ -265,7 +238,16 @@ export default function AdminVerifyPage() {
               Close
             </button>
           </div>
-          <div id="admin-qr-reader" className="min-h-[260px] w-full max-w-[min(300px,90vw)] overflow-hidden rounded-xl bg-zinc-900" />
+          <div className="w-full max-w-[min(300px,90vw)] overflow-hidden rounded-xl bg-black">
+            <Scanner
+              onScan={handleQRScan}
+              onError={(e) => {
+                setError(e instanceof Error ? e.message : "Scanner error");
+                setShowScanner(false);
+              }}
+              components={{ finder: true }}
+            />
+          </div>
         </div>
       )}
 

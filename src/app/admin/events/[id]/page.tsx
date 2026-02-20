@@ -2,6 +2,7 @@ import { getEventWithRegistrations } from "../../actions";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { AdminPagination, PAGE_SIZE } from "../../components/AdminPagination";
+import { RefreshButton } from "../../components/RefreshButton";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -26,8 +27,13 @@ export default async function AdminEventDetailPage({ params, searchParams }: Pro
       <div className="flex items-center gap-4">
         <Link href="/admin/events" className="text-zinc-400 hover:text-white text-sm font-medium">← Events</Link>
       </div>
-      <h1 className="text-2xl font-black uppercase tracking-tight text-white">{event.name}</h1>
-      <p className="text-zinc-400 text-sm">₹{event.price} · {event.type || "—"} · {new Date(event.date).toLocaleDateString("en-IN", { timeZone: "Asia/Kolkata" })}</p>
+      <div className="flex items-center justify-between gap-4 flex-wrap">
+        <div>
+          <h1 className="text-2xl font-black uppercase tracking-tight text-white">{event.name}</h1>
+          <p className="text-zinc-400 text-sm">₹{event.price} · {event.type || "—"} · {new Date(event.date).toLocaleDateString("en-IN", { timeZone: "Asia/Kolkata" })}</p>
+        </div>
+        <RefreshButton />
+      </div>
 
       <h2 className="font-bold text-white">Teams registered ({total})</h2>
       <div className="space-y-4">

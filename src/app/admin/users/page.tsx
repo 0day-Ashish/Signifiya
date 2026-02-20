@@ -9,6 +9,8 @@ const softura = localFont({ src: "../../../../public/fonts/Softura-Demo.otf" });
 
 type SearchParams = Promise<{ search?: string; page?: string }> | { search?: string; page?: string };
 
+import { RefreshButton } from "../components/RefreshButton";
+
 export default async function AdminUsersPage({ searchParams }: { searchParams?: SearchParams }) {
   const resolved = await Promise.resolve(searchParams ?? {});
   const search = (resolved?.search ?? "").trim();
@@ -27,7 +29,10 @@ export default async function AdminUsersPage({ searchParams }: { searchParams?: 
 
   return (
     <div className="space-y-6">
-      <h1 className={`text-3xl sm:text-4xl font-black uppercase tracking-tight text-white ${gilton.className}`}>Users</h1>
+      <div className="flex items-center justify-between gap-4 flex-wrap">
+        <h1 className={`text-3xl sm:text-4xl font-black uppercase tracking-tight text-white ${gilton.className}`}>Users</h1>
+        <RefreshButton />
+      </div>
 
       <UserSearchBox initialSearch={search} />
 

@@ -17,6 +17,8 @@ const IST: Intl.DateTimeFormatOptions = { timeZone: "Asia/Kolkata" };
 
 type SearchParams = Promise<{ p?: string; t?: string }> | { p?: string; t?: string };
 
+import { RefreshButton } from "../components/RefreshButton";
+
 export default async function AdminRevenuePage({ searchParams }: { searchParams?: SearchParams }) {
   const resolved = await Promise.resolve(searchParams ?? {});
   const passPage = Math.max(1, parseInt(resolved?.p ?? "1", 10) || 1);
@@ -47,7 +49,10 @@ export default async function AdminRevenuePage({ searchParams }: { searchParams?
 
   return (
     <div className="space-y-8">
-      <h1 className={`text-3xl sm:text-4xl font-black uppercase tracking-tight text-white ${gilton.className}`}>Revenue</h1>
+      <div className="flex items-center justify-between gap-4 flex-wrap">
+        <h1 className={`text-3xl sm:text-4xl font-black uppercase tracking-tight text-white ${gilton.className}`}>Revenue</h1>
+        <RefreshButton />
+      </div>
 
       <div className="grid sm:grid-cols-3 gap-4">
         <div className="rounded-xl border-2 border-black bg-[#4caf50] p-5 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
@@ -94,11 +99,10 @@ export default async function AdminRevenuePage({ searchParams }: { searchParams?
                     <td className={`px-4 py-3 font-mono text-[#4caf50] font-bold`}>₹{v.amount}</td>
                     <td className={`px-4 py-3 font-mono text-[#FCD34D] font-bold text-xs`}>{v.paymentProofUrl || "—"}</td>
                     <td className="px-4 py-3">
-                      <span className={`px-2 py-1 rounded-lg text-xs font-bold border-2 border-black ${softura.className} ${
-                        v.status === "verified" ? "bg-[#4caf50] text-white" : 
-                        v.status === "rejected" ? "bg-red-500 text-white" : 
-                        "bg-[#ff9800] text-black"
-                      }`}>{v.status}</span>
+                      <span className={`px-2 py-1 rounded-lg text-xs font-bold border-2 border-black ${softura.className} ${v.status === "verified" ? "bg-[#4caf50] text-white" :
+                          v.status === "rejected" ? "bg-red-500 text-white" :
+                            "bg-[#ff9800] text-black"
+                        }`}>{v.status}</span>
                     </td>
                     <td className={`px-4 py-3 text-zinc-500 text-xs ${softura.className}`}>{new Date(v.createdAt).toLocaleString("en-IN", IST)}</td>
                     <td className="px-4 py-3"><RevenueStatusButtons type="visitor" id={v.id} status={v.status} /></td>
@@ -138,11 +142,10 @@ export default async function AdminRevenuePage({ searchParams }: { searchParams?
                     <td className={`px-4 py-3 font-mono text-[#FCD34D] font-bold`}>₹{t.totalAmount}</td>
                     <td className={`px-4 py-3 font-mono text-[#FCD34D] font-bold text-xs`}>{t.paymentProofUrl || "—"}</td>
                     <td className="px-4 py-3">
-                      <span className={`px-2 py-1 rounded-lg text-xs font-bold border-2 border-black ${softura.className} ${
-                        t.status === "verified" ? "bg-[#4caf50] text-white" : 
-                        t.status === "rejected" ? "bg-red-500 text-white" : 
-                        "bg-[#ff9800] text-black"
-                      }`}>{t.status}</span>
+                      <span className={`px-2 py-1 rounded-lg text-xs font-bold border-2 border-black ${softura.className} ${t.status === "verified" ? "bg-[#4caf50] text-white" :
+                          t.status === "rejected" ? "bg-red-500 text-white" :
+                            "bg-[#ff9800] text-black"
+                        }`}>{t.status}</span>
                     </td>
                     <td className={`px-4 py-3 text-zinc-500 text-xs ${softura.className}`}>{new Date(t.createdAt).toLocaleString("en-IN", IST)}</td>
                     <td className="px-4 py-3"><RevenueStatusButtons type="team" id={t.id} status={t.status} /></td>

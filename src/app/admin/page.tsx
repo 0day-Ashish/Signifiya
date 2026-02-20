@@ -5,6 +5,8 @@ import localFont from "next/font/local";
 const gilton = localFont({ src: "../../../public/fonts/GiltonRegular.otf" });
 const softura = localFont({ src: "../../../public/fonts/Softura-Demo.otf" });
 
+import { RefreshButton } from "./components/RefreshButton";
+
 export default async function AdminDashboardPage() {
   const [stats, { issues: recentIssues }] = await Promise.all([
     getAdminDashboardStats(),
@@ -22,9 +24,12 @@ export default async function AdminDashboardPage() {
 
   return (
     <div className="space-y-8">
-      <h1 className={`text-3xl sm:text-4xl font-black uppercase tracking-tight text-white ${gilton.className}`}>
-        Dashboard
-      </h1>
+      <div className="flex items-center justify-between gap-4 flex-wrap">
+        <h1 className={`text-3xl sm:text-4xl font-black uppercase tracking-tight text-white ${gilton.className}`}>
+          Dashboard
+        </h1>
+        <RefreshButton />
+      </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {cards.map((c) => (

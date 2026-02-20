@@ -368,10 +368,13 @@ export async function updateVisitorStatus(id: string, status: "pending" | "verif
     });
 
     if (!existingPass) {
+      const { APP_CONFIG } = await import('@/config/app.config');
+      const passTypeLabel = APP_CONFIG.passTypeLabels[registration.passType as keyof typeof APP_CONFIG.passTypeLabels] || registration.passType;
+
       // Create Pass
       const pass = await prisma.pass.create({
         data: {
-          type: registration.passType,
+          type: passTypeLabel,
           visitorRegistrationId: id,
           userId: registration.userId,
           userBookingId: registration.userBookingId || registration.bookingId, // User's booking ID

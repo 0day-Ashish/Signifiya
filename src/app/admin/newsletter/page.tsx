@@ -1,5 +1,6 @@
 import { getNewsletterSubscriptions } from "../actions";
 import { AdminPagination, PAGE_SIZE } from "../components/AdminPagination";
+import { RefreshButton } from "../components/RefreshButton";
 
 type SearchParams = Promise<{ page?: string }> | { page?: string };
 
@@ -16,7 +17,10 @@ export default async function AdminNewsletterPage({ searchParams }: { searchPara
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-black uppercase tracking-tight text-white">Newsletter</h1>
+      <div className="flex items-center justify-between gap-4 flex-wrap">
+        <h1 className="text-2xl font-black uppercase tracking-tight text-white">Newsletter</h1>
+        <RefreshButton />
+      </div>
       <p className="text-zinc-400 text-sm">Email subscriptions from the newsletter form on the site.</p>
 
       <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 overflow-hidden">

@@ -4,6 +4,8 @@ import { AdminPagination, PAGE_SIZE } from "../components/AdminPagination";
 
 type SearchParams = Promise<{ page?: string }> | { page?: string };
 
+import { RefreshButton } from "../components/RefreshButton";
+
 export default async function AdminTeamsPage({ searchParams }: { searchParams?: SearchParams }) {
   const resolved = await Promise.resolve(searchParams ?? {});
   const page = Math.max(1, parseInt(resolved?.page ?? "1", 10) || 1);
@@ -20,7 +22,10 @@ export default async function AdminTeamsPage({ searchParams }: { searchParams?: 
 
   return (
     <div className="space-y-10">
-      <h1 className="text-2xl font-black uppercase tracking-tight text-white">Teams</h1>
+      <div className="flex items-center justify-between gap-4 flex-wrap">
+        <h1 className="text-2xl font-black uppercase tracking-tight text-white">Teams</h1>
+        <RefreshButton />
+      </div>
 
       <section>
         <h2 className="font-bold text-white mb-3">Participant teams (event registrations) — {total}</h2>

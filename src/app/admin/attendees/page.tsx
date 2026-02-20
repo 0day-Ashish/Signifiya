@@ -3,6 +3,7 @@ import { getAttendees } from "../actions";
 import { AdminPagination, PAGE_SIZE } from "../components/AdminPagination";
 import { SearchBox } from "./SearchBox";
 import { AttendeesClient } from "./AttendeesClient";
+import { RefreshButton } from "../components/RefreshButton";
 
 const gilton = localFont({ src: "../../../../public/fonts/GiltonRegular.otf" });
 const softura = localFont({ src: "../../../../public/fonts/Softura-Demo.otf" });
@@ -29,7 +30,10 @@ export default async function AdminAttendeesPage({ searchParams }: AttendeesPage
 
   return (
     <div className="space-y-6">
-      <h1 className={`text-3xl sm:text-4xl font-black uppercase tracking-tight text-white ${gilton.className}`}>Attendees</h1>
+      <div className="flex items-center justify-between gap-4 flex-wrap">
+        <h1 className={`text-3xl sm:text-4xl font-black uppercase tracking-tight text-white ${gilton.className}`}>Attendees</h1>
+        <RefreshButton />
+      </div>
 
       <SearchBox initialSearch={search} />
 
