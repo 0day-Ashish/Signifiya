@@ -297,11 +297,10 @@ export default function AdminVerifyPage() {
                   </div>
                   <div className="divide-y divide-zinc-800">
                     {passes.map((p) => {
-                      const isDual = p.type === "Dual day pass" || p.type === "Dual Day Pass" || p.type === "Double Day Pass";
-                      const isDay2Only = p.type === "Day 2 Pass";
-                      const isSingleDay = p.type === "Single day pass" || p.type === "Day 1 Pass";
+                      const isDual = p.type === "Double Day Pass";
+                      const isSingleDay = p.type === "Single Day Pass";
                       const attended1 = p.verifiedDay1At ?? (isDual ? null : (isSingleDay ? p.verifiedAt : null));
-                      const attended2 = p.verifiedDay2At ?? (isDay2Only ? p.verifiedAt : null);
+                      const attended2 = p.verifiedDay2At;
 
                       return (
                         <div key={p.id} className="px-4 py-4 flex flex-wrap items-start justify-between gap-3">
@@ -340,17 +339,17 @@ export default function AdminVerifyPage() {
                                 )}
                               </>
                             ) : (
-                              (attended1 || attended2) ? (
+                              attended1 ? (
                                 <span className="px-3 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 text-sm font-medium">
-                                  ✓ Attended {new Date(attended1 || attended2!).toLocaleString()}
+                                  ✓ Attended {new Date(attended1).toLocaleString()}
                                 </span>
                               ) : (
                                 <button
-                                  onClick={() => handleMarkAttended(p.id, isDay2Only ? "day2" : "day1")}
+                                  onClick={() => handleMarkAttended(p.id, "day1")}
                                   disabled={!!marking}
                                   className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm disabled:opacity-50 transition-colors"
                                 >
-                                  {marking === `${p.id}-day1` || marking === `${p.id}-day2` ? "…" : isSingleDay || isDay2Only ? "Mark attended" : "Mark attended"}
+                                  {marking === `${p.id}-day1` ? "…" : "Mark attended"}
                                 </button>
                               )
                             )}

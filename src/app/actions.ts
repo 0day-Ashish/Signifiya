@@ -21,7 +21,7 @@ export async function uploadAvatar(formData: FormData) {
     const buffer = Buffer.from(await file.arrayBuffer());
     const fileExt = file.name.split(".").pop();
     const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
-    
+
     const bucketName = process.env.S3_BUCKET_NAME || "avatars";
     const endpoint =
       process.env.S3_ENDPOINT ||
@@ -41,10 +41,10 @@ export async function uploadAvatar(formData: FormData) {
 
     let publicUrl = "";
     if (endpoint && endpoint.includes("supabase.co")) {
-       const baseUrl = endpoint.replace("/s3", "/object/public");
-       publicUrl = `${baseUrl}/${bucketName}/${fileName}`;
+      const baseUrl = endpoint.replace("/s3", "/object/public");
+      publicUrl = `${baseUrl}/${bucketName}/${fileName}`;
     } else {
-       publicUrl = `${endpoint}/${bucketName}/${fileName}`;
+      publicUrl = `${endpoint}/${bucketName}/${fileName}`;
     }
 
     return { success: true, url: publicUrl };
@@ -59,7 +59,7 @@ export async function invalidateUserProfileCache(userId: string) {
 }
 
 export async function updateUserProfile(
-  userId: string, 
+  userId: string,
   data: {
     name?: string;
     image?: string;
@@ -100,73 +100,73 @@ function generateUserBookingId() {
 
 export async function getUserProfile(userId: string) {
   try {
-     if (!userId) return null;
-     
-     const cacheKey = CacheKeys.userProfile(userId);
-     
-     // Try cache first
-     const cached = await getCache<any>(cacheKey);
-     if (cached) {
-       return cached;
-     }
+    if (!userId) return null;
 
-     let user = await prisma.user.findUnique({
-       where: { id: userId },
-       include: {
-         // @ts-ignore
-         registeredEvents: true,
-         // @ts-ignore
-         generatedPasses: true
-       }
-     });
-     if (!user) return null;
+    const cacheKey = CacheKeys.userProfile(userId);
 
-     // Assign unique bookingId on first profile load (right after account creation effect)
-     if (!user.bookingId) {
-       const bid = generateUserBookingId();
-       try {
-         await prisma.user.update({ where: { id: userId }, data: { bookingId: bid } });
-         user = { ...user, bookingId: bid };
-         // Invalidate cache since bookingId was just assigned
-         await deleteCache(cacheKey);
-       } catch (e: any) {
-         if (e?.code === "P2002") {
-           const u = await prisma.user.findUnique({ where: { id: userId }, select: { bookingId: true } });
-           if (u?.bookingId) user = { ...user, bookingId: u.bookingId };
-         }
-       }
-     }
+    // Try cache first
+    const cached = await getCache<any>(cacheKey);
+    if (cached) {
+      return cached;
+    }
 
-     // Registered event teams (ParticipantTeam where leaderBookingId = user.bookingId)
-     let registeredEventTeams: { id: string; teamName: string; eventName: string; eventDate: Date | null; status: string; qrCode: string | null; leaderBookingId: string | null; leaderName: string; members: { name: string }[] }[] = [];
-     if (user.bookingId) {
-       const teams = await prisma.participantTeam.findMany({
-         where: { leaderBookingId: { equals: user.bookingId!, mode: "insensitive" } },
-         include: { events: { include: { event: true } }, members: true },
-         orderBy: { createdAt: "desc" },
-       });
-       registeredEventTeams = teams.map((t) => {
-         const ev = t.events[0]?.event;
-         return {
-           id: t.id,
-           teamName: t.teamName,
-           eventName: ev?.name ?? "Event",
-           eventDate: ev?.date ?? null,
-           status: t.status,
-           qrCode: t.qrCode,
-           leaderBookingId: t.leaderBookingId,
-           leaderName: t.leaderName,
-           members: t.members.map((m) => ({ name: m.name })),
-         };
-       });
-     }
+    let user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        // @ts-ignore
+        registeredEvents: true,
+        // @ts-ignore
+        generatedPasses: true
+      }
+    });
+    if (!user) return null;
 
-     const profile = { ...user, registeredEventTeams };
-     
-     // Cache for 5 minutes (user-specific data)
-     await setCache(cacheKey, profile, CACHE_TTL.MEDIUM);
+    // Assign unique bookingId on first profile load (right after account creation effect)
+    if (!user.bookingId) {
+      const bid = generateUserBookingId();
+      try {
+        await prisma.user.update({ where: { id: userId }, data: { bookingId: bid } });
+        user = { ...user, bookingId: bid };
+        // Invalidate cache since bookingId was just assigned
+        await deleteCache(cacheKey);
+      } catch (e: any) {
+        if (e?.code === "P2002") {
+          const u = await prisma.user.findUnique({ where: { id: userId }, select: { bookingId: true } });
+          if (u?.bookingId) user = { ...user, bookingId: u.bookingId };
+        }
+      }
+    }
 
-     return profile;
+    // Registered event teams (ParticipantTeam where leaderBookingId = user.bookingId)
+    let registeredEventTeams: { id: string; teamName: string; eventName: string; eventDate: Date | null; status: string; qrCode: string | null; leaderBookingId: string | null; leaderName: string; members: { name: string }[] }[] = [];
+    if (user.bookingId) {
+      const teams = await prisma.participantTeam.findMany({
+        where: { leaderBookingId: { equals: user.bookingId!, mode: "insensitive" } },
+        include: { events: { include: { event: true } }, members: true },
+        orderBy: { createdAt: "desc" },
+      });
+      registeredEventTeams = teams.map((t) => {
+        const ev = t.events[0]?.event;
+        return {
+          id: t.id,
+          teamName: t.teamName,
+          eventName: ev?.name ?? "Event",
+          eventDate: ev?.date ?? null,
+          status: t.status,
+          qrCode: t.qrCode,
+          leaderBookingId: t.leaderBookingId,
+          leaderName: t.leaderName,
+          members: t.members.map((m) => ({ name: m.name })),
+        };
+      });
+    }
+
+    const profile = { ...user, registeredEventTeams };
+
+    // Cache for 5 minutes (user-specific data)
+    await setCache(cacheKey, profile, CACHE_TTL.MEDIUM);
+
+    return profile;
   } catch (error) {
     console.error("Get profile error:", error);
     return null;
@@ -213,7 +213,7 @@ export async function createRazorpayOrder(data: {
     } catch (error) {
       return { success: false, error: "Razorpay package not installed. Please run: npm install razorpay" };
     }
-    
+
     const razorpay = new Razorpay({
       key_id: process.env.RAZORPAY_KEY_ID || "",
       key_secret: process.env.RAZORPAY_KEY_SECRET || "",
@@ -302,7 +302,7 @@ export async function verifyRazorpayPayment(data: {
     const typeLabel = PASS_TYPE_LABELS[passType as PassType];
     if (amount == null || !typeLabel) return { success: false, error: "Invalid pass type" };
 
-    const validUntil = new Date(Date.now() + 60 * 24 * 60 * 60 * 1000);
+    const validUntil = new Date("2026-03-28T23:59:59.999Z");
     const userBookingId = owner.bookingId!;
     const qrCode = userBookingId; // QR encodes the user's booking ID directly
 
@@ -478,7 +478,7 @@ export async function createEventRazorpayOrder(data: {
     } catch (error) {
       return { success: false, error: "Razorpay package not installed. Please run: npm install razorpay" };
     }
-    
+
     const razorpay = new Razorpay({
       key_id: process.env.RAZORPAY_KEY_ID || "",
       key_secret: process.env.RAZORPAY_KEY_SECRET || "",
