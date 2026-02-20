@@ -453,7 +453,9 @@ export async function markPassAttended(passId: string, day: "day1" | "day2") {
     : { verifiedDay2At: new Date(), verifiedDay2By: session.user.id };
 
   await prisma.pass.update({ where: { id: passId }, data });
+  await invalidateAdminStatsCache();
   revalidatePath("/admin/verify");
+  revalidatePath("/admin/attendees");
 }
 
 // --- Resolve QR code (SP-xxx, EP-xxx) or plain string to booking ID for verification ---
@@ -586,7 +588,9 @@ export async function markEventTeamLeaderAttended(teamId: string) {
     where: { id: teamId },
     data: { leaderAttendedAt: new Date(), leaderAttendedBy: session.user.id },
   });
+  await invalidateAdminStatsCache();
   revalidatePath("/admin/verify");
+  revalidatePath("/admin/attendees");
 }
 
 export async function markEventTeamMemberAttended(memberId: string) {
@@ -595,7 +599,9 @@ export async function markEventTeamMemberAttended(memberId: string) {
     where: { id: memberId },
     data: { attendedAt: new Date(), attendedBy: session.user.id },
   });
+  await invalidateAdminStatsCache();
   revalidatePath("/admin/verify");
+  revalidatePath("/admin/attendees");
 }
 
 // --- Countdown date management ---
