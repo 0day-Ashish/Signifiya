@@ -44,7 +44,7 @@ export default async function AdminCountdownPage() {
                       {c.label || <span className="text-zinc-500">No label</span>}
                     </td>
                     <td className="px-4 py-3 text-zinc-300 font-mono">
-                      {new Date(c.targetDate).toLocaleString()}
+                      {new Date(c.targetDate).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}
                     </td>
                     <td className="px-4 py-3">
                       <span
@@ -58,7 +58,7 @@ export default async function AdminCountdownPage() {
                       </span>
                     </td>
                     <td className="px-4 py-3 text-zinc-400 text-xs">
-                      {new Date(c.createdAt).toLocaleDateString()}
+                      {new Date(c.createdAt).toLocaleDateString("en-IN", { timeZone: "Asia/Kolkata" })}
                     </td>
                     <td className="px-4 py-3">
                       <CountdownForm edit={c} />

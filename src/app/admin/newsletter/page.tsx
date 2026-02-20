@@ -38,7 +38,7 @@ export default async function AdminNewsletterPage({ searchParams }: { searchPara
                       {s.consent ? "Yes" : "No"}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-zinc-500 text-xs">{new Date(s.createdAt).toLocaleString()}</td>
+                  <td className="px-4 py-3 text-zinc-500 text-xs">{new Date(s.createdAt).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}</td>
                 </tr>
               ))}
             </tbody>

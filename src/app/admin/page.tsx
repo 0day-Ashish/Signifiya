@@ -72,7 +72,7 @@ export default async function AdminDashboardPage() {
               <li key={i.id} className="text-sm border-l-2 border-[#ff9800] pl-3">
                 <p className={`text-zinc-300 line-clamp-2 ${softura.className}`}>{i.text}</p>
                 <p className={`text-xs text-zinc-500 mt-0.5 ${softura.className}`}>
-                  {i.name || i.email || "Anonymous"} · {new Date(i.createdAt).toLocaleDateString()}
+                  {i.name || i.email || "Anonymous"} · {new Date(i.createdAt).toLocaleDateString("en-IN", { timeZone: "Asia/Kolkata" })}
                 </p>
               </li>
             ))}

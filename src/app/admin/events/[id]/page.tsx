@@ -27,7 +27,7 @@ export default async function AdminEventDetailPage({ params, searchParams }: Pro
         <Link href="/admin/events" className="text-zinc-400 hover:text-white text-sm font-medium">← Events</Link>
       </div>
       <h1 className="text-2xl font-black uppercase tracking-tight text-white">{event.name}</h1>
-      <p className="text-zinc-400 text-sm">₹{event.price} · {event.type || "—"} · {new Date(event.date).toLocaleDateString()}</p>
+      <p className="text-zinc-400 text-sm">₹{event.price} · {event.type || "—"} · {new Date(event.date).toLocaleDateString("en-IN", { timeZone: "Asia/Kolkata" })}</p>
 
       <h2 className="font-bold text-white">Teams registered ({total})</h2>
       <div className="space-y-4">

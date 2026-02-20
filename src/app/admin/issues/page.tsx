@@ -37,7 +37,7 @@ export default async function AdminIssuesPage({ searchParams }: { searchParams?:
                 <tr key={i.id} className={`border-b border-zinc-800/50 hover:bg-zinc-800/30 ${i.resolved ? "opacity-60" : ""}`}>
                   <td className="px-4 py-3 text-zinc-300 max-w-md"><p className="line-clamp-2">{i.text}</p></td>
                   <td className="px-4 py-3 text-zinc-400">{i.name || i.email || "—"}</td>
-                  <td className="px-4 py-3 text-zinc-500 text-xs">{new Date(i.createdAt).toLocaleString()}</td>
+                  <td className="px-4 py-3 text-zinc-500 text-xs">{new Date(i.createdAt).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}</td>
                   <td className="px-4 py-3"><span className={`px-2 py-1 rounded text-xs font-medium ${i.resolved ? "bg-green-500/20 text-green-400" : "bg-amber-500/20 text-amber-400"}`}>{i.resolved ? "Resolved" : "Open"}</span></td>
                   <td className="px-4 py-3"><IssueRow id={i.id} resolved={i.resolved} /></td>
                 </tr>

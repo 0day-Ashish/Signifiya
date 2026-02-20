@@ -68,7 +68,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams?: 
                       <span className={`px-2 py-1 bg-zinc-700 text-zinc-300 text-xs font-bold rounded-lg ${softura.className}`}>User</span>
                     )}
                   </td>
-                  <td className={`px-4 py-3 text-zinc-500 ${softura.className}`}>{new Date(u.createdAt).toLocaleDateString()}</td>
+                  <td className={`px-4 py-3 text-zinc-500 ${softura.className}`}>{new Date(u.createdAt).toLocaleDateString("en-IN", { timeZone: "Asia/Kolkata" })}</td>
                   <td className="px-4 py-3">
                     <AdminToggleButton userId={u.id} isAdmin={u.role === "admin"} userEmail={u.email} />
                   </td>

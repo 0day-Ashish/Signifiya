@@ -13,6 +13,8 @@ const PASS_TYPE_LABELS: Record<string, string> = {
   full: APP_CONFIG.passTypeLabels.full,
 };
 
+const IST: Intl.DateTimeFormatOptions = { timeZone: "Asia/Kolkata" };
+
 type SearchParams = Promise<{ p?: string; t?: string }> | { p?: string; t?: string };
 
 export default async function AdminRevenuePage({ searchParams }: { searchParams?: SearchParams }) {
@@ -98,7 +100,7 @@ export default async function AdminRevenuePage({ searchParams }: { searchParams?
                         "bg-[#ff9800] text-black"
                       }`}>{v.status}</span>
                     </td>
-                    <td className={`px-4 py-3 text-zinc-500 text-xs ${softura.className}`}>{new Date(v.createdAt).toLocaleString()}</td>
+                    <td className={`px-4 py-3 text-zinc-500 text-xs ${softura.className}`}>{new Date(v.createdAt).toLocaleString("en-IN", IST)}</td>
                     <td className="px-4 py-3"><RevenueStatusButtons type="visitor" id={v.id} status={v.status} /></td>
                   </tr>
                 ))}
@@ -142,7 +144,7 @@ export default async function AdminRevenuePage({ searchParams }: { searchParams?
                         "bg-[#ff9800] text-black"
                       }`}>{t.status}</span>
                     </td>
-                    <td className={`px-4 py-3 text-zinc-500 text-xs ${softura.className}`}>{new Date(t.createdAt).toLocaleString()}</td>
+                    <td className={`px-4 py-3 text-zinc-500 text-xs ${softura.className}`}>{new Date(t.createdAt).toLocaleString("en-IN", IST)}</td>
                     <td className="px-4 py-3"><RevenueStatusButtons type="team" id={t.id} status={t.status} /></td>
                   </tr>
                 ))}

@@ -19,7 +19,7 @@ export default async function AdminEventsPage() {
             <h2 className="font-bold text-white">{e.name}</h2>
             <p className="text-xs text-zinc-500 mt-1">{e.type || "—"} · ₹{e.price}</p>
             <p className="text-xs text-violet-400 mt-2">Teams registered: {e._count.participantTeams}</p>
-            <p className="text-xs text-zinc-500 mt-1">{new Date(e.date).toLocaleDateString()}</p>
+            <p className="text-xs text-zinc-500 mt-1">{new Date(e.date).toLocaleDateString("en-IN", { timeZone: "Asia/Kolkata" })}</p>
           </Link>
         ))}
       </div>
