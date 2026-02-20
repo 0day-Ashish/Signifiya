@@ -59,11 +59,11 @@ export async function getAdminDashboardStats() {
     teamRevenue: teamRevenue._sum.totalAmount || 0,
   };
 
-  // Cache for 5 minutes (short TTL for real-time feel)
-  await setCache(cacheKey, stats, CACHE_TTL.MEDIUM, process.env.NODE_ENV === "development");
+  // Cache for 15 minutes
+  await setCache(cacheKey, stats, 900, process.env.NODE_ENV === "development");
 
   if (process.env.NODE_ENV === "development") {
-    console.log(`[CACHE] Admin stats cached for ${CACHE_TTL.MEDIUM}s`);
+    console.log(`[CACHE] Admin stats cached for 900s`);
   }
 
   return stats;
@@ -821,14 +821,13 @@ export async function getAttendees(params?: { search?: string; limit?: number; o
     });
   }
 
-  // Sort
+  // Sort by lastAttendedAt desc
   items.sort((a, b) => b.lastAttendedAt.getTime() - a.lastAttendedAt.getTime());
 
-  // Pagination
+  // Apply pagination slicing
   const limit = params?.limit ?? 50;
   const offset = params?.offset ?? 0;
-  const total = items.length;
-  const sliced = items.slice(offset, offset + limit);
+  const paginatedItems = items.slice(offset, offset + limit);
 
-  return { attendees: sliced, total };
+  return { attendees: paginatedItems, total: items.length };
 }
