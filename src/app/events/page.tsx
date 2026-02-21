@@ -862,25 +862,25 @@ export default function EventRegistration() {
                   )}
 
                   <div className="bg-zinc-100 border-2 border-black p-4 rounded-xl text-center">
-                     <p className="font-bold text-sm text-zinc-700 mb-2">
-                       Total Amount:{" "}
-                       {activeDiscount ? (
-                         <>
-                           <span className="line-through opacity-40">₹{selectedEventIds.reduce((s, id) => s + (eventsList.find(e => e.id === id)?.price || 0), 0)}</span>
-                           {" "}
-                           <span className="text-green-600">₹{totalCost}</span>
-                         </>
-                       ) : (
-                         <>₹{totalCost}</>
-                       )}
-                     </p>
-                     
-                     <div className="relative w-48 h-48 border-4 border-black rounded-xl overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mx-auto mb-4 bg-white">
-                        <Image src="/qr.jpeg" alt="Payment QR Code" fill className="object-contain p-2" />
-                     </div>
-                     <p className="text-xs font-bold text-zinc-600">
-                       Scan to pay via UPI
-                     </p>
+                    <p className="font-bold text-sm text-zinc-700 mb-2">
+                      Total Amount:{" "}
+                      {activeDiscount ? (
+                        <>
+                          <span className="line-through opacity-40">₹{selectedEventIds.reduce((s, id) => s + (eventsList.find(e => e.id === id)?.price || 0), 0)}</span>
+                          {" "}
+                          <span className="text-green-600">₹{totalCost}</span>
+                        </>
+                      ) : (
+                        <>₹{totalCost}</>
+                      )}
+                    </p>
+
+                    <div className="relative w-48 h-48 border-4 border-black rounded-xl overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mx-auto mb-4 bg-white">
+                      <Image src="/qr.jpeg" alt="Payment QR Code" fill className="object-contain p-2" />
+                    </div>
+                    <p className="text-xs font-bold text-zinc-600">
+                      Scan to pay via UPI
+                    </p>
                   </div >
 
                   <div>
@@ -914,51 +914,52 @@ export default function EventRegistration() {
                   </div>
                 </motion.div >
               )
-}
+              }
 
-{
-  step === 5 && (
-    <motion.div
-      key="step5"
-      initial={{ scale: 0.9, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      className="space-y-6 text-center"
-    >
-      <div className="bg-[#4caf50] text-white p-6 rounded-4xl border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-        <h2 className={`text-4xl font-black uppercase mb-2 ${gilton.className}`}>
-          Registration Successful!
-        </h2>
-        <p className="font-medium text-white/90">
-          Your team registration is pending verification.
-        </p>
-        <p className="text-sm mt-2 opacity-80">
-          Check your profile for the event pass once approved.
-        </p>
-      </div>
+              {
+                step === 5 && (
+                  <motion.div
+                    key="step5"
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className="space-y-6 text-center"
+                  >
+                    <div className="bg-[#4caf50] text-white p-6 rounded-4xl border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+                      <h2 className={`text-4xl font-black uppercase mb-2 ${gilton.className}`}>
+                        Registration Successful!
+                      </h2>
+                      <p className="font-medium text-white/90">
+                        Your team registration is pending verification.
+                      </p>
+                      <p className="text-sm mt-2 opacity-80">
+                        Check your profile for the event pass once approved.
+                      </p>
+                    </div>
 
-                  <div className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4 w-full px-4 sm:px-0">
-      onClick={() => router.push("/profile")}
-      className="w-full sm:w-auto bg-black text-white px-8 py-4 rounded-xl font-bold border-2 border-black shadow-[4px_4px_0px_0px_#a855f7] hover:shadow-none hover:translate-y-[2px]"
-    >
-      GO TO PROFILE
-    </Button>
-    <Button
-      onClick={() => window.location.reload()}
-                      variant="outline"
-                      className="w-full sm:w-auto bg-white px-8 py-4 rounded-xl font-bold border-2 border-black"
-    >
-      REGISTER ANOTHER
-    </Button>
-  </div>
-                </motion.div >
-              )
-}
+                    <div className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4 w-full px-4 sm:px-0">
+                      <Button
+                        onClick={() => router.push("/profile")}
+                        className="w-full sm:w-auto bg-black text-white px-8 py-4 rounded-xl font-bold border-2 border-black shadow-[4px_4px_0px_0px_#a855f7] hover:shadow-none hover:translate-y-[2px]"
+                      >
+                        GO TO PROFILE
+                      </Button>
+                      <Button
+                        onClick={() => window.location.reload()}
+                        variant="outline"
+                        className="w-full sm:w-auto bg-white px-8 py-4 rounded-xl font-bold border-2 border-black"
+                      >
+                        REGISTER ANOTHER
+                      </Button>
+                    </div>
+                  </motion.div >
+                )
+              }
             </AnimatePresence >
           </div >
         </div >
 
-  {/* --- RIGHT SIDE: VISUALS (Unchanged) --- */ }
-  < div className = "hidden lg:flex flex-1 bg-teal-100 relative items-center justify-center border-l-4 border-black p-8 overflow-hidden" >
+        {/* --- RIGHT SIDE: VISUALS (Unchanged) --- */}
+        < div className="hidden lg:flex flex-1 bg-teal-100 relative items-center justify-center border-l-4 border-black p-8 overflow-hidden" >
           <div className="absolute top-10 left-10 w-20 h-20 bg-purple-500 border-4 border-black rounded-none rotate-12 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] z-10"></div>
           <div className="absolute bottom-20 right-10 w-16 h-16 bg-orange-500 border-4 border-black rounded-full animate-bounce shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] z-10"></div>
           <div className="relative w-[420px] h-[580px] bg-white border-4 border-black rounded-2xl shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] rotate-[-2deg] flex flex-col overflow-hidden group">
