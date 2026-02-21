@@ -862,18 +862,6 @@ export default function EventRegistration() {
                   )}
 
                   <div className="bg-zinc-100 border-2 border-black p-4 rounded-xl text-center">
-<<<<<<< HEAD
-                    <p className="font-bold text-sm text-zinc-700 mb-2">
-                      Total Amount: ₹{totalCost}
-                    </p>
-
-                    <div className="relative w-48 h-48 border-4 border-black rounded-xl overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mx-auto mb-4 bg-white">
-                      <Image src="/qr.jpeg" alt="Payment QR Code" fill className="object-contain p-2" />
-                    </div>
-                    <p className="text-xs font-bold text-zinc-600">
-                      Scan to pay via UPI
-                    </p>
-=======
                      <p className="font-bold text-sm text-zinc-700 mb-2">
                        Total Amount:{" "}
                        {activeDiscount ? (
@@ -893,7 +881,6 @@ export default function EventRegistration() {
                      <p className="text-xs font-bold text-zinc-600">
                        Scan to pay via UPI
                      </p>
->>>>>>> 858a9d96561aaeb36cca11901ad175b5c40920a2
                   </div >
 
                   <div>
@@ -949,13 +936,7 @@ export default function EventRegistration() {
         </p>
       </div>
 
-<<<<<<< HEAD
-  <div className="flex justify-center gap-4">
-    <Button
-=======
                   <div className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4 w-full px-4 sm:px-0">
-                    <Button
->>>>>>> 858a9d96561aaeb36cca11901ad175b5c40920a2
       onClick={() => router.push("/profile")}
       className="w-full sm:w-auto bg-black text-white px-8 py-4 rounded-xl font-bold border-2 border-black shadow-[4px_4px_0px_0px_#a855f7] hover:shadow-none hover:translate-y-[2px]"
     >
@@ -963,13 +944,8 @@ export default function EventRegistration() {
     </Button>
     <Button
       onClick={() => window.location.reload()}
-<<<<<<< HEAD
-      variant="outline"
-      className="bg-white px-8 py-4 rounded-xl font-bold border-2 border-black"
-=======
                       variant="outline"
                       className="w-full sm:w-auto bg-white px-8 py-4 rounded-xl font-bold border-2 border-black"
->>>>>>> 858a9d96561aaeb36cca11901ad175b5c40920a2
     >
       REGISTER ANOTHER
     </Button>
