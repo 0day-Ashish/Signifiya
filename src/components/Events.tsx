@@ -230,9 +230,6 @@ export default function Events() {
     const container = scrollContainerRef.current;
     if (!container) return;
 
-    // Only start dragging if it's left click (0) or touch
-    if (event.pointerType === 'mouse' && event.button !== 0) return;
-
     isDraggingRef.current = true;
     dragStartXRef.current = event.clientX;
     dragStartScrollLeftRef.current = container.scrollLeft;
@@ -324,8 +321,7 @@ export default function Events() {
           {/* Left Arrow Button */}
           <button
             onClick={() => scroll('left')}
-            onPointerDown={(e) => { e.stopPropagation(); }}
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-black text-white w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all flex items-center justify-center cursor-pointer pointer-events-auto"
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-black text-white w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all flex items-center justify-center"
             aria-label="Scroll left"
           >
             <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -336,8 +332,7 @@ export default function Events() {
           {/* Right Arrow Button */}
           <button
             onClick={() => scroll('right')}
-            onPointerDown={(e) => { e.stopPropagation(); }}
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-black text-white w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all flex items-center justify-center cursor-pointer pointer-events-auto"
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-black text-white w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all flex items-center justify-center"
             aria-label="Scroll right"
           >
             <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
