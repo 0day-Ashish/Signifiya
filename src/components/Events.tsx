@@ -216,9 +216,6 @@ export default function Events() {
   const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
     // Check if the target is a button, link, or inside one
     const target = event.target as HTMLElement;
-
-    // If we're clicking a link or button, let the default browser behavior happen
-    // On mobile, this prevents the slider from capturing the pointer and blocking the tap
     if (target.closest('a') || target.closest('button')) {
       return;
     }
@@ -226,21 +223,11 @@ export default function Events() {
     const container = scrollContainerRef.current;
     if (!container) return;
 
-    // Only start dragging if it's left click (0) or touch
-    if (event.pointerType === 'mouse' && event.button !== 0) return;
-
     isDraggingRef.current = true;
     dragStartXRef.current = event.clientX;
     dragStartScrollLeftRef.current = container.scrollLeft;
     isHoveredRef.current = true;
-
-    // Using setPointerCapture on mobile can sometimes prevent click events from firing 
-    // on child elements if not careful, but we need it for smooth swiping outside links
-    try {
-      container.setPointerCapture(event.pointerId);
-    } catch (e) {
-      // Ignore if pointer capture fails (common on some mobile browsers during fast taps)
-    }
+    container.setPointerCapture(event.pointerId);
   };
 
   const handlePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
@@ -255,28 +242,9 @@ export default function Events() {
     const container = scrollContainerRef.current;
     if (!container || !isDraggingRef.current) return;
 
-    // We don't reset isDraggingRef immediately so handleClickCapture can read it
-    // It will be reset in a setTimeout
+    isDraggingRef.current = false;
     isHoveredRef.current = false;
-
-    try {
-      container.releasePointerCapture(event.pointerId);
-    } catch (e) { }
-
-    // Reset drag state after a short delay so click event can be captured and prevented if it was a drag
-    setTimeout(() => {
-      isDraggingRef.current = false;
-    }, 50);
-  };
-
-  // Prevent accidental clicks on links when the user was actually dragging/swiping
-  const handleClickCapture = (e: React.MouseEvent) => {
-    // If the drag distance was significant, prevent the click
-    const dragDistance = Math.abs(e.clientX - dragStartXRef.current);
-    if (isDraggingRef.current && dragDistance > 5) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
+    container.releasePointerCapture(event.pointerId);
   };
 
 
@@ -322,8 +290,7 @@ export default function Events() {
           {/* Left Arrow Button */}
           <button
             onClick={() => scroll('left')}
-            onPointerDown={(e) => { e.stopPropagation(); }}
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-black text-white w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all flex items-center justify-center cursor-pointer pointer-events-auto"
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-black text-white w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all flex items-center justify-center"
             aria-label="Scroll left"
           >
             <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -334,8 +301,7 @@ export default function Events() {
           {/* Right Arrow Button */}
           <button
             onClick={() => scroll('right')}
-            onPointerDown={(e) => { e.stopPropagation(); }}
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-black text-white w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all flex items-center justify-center cursor-pointer pointer-events-auto"
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-black text-white w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all flex items-center justify-center"
             aria-label="Scroll right"
           >
             <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -357,7 +323,6 @@ export default function Events() {
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
             onPointerCancel={handlePointerUp}
-            onClickCapture={handleClickCapture}
             className={`flex gap-0 overflow-x-auto scrollbar-hide pb-4 min-h-[450px] sm:min-h-[500px] cursor-grab active:cursor-grabbing touch-pan-y ${isAllCategory ? 'snap-none' : 'snap-x snap-mandatory'}`}
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >

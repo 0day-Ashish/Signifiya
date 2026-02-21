@@ -41,10 +41,34 @@ const eventsList = [
     color: "bg-yellow-100",
   },
   {
-    id: "robo",
-    name: "Robo Wars",
-    price: 200,
-    type: "Team (2-5)",
+    id: "circuit",
+    name: "Electrifying Circuit",
+    price: 150,
+    type: "Team (1-3)",
+    date: "March 27-28",
+    color: "bg-yellow-100",
+  },
+  {
+    id: "tower",
+    name: "Tower Making",
+    price: 150,
+    type: "Team (1-3)",
+    date: "March 27-28",
+    color: "bg-blue-100",
+  },
+  {
+    id: "refab",
+    name: "RE-FAB (Waste to Wealth)",
+    price: 150,
+    type: "Team (1-3)",
+    date: "March 27-28",
+    color: "bg-green-100",
+  },
+  {
+    id: "path",
+    name: "Path Follower",
+    price: 150,
+    type: "Team (1-3)",
     date: "March 27-28",
     color: "bg-red-100",
   },
@@ -54,7 +78,47 @@ const eventsList = [
     price: 100,
     type: "Solo",
     date: "March 27-28",
-    color: "bg-blue-100",
+    color: "bg-pink-100",
+  },
+  {
+    id: "bridge",
+    name: "Bridge Making",
+    price: 150,
+    type: "Team (1-3)",
+    date: "March 27-28",
+    color: "bg-orange-100",
+  },
+  {
+    id: "lathe",
+    name: "Lathe War",
+    price: 150,
+    type: "Team (1-3)",
+    date: "March 27-28",
+    color: "bg-indigo-100",
+  },
+  {
+    id: "robo",
+    name: "Robo Terrain (Robo Soccer)",
+    price: 200,
+    type: "Team (2-5)",
+    date: "March 27-28",
+    color: "bg-teal-100",
+  },
+  {
+    id: "dance",
+    name: "Dance Battle",
+    price: 100,
+    type: "Solo/Group",
+    date: "March 27-28",
+    color: "bg-fuchsia-100",
+  },
+  {
+    id: "rap",
+    name: "Rap Battle",
+    price: 100,
+    type: "Solo",
+    date: "March 27-28",
+    color: "bg-fuchsia-100",
   },
   {
     id: "gaming",
@@ -62,15 +126,47 @@ const eventsList = [
     price: 500,
     type: "Team (5)",
     date: "March 27-28",
-    color: "bg-green-100",
+    color: "bg-gray-100",
   },
   {
-    id: "quiz",
-    name: "Tech Quiz",
-    price: 50,
-    type: "Team (2)",
+    id: "bgmi",
+    name: "BGMI",
+    price: 500,
+    type: "Team (4)",
     date: "March 27-28",
-    color: "bg-orange-100",
+    color: "bg-gray-100",
+  },
+  {
+    id: "treasure",
+    name: "Treasure Hunt",
+    price: 100,
+    type: "Team (2-4)",
+    date: "March 27-28",
+    color: "bg-gray-100",
+  },
+  {
+    id: "arm",
+    name: "Arm Wrestling",
+    price: 100,
+    type: "Solo",
+    date: "March 27-28",
+    color: "bg-gray-100",
+  },
+  {
+    id: "freefire",
+    name: "Free Fire",
+    price: 500,
+    type: "Team (4)",
+    date: "March 27-28",
+    color: "bg-gray-100",
+  },
+  {
+    id: "efootball",
+    name: "EFootball Tournament",
+    price: 300,
+    type: "Solo",
+    date: "March 27-28",
+    color: "bg-gray-100",
   },
 ];
 
@@ -521,34 +617,33 @@ export default function EventRegistration() {
                     Step 2/4: Select Event
                   </p>
                   <div ref={eventListRef} className="space-y-3 h-[400px] overflow-y-auto pr-2 custom-scrollbar">
-                     {eventsList.map((ev) => {
-                       const isSelected = selectedEventIds.includes(ev.id);
-                       return (
-                         <div
-                           key={ev.id}
-                           onClick={() => toggleEvent(ev.id)}
-                           className={`cursor-none border-2 p-4 rounded-xl transition-all relative overflow-hidden ${
-                             isSelected
-                               ? "border-black bg-[#deb3fa] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
-                               : "border-zinc-300 bg-white hover:border-zinc-400"
-                           }`}
-                         >
-                           <div className="flex justify-between items-start relative z-10">
-                              <div>
-                                 <h3 className={`font-black text-lg uppercase ${isSelected ? "text-black" : "text-zinc-400"}`}>
-                                   {ev.name}
-                                 </h3>
-                                 <p className={`text-xs font-bold mt-1 ${isSelected ? "text-black/70" : "text-zinc-300"}`}>
-                                   {ev.date}
-                                 </p>
-                              </div>
-                              <div className={`px-2 py-1 rounded text-xs font-bold border-2 ${isSelected ? "bg-black text-white border-black" : "bg-zinc-100 text-zinc-400 border-zinc-200"}`}>
-                                 ₹{ev.price}
-                              </div>
-                           </div>
-                         </div>
-                       );
-                     })}
+                    {eventsList.map((ev) => {
+                      const isSelected = selectedEventIds.includes(ev.id);
+                      return (
+                        <div
+                          key={ev.id}
+                          onClick={() => toggleEvent(ev.id)}
+                          className={`cursor-none border-2 p-4 rounded-xl transition-all relative overflow-hidden ${isSelected
+                              ? "border-black bg-[#deb3fa] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+                              : "border-zinc-300 bg-white hover:border-zinc-400"
+                            }`}
+                        >
+                          <div className="flex justify-between items-start relative z-10">
+                            <div>
+                              <h3 className={`font-black text-lg uppercase ${isSelected ? "text-black" : "text-zinc-400"}`}>
+                                {ev.name}
+                              </h3>
+                              <p className={`text-xs font-bold mt-1 ${isSelected ? "text-black/70" : "text-zinc-300"}`}>
+                                {ev.date}
+                              </p>
+                            </div>
+                            <div className={`px-2 py-1 rounded text-xs font-bold border-2 ${isSelected ? "bg-black text-white border-black" : "bg-zinc-100 text-zinc-400 border-zinc-200"}`}>
+                              ₹{ev.price}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
 
                   <div className="flex gap-4">
@@ -580,30 +675,30 @@ export default function EventRegistration() {
                   <p className="font-bold text-xs uppercase text-zinc-500">
                     Step 3/4: Add Team Members (Optional)
                   </p>
-                  
+
                   <div className="bg-amber-100 border-2 border-amber-400 p-3 rounded-xl mb-4">
-                     <p className="text-amber-800 text-xs font-bold"> Note: Team leader is automatically included. Add other members here.</p>
+                    <p className="text-amber-800 text-xs font-bold"> Note: Team leader is automatically included. Add other members here.</p>
                   </div>
 
                   <div className="space-y-4">
                     {fields.map((field, index) => (
                       <div key={field.id} className="bg-white border-2 border-black p-4 rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] relative">
-                         <button
-                           type="button"
-                           onClick={() => remove(index)}
-                           className="absolute -top-3 -right-3 w-8 h-8 flex items-center justify-center bg-red-500 border-2 border-black rounded-full text-white hover:bg-red-600 transition-colors z-10"
-                         >
-                           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                         </button>
-                         <h4 className="font-bold text-xs uppercase mb-3 text-zinc-400">Member {index + 1}</h4>
-                         <div className="grid gap-3">
-                            <Input {...register(`members.${index}.name`)} className={inputStyles} placeholder="Name" />
-                            <Input {...register(`members.${index}.college`)} className={inputStyles} placeholder="College" />
-                            <div className="grid grid-cols-2 gap-3">
-                               <Input {...register(`members.${index}.email`)} className={inputStyles} placeholder="Email" />
-                               <Input {...register(`members.${index}.phone`)} className={inputStyles} placeholder="Phone" />
-                            </div>
-                         </div>
+                        <button
+                          type="button"
+                          onClick={() => remove(index)}
+                          className="absolute -top-3 -right-3 w-8 h-8 flex items-center justify-center bg-red-500 border-2 border-black rounded-full text-white hover:bg-red-600 transition-colors z-10"
+                        >
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        </button>
+                        <h4 className="font-bold text-xs uppercase mb-3 text-zinc-400">Member {index + 1}</h4>
+                        <div className="grid gap-3">
+                          <Input {...register(`members.${index}.name`)} className={inputStyles} placeholder="Name" />
+                          <Input {...register(`members.${index}.college`)} className={inputStyles} placeholder="College" />
+                          <div className="grid grid-cols-2 gap-3">
+                            <Input {...register(`members.${index}.email`)} className={inputStyles} placeholder="Email" />
+                            <Input {...register(`members.${index}.phone`)} className={inputStyles} placeholder="Phone" />
+                          </div>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -669,7 +764,7 @@ export default function EventRegistration() {
                       <span>₹{totalCost}</span>
                     </div>
                   </div>
-                  
+
                   {payError && (
                     <div className="bg-red-100 border-2 border-red-600 p-3 rounded-xl">
                       <p className="text-red-600 font-bold text-sm">{payError}</p>
@@ -677,29 +772,29 @@ export default function EventRegistration() {
                   )}
 
                   <div className="bg-zinc-100 border-2 border-black p-4 rounded-xl text-center">
-                     <p className="font-bold text-sm text-zinc-700 mb-2">
-                       Total Amount: ₹{totalCost}
-                     </p>
-                     
-                     <div className="relative w-48 h-48 border-4 border-black rounded-xl overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mx-auto mb-4 bg-white">
-                        <Image src="/qr.jpeg" alt="Payment QR Code" fill className="object-contain p-2" />
-                     </div>
-                     <p className="text-xs font-bold text-zinc-600">
-                       Scan to pay via UPI
-                     </p>
+                    <p className="font-bold text-sm text-zinc-700 mb-2">
+                      Total Amount: ₹{totalCost}
+                    </p>
+
+                    <div className="relative w-48 h-48 border-4 border-black rounded-xl overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mx-auto mb-4 bg-white">
+                      <Image src="/qr.jpeg" alt="Payment QR Code" fill className="object-contain p-2" />
+                    </div>
+                    <p className="text-xs font-bold text-zinc-600">
+                      Scan to pay via UPI
+                    </p>
                   </div>
 
                   <div>
-                     <Label className={labelStyles}>Enter Transaction / UTR ID</Label>
-                     <Input
-                       value={utrId}
-                       onChange={(e) => setUtrId(e.target.value)}
-                       className={inputStyles}
-                       placeholder="Enter 12-digit UTR ID"
-                     />
-                     <p className="text-xs text-zinc-500 mt-1">
-                       Usually starts with banking ref no. or 'UPI...'
-                     </p>
+                    <Label className={labelStyles}>Enter Transaction / UTR ID</Label>
+                    <Input
+                      value={utrId}
+                      onChange={(e) => setUtrId(e.target.value)}
+                      className={inputStyles}
+                      placeholder="Enter 12-digit UTR ID"
+                    />
+                    <p className="text-xs text-zinc-500 mt-1">
+                      Usually starts with banking ref no. or 'UPI...'
+                    </p>
                   </div>
 
                   <div className="flex gap-4">
@@ -735,13 +830,13 @@ export default function EventRegistration() {
                     <p className="font-medium text-white/90">
                       Your team registration is pending verification.
                     </p>
-                     <p className="text-sm mt-2 opacity-80">
-                        Check your profile for the event pass once approved.
-                     </p>
+                    <p className="text-sm mt-2 opacity-80">
+                      Check your profile for the event pass once approved.
+                    </p>
                   </div>
 
                   <div className="flex justify-center gap-4">
-                    <Button 
+                    <Button
                       onClick={() => router.push("/profile")}
                       className="bg-black text-white px-8 py-4 rounded-xl font-bold border-2 border-black shadow-[4px_4px_0px_0px_#a855f7] hover:shadow-none hover:translate-y-[2px]"
                     >
@@ -749,7 +844,7 @@ export default function EventRegistration() {
                     </Button>
                     <Button
                       onClick={() => window.location.reload()}
-                      variant="outline" 
+                      variant="outline"
                       className="bg-white px-8 py-4 rounded-xl font-bold border-2 border-black"
                     >
                       REGISTER ANOTHER
