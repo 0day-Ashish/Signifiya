@@ -30,6 +30,17 @@ export const APP_CONFIG = {
     full: "Visitor Pass",
   },
 
+
+  /**
+   * Event registration flash sale discounts.
+   * Each entry: { start: ISO date, durationHours, discountPercent }
+   * Active discount is the first window where now >= start && now < start + duration.
+   */
+  eventDiscounts: [
+    { start: "2026-02-23T00:00:00+05:30", durationHours: 6,  discountPercent: 10, label: "Flash Sale 10% OFF" },
+    { start: "2026-03-01T00:00:00+05:30", durationHours: 12, discountPercent: 5,  label: "Early Bird 5% OFF" },
+    { start: "2026-03-22T00:00:00+05:30", durationHours: 24, discountPercent: 10, label: "Last Chance 10% OFF" },
+  ] as const,
   // Contact Information
   contact: {
     members: [
@@ -39,7 +50,7 @@ export const APP_CONFIG = {
         role: "Lead Developer",
         email: "0day.ashish@gmail.com",
         phone: "+91 8910114007",
-        image: "/avatar1.jpg",
+        image: "/team/ashish.jpg",
         color: "#deb3fa",
         social: {
           instagram: "https://instagram.com/ashishh_rd_",
@@ -53,7 +64,7 @@ export const APP_CONFIG = {
         role: "Finance Head",
         email: "arijit1504@gmail.com",
         phone: "+91 9831093297",
-        image: "/arijit.jpeg",
+        image: "/team/Arijit.jpg",
         color: "#FCD34D",
         social: {
           instagram: "https://instagram.com/arijit_.04",
@@ -67,7 +78,7 @@ export const APP_CONFIG = {
         role: "Core Committee",
         email: "roygarima@gmail.com",
         phone: "+91 9073377527",
-        image: "/avatar3.jpg",
+        image: "/team/Garima.jpeg",
         color: "#3B82F6",
         social: {
           instagram: "https://instagram.com/_garimaa.07_",

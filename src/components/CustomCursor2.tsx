@@ -38,6 +38,19 @@ export default function CustomCursor() {
     return () => window.removeEventListener('mousemove', moveCursor);
   }, [cursorX, cursorY, isDesktop]);
 
+  useEffect(() => {
+    const root = document.documentElement;
+
+    if (isDesktop) {
+      root.setAttribute('data-custom-cursor', 'true');
+      return () => {
+        root.removeAttribute('data-custom-cursor');
+      };
+    }
+
+    root.removeAttribute('data-custom-cursor');
+  }, [isDesktop]);
+
   if (!isDesktop) return null;
 
   return (

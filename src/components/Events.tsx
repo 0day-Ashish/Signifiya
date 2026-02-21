@@ -216,6 +216,13 @@ export default function Events() {
   const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
     // Check if the target is a button, link, or inside one
     const target = event.target as HTMLElement;
+
+    // Pause auto-scroll on ANY pointer contact (including taps on links/buttons)
+    // so the container doesn't move under the user's finger on mobile.
+    isHoveredRef.current = true;
+
+    // If we're clicking a link or button, let the default browser behavior happen
+    // On mobile, this prevents the slider from capturing the pointer and blocking the tap
     if (target.closest('a') || target.closest('button')) {
       return;
     }
@@ -226,8 +233,14 @@ export default function Events() {
     isDraggingRef.current = true;
     dragStartXRef.current = event.clientX;
     dragStartScrollLeftRef.current = container.scrollLeft;
-    isHoveredRef.current = true;
-    container.setPointerCapture(event.pointerId);
+
+    // Using setPointerCapture on mobile can sometimes prevent click events from firing 
+    // on child elements if not careful, but we need it for smooth swiping outside links
+    try {
+      container.setPointerCapture(event.pointerId);
+    } catch (e) {
+      // Ignore if pointer capture fails (common on some mobile browsers during fast taps)
+    }
   };
 
   const handlePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
@@ -239,12 +252,30 @@ export default function Events() {
   };
 
   const handlePointerUp = (event: ReactPointerEvent<HTMLDivElement>) => {
+    // Always resume auto-scroll on pointer up (covers link/button taps too)
+    isHoveredRef.current = false;
+
     const container = scrollContainerRef.current;
     if (!container || !isDraggingRef.current) return;
 
-    isDraggingRef.current = false;
-    isHoveredRef.current = false;
-    container.releasePointerCapture(event.pointerId);
+    try {
+      container.releasePointerCapture(event.pointerId);
+    } catch (e) { }
+
+    // Reset drag state after a short delay so click event can be captured and prevented if it was a drag
+    setTimeout(() => {
+      isDraggingRef.current = false;
+    }, 50);
+  };
+
+  // Prevent accidental clicks on links when the user was actually dragging/swiping
+  const handleClickCapture = (e: React.MouseEvent) => {
+    // If the drag distance was significant, prevent the click
+    const dragDistance = Math.abs(e.clientX - dragStartXRef.current);
+    if (isDraggingRef.current && dragDistance > 5) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
   };
 
 
@@ -323,6 +354,7 @@ export default function Events() {
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
             onPointerCancel={handlePointerUp}
+            onClickCapture={handleClickCapture}
             className={`flex gap-0 overflow-x-auto scrollbar-hide pb-4 min-h-[450px] sm:min-h-[500px] cursor-grab active:cursor-grabbing touch-pan-y ${isAllCategory ? 'snap-none' : 'snap-x snap-mandatory'}`}
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >

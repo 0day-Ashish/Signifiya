@@ -51,7 +51,7 @@ export default function VisitorCard({
   return (
     <main className={wrapperClass}>
       <div ref={ticketRef} className="w-full max-w-[400px] h-full bg-[#d400ff] rounded-[20px] p-1">
-        <div className={`w-full ${compact ? "h-[460px] sm:h-[520px]" : "h-[500px] sm:h-[600px]"} bg-zinc-950 px-4 sm:px-8 rounded-[18px] shadow-[0px_0px_10px_2px_rgba(0,0,255,0.8)] backdrop-blur-2xl relative overflow-hidden`}>
+        <div className={`w-full ${compact ? "h-[380px] sm:h-[420px]" : "h-[500px] sm:h-[600px]"} bg-zinc-950 px-4 sm:px-8 rounded-[18px] shadow-[0px_0px_10px_2px_rgba(0,0,255,0.8)] backdrop-blur-2xl relative overflow-hidden`}>
           {/* Background */}
           <div className="absolute top-0 left-0 w-full h-full pb-20 z-0">
             <Image src="/logo2.png" alt="Signifiya Logo" width={50} height={50} className="absolute top-2 left-2 bg-transparent backdrop-blur-3xl outline-white/10 outline rounded-full" />

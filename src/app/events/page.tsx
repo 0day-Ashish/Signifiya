@@ -202,6 +202,26 @@ const labelStyles =
 
 import { useRouter } from "next/navigation";
 
+/** Returns the currently active event discount (if any) based on current time */
+function getActiveEventDiscount() {
+  const now = new Date();
+  for (const d of APP_CONFIG.eventDiscounts) {
+    const start = new Date(d.start);
+    const end = new Date(start.getTime() + d.durationHours * 60 * 60 * 1000);
+    if (now >= start && now < end) {
+      return { discountPercent: d.discountPercent, label: d.label, endsAt: end };
+    }
+  }
+  return null;
+}
+
+/** Apply active discount to a price, returning { original, discounted, hasDiscount } */
+function getDiscountedPrice(price: number, discount: ReturnType<typeof getActiveEventDiscount>) {
+  if (!discount) return { original: price, discounted: price, hasDiscount: false };
+  const discounted = Math.round(price * (1 - discount.discountPercent / 100));
+  return { original: price, discounted, hasDiscount: true };
+}
+
 export default function EventRegistration() {
   const router = useRouter();
   const { data: sessionData, isPending: isSessionPending } = authClient.useSession();
@@ -214,6 +234,8 @@ export default function EventRegistration() {
   const [payError, setPayError] = useState<string | null>(null);
   const [utrId, setUtrId] = useState("");
   const [totalCost, setTotalCost] = useState(0);
+  const [activeDiscount, setActiveDiscount] = useState<ReturnType<typeof getActiveEventDiscount>>(null);
+  const [discountTimeLeft, setDiscountTimeLeft] = useState("");
   const [createdEventPass, setCreatedEventPass] = useState<{
     teamLeadName: string;
     eventName: string;
@@ -248,13 +270,37 @@ export default function EventRegistration() {
 
   const selectedEventIds = watch("selectedEvents");
 
+  // Check for active discount and keep countdown
   useEffect(() => {
+    const tick = () => {
+      const d = getActiveEventDiscount();
+      setActiveDiscount(d);
+      if (d) {
+        const diff = d.endsAt.getTime() - Date.now();
+        if (diff <= 0) { setDiscountTimeLeft(""); return; }
+        const h = Math.floor(diff / 3600000);
+        const m = Math.floor((diff % 3600000) / 60000);
+        const s = Math.floor((diff % 60000) / 1000);
+        setDiscountTimeLeft(`${h > 0 ? `${h}h ` : ""}${m}m ${s}s`);
+      } else {
+        setDiscountTimeLeft("");
+      }
+    };
+    tick();
+    const interval = setInterval(tick, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const discount = getActiveEventDiscount();
     const total = selectedEventIds.reduce((sum, eventId) => {
       const event = eventsList.find((e) => e.id === eventId);
-      return sum + (event ? event.price : 0);
+      if (!event) return sum;
+      const { discounted } = getDiscountedPrice(event.price, discount);
+      return sum + discounted;
     }, 0);
     setTotalCost(total);
-  }, [selectedEventIds]);
+  }, [selectedEventIds, activeDiscount]);
 
   useEffect(() => {
     const prefillFromDb = async () => {
@@ -616,6 +662,19 @@ export default function EventRegistration() {
                   <p className="font-bold text-xs uppercase text-zinc-500">
                     Step 2/4: Select Event
                   </p>
+                  {activeDiscount && (
+                    <div className="bg-green-100 border-2 border-green-600 rounded-xl p-3 flex items-center justify-between animate-pulse">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">🔥</span>
+                        <span className="font-black text-green-800 text-sm uppercase">{activeDiscount.label}</span>
+                      </div>
+                      {discountTimeLeft && (
+                        <span className="font-mono font-bold text-green-700 text-xs bg-green-200 px-2 py-1 rounded-lg">
+                          Ends in {discountTimeLeft}
+                        </span>
+                      )}
+                    </div>
+                  )}
                   <div ref={eventListRef} className="space-y-3 h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                     {eventsList.map((ev) => {
                       const isSelected = selectedEventIds.includes(ev.id);
@@ -624,8 +683,8 @@ export default function EventRegistration() {
                           key={ev.id}
                           onClick={() => toggleEvent(ev.id)}
                           className={`cursor-none border-2 p-4 rounded-xl transition-all relative overflow-hidden ${isSelected
-                              ? "border-black bg-[#deb3fa] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
-                              : "border-zinc-300 bg-white hover:border-zinc-400"
+                            ? "border-black bg-[#deb3fa] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+                            : "border-zinc-300 bg-white hover:border-zinc-400"
                             }`}
                         >
                           <div className="flex justify-between items-start relative z-10">
@@ -638,7 +697,17 @@ export default function EventRegistration() {
                               </p>
                             </div>
                             <div className={`px-2 py-1 rounded text-xs font-bold border-2 ${isSelected ? "bg-black text-white border-black" : "bg-zinc-100 text-zinc-400 border-zinc-200"}`}>
-                              ₹{ev.price}
+                              {(() => {
+                                const { original, discounted, hasDiscount } = getDiscountedPrice(ev.price, activeDiscount);
+                                return hasDiscount ? (
+                                  <span className="flex items-center gap-1">
+                                    <span className="line-through opacity-60">₹{original}</span>
+                                    <span className="text-green-500">₹{discounted}</span>
+                                  </span>
+                                ) : (
+                                  <span>₹{original}</span>
+                                );
+                              })()}
                             </div>
                           </div>
                         </div>
@@ -752,17 +821,38 @@ export default function EventRegistration() {
                     </h3>
                     {selectedEventIds.map((id) => {
                       const ev = eventsList.find((e) => e.id === id);
+                      if (!ev) return null;
+                      const { original, discounted, hasDiscount } = getDiscountedPrice(ev.price, activeDiscount);
                       return (
                         <div key={id} className="flex justify-between mb-1">
-                          <span>{ev?.name}</span>
-                          <span>₹{ev?.price}</span>
+                          <span>{ev.name}</span>
+                          {hasDiscount ? (
+                            <span className="flex items-center gap-1">
+                              <span className="line-through opacity-50">₹{original}</span>
+                              <span className="text-green-600 font-bold">₹{discounted}</span>
+                            </span>
+                          ) : (
+                            <span>₹{ev.price}</span>
+                          )}
                         </div>
                       );
                     })}
                     <div className="flex justify-between border-t-2 border-black pt-2 mt-2 font-black text-lg">
                       <span>TOTAL</span>
-                      <span>₹{totalCost}</span>
+                      {activeDiscount ? (
+                        <span className="flex items-center gap-2">
+                          <span className="line-through opacity-40 text-sm">₹{selectedEventIds.reduce((s, id) => s + (eventsList.find(e => e.id === id)?.price || 0), 0)}</span>
+                          <span className="text-green-600">₹{totalCost}</span>
+                        </span>
+                      ) : (
+                        <span>₹{totalCost}</span>
+                      )}
                     </div>
+                    {activeDiscount && (
+                      <p className="text-[10px] text-green-600 font-bold text-right mt-1">
+                        {activeDiscount.label} applied!
+                      </p>
+                    )}
                   </div>
 
                   {payError && (
@@ -772,6 +862,7 @@ export default function EventRegistration() {
                   )}
 
                   <div className="bg-zinc-100 border-2 border-black p-4 rounded-xl text-center">
+<<<<<<< HEAD
                     <p className="font-bold text-sm text-zinc-700 mb-2">
                       Total Amount: ₹{totalCost}
                     </p>
@@ -782,7 +873,28 @@ export default function EventRegistration() {
                     <p className="text-xs font-bold text-zinc-600">
                       Scan to pay via UPI
                     </p>
-                  </div>
+=======
+                     <p className="font-bold text-sm text-zinc-700 mb-2">
+                       Total Amount:{" "}
+                       {activeDiscount ? (
+                         <>
+                           <span className="line-through opacity-40">₹{selectedEventIds.reduce((s, id) => s + (eventsList.find(e => e.id === id)?.price || 0), 0)}</span>
+                           {" "}
+                           <span className="text-green-600">₹{totalCost}</span>
+                         </>
+                       ) : (
+                         <>₹{totalCost}</>
+                       )}
+                     </p>
+                     
+                     <div className="relative w-48 h-48 border-4 border-black rounded-xl overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mx-auto mb-4 bg-white">
+                        <Image src="/qr.jpeg" alt="Payment QR Code" fill className="object-contain p-2" />
+                     </div>
+                     <p className="text-xs font-bold text-zinc-600">
+                       Scan to pay via UPI
+                     </p>
+>>>>>>> 858a9d96561aaeb36cca11901ad175b5c40920a2
+                  </div >
 
                   <div>
                     <Label className={labelStyles}>Enter Transaction / UTR ID</Label>
@@ -813,51 +925,64 @@ export default function EventRegistration() {
                       {isLoading ? "VERIFYING…" : "SUBMIT PAYMENT DETAILS →"}
                     </Button>
                   </div>
-                </motion.div>
-              )}
+                </motion.div >
+              )
+}
 
-              {step === 5 && (
-                <motion.div
-                  key="step5"
-                  initial={{ scale: 0.9, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  className="space-y-6 text-center"
-                >
-                  <div className="bg-[#4caf50] text-white p-6 rounded-4xl border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-                    <h2 className={`text-4xl font-black uppercase mb-2 ${gilton.className}`}>
-                      Registration Successful!
-                    </h2>
-                    <p className="font-medium text-white/90">
-                      Your team registration is pending verification.
-                    </p>
-                    <p className="text-sm mt-2 opacity-80">
-                      Check your profile for the event pass once approved.
-                    </p>
-                  </div>
+{
+  step === 5 && (
+    <motion.div
+      key="step5"
+      initial={{ scale: 0.9, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      className="space-y-6 text-center"
+    >
+      <div className="bg-[#4caf50] text-white p-6 rounded-4xl border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+        <h2 className={`text-4xl font-black uppercase mb-2 ${gilton.className}`}>
+          Registration Successful!
+        </h2>
+        <p className="font-medium text-white/90">
+          Your team registration is pending verification.
+        </p>
+        <p className="text-sm mt-2 opacity-80">
+          Check your profile for the event pass once approved.
+        </p>
+      </div>
 
-                  <div className="flex justify-center gap-4">
+<<<<<<< HEAD
+  <div className="flex justify-center gap-4">
+    <Button
+=======
+                  <div className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4 w-full px-4 sm:px-0">
                     <Button
-                      onClick={() => router.push("/profile")}
-                      className="bg-black text-white px-8 py-4 rounded-xl font-bold border-2 border-black shadow-[4px_4px_0px_0px_#a855f7] hover:shadow-none hover:translate-y-[2px]"
-                    >
-                      GO TO PROFILE
-                    </Button>
-                    <Button
-                      onClick={() => window.location.reload()}
+>>>>>>> 858a9d96561aaeb36cca11901ad175b5c40920a2
+      onClick={() => router.push("/profile")}
+      className="w-full sm:w-auto bg-black text-white px-8 py-4 rounded-xl font-bold border-2 border-black shadow-[4px_4px_0px_0px_#a855f7] hover:shadow-none hover:translate-y-[2px]"
+    >
+      GO TO PROFILE
+    </Button>
+    <Button
+      onClick={() => window.location.reload()}
+<<<<<<< HEAD
+      variant="outline"
+      className="bg-white px-8 py-4 rounded-xl font-bold border-2 border-black"
+=======
                       variant="outline"
-                      className="bg-white px-8 py-4 rounded-xl font-bold border-2 border-black"
-                    >
-                      REGISTER ANOTHER
-                    </Button>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
+                      className="w-full sm:w-auto bg-white px-8 py-4 rounded-xl font-bold border-2 border-black"
+>>>>>>> 858a9d96561aaeb36cca11901ad175b5c40920a2
+    >
+      REGISTER ANOTHER
+    </Button>
+  </div>
+                </motion.div >
+              )
+}
+            </AnimatePresence >
+          </div >
+        </div >
 
-        {/* --- RIGHT SIDE: VISUALS (Unchanged) --- */}
-        <div className="hidden lg:flex flex-1 bg-teal-100 relative items-center justify-center border-l-4 border-black p-8 overflow-hidden">
+  {/* --- RIGHT SIDE: VISUALS (Unchanged) --- */ }
+  < div className = "hidden lg:flex flex-1 bg-teal-100 relative items-center justify-center border-l-4 border-black p-8 overflow-hidden" >
           <div className="absolute top-10 left-10 w-20 h-20 bg-purple-500 border-4 border-black rounded-none rotate-12 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] z-10"></div>
           <div className="absolute bottom-20 right-10 w-16 h-16 bg-orange-500 border-4 border-black rounded-full animate-bounce shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] z-10"></div>
           <div className="relative w-[420px] h-[580px] bg-white border-4 border-black rounded-2xl shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] rotate-[-2deg] flex flex-col overflow-hidden group">
@@ -910,8 +1035,8 @@ export default function EventRegistration() {
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
+        </div >
+      </div >
+    </div >
   );
 }
