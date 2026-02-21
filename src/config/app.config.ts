@@ -94,7 +94,7 @@ export const APP_CONFIG = {
     instagram: "https://www.instagram.com/signifiya/",
     discord: "#",
     twitter: "#",
-    youtube: "#",
+    youtube: "https://www.youtube.com/@SIGNIFIYA/featured",
   },
 
   // External Services
