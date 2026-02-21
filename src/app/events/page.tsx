@@ -937,19 +937,20 @@ export default function EventRegistration() {
       </div>
 
                   <div className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4 w-full px-4 sm:px-0">
-      onClick={() => router.push("/profile")}
-      className="w-full sm:w-auto bg-black text-white px-8 py-4 rounded-xl font-bold border-2 border-black shadow-[4px_4px_0px_0px_#a855f7] hover:shadow-none hover:translate-y-[2px]"
-    >
-      GO TO PROFILE
-    </Button>
-    <Button
-      onClick={() => window.location.reload()}
+                    <Button
+                      onClick={() => router.push("/profile")}
+                      className="w-full sm:w-auto bg-black text-white px-8 py-4 rounded-xl font-bold border-2 border-black shadow-[4px_4px_0px_0px_#a855f7] hover:shadow-none hover:translate-y-[2px]"
+                    >
+                      GO TO PROFILE
+                    </Button>
+                    <Button
+                      onClick={() => window.location.reload()}
                       variant="outline"
                       className="w-full sm:w-auto bg-white px-8 py-4 rounded-xl font-bold border-2 border-black"
-    >
-      REGISTER ANOTHER
-    </Button>
-  </div>
+                    >
+                      REGISTER ANOTHER
+                    </Button>
+                  </div>
                 </motion.div >
               )
 }
