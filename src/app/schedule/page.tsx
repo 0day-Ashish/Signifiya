@@ -20,7 +20,7 @@ const bicubik = localFont({ src: "../../../public/fonts/Bicubik.otf" });
 const fallbackEventsData = getScheduleData();
 
 // EventCard component (Commented out for now)
-/*
+
 const EventCard = ({ event, index }: { event: any; index: number }) => {
   const isTextLeft = index % 2 === 0;
 
@@ -110,7 +110,7 @@ const EventCard = ({ event, index }: { event: any; index: number }) => {
     </div>
   );
 };
-*/
+
 
 // --- 3. MAIN PAGE COMPONENT ---
 export default function Schedule() {
@@ -237,7 +237,7 @@ export default function Schedule() {
       </div>
 
       {/* Placeholder Text */}
-      <div className="bg-[#fff1f2] min-h-[50vh] mb-8 rounded-[2rem] p-6 lg:p-12 flex items-center justify-center border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+      {/* <div className="bg-[#fff1f2] min-h-[50vh] mb-8 rounded-[2rem] p-6 lg:p-12 flex items-center justify-center border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
         <div className="text-center">
           <h2 className={`text-4xl lg:text-6xl font-black uppercase text-black mb-4 ${bicubik.className}`}>
             Declaring Soon
@@ -246,10 +246,10 @@ export default function Schedule() {
             Stay Tuned!
           </p>
         </div>
-      </div>
+      </div> */}
 
       {/* Days Loop (Commented out for now) */}
-      {/* 
+      
       {isLoading ? (
         <div className="bg-[#fff1f2] min-h-screen mb-8 rounded-[2rem] p-6 lg:p-12 flex items-center justify-center">
           <p className="text-black text-xl">Loading schedule...</p>
@@ -282,7 +282,7 @@ export default function Schedule() {
         </div>
       ))
       )} 
-      */}
+        
 
       <Footer />
 

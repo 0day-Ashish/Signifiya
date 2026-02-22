@@ -16,7 +16,7 @@ export default function Navbar({
   session,
   showProfileMenu,
   setShowProfileMenu,
-  hideLogo = false
+  hideLogo = false,
 }: any) {
   const router = useRouter();
   const pathname = usePathname();
@@ -39,8 +39,8 @@ export default function Navbar({
     };
 
     checkScreenSize();
-    window.addEventListener('resize', checkScreenSize);
-    return () => window.removeEventListener('resize', checkScreenSize);
+    window.addEventListener("resize", checkScreenSize);
+    return () => window.removeEventListener("resize", checkScreenSize);
   }, []);
 
   // Close profile menu on Escape
@@ -54,7 +54,9 @@ export default function Navbar({
   }, [showProfileMenu, setShowProfileMenu]);
 
   // Determine if menu should be visible: on mobile use click state; on desktop use scroll state OR pinned (clicked + to keep open)
-  const isMenuVisible = isDesktop ? (showNavLinks || desktopNavPinned) : mobileMenuOpen;
+  const isMenuVisible = isDesktop
+    ? showNavLinks || desktopNavPinned
+    : mobileMenuOpen;
 
   return (
     <div>
@@ -80,7 +82,15 @@ export default function Navbar({
           onClick={() => router.back()}
           className="fixed top-16 md:top-18 left-20 sm:left-20 lg:left-28 w-9 h-9 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-white text-black rounded-full border-2 border-black flex items-center justify-center transition-transform duration-300 hover:scale-105 active:scale-95 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] active:shadow-none z-50"
         >
-          <svg className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg
+            className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <path d="M19 12H5"></path>
             <path d="M12 19l-7-7 7-7"></path>
           </svg>
@@ -88,7 +98,6 @@ export default function Navbar({
       )}
 
       <div className="fixed top-16 sm:top-16 right-8 sm:right-8 flex flex-col items-end gap-2 sm:gap-4 z-50">
-
         <div className="flex items-start gap-2 sm:gap-4">
           {/* Navigation Menu Container */}
           <div className="relative group/nav z-50">
@@ -105,15 +114,35 @@ export default function Navbar({
             >
               <div className="relative w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center">
                 {/* Plus Icon */}
-                <span className={`absolute inset-0 flex items-center justify-center transition-transform duration-300 ease-in-out lg:group-hover/nav:rotate-90 lg:group-hover/nav:opacity-0 ${isMenuVisible ? 'rotate-90 opacity-0' : 'rotate-0 opacity-100'}`}>
-                  <svg className="w-4 h-4 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <span
+                  className={`absolute inset-0 flex items-center justify-center transition-transform duration-300 ease-in-out lg:group-hover/nav:rotate-90 lg:group-hover/nav:opacity-0 ${isMenuVisible ? "rotate-90 opacity-0" : "rotate-0 opacity-100"}`}
+                >
+                  <svg
+                    className="w-4 h-4 sm:w-6 sm:h-6"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
                     <line x1="12" y1="5" x2="12" y2="19"></line>
                     <line x1="5" y1="12" x2="19" y2="12"></line>
                   </svg>
                 </span>
                 {/* Minus Icon */}
-                <span className={`absolute inset-0 flex items-center justify-center transition-all duration-300 ease-in-out lg:group-hover/nav:rotate-0 lg:group-hover/nav:opacity-100 ${isMenuVisible ? 'rotate-0 opacity-100' : '-rotate-90 opacity-0'}`}>
-                  <svg className="w-4 h-4 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <span
+                  className={`absolute inset-0 flex items-center justify-center transition-all duration-300 ease-in-out lg:group-hover/nav:rotate-0 lg:group-hover/nav:opacity-100 ${isMenuVisible ? "rotate-0 opacity-100" : "-rotate-90 opacity-0"}`}
+                >
+                  <svg
+                    className="w-4 h-4 sm:w-6 sm:h-6"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
                     <line x1="5" y1="12" x2="19" y2="12"></line>
                   </svg>
                 </span>
@@ -121,13 +150,14 @@ export default function Navbar({
             </button>
 
             {/* Menu - Vertical on Mobile/Tablet, Horizontal on Desktop (lg and above) */}
-            <div className={`absolute top-full lg:top-0 right-0 lg:right-full mt-2 lg:mt-0 lg:pr-4 flex flex-col lg:flex-row items-stretch lg:items-center gap-2 lg:gap-3 transition-all duration-300 ease-out lg:group-hover/nav:opacity-100 lg:group-hover/nav:translate-y-0 lg:group-hover/nav:visible ${isMenuVisible ? 'opacity-100 translate-y-0 visible' : 'opacity-0 -translate-y-4 lg:-translate-y-4 invisible'}`}>
+            <div
+              className={`absolute top-full lg:top-0 right-0 lg:right-full mt-2 lg:mt-0 lg:pr-4 flex flex-col lg:flex-row items-stretch lg:items-center gap-2 lg:gap-3 transition-all duration-300 ease-out lg:group-hover/nav:opacity-100 lg:group-hover/nav:translate-y-0 lg:group-hover/nav:visible ${isMenuVisible ? "opacity-100 translate-y-0 visible" : "opacity-0 -translate-y-4 lg:-translate-y-4 invisible"}`}
+            >
               {[
-                { name: 'Gallery', href: '/gallery' },
-                { name: 'Merchandise', href: '/merch' },
-                { name: 'Schedule', href: '/schedule' },
-                { name: 'Events', href: '/#events' },
-                { name: 'FAQ', href: '/#faq' }
+                { name: "Gallery", href: "/gallery" },
+                { name: "Schedule", href: "/schedule" },
+                { name: "Events", href: "/#events" },
+                { name: "FAQ", href: "/#faq" },
               ].map((item, index) => (
                 <Link
                   key={item.name}
@@ -153,10 +183,14 @@ export default function Navbar({
             className="group relative bg-black px-4 py-2 sm:px-8 sm:py-3 rounded-full border-2 border-transparent hover:border-black hover:bg-[#deb3fa] hover:scale-105 transition-all duration-300 overflow-hidden"
           >
             <div className="relative h-4 sm:h-5 overflow-hidden flex flex-col justify-center items-center">
-              <span className={`block text-white uppercase font-extrabold text-xs sm:text-base transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:-translate-y-full ${softura.className}`}>
+              <span
+                className={`block text-white uppercase font-extrabold text-xs sm:text-base transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:-translate-y-full ${softura.className}`}
+              >
                 Launch App
               </span>
-              <span className={`absolute top-0 left-0 w-full block text-black uppercase font-extrabold text-xs sm:text-base transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] translate-y-full group-hover:translate-y-0 ${softura.className}`}>
+              <span
+                className={`absolute top-0 left-0 w-full block text-black uppercase font-extrabold text-xs sm:text-base transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] translate-y-full group-hover:translate-y-0 ${softura.className}`}
+              >
                 Launch App
               </span>
             </div>
@@ -188,11 +222,18 @@ export default function Navbar({
               {showProfileMenu && (
                 <div className="absolute top-full right-0 mt-2 sm:mt-4 bg-white border-4 border-black rounded-2xl p-3 sm:p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] w-56 sm:w-64 flex flex-col gap-2 z-60">
                   <div className="text-center border-b-2 border-black pb-2 mb-2">
-                    <p className="font-bold text-sm sm:text-base text-black truncate">{session.user?.name}</p>
-                    <p className="text-xs text-gray-600 truncate">{session.user?.email}</p>
+                    <p className="font-bold text-sm sm:text-base text-black truncate">
+                      {session.user?.name}
+                    </p>
+                    <p className="text-xs text-gray-600 truncate">
+                      {session.user?.email}
+                    </p>
                   </div>
 
-                  <Link href="/profile" className="w-full bg-[#deb3fa] text-black font-bold py-1.5 sm:py-2 rounded-lg border-2 border-black hover:bg-[#d091f8] transition-colors text-xs sm:text-sm uppercase text-center">
+                  <Link
+                    href="/profile"
+                    className="w-full bg-[#deb3fa] text-black font-bold py-1.5 sm:py-2 rounded-lg border-2 border-black hover:bg-[#d091f8] transition-colors text-xs sm:text-sm uppercase text-center"
+                  >
                     Your Profile
                   </Link>
 
@@ -222,12 +263,22 @@ export default function Navbar({
               className="w-9 h-9 sm:w-12 sm:h-12 bg-white text-black rounded-full border-2 border-black flex items-center justify-center transition-transform duration-300 hover:scale-105 active:scale-95 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]"
             >
               {musicPlaying ? (
-                <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                <svg
+                  className="w-4 h-4 sm:w-5 sm:h-5"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  stroke="none"
+                >
                   <rect x="6" y="4" width="4" height="16" rx="1" />
                   <rect x="14" y="4" width="4" height="16" rx="1" />
                 </svg>
               ) : (
-                <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                <svg
+                  className="w-4 h-4 sm:w-5 sm:h-5"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  stroke="none"
+                >
                   <path d="M5 3.868v16.264a1 1 0 001.574.832l12.198-8.132a1 1 0 000-1.664L6.574 3.036A1 1 0 005 3.868z" />
                 </svg>
               )}

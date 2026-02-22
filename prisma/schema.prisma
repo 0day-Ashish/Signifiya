@@ -235,3 +235,39 @@ model CountdownDate {
 
   @@map("countdown_date")
 }
+
+// Merchandise orders
+model MerchOrder {
+  id              String   @id @default(uuid())
+  orderNumber     String   @unique // e.g. MERCH-26-XXXX
+  userId          String?
+  userBookingId   String?  // User.bookingId at purchase
+  name            String
+  email           String
+  phone           String
+  college         String?
+  // Product details (snapshot at time of purchase)
+  merchItemId     Int      // references data/merch.ts item id
+  merchItemName   String
+  size            String?
+  color           String?
+  quantity        Int      @default(1)
+  unitPrice       Int      // price per item in INR
+  totalAmount     Int      // quantity * unitPrice
+  // Payment
+  paymentMethod   String   @default("utr") // "utr" | "razorpay"
+  utrId           String?
+  razorpayOrderId String?
+  razorpayPaymentId String?
+  // Referral
+  referralBookingId String?  // friend's booking ID used for discount
+  discountApplied   Boolean  @default(false)
+  discountAmount    Int      @default(0) // discount in INR (10% capped at ₹25)
+  // Status
+  status          String   @default("pending") // pending | confirmed | collect
+  notes           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("merch_order")
+}

@@ -3,7 +3,13 @@
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth-server";
 import { revalidatePath } from "next/cache";
-import { getCache, setCache, deleteCache, CacheKeys, CACHE_TTL } from "@/lib/cache";
+import {
+  getCache,
+  setCache,
+  deleteCache,
+  CacheKeys,
+  CACHE_TTL,
+} from "@/lib/cache";
 
 // --- Auth guard: all functions return null or throw if not admin ---
 async function guard() {
@@ -37,16 +43,31 @@ export async function getAdminDashboardStats() {
   }
 
   // Fetch from database
-  const [userCount, visitorCount, teamCount, issueCount, newsletterCount, visitorRevenue, teamRevenue] = await Promise.all([
+  const [
+    userCount,
+    visitorCount,
+    teamCount,
+    issueCount,
+    newsletterCount,
+    visitorRevenue,
+    teamRevenue,
+  ] = await Promise.all([
     prisma.user.count(),
     prisma.visitorRegistration.count(),
     prisma.participantTeam.count(),
     prisma.issue.count(),
     prisma.newsletterSubscription.count(),
-    prisma.visitorRegistration.aggregate({ where: { status: "verified" }, _sum: { amount: true } }),
-    prisma.participantTeam.aggregate({ where: { status: "verified" }, _sum: { totalAmount: true } }),
+    prisma.visitorRegistration.aggregate({
+      where: { status: "verified" },
+      _sum: { amount: true },
+    }),
+    prisma.participantTeam.aggregate({
+      where: { status: "verified" },
+      _sum: { totalAmount: true },
+    }),
   ]);
-  const totalRevenue = (visitorRevenue._sum.amount || 0) + (teamRevenue._sum.totalAmount || 0);
+  const totalRevenue =
+    (visitorRevenue._sum.amount || 0) + (teamRevenue._sum.totalAmount || 0);
 
   const stats = {
     userCount,
@@ -99,13 +120,27 @@ export async function getUserSuggestions(query: string) {
   });
 }
 
-export async function getUsers(params?: { search?: string; limit?: number; offset?: number }) {
+export async function getUsers(params?: {
+  search?: string;
+  limit?: number;
+  offset?: number;
+}) {
   await guard();
   const where = params?.search ? userSearchWhere(params.search) : {};
   const [users, total] = await Promise.all([
     prisma.user.findMany({
       where,
-      select: { id: true, name: true, email: true, bookingId: true, collegeName: true, mobileNo: true, image: true, role: true, createdAt: true },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        bookingId: true,
+        collegeName: true,
+        mobileNo: true,
+        image: true,
+        role: true,
+        createdAt: true,
+      },
       orderBy: { createdAt: "desc" },
       take: params?.limit ?? 100,
       skip: params?.offset ?? 0,
@@ -149,7 +184,10 @@ export async function removeAdminAccess(userId: string) {
     return { success: true, user };
   } catch (error: any) {
     console.error("Remove admin access error:", error);
-    return { success: false, error: error.message || "Failed to remove admin access" };
+    return {
+      success: false,
+      error: error.message || "Failed to remove admin access",
+    };
   }
 }
 
@@ -164,7 +202,7 @@ export async function getEvents() {
 
 export async function getEventWithRegistrations(
   eventId: string,
-  params?: { limit?: number; offset?: number }
+  params?: { limit?: number; offset?: number },
 ) {
   await guard();
   const limit = params?.limit ?? 50;
@@ -189,7 +227,10 @@ export async function getEventWithRegistrations(
 }
 
 // --- Teams (participant + organizing) ---
-export async function getParticipantTeams(params?: { limit?: number; offset?: number }) {
+export async function getParticipantTeams(params?: {
+  limit?: number;
+  offset?: number;
+}) {
   await guard();
   const [teams, total] = await Promise.all([
     prisma.participantTeam.findMany({
@@ -208,7 +249,13 @@ export async function getOrganizingMembers() {
   return prisma.organizingMember.findMany({ orderBy: { order: "asc" } });
 }
 
-export async function createOrganizingMember(data: { name: string; role: string; category: string; image?: string; order?: number }) {
+export async function createOrganizingMember(data: {
+  name: string;
+  role: string;
+  category: string;
+  image?: string;
+  order?: number;
+}) {
   await guard();
   const m = await prisma.organizingMember.create({ data });
   revalidatePath("/admin/teams");
@@ -216,7 +263,16 @@ export async function createOrganizingMember(data: { name: string; role: string;
   return m;
 }
 
-export async function updateOrganizingMember(id: string, data: Partial<{ name: string; role: string; category: string; image: string; order: number }>) {
+export async function updateOrganizingMember(
+  id: string,
+  data: Partial<{
+    name: string;
+    role: string;
+    category: string;
+    image: string;
+    order: number;
+  }>,
+) {
   await guard();
   const m = await prisma.organizingMember.update({ where: { id }, data });
   revalidatePath("/admin/teams");
@@ -273,13 +329,24 @@ export async function getRevenueBreakdown() {
   return revenue;
 }
 
-export async function getParticipantTeamsForRevenue(params?: { limit?: number; offset?: number }) {
+export async function getParticipantTeamsForRevenue(params?: {
+  limit?: number;
+  offset?: number;
+}) {
   await guard();
   const limit = params?.limit ?? 50;
   const offset = params?.offset ?? 0;
   const [teams, total] = await Promise.all([
     prisma.participantTeam.findMany({
-      select: { id: true, teamName: true, leaderEmail: true, totalAmount: true, status: true, paymentProofUrl: true, createdAt: true },
+      select: {
+        id: true,
+        teamName: true,
+        leaderEmail: true,
+        totalAmount: true,
+        status: true,
+        paymentProofUrl: true,
+        createdAt: true,
+      },
       orderBy: { createdAt: "desc" },
       take: limit,
       skip: offset,
@@ -290,7 +357,10 @@ export async function getParticipantTeamsForRevenue(params?: { limit?: number; o
 }
 
 // --- Newsletter subscriptions ---
-export async function getNewsletterSubscriptions(params?: { limit?: number; offset?: number }) {
+export async function getNewsletterSubscriptions(params?: {
+  limit?: number;
+  offset?: number;
+}) {
   await guard();
   const limit = params?.limit ?? 50;
   const offset = params?.offset ?? 0;
@@ -307,9 +377,14 @@ export async function getNewsletterSubscriptions(params?: { limit?: number; offs
 }
 
 // --- Issues (contact page reports) ---
-export async function getIssues(params?: { resolved?: boolean; limit?: number; offset?: number }) {
+export async function getIssues(params?: {
+  resolved?: boolean;
+  limit?: number;
+  offset?: number;
+}) {
   await guard();
-  const where = params?.resolved !== undefined ? { resolved: params.resolved } : {};
+  const where =
+    params?.resolved !== undefined ? { resolved: params.resolved } : {};
   const limit = params?.limit ?? 50;
   const offset = params?.offset ?? 0;
   const [issues, total] = await Promise.all([
@@ -332,7 +407,11 @@ export async function updateIssueResolved(id: string, resolved: boolean) {
 }
 
 // --- Visitor registrations (for admin tables) ---
-export async function getVisitorRegistrations(params?: { limit?: number; offset?: number; status?: string }) {
+export async function getVisitorRegistrations(params?: {
+  limit?: number;
+  offset?: number;
+  status?: string;
+}) {
   await guard();
   const where = params?.status ? { status: params.status } : {};
   const [list, total] = await Promise.all([
@@ -349,7 +428,10 @@ export async function getVisitorRegistrations(params?: { limit?: number; offset?
 
 // --- Update status for revenue/verification ---
 // --- Update status for revenue/verification ---
-export async function updateVisitorStatus(id: string, status: "pending" | "verified" | "rejected") {
+export async function updateVisitorStatus(
+  id: string,
+  status: "pending" | "verified" | "rejected",
+) {
   await guard();
 
   // 1. Update status
@@ -363,13 +445,16 @@ export async function updateVisitorStatus(id: string, status: "pending" | "verif
     // Check if pass already exists to avoid duplicates
     const existingPass = await prisma.pass.findFirst({
       where: {
-        visitorRegistrationId: id
-      }
+        visitorRegistrationId: id,
+      },
     });
 
     if (!existingPass) {
-      const { APP_CONFIG } = await import('@/config/app.config');
-      const passTypeLabel = APP_CONFIG.passTypeLabels[registration.passType as keyof typeof APP_CONFIG.passTypeLabels] || registration.passType;
+      const { APP_CONFIG } = await import("@/config/app.config");
+      const passTypeLabel =
+        APP_CONFIG.passTypeLabels[
+          registration.passType as keyof typeof APP_CONFIG.passTypeLabels
+        ] || registration.passType;
 
       // Create Pass
       const pass = await prisma.pass.create({
@@ -379,10 +464,13 @@ export async function updateVisitorStatus(id: string, status: "pending" | "verif
           userId: registration.userId,
           userBookingId: registration.userBookingId || registration.bookingId, // User's booking ID
           validUntil: new Date("2026-03-28T23:59:59.999Z"),
-          qrCode: registration.userBookingId || registration.bookingId || `SP-${id}`, // QR encodes booking ID directly
-        }
+          qrCode:
+            registration.userBookingId || registration.bookingId || `SP-${id}`, // QR encodes booking ID directly
+        },
       });
-      console.log(`[Admin] Generated Pass ${pass.id} for user ${registration.userId}`);
+      console.log(
+        `[Admin] Generated Pass ${pass.id} for user ${registration.userId}`,
+      );
     }
 
     // Invalidate user profile cache so the new pass shows up in /profile
@@ -396,14 +484,22 @@ export async function updateVisitorStatus(id: string, status: "pending" | "verif
   revalidatePath("/admin");
 }
 
-export async function updateParticipantTeamStatus(id: string, status: "pending" | "verified" | "rejected") {
+export async function updateParticipantTeamStatus(
+  id: string,
+  status: "pending" | "verified" | "rejected",
+) {
   await guard();
-  const team = await prisma.participantTeam.update({ where: { id }, data: { status } });
+  const team = await prisma.participantTeam.update({
+    where: { id },
+    data: { status },
+  });
 
   // Invalidate the team leader's profile cache so the status change shows immediately
   if (team.leaderBookingId) {
     const user = await prisma.user.findFirst({
-      where: { bookingId: { equals: team.leaderBookingId, mode: "insensitive" } },
+      where: {
+        bookingId: { equals: team.leaderBookingId, mode: "insensitive" },
+      },
       select: { id: true },
     });
     if (user) {
@@ -423,7 +519,8 @@ export async function updateParticipantTeamStatus(id: string, status: "pending" 
 export async function getPassesByBookingId(bookingId: string) {
   await guard();
   const bid = bookingId?.trim();
-  if (!bid || bid.length < 5) return { passes: [], userName: null, userEmail: null };
+  if (!bid || bid.length < 5)
+    return { passes: [], userName: null, userEmail: null };
 
   const passes = await prisma.pass.findMany({
     where: { userBookingId: { equals: bid, mode: "insensitive" } },
@@ -450,18 +547,30 @@ export async function getPassesByBookingId(bookingId: string) {
 
 export async function markPassAttended(passId: string, day: "day1" | "day2") {
   const session = await guard();
-  const pass = await prisma.pass.findUnique({ where: { id: passId }, select: { type: true } });
+  const pass = await prisma.pass.findUnique({
+    where: { id: passId },
+    select: { type: true },
+  });
   if (!pass) throw new Error("Pass not found");
 
-  const isDual = pass.type === "Dual day pass" || pass.type === "Dual Day Pass" || pass.type === "Double Day Pass";
-  const isSingleDay = pass.type === "Single day pass" || pass.type === "Single Day Pass" || pass.type === "Day 1 Pass";
+  const isDual =
+    pass.type === "Dual day pass" ||
+    pass.type === "Dual Day Pass" ||
+    pass.type === "Double Day Pass";
+  const isSingleDay =
+    pass.type === "Single day pass" ||
+    pass.type === "Single Day Pass" ||
+    pass.type === "Day 1 Pass";
 
-  if (day === "day1" && !isDual && !isSingleDay && pass.type !== "Visitor Pass") throw new Error("Day 1 attendance not applicable for this pass");
-  if (day === "day2" && !isDual) throw new Error("Day 2 attendance not applicable for this pass");
+  if (day === "day1" && !isDual && !isSingleDay && pass.type !== "Visitor Pass")
+    throw new Error("Day 1 attendance not applicable for this pass");
+  if (day === "day2" && !isDual)
+    throw new Error("Day 2 attendance not applicable for this pass");
 
-  const data = day === "day1"
-    ? { verifiedDay1At: new Date(), verifiedDay1By: session.user.id }
-    : { verifiedDay2At: new Date(), verifiedDay2By: session.user.id };
+  const data =
+    day === "day1"
+      ? { verifiedDay1At: new Date(), verifiedDay1By: session.user.id }
+      : { verifiedDay2At: new Date(), verifiedDay2By: session.user.id };
 
   await prisma.pass.update({ where: { id: passId }, data });
   await invalidateAdminStatsCache();
@@ -470,7 +579,9 @@ export async function markPassAttended(passId: string, day: "day1" | "day2") {
 }
 
 // --- Resolve QR code (SP-xxx, EP-xxx) or plain string to booking ID for verification ---
-async function resolveToBookingIdInternal(value: string): Promise<string | null> {
+async function resolveToBookingIdInternal(
+  value: string,
+): Promise<string | null> {
   const v = value?.trim();
   if (!v || v.length < 3) return null;
 
@@ -498,7 +609,9 @@ async function resolveToBookingIdInternal(value: string): Promise<string | null>
   return v;
 }
 
-export async function resolveToBookingId(value: string): Promise<string | null> {
+export async function resolveToBookingId(
+  value: string,
+): Promise<string | null> {
   await guard();
   return resolveToBookingIdInternal(value);
 }
@@ -508,7 +621,13 @@ export async function getVerificationLookup(value: string) {
   await guard();
   const bid = await resolveToBookingIdInternal(value);
   if (!bid || bid.length < 5) {
-    return { bookingId: null, passes: [], teams: [], userName: null, userEmail: null };
+    return {
+      bookingId: null,
+      passes: [],
+      teams: [],
+      userName: null,
+      userEmail: null,
+    };
   }
 
   const [passes, teams] = await Promise.all([
@@ -631,7 +750,10 @@ export async function getAllCountdownDates() {
   });
 }
 
-export async function createCountdownDate(data: { targetDate: Date; label?: string }) {
+export async function createCountdownDate(data: {
+  targetDate: Date;
+  label?: string;
+}) {
   await guard();
   // Deactivate all existing countdown dates
   await prisma.countdownDate.updateMany({
@@ -650,7 +772,10 @@ export async function createCountdownDate(data: { targetDate: Date; label?: stri
   return countdown;
 }
 
-export async function updateCountdownDate(id: string, data: { targetDate?: Date; label?: string; isActive?: boolean }) {
+export async function updateCountdownDate(
+  id: string,
+  data: { targetDate?: Date; label?: string; isActive?: boolean },
+) {
   await guard();
   // If setting this one as active, deactivate others
   if (data.isActive) {
@@ -700,7 +825,11 @@ export type AttendeeItem = {
   }[];
 };
 
-export async function getAttendees(params?: { search?: string; limit?: number; offset?: number }) {
+export async function getAttendees(params?: {
+  search?: string;
+  limit?: number;
+  offset?: number;
+}) {
   await guard();
   const search = params?.search?.trim().toLowerCase();
 
@@ -712,30 +841,34 @@ export async function getAttendees(params?: { search?: string; limit?: number; o
         { verifiedDay1At: { not: null } },
         { verifiedDay2At: { not: null } },
       ],
-      ...(search ? {
-        user: {
-          OR: [
-            { name: { contains: search, mode: "insensitive" } },
-            { email: { contains: search, mode: "insensitive" } },
-          ]
-        }
-      } : {})
+      ...(search
+        ? {
+            user: {
+              OR: [
+                { name: { contains: search, mode: "insensitive" } },
+                { email: { contains: search, mode: "insensitive" } },
+              ],
+            },
+          }
+        : {}),
     },
     include: {
-      user: { select: { name: true, email: true, collegeName: true, mobileNo: true } },
-      visitorRegistration: { select: { college: true, phone: true } }
+      user: {
+        select: { name: true, email: true, collegeName: true, mobileNo: true },
+      },
+      visitorRegistration: { select: { college: true, phone: true } },
     },
     orderBy: { createdAt: "desc" },
     take: 1000,
   });
 
-  // 2. Teams (fetch leaders who attended OR teams where members attended if we want to show them under leader even if leader didn't attend? 
-  // The requirement says "team leader's name... when clicked... team members show up". 
+  // 2. Teams (fetch leaders who attended OR teams where members attended if we want to show them under leader even if leader didn't attend?
+  // The requirement says "team leader's name... when clicked... team members show up".
   // We'll fetch teams where leader attended OR any member attended, to be safe, but usually leader attends.
-  // Let's stick to "Leaders who attended" as primary entry point for now to keep it clean, 
+  // Let's stick to "Leaders who attended" as primary entry point for now to keep it clean,
   // or maybe just fetch all teams that have ANY attendance.
-  // Let's fetch teams where leader attended, and attach members. 
-  // If leader didn't attend, we technically shouldn't show the leader as "Attendee". 
+  // Let's fetch teams where leader attended, and attach members.
+  // If leader didn't attend, we technically shouldn't show the leader as "Attendee".
   // But if members attended, where do they go?
   // Use case implies "Attendees Section". If a member attended but leader didn't, we should probably list them?
   // The user said: "keep the team leader's name on the attendee section , when clicked on it , team members details show show up".
@@ -745,21 +878,27 @@ export async function getAttendees(params?: { search?: string; limit?: number; o
     where: {
       OR: [
         { leaderAttendedAt: { not: null } },
-        { members: { some: { attendedAt: { not: null } } } } // Include team if any member attended
+        { members: { some: { attendedAt: { not: null } } } }, // Include team if any member attended
       ],
-      ...(search ? {
-        OR: [
-          { leaderName: { contains: search, mode: "insensitive" } },
-          { leaderEmail: { contains: search, mode: "insensitive" } },
-          { members: { some: { name: { contains: search, mode: "insensitive" } } } }
-        ]
-      } : {})
+      ...(search
+        ? {
+            OR: [
+              { leaderName: { contains: search, mode: "insensitive" } },
+              { leaderEmail: { contains: search, mode: "insensitive" } },
+              {
+                members: {
+                  some: { name: { contains: search, mode: "insensitive" } },
+                },
+              },
+            ],
+          }
+        : {}),
     },
     include: {
       members: {
         where: { attendedAt: { not: null } }, // Only verified members
-        select: { id: true, name: true, email: true, attendedAt: true }
-      }
+        select: { id: true, name: true, email: true, attendedAt: true },
+      },
     },
     take: 500,
   });
@@ -772,10 +911,24 @@ export async function getAttendees(params?: { search?: string; limit?: number; o
     const reg = p.visitorRegistration;
     const attendanceRecords = [];
 
-    if (p.verifiedDay1At) attendanceRecords.push({ label: "Day 1", date: p.verifiedDay1At, type: "day1" as const });
-    if (p.verifiedDay2At) attendanceRecords.push({ label: "Day 2", date: p.verifiedDay2At, type: "day2" as const });
+    if (p.verifiedDay1At)
+      attendanceRecords.push({
+        label: "Day 1",
+        date: p.verifiedDay1At,
+        type: "day1" as const,
+      });
+    if (p.verifiedDay2At)
+      attendanceRecords.push({
+        label: "Day 2",
+        date: p.verifiedDay2At,
+        type: "day2" as const,
+      });
     if (p.verifiedAt && !p.verifiedDay1At && !p.verifiedDay2At) {
-      attendanceRecords.push({ label: "Verified", date: p.verifiedAt, type: "day1" as const }); // Legacy/Single
+      attendanceRecords.push({
+        label: "Verified",
+        date: p.verifiedAt,
+        type: "day1" as const,
+      }); // Legacy/Single
     }
 
     if (attendanceRecords.length === 0) continue;
@@ -788,7 +941,9 @@ export async function getAttendees(params?: { search?: string; limit?: number; o
     // The check: "Dual day pass" | "Double Day Pass" etc.
     // If it has both day 1 and day 2, it's definitely dual in practice.
     // Or if type says so.
-    const isDual = p.type.toLowerCase().includes("dual") || p.type.toLowerCase().includes("double");
+    const isDual =
+      p.type.toLowerCase().includes("dual") ||
+      p.type.toLowerCase().includes("double");
 
     items.push({
       id: `pass-${p.id}`,
@@ -800,18 +955,18 @@ export async function getAttendees(params?: { search?: string; limit?: number; o
       phone: reg?.phone || user.mobileNo,
       lastAttendedAt: lastAttended,
       isDual: isDual,
-      attendance: attendanceRecords
+      attendance: attendanceRecords,
     });
   }
 
   // Process Teams
   for (const t of teams) {
     const leaderAttended = t.leaderAttendedAt;
-    const memberRecords = t.members.map(m => ({
+    const memberRecords = t.members.map((m) => ({
       id: m.id,
       name: m.name,
       email: m.email,
-      attendedAt: m.attendedAt! // strict because of where clause
+      attendedAt: m.attendedAt!, // strict because of where clause
     }));
 
     // If leader didn't attend but members did, we still show the Team Leader row (as the group header)
@@ -838,8 +993,10 @@ export async function getAttendees(params?: { search?: string; limit?: number; o
       phone: t.leaderPhone,
       lastAttendedAt: lastAttended,
       isDual: false,
-      attendance: leaderAttended ? [{ label: "Leader Verified", date: leaderAttended, type: "event" }] : [],
-      teamMembers: memberRecords
+      attendance: leaderAttended
+        ? [{ label: "Leader Verified", date: leaderAttended, type: "event" }]
+        : [],
+      teamMembers: memberRecords,
     });
   }
 
@@ -852,4 +1009,61 @@ export async function getAttendees(params?: { search?: string; limit?: number; o
   const paginatedItems = items.slice(offset, offset + limit);
 
   return { attendees: paginatedItems, total: items.length };
+}
+
+// --- Merch Orders ---
+export async function getMerchOrders(params?: {
+  limit?: number;
+  offset?: number;
+  status?: string;
+}) {
+  await guard();
+  const where = params?.status ? { status: params.status } : {};
+  const limit = params?.limit ?? 50;
+  const offset = params?.offset ?? 0;
+  const [orders, total] = await Promise.all([
+    prisma.merchOrder.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+      take: limit,
+      skip: offset,
+    }),
+    prisma.merchOrder.count({ where }),
+  ]);
+  return { orders, total };
+}
+
+export async function getMerchOrderStats() {
+  await guard();
+  const [totalOrders, pendingOrders, confirmedOrders, totalRevenue] =
+    await Promise.all([
+      prisma.merchOrder.count(),
+      prisma.merchOrder.count({ where: { status: "pending" } }),
+      prisma.merchOrder.count({ where: { status: "confirmed" } }),
+      prisma.merchOrder.aggregate({
+        where: { status: { in: ["confirmed", "collect"] } },
+        _sum: { totalAmount: true },
+      }),
+    ]);
+  return {
+    totalOrders,
+    pendingOrders,
+    confirmedOrders,
+    totalRevenue: totalRevenue._sum.totalAmount || 0,
+  };
+}
+
+export async function updateMerchOrderStatus(id: string, status: string) {
+  await guard();
+  try {
+    const order = await prisma.merchOrder.update({
+      where: { id },
+      data: { status },
+    });
+    revalidatePath("/admin/merch-orders");
+    return { success: true, order };
+  } catch (error: any) {
+    console.error("updateMerchOrderStatus error:", error);
+    return { success: false, error: error.message || "Failed to update order" };
+  }
 }

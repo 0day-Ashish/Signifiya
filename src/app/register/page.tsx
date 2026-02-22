@@ -27,7 +27,7 @@ import Image from "next/image";
 import { APP_CONFIG } from "@/config/app.config";
 import RegistrationComingSoon from "@/components/RegistrationComingSoon";
 
-const REGISTRATION_OPEN_DATE = new Date("2026-02-23T00:00:00");
+const REGISTRATION_OPEN_DATE = new Date("2026-02-23T12:00:00");
 
 const PASS_AMOUNTS = {
   single: APP_CONFIG.passPrices.single,
@@ -69,9 +69,24 @@ export default function Register() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [isPrefillLoading, setIsPrefillLoading] = useState(false);
   const [isBookingIdPrefilled, setIsBookingIdPrefilled] = useState(false);
+  const [isOpen, setIsOpen] = useState(
+    () => new Date() >= REGISTRATION_OPEN_DATE,
+  );
   const router = useRouter();
 
   const { data: session, isPending } = authClient.useSession();
+
+  // Re-check the open date every second so the page auto-transitions
+  useEffect(() => {
+    if (isOpen) return;
+    const interval = setInterval(() => {
+      if (new Date() >= REGISTRATION_OPEN_DATE) {
+        setIsOpen(true);
+        clearInterval(interval);
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [isOpen]);
 
   useEffect(() => {
     if (!isPending && !session) {
@@ -149,8 +164,13 @@ export default function Register() {
     );
   }
 
-  if (new Date() < REGISTRATION_OPEN_DATE) {
-    return <RegistrationComingSoon type="visitor" />;
+  if (new Date() < REGISTRATION_OPEN_DATE && !isOpen) {
+    return (
+      <RegistrationComingSoon
+        type="visitor"
+        openDate={REGISTRATION_OPEN_DATE}
+      />
+    );
   }
 
   const onSubmit = (data: FormData) => {
@@ -518,7 +538,7 @@ export default function Register() {
                 <div className="flex flex-col items-center mb-6">
                   <div className="relative w-48 h-48 border-4 border-black rounded-xl overflow-hidden shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4">
                     <Image
-                      src="/qr.jpeg"
+                      src="/qrcode.png"
                       alt="Payment QR Code"
                       fill
                       className="object-contain p-2"

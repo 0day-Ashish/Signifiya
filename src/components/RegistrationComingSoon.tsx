@@ -6,10 +6,8 @@ import localFont from "next/font/local";
 
 const gilton = localFont({ src: "../../public/fonts/GiltonRegular.otf" });
 
-const OPEN_DATE = new Date("2026-02-23T00:00:00");
-
-function getTimeLeft() {
-  const diff = OPEN_DATE.getTime() - Date.now();
+function getTimeLeft(openDate: Date) {
+  const diff = openDate.getTime() - Date.now();
   if (diff <= 0) return null;
   const hours = Math.floor(diff / 3600000);
   const minutes = Math.floor((diff % 3600000) / 60000);
@@ -18,24 +16,50 @@ function getTimeLeft() {
 }
 
 interface Props {
-  type: "visitor" | "event";
+  type: "visitor" | "event" | "merch";
+  openDate?: Date;
 }
 
-export default function RegistrationComingSoon({ type }: Props) {
-  const [timeLeft, setTimeLeft] = useState(getTimeLeft());
+export default function RegistrationComingSoon({ type, openDate }: Props) {
+  const targetDate = openDate ?? new Date("2026-02-23T12:00:00");
+  const [timeLeft, setTimeLeft] = useState(getTimeLeft(targetDate));
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setTimeLeft(getTimeLeft());
+      const tl = getTimeLeft(targetDate);
+      setTimeLeft(tl);
+      if (!tl) {
+        clearInterval(interval);
+        // No reload needed — parent component's reactive state handles the transition
+      }
     }, 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [targetDate]);
 
-  const label = type === "visitor" ? "VISITOR PASS" : "EVENT";
-  const accentColor = type === "visitor" ? "bg-purple-400" : "bg-yellow-300";
+  const label =
+    type === "visitor"
+      ? "VISITOR PASS"
+      : type === "merch"
+        ? "MERCHANDISE"
+        : "EVENT";
+  const accentColor =
+    type === "visitor"
+      ? "bg-purple-400"
+      : type === "merch"
+        ? "bg-orange-400"
+        : "bg-yellow-300";
   const accentBorder =
-    type === "visitor" ? "border-purple-400" : "border-yellow-300";
-  const accentText = type === "visitor" ? "text-purple-600" : "text-yellow-400";
+    type === "visitor"
+      ? "border-purple-400"
+      : type === "merch"
+        ? "border-orange-400"
+        : "border-yellow-300";
+  const accentText =
+    type === "visitor"
+      ? "text-purple-600"
+      : type === "merch"
+        ? "text-orange-500"
+        : "text-yellow-400";
 
   return (
     <div
@@ -100,7 +124,7 @@ export default function RegistrationComingSoon({ type }: Props) {
                   23RD FEB, 2026
                 </p>
                 <p className="font-mono text-sm font-black text-black/70 mt-1 uppercase tracking-widest">
-                  Monday · 12:00 AM
+                  Monday · 12:00 PM
                 </p>
               </div>
 

@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { motion, useMotionValue, useSpring } from 'motion/react';
+import { useEffect, useState } from "react";
+import { motion, useMotionValue, useSpring } from "motion/react";
 
 export default function CustomCursor() {
   const [isDesktop, setIsDesktop] = useState(false);
@@ -16,14 +16,15 @@ export default function CustomCursor() {
   useEffect(() => {
     // Check if device has pointer (mouse) and is not a touch device
     const checkIsDesktop = () => {
-      const hasPointer = window.matchMedia('(pointer: fine)').matches;
-      const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      const hasPointer = window.matchMedia("(pointer: fine)").matches;
+      const isTouchDevice =
+        "ontouchstart" in window || navigator.maxTouchPoints > 0;
       setIsDesktop(hasPointer && !isTouchDevice && window.innerWidth >= 768);
     };
 
     checkIsDesktop();
-    window.addEventListener('resize', checkIsDesktop);
-    return () => window.removeEventListener('resize', checkIsDesktop);
+    window.addEventListener("resize", checkIsDesktop);
+    return () => window.removeEventListener("resize", checkIsDesktop);
   }, []);
 
   useEffect(() => {
@@ -34,32 +35,32 @@ export default function CustomCursor() {
       cursorY.set(e.clientY);
     };
 
-    window.addEventListener('mousemove', moveCursor);
-    return () => window.removeEventListener('mousemove', moveCursor);
+    window.addEventListener("mousemove", moveCursor);
+    return () => window.removeEventListener("mousemove", moveCursor);
   }, [cursorX, cursorY, isDesktop]);
 
   useEffect(() => {
     const root = document.documentElement;
 
     if (isDesktop) {
-      root.setAttribute('data-custom-cursor', 'true');
+      root.setAttribute("data-custom-cursor", "true");
       return () => {
-        root.removeAttribute('data-custom-cursor');
+        root.removeAttribute("data-custom-cursor");
       };
     }
 
-    root.removeAttribute('data-custom-cursor');
+    root.removeAttribute("data-custom-cursor");
   }, [isDesktop]);
 
   if (!isDesktop) return null;
 
   return (
     <motion.div
-      className="fixed top-0 left-0 z-9999 pointer-events-none hidden md:block"
+      className="fixed top-0 left-0 z-[9999999] pointer-events-none hidden md:block"
       style={{
         x: cursorXSpring,
         y: cursorYSpring,
-        translateX: "-4px", 
+        translateX: "-4px",
         translateY: "-4px",
       }}
     >
@@ -70,7 +71,7 @@ export default function CustomCursor() {
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         className="drop-shadow-[2px_4px_6px_rgba(0,0,0,0.3)]"
-        style={{ transform: 'scaleX(1)' }}
+        style={{ transform: "scaleX(1)" }}
       >
         <path
           d="M3 3L10.07 19.97L12.58 12.58L19.97 10.07L3 3Z"

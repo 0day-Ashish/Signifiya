@@ -1,297 +1,206 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback, type PointerEvent as ReactPointerEvent } from "react";
+import {
+  useState,
+  useRef,
+  useEffect,
+  type PointerEvent as ReactPointerEvent,
+} from "react";
 import Link from "next/link";
 import localFont from "next/font/local";
 import Image from "next/image";
 import FadeIn from "./FadeIn";
-import { motion, AnimatePresence } from "motion/react";
+import { AnimatePresence } from "motion/react";
 import { getEventsListingData, getEventTitleToScheduleId } from "@/data/events";
+import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 
-const rampart = localFont({ src: "../../public/fonts/RampartOne-Regular.ttf" });
 const gilton = localFont({ src: "../../public/fonts/GiltonRegular.otf" });
 const softura = localFont({ src: "../../public/fonts/Softura-Demo.otf" });
 
-const CATEGORIES = ["ALL", "ESPORTS", "CSE", "CIVIL", "MECHANICAL", "EEE", "ROBOTICS", "NON-TECH"];
+const CATEGORIES = [
+  "ALL",
+  "ESPORTS",
+  "CSE",
+  "CIVIL",
+  "MECHANICAL",
+  "EEE",
+  "ROBOTICS",
+  "NON-TECH",
+];
 
-// Get events data from centralized source
 const EVENTS_DATA = getEventsListingData();
-
-// Get mapping from event titles to schedule IDs
 const EVENT_TITLE_TO_SCHEDULE_ID = getEventTitleToScheduleId();
-
-// Number of times to repeat the set for seamless loop (odd so we start in the middle)
-const LOOP_COPIES = 3;
 
 export default function Events() {
   const [activeCategory, setActiveCategory] = useState("ALL");
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const firstSetRef = useRef<HTMLDivElement>(null);
-  const isJumpingRef = useRef(false);
-  const isHoveredRef = useRef(false);
-  const autoScrollRafRef = useRef<number | null>(null);
-  const lastFrameTimeRef = useRef<number | null>(null);
+
+  const filteredEvents =
+    activeCategory === "ALL"
+      ? EVENTS_DATA
+      : EVENTS_DATA.filter((event) => event.category === activeCategory);
+
+  // Double the items for seamless loop
+  const marqueeEvents = [...filteredEvents, ...filteredEvents];
+
+  const trackRef = useRef<HTMLDivElement>(null);
+  const marqueeRef = useRef<HTMLDivElement>(null);
+  const frameRef = useRef<number | null>(null);
+  const offsetRef = useRef(0);
+  const singleSetWidthRef = useRef(0);
+  const directionRef = useRef(-1);
+  const pausedRef = useRef(false);
   const isDraggingRef = useRef(false);
+  const wasPausedBeforeDragRef = useRef(false);
   const dragStartXRef = useRef(0);
-  const dragStartScrollLeftRef = useRef(0);
+  const dragStartOffsetRef = useRef(0);
+  const [isPaused, setIsPaused] = useState(false);
 
-  const filteredEvents = activeCategory === "ALL"
-    ? EVENTS_DATA
-    : EVENTS_DATA.filter(event => event.category === activeCategory);
-  const isAllCategory = activeCategory === "ALL";
-
-  // Infinite loop: when scroll passes boundaries, jump to equivalent position in another copy
-  // Only apply loop logic when activeCategory is "ALL"
-  const handleScroll = useCallback(() => {
-    if (!isAllCategory) return; // No loop for filtered categories
-
-    const container = scrollContainerRef.current;
-    const firstSet = firstSetRef.current;
-    if (!container || !firstSet || isJumpingRef.current) return;
-
-    const setWidth = firstSet.offsetWidth;
-    if (setWidth <= 0) return;
-
-    const totalSets = LOOP_COPIES;
-    const left = container.scrollLeft;
-    const maxScroll = setWidth * (totalSets - 1);
-
-    // Use larger threshold and instant jump (no smooth scroll)
-    if (left >= maxScroll - 50) {
-      isJumpingRef.current = true;
-      // Jump instantly without smooth scroll
-      container.style.scrollBehavior = 'auto';
-      container.scrollLeft = left - setWidth;
-      // Reset flag after a short delay to allow scroll to settle
-      setTimeout(() => {
-        container.style.scrollBehavior = '';
-        isJumpingRef.current = false;
-      }, 50);
-    } else if (left <= 50) {
-      isJumpingRef.current = true;
-      // Jump instantly without smooth scroll
-      container.style.scrollBehavior = 'auto';
-      container.scrollLeft = left + setWidth;
-      // Reset flag after a short delay to allow scroll to settle
-      setTimeout(() => {
-        container.style.scrollBehavior = '';
-        isJumpingRef.current = false;
-      }, 50);
+  // Reset offset when category changes
+  useEffect(() => {
+    offsetRef.current = 0;
+    if (trackRef.current) {
+      trackRef.current.style.transform = `translate3d(0px, 0, 0)`;
     }
-  }, [isAllCategory]);
+  }, [activeCategory]);
 
-  // Start in the middle set when category changes so loop has room both ways (after layout)
-  // Only apply loop positioning for "ALL" category
   useEffect(() => {
-    const t = setTimeout(() => {
-      const container = scrollContainerRef.current;
-      if (!container) return;
-
-      if (isAllCategory) {
-        // For "ALL" category: start in middle set for infinite loop
-        const firstSet = firstSetRef.current;
-        if (!firstSet) return;
-        const setWidth = firstSet.offsetWidth;
-        if (setWidth <= 0) return;
-        const totalSets = LOOP_COPIES;
-        const middleSetIndex = Math.floor(totalSets / 2);
-        const targetScroll = setWidth * middleSetIndex;
-        isJumpingRef.current = true;
-        // Use instant scroll for initial positioning
-        container.style.scrollBehavior = 'auto';
-        container.scrollLeft = targetScroll;
-        setTimeout(() => {
-          container.style.scrollBehavior = '';
-          isJumpingRef.current = false;
-        }, 50);
-      } else {
-        // For filtered categories: scroll to start (no loop)
-        isJumpingRef.current = true;
-        container.style.scrollBehavior = 'auto';
-        container.scrollLeft = 0;
-        setTimeout(() => {
-          container.style.scrollBehavior = '';
-          isJumpingRef.current = false;
-        }, 50);
-      }
-    }, 100);
-    return () => clearTimeout(t);
-  }, [isAllCategory]);
-
-  // Auto-scroll the events rail for infinite sliding; pause on hover.
-  useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (!container) return;
-
-    const SPEED_PX_PER_SECOND = 45;
-
-    const tick = (timestamp: number) => {
-      if (lastFrameTimeRef.current == null) {
-        lastFrameTimeRef.current = timestamp;
-      }
-
-      const delta = timestamp - lastFrameTimeRef.current;
-      lastFrameTimeRef.current = timestamp;
-
-      if (isAllCategory && !isHoveredRef.current && !isJumpingRef.current) {
-        container.scrollLeft += (SPEED_PX_PER_SECOND * delta) / 1000;
-      }
-
-      autoScrollRafRef.current = window.requestAnimationFrame(tick);
+    const updateSingleSetWidth = () => {
+      if (!trackRef.current) return;
+      singleSetWidthRef.current = trackRef.current.scrollWidth / 2;
     };
 
-    autoScrollRafRef.current = window.requestAnimationFrame(tick);
+    updateSingleSetWidth();
+    window.addEventListener("resize", updateSingleSetWidth);
+
+    const t = setTimeout(updateSingleSetWidth, 100);
+
+    const step = () => {
+      if (
+        trackRef.current &&
+        !pausedRef.current &&
+        singleSetWidthRef.current > 0
+      ) {
+        offsetRef.current += directionRef.current * 0.6;
+
+        if (offsetRef.current <= -singleSetWidthRef.current) {
+          offsetRef.current += singleSetWidthRef.current;
+        } else if (offsetRef.current > 0) {
+          offsetRef.current -= singleSetWidthRef.current;
+        }
+
+        trackRef.current.style.transform = `translate3d(${offsetRef.current}px, 0, 0)`;
+      }
+
+      frameRef.current = requestAnimationFrame(step);
+    };
+
+    frameRef.current = requestAnimationFrame(step);
 
     return () => {
-      if (autoScrollRafRef.current != null) {
-        window.cancelAnimationFrame(autoScrollRafRef.current);
-      }
-      autoScrollRafRef.current = null;
-      lastFrameTimeRef.current = null;
+      clearTimeout(t);
+      window.removeEventListener("resize", updateSingleSetWidth);
+      if (frameRef.current) cancelAnimationFrame(frameRef.current);
     };
-  }, [isAllCategory]);
+  }, [activeCategory]);
 
-  const scroll = (direction: 'left' | 'right') => {
-    if (scrollContainerRef.current) {
-      const container = scrollContainerRef.current;
-      const isMobile = window.innerWidth < 640;
+  const nudgeByCards = (cards: number) => {
+    if (!singleSetWidthRef.current || !trackRef.current) return;
+    const firstCard = trackRef.current.querySelector("article");
+    const cardWidth =
+      firstCard instanceof HTMLElement ? firstCard.offsetWidth : 320;
+    const trackStyle = window.getComputedStyle(trackRef.current);
+    const gap =
+      parseFloat(trackStyle.columnGap || trackStyle.gap || "16") || 16;
+    const stepSize = cardWidth + gap;
+    offsetRef.current += cards * stepSize;
 
-      if (isMobile) {
-        // On mobile: center the next/previous card
-        const containerWidth = container.getBoundingClientRect().width;
-        const cards = container.querySelectorAll('.event-card');
-
-        if (cards.length === 0) return;
-
-        // Find the currently centered card
-        let currentIndex = 0;
-        let minDistance = Infinity;
-
-        cards.forEach((card, index) => {
-          const cardRect = card.getBoundingClientRect();
-          const cardCenter = cardRect.left + cardRect.width / 2;
-          const containerCenter = container.getBoundingClientRect().left + containerWidth / 2;
-          const distance = Math.abs(cardCenter - containerCenter);
-
-          if (distance < minDistance) {
-            minDistance = distance;
-            currentIndex = index;
-          }
-        });
-
-        // Calculate next/previous index
-        const nextIndex = direction === 'right'
-          ? Math.min(currentIndex + 1, cards.length - 1)
-          : Math.max(currentIndex - 1, 0);
-
-        // Get the target card
-        const targetCard = cards[nextIndex] as HTMLElement;
-        if (targetCard) {
-          const cardWidth = targetCard.getBoundingClientRect().width;
-          const cardLeft = targetCard.offsetLeft;
-          const containerCenter = containerWidth / 2;
-          const targetScroll = cardLeft - containerCenter + (cardWidth / 2);
-
-          container.scrollTo({
-            left: targetScroll,
-            behavior: 'smooth'
-          });
-        }
-      } else {
-        // On large screens: simple scroll by card width
-        const scrollAmount = 400;
-        const currentScroll = container.scrollLeft;
-        const targetScroll = direction === 'left'
-          ? currentScroll - scrollAmount
-          : currentScroll + scrollAmount;
-
-        container.scrollTo({
-          left: targetScroll,
-          behavior: 'smooth'
-        });
-      }
+    while (offsetRef.current <= -singleSetWidthRef.current) {
+      offsetRef.current += singleSetWidthRef.current;
     }
+    while (offsetRef.current > 0) {
+      offsetRef.current -= singleSetWidthRef.current;
+    }
+
+    if (trackRef.current) {
+      trackRef.current.style.transform = `translate3d(${offsetRef.current}px, 0, 0)`;
+    }
+  };
+
+  const togglePause = () => {
+    const next = !pausedRef.current;
+    pausedRef.current = next;
+    setIsPaused(next);
   };
 
   const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
-    // Check if the target is a button, link, or inside one
+    if (!trackRef.current) return;
+
     const target = event.target as HTMLElement;
-
-    // Pause auto-scroll on ANY pointer contact (including taps on links/buttons)
-    // so the container doesn't move under the user's finger on mobile.
-    isHoveredRef.current = true;
-
-    // If we're clicking a link or button, let the default browser behavior happen
-    // On mobile, this prevents the slider from capturing the pointer and blocking the tap
-    if (target.closest('a') || target.closest('button')) {
+    if (target.closest("a") || target.closest("button")) {
       return;
     }
 
-    const container = scrollContainerRef.current;
-    if (!container) return;
-
     isDraggingRef.current = true;
+    wasPausedBeforeDragRef.current = pausedRef.current;
     dragStartXRef.current = event.clientX;
-    dragStartScrollLeftRef.current = container.scrollLeft;
+    dragStartOffsetRef.current = offsetRef.current;
+    pausedRef.current = true;
+    setIsPaused(true);
 
-    // Using setPointerCapture on mobile can sometimes prevent click events from firing 
-    // on child elements if not careful, but we need it for smooth swiping outside links
-    try {
-      container.setPointerCapture(event.pointerId);
-    } catch (e) {
-      // Ignore if pointer capture fails (common on some mobile browsers during fast taps)
-    }
+    event.currentTarget.setPointerCapture(event.pointerId);
   };
 
   const handlePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
-    const container = scrollContainerRef.current;
-    if (!container || !isDraggingRef.current) return;
+    if (
+      !isDraggingRef.current ||
+      !trackRef.current ||
+      !singleSetWidthRef.current
+    )
+      return;
 
     const deltaX = event.clientX - dragStartXRef.current;
-    container.scrollLeft = dragStartScrollLeftRef.current - deltaX;
+    offsetRef.current = dragStartOffsetRef.current + deltaX;
+
+    while (offsetRef.current <= -singleSetWidthRef.current) {
+      offsetRef.current += singleSetWidthRef.current;
+    }
+    while (offsetRef.current > 0) {
+      offsetRef.current -= singleSetWidthRef.current;
+    }
+
+    trackRef.current.style.transform = `translate3d(${offsetRef.current}px, 0, 0)`;
   };
 
   const handlePointerUp = (event: ReactPointerEvent<HTMLDivElement>) => {
-    // Always resume auto-scroll on pointer up (covers link/button taps too)
-    isHoveredRef.current = false;
-
-    const container = scrollContainerRef.current;
-    if (!container || !isDraggingRef.current) return;
-
-    try {
-      container.releasePointerCapture(event.pointerId);
-    } catch (e) { }
-
-    // Reset drag state after a short delay so click event can be captured and prevented if it was a drag
-    setTimeout(() => {
-      isDraggingRef.current = false;
-    }, 50);
+    if (!isDraggingRef.current) return;
+    isDraggingRef.current = false;
+    pausedRef.current = wasPausedBeforeDragRef.current;
+    setIsPaused(wasPausedBeforeDragRef.current);
+    event.currentTarget.releasePointerCapture(event.pointerId);
   };
-
-  // Prevent accidental clicks on links when the user was actually dragging/swiping
-  const handleClickCapture = (e: React.MouseEvent) => {
-    // If the drag distance was significant, prevent the click
-    const dragDistance = Math.abs(e.clientX - dragStartXRef.current);
-    if (isDraggingRef.current && dragDistance > 5) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-  };
-
 
   return (
     <section id="events" className="w-full bg-black pb-3">
       <div className="bg-[#fff3e0] rounded-[2.5rem] p-8 sm:p-12 relative overflow-hidden flex flex-col gap-12 border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
         <FadeIn>
           <div className="flex flex-col gap-4 text-center">
-            <h2 className={`text-5xl sm:text-7xl text-black uppercase leading-[0.9] ${gilton.className}`}>
+            <h2
+              className={`text-5xl sm:text-7xl text-black uppercase leading-[0.9] ${gilton.className}`}
+            >
               SIGNIFIYA <span className="italic">Events</span>
             </h2>
-            <p className={`text-xl text-gray-600 font-medium max-w-2xl mx-auto ${softura.className}`}>
-              Discover the diverse range of events happening at Signifiya'26.
+            <p
+              className={`text-xl text-gray-600 font-medium max-w-2xl mx-auto ${softura.className}`}
+            >
+              Discover the diverse range of events happening at
+              Signifiya&apos;26.
             </p>
-            <p className={`text-base text-gray-600 font-medium max-w-2xl mx-auto ${softura.className}`}>
-              *Events are not limited to any department or domain, anybody can participate in any of our events without any restrictions, read terms & conditions thoroughly.*
+            <p
+              className={`text-base text-gray-600 font-medium max-w-2xl mx-auto ${softura.className}`}
+            >
+              *Events are not limited to any department or domain, anybody can
+              participate in any of our events without any restrictions, read
+              terms &amp; conditions thoroughly.*
             </p>
           </div>
         </FadeIn>
@@ -302,227 +211,131 @@ export default function Events() {
             <button
               key={category}
               onClick={() => setActiveCategory(category)}
-              className={`
-                            px-6 py-2 rounded-full border-2 border-black font-bold text-sm uppercase tracking-wider transition-all duration-200
-                            ${activeCategory === category
-                  ? 'bg-black text-white shadow-[4px_4px_0px_0px_rgba(255,255,255,0.5)] translate-x-[2px] translate-y-[2px]'
-                  : 'bg-white text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]'
-                }
-                            ${softura.className}
-                        `}
+              className={`px-6 py-2 rounded-full border-2 border-black font-bold text-sm uppercase tracking-wider transition-all duration-200 ${
+                activeCategory === category
+                  ? "bg-black text-white shadow-[4px_4px_0px_0px_rgba(255,255,255,0.5)] translate-x-[2px] translate-y-[2px]"
+                  : "bg-white text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+              } ${softura.className}`}
             >
               {category}
             </button>
           ))}
         </div>
 
-        {/* Events Horizontal Scroll Container */}
+        {/* Marquee Controls + Track */}
         <div className="relative">
-          {/* Left Arrow Button */}
-          <button
-            onClick={() => scroll('left')}
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-black text-white w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all flex items-center justify-center"
-            aria-label="Scroll left"
-          >
-            <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
+          <div className="mb-3 flex justify-end gap-2 sm:mb-4">
+            <button
+              type="button"
+              onClick={() => nudgeByCards(1)}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-lg border-2 border-black bg-[#ffe45e] text-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none"
+              aria-label="Show previous cards"
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+            <button
+              type="button"
+              onClick={togglePause}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-lg border-2 border-black bg-white text-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none"
+              aria-label={isPaused ? "Play marquee" : "Pause marquee"}
+            >
+              {isPaused ? (
+                <Play className="h-5 w-5" />
+              ) : (
+                <Pause className="h-5 w-5" />
+              )}
+            </button>
+            <button
+              type="button"
+              onClick={() => nudgeByCards(-1)}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-lg border-2 border-black bg-[#7dc8ff] text-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none"
+              aria-label="Show next cards"
+            >
+              <ChevronRight className="h-5 w-5" />
+            </button>
+          </div>
 
-          {/* Right Arrow Button */}
-          <button
-            onClick={() => scroll('right')}
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-black text-white w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all flex items-center justify-center"
-            aria-label="Scroll right"
-          >
-            <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
-
-          {/* Horizontal Scrolling Events Container - infinite loop only for "ALL" category */}
+          {/* Marquee Container */}
           <div
-            ref={scrollContainerRef}
-            onScroll={handleScroll}
-            onMouseEnter={() => {
-              isHoveredRef.current = true;
-            }}
-            onMouseLeave={() => {
-              isHoveredRef.current = false;
-            }}
+            ref={marqueeRef}
+            className="events-marquee"
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
             onPointerCancel={handlePointerUp}
-            onClickCapture={handleClickCapture}
-            className={`flex gap-0 overflow-x-auto scrollbar-hide pb-4 min-h-[450px] sm:min-h-[500px] cursor-grab active:cursor-grabbing touch-pan-y ${isAllCategory ? 'snap-none' : 'snap-x snap-mandatory'}`}
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
-            {isAllCategory ? (
-              // For "ALL" category: render multiple copies for infinite loop
-              Array.from({ length: LOOP_COPIES }, (_, copyIndex) => (
-                <div
-                  key={copyIndex}
-                  ref={copyIndex === 0 ? firstSetRef : undefined}
-                  className="flex gap-4 sm:gap-8 shrink-0"
-                >
-                  {/* Left spacer to allow first card to center - only on mobile */}
-                  <div className="shrink-0 w-[calc(50%-125px)] sm:hidden" />
-                  <AnimatePresence mode="popLayout">
-                    {filteredEvents.map((event, eventIndex) => {
-                      // Check if this is Arm Wrestling (last event) or Coding Premier League (first event)
-                      // Add gap between them in the loop
-                      const isArmWrestling = event.id === 15;
-                      const isCodingPremierLeague = event.id === 1;
-                      const isLastEvent = eventIndex === filteredEvents.length - 1;
-                      const isFirstEvent = eventIndex === 0;
-                      const shouldAddGapAfter = isArmWrestling && isLastEvent; // Add margin-right to Arm Wrestling
-                      const shouldAddGapBefore = isCodingPremierLeague && isFirstEvent; // Add margin-left to Coding Premier League
+            <div ref={trackRef} className="events-track pb-6 sm:pb-10">
+              <AnimatePresence mode="popLayout">
+                {marqueeEvents.map((event, idx) => (
+                  <article
+                    key={`${event.id}-${idx}`}
+                    className="w-[250px] sm:w-[320px] md:w-[350px] shrink-0 bg-white rounded-2xl border-4 border-black overflow-hidden flex flex-col shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] group"
+                  >
+                    {/* Image */}
+                    <div className="relative h-40 sm:h-48 w-full border-b-4 border-black">
+                      <Image
+                        src={event.image}
+                        alt={event.title}
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-110"
+                      />
+                      <div className="absolute top-4 right-4 bg-black text-white text-xs font-bold px-3 py-1 rounded-full border border-white">
+                        {event.category}
+                      </div>
+                    </div>
 
-                      return (
-                        <motion.div
-                          layout
-                          initial={{ opacity: 0, scale: 0.9 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          exit={{ opacity: 0, scale: 0.9 }}
-                          transition={{ duration: 0.2 }}
-                          key={`${event.id}-${copyIndex}`}
-                          className={`event-card bg-white rounded-3xl border-4 border-black overflow-hidden flex flex-col shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all group shrink-0 w-[250px] sm:w-[320px] md:w-[350px] snap-center ${shouldAddGapAfter ? 'mr-4 sm:mr-6' : ''} ${shouldAddGapBefore ? 'ml-4 sm:ml-6' : ''}`}
+                    {/* Content */}
+                    <div className="p-4 sm:p-6 flex flex-col flex-1 gap-3 sm:gap-4">
+                      <div>
+                        <h3
+                          className={`text-xl sm:text-2xl text-black uppercase leading-none mb-2 ${gilton.className}`}
                         >
-                          {/* Image Container */}
-                          <div className="relative h-40 sm:h-48 w-full border-b-4 border-black">
-                            <Image
-                              src={event.image}
-                              alt={event.title}
-                              fill
-                              className="object-cover transition-transform duration-500 group-hover:scale-110"
-                            />
-                            <div className="absolute top-4 right-4 bg-black text-white text-xs font-bold px-3 py-1 rounded-full border border-white">
-                              {event.category}
-                            </div>
-                          </div>
-
-                          {/* Content */}
-                          <div className="p-4 sm:p-6 flex flex-col flex-1 gap-3 sm:gap-4">
-                            <div>
-                              <h3 className={`text-xl sm:text-2xl text-black uppercase leading-none mb-2 ${gilton.className}`}>
-                                {event.title}
-                              </h3>
-                              <p className={`text-xs sm:text-sm text-gray-500 font-bold uppercase tracking-widest ${softura.className}`}>
-                                {event.date}
-                              </p>
-                              <span className={`inline-block mt-1.5 px-2 sm:px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs sm:text-sm font-bold ${softura.className}`}>
-                                Prize pool: {event.prizePool}
-                              </span>
-                            </div>
-                            <p className={`text-sm sm:text-base text-gray-800 font-medium leading-snug line-clamp-3 ${softura.className}`}>
-                              {event.description}
-                            </p>
-                            <div className="mt-auto pt-2 sm:pt-4 flex flex-col gap-2">
-                              {EVENT_TITLE_TO_SCHEDULE_ID[event.title] ? (
-                                <Link
-                                  href={`/schedule#event-${EVENT_TITLE_TO_SCHEDULE_ID[event.title]}`}
-                                  className={`w-full bg-[#d091f8] text-black border-2 border-black rounded-xl py-1.5 sm:py-2 font-bold uppercase text-xs sm:text-sm transition-colors hover:bg-[#c080e8] text-center ${softura.className}`}
-                                >
-                                  View Details
-                                </Link>
-                              ) : (
-                                <Link
-                                  href="/schedule"
-                                  className={`w-full bg-[#d091f8] text-black border-2 border-black rounded-xl py-1.5 sm:py-2 font-bold uppercase text-xs sm:text-sm transition-colors hover:bg-[#c080e8] text-center ${softura.className}`}
-                                >
-                                  View Details
-                                </Link>
-                              )}
-                              <Link href="/events" className={`w-full bg-black text-white border-2 border-black rounded-xl py-1.5 sm:py-2 font-bold uppercase text-xs sm:text-sm transition-colors hover:bg-zinc-800 text-center ${softura.className}`}>
-                                Register
-                              </Link>
-                            </div>
-                          </div>
-                        </motion.div>
-                      );
-                    })}
-                  </AnimatePresence>
-                  {/* Right spacer to allow last card to center - only on mobile */}
-                  <div className="shrink-0 w-[calc(50%-125px)] sm:hidden" />
-                </div>
-              ))
-            ) : (
-              // For filtered categories: render single set (no loop)
-              <div
-                ref={firstSetRef}
-                className="flex gap-4 sm:gap-8 shrink-0"
-              >
-                {/* Left spacer to allow first card to center - only on mobile */}
-                <div className="shrink-0 w-[calc(50%-125px)] sm:hidden" />
-                <AnimatePresence mode="popLayout">
-                  {filteredEvents.map((event) => (
-                    <motion.div
-                      layout
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.9 }}
-                      transition={{ duration: 0.2 }}
-                      key={event.id}
-                      className="event-card bg-white rounded-3xl border-4 border-black overflow-hidden flex flex-col shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all group shrink-0 w-[250px] sm:w-[320px] md:w-[350px] snap-center"
-                    >
-                      {/* Image Container */}
-                      <div className="relative h-40 sm:h-48 w-full border-b-4 border-black">
-                        <Image
-                          src={event.image}
-                          alt={event.title}
-                          fill
-                          className="object-cover transition-transform duration-500 group-hover:scale-110"
-                        />
-                        <div className="absolute top-4 right-4 bg-black text-white text-xs font-bold px-3 py-1 rounded-full border border-white">
-                          {event.category}
-                        </div>
-                      </div>
-
-                      {/* Content */}
-                      <div className="p-4 sm:p-6 flex flex-col flex-1 gap-3 sm:gap-4">
-                        <div>
-                          <h3 className={`text-xl sm:text-2xl text-black uppercase leading-none mb-2 ${gilton.className}`}>
-                            {event.title}
-                          </h3>
-                          <p className={`text-xs sm:text-sm text-gray-500 font-bold uppercase tracking-widest ${softura.className}`}>
-                            {event.date}
-                          </p>
-                          <span className={`inline-block mt-1.5 px-2 sm:px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs sm:text-sm font-bold ${softura.className}`}>
-                            Prize pool: {event.prizePool}
-                          </span>
-                        </div>
-                        <p className={`text-sm sm:text-base text-gray-800 font-medium leading-snug line-clamp-3 ${softura.className}`}>
-                          {event.description}
+                          {event.title}
+                        </h3>
+                        <p
+                          className={`text-xs sm:text-sm text-gray-500 font-bold uppercase tracking-widest ${softura.className}`}
+                        >
+                          {event.date}
                         </p>
-                        <div className="mt-auto pt-2 sm:pt-4 flex flex-col gap-2">
-                          {EVENT_TITLE_TO_SCHEDULE_ID[event.title] ? (
-                            <Link
-                              href={`/schedule#event-${EVENT_TITLE_TO_SCHEDULE_ID[event.title]}`}
-                              className={`w-full bg-[#d091f8] text-black border-2 border-black rounded-xl py-1.5 sm:py-2 font-bold uppercase text-xs sm:text-sm transition-colors hover:bg-[#c080e8] text-center ${softura.className}`}
-                            >
-                              View Details
-                            </Link>
-                          ) : (
-                            <Link
-                              href="/schedule"
-                              className={`w-full bg-[#d091f8] text-black border-2 border-black rounded-xl py-1.5 sm:py-2 font-bold uppercase text-xs sm:text-sm transition-colors hover:bg-[#c080e8] text-center ${softura.className}`}
-                            >
-                              View Details
-                            </Link>
-                          )}
-                          <Link href="/events" className={`w-full bg-black text-white border-2 border-black rounded-xl py-1.5 sm:py-2 font-bold uppercase text-xs sm:text-sm transition-colors hover:bg-zinc-800 text-center ${softura.className}`}>
-                            Register
-                          </Link>
-                        </div>
+                        <span
+                          className={`inline-block mt-1.5 px-2 sm:px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs sm:text-sm font-bold ${softura.className}`}
+                        >
+                          Prize pool: {event.prizePool}
+                        </span>
                       </div>
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
-                {/* Right spacer to allow last card to center - only on mobile */}
-                <div className="shrink-0 w-[calc(50%-125px)] sm:hidden" />
-              </div>
-            )}
+                      <p
+                        className={`text-sm sm:text-base text-gray-800 font-medium leading-snug line-clamp-3 ${softura.className}`}
+                      >
+                        {event.description}
+                      </p>
+                      <div className="mt-auto pt-2 sm:pt-4 flex flex-col gap-2">
+                        {EVENT_TITLE_TO_SCHEDULE_ID[event.title] ? (
+                          <Link
+                            href={`/schedule#event-${EVENT_TITLE_TO_SCHEDULE_ID[event.title]}`}
+                            className={`w-full bg-[#d091f8] text-black border-2 border-black rounded-xl py-1.5 sm:py-2 font-bold uppercase text-xs sm:text-sm transition-colors hover:bg-[#c080e8] text-center ${softura.className}`}
+                          >
+                            View Details
+                          </Link>
+                        ) : (
+                          <Link
+                            href="/schedule"
+                            className={`w-full bg-[#d091f8] text-black border-2 border-black rounded-xl py-1.5 sm:py-2 font-bold uppercase text-xs sm:text-sm transition-colors hover:bg-[#c080e8] text-center ${softura.className}`}
+                          >
+                            View Details
+                          </Link>
+                        )}
+                        <Link
+                          href="/events"
+                          className={`w-full bg-black text-white border-2 border-black rounded-xl py-1.5 sm:py-2 font-bold uppercase text-xs sm:text-sm transition-colors hover:bg-zinc-800 text-center ${softura.className}`}
+                        >
+                          Register
+                        </Link>
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </AnimatePresence>
+            </div>
           </div>
 
           {/* View Schedule Button */}
@@ -536,17 +349,33 @@ export default function Events() {
           </div>
         </div>
       </div>
+
       <style jsx>{`
-            .scrollbar-hide::-webkit-scrollbar {
-                display: none;
-            }
-            .scrollbar-hide {
-                -ms-overflow-style: none;
-                scrollbar-width: none;
-            }
-        `}</style>
+        .events-marquee {
+          overflow: hidden;
+          width: 100%;
+          touch-action: pan-y;
+          cursor: grab;
+        }
+
+        .events-marquee:active {
+          cursor: grabbing;
+        }
+
+        .events-track {
+          display: flex;
+          gap: 1rem;
+          width: max-content;
+          will-change: transform;
+          user-select: none;
+        }
+
+        @media (min-width: 640px) {
+          .events-track {
+            gap: 1.5rem;
+          }
+        }
+      `}</style>
     </section>
   );
 }
-
-
