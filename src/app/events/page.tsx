@@ -18,9 +18,15 @@ import localFont from "next/font/local";
 const gilton = localFont({ src: "../../../public/fonts/GiltonRegular.otf" });
 const softura = localFont({ src: "../../../public/fonts/Softura-Demo.otf" });
 import EventCard from "@/components/Events-Pass";
-import { createEventRazorpayOrder, verifyEventRazorpayPayment } from "@/app/actions";
+import {
+  createEventRazorpayOrder,
+  verifyEventRazorpayPayment,
+} from "@/app/actions";
 import { APP_CONFIG } from "@/config/app.config";
 import { getUserProfile } from "@/app/actions";
+import RegistrationComingSoon from "@/components/RegistrationComingSoon";
+
+const REGISTRATION_OPEN_DATE = new Date("2026-02-23T00:00:00");
 
 // ... (Configuration Data remains the same) ...
 const eventsList = [
@@ -179,7 +185,10 @@ const formSchema = z.object({
   bookingId: z
     .string()
     .min(1, "Enter your Booking ID")
-    .regex(/^SGF26-[A-Z0-9]{8}$/, "Invalid Booking ID format. Must be SGF26-XXXXXXXX (8 alphanumeric characters)"),
+    .regex(
+      /^SGF26-[A-Z0-9]{8}$/,
+      "Invalid Booking ID format. Must be SGF26-XXXXXXXX (8 alphanumeric characters)",
+    ),
   selectedEvents: z.array(z.string()).min(1, "Select one event").max(1),
   members: z
     .array(
@@ -209,22 +218,31 @@ function getActiveEventDiscount() {
     const start = new Date(d.start);
     const end = new Date(start.getTime() + d.durationHours * 60 * 60 * 1000);
     if (now >= start && now < end) {
-      return { discountPercent: d.discountPercent, label: d.label, endsAt: end };
+      return {
+        discountPercent: d.discountPercent,
+        label: d.label,
+        endsAt: end,
+      };
     }
   }
   return null;
 }
 
 /** Apply active discount to a price, returning { original, discounted, hasDiscount } */
-function getDiscountedPrice(price: number, discount: ReturnType<typeof getActiveEventDiscount>) {
-  if (!discount) return { original: price, discounted: price, hasDiscount: false };
+function getDiscountedPrice(
+  price: number,
+  discount: ReturnType<typeof getActiveEventDiscount>,
+) {
+  if (!discount)
+    return { original: price, discounted: price, hasDiscount: false };
   const discounted = Math.round(price * (1 - discount.discountPercent / 100));
   return { original: price, discounted, hasDiscount: true };
 }
 
 export default function EventRegistration() {
   const router = useRouter();
-  const { data: sessionData, isPending: isSessionPending } = authClient.useSession();
+  const { data: sessionData, isPending: isSessionPending } =
+    authClient.useSession();
   const eventListRef = React.useRef<HTMLDivElement>(null);
   const [step, setStep] = useState(1);
   const [timeLeft, setTimeLeft] = useState(900);
@@ -234,7 +252,8 @@ export default function EventRegistration() {
   const [payError, setPayError] = useState<string | null>(null);
   const [utrId, setUtrId] = useState("");
   const [totalCost, setTotalCost] = useState(0);
-  const [activeDiscount, setActiveDiscount] = useState<ReturnType<typeof getActiveEventDiscount>>(null);
+  const [activeDiscount, setActiveDiscount] =
+    useState<ReturnType<typeof getActiveEventDiscount>>(null);
   const [discountTimeLeft, setDiscountTimeLeft] = useState("");
   const [createdEventPass, setCreatedEventPass] = useState<{
     teamLeadName: string;
@@ -277,7 +296,10 @@ export default function EventRegistration() {
       setActiveDiscount(d);
       if (d) {
         const diff = d.endsAt.getTime() - Date.now();
-        if (diff <= 0) { setDiscountTimeLeft(""); return; }
+        if (diff <= 0) {
+          setDiscountTimeLeft("");
+          return;
+        }
         const h = Math.floor(diff / 3600000);
         const m = Math.floor((diff % 3600000) / 60000);
         const s = Math.floor((diff % 60000) / 1000);
@@ -311,24 +333,34 @@ export default function EventRegistration() {
         if (!userProfile) return;
 
         if (userProfile.bookingId) {
-          setValue("bookingId", userProfile.bookingId, { shouldValidate: true });
+          setValue("bookingId", userProfile.bookingId, {
+            shouldValidate: true,
+          });
           setIsBookingIdPrefilled(true);
         }
         if (userProfile.name) {
           setValue("leaderName", userProfile.name, { shouldValidate: true });
         } else if (sessionData.user.name) {
-          setValue("leaderName", sessionData.user.name, { shouldValidate: true });
+          setValue("leaderName", sessionData.user.name, {
+            shouldValidate: true,
+          });
         }
         if (sessionData.user.email) {
           setValue("email", sessionData.user.email, { shouldValidate: true });
         }
         if (userProfile.mobileNo) {
-          setValue("phone", String(userProfile.mobileNo).replace(/\D/g, "").slice(0, 10), {
-            shouldValidate: true,
-          });
+          setValue(
+            "phone",
+            String(userProfile.mobileNo).replace(/\D/g, "").slice(0, 10),
+            {
+              shouldValidate: true,
+            },
+          );
         }
         if (userProfile.collegeName) {
-          setValue("college", userProfile.collegeName, { shouldValidate: true });
+          setValue("college", userProfile.collegeName, {
+            shouldValidate: true,
+          });
         }
       } finally {
         setIsPrefillLoading(false);
@@ -428,7 +460,12 @@ export default function EventRegistration() {
         bookingId: vals.bookingId,
         eventName: ev?.name || "",
         eventPrice: ev?.price || 0,
-        members: (vals.members || []).map((m) => ({ name: m?.name, college: m?.college, phone: m?.phone, email: m?.email })),
+        members: (vals.members || []).map((m) => ({
+          name: m?.name,
+          college: m?.college,
+          phone: m?.phone,
+          email: m?.email,
+        })),
         totalAmount: totalCost,
         utrId: utrId.trim(),
       });
@@ -440,7 +477,9 @@ export default function EventRegistration() {
       }
 
       setStep(5);
-      toast.success("Registration Successful!", { description: "Verified manually by admin." });
+      toast.success("Registration Successful!", {
+        description: "Verified manually by admin.",
+      });
     } catch (error: any) {
       setPayError(error?.message || "Something went wrong.");
       setIsLoading(false);
@@ -463,6 +502,10 @@ export default function EventRegistration() {
     e.stopPropagation();
     el.scrollTop += e.deltaY;
   };
+
+  if (new Date() < REGISTRATION_OPEN_DATE) {
+    return <RegistrationComingSoon type="event" />;
+  }
 
   return (
     <div className="bg-zinc-950 h-screen max-h-screen flex items-center justify-center p-4 lg:p-8 font-sans overflow-hidden">
@@ -504,7 +547,9 @@ export default function EventRegistration() {
             </div>
           </div>
 
-          <div className={`flex-1 pr-2 custom-scrollbar ${step === 2 ? "overflow-y-hidden" : "overflow-y-auto"}`}>
+          <div
+            className={`flex-1 pr-2 custom-scrollbar ${step === 2 ? "overflow-y-hidden" : "overflow-y-auto"}`}
+          >
             {/* Form Steps */}
             <AnimatePresence mode="wait">
               {step === 1 && (
@@ -604,21 +649,31 @@ export default function EventRegistration() {
                         if (isBookingIdPrefilled) return;
                         let value = e.target.value.toUpperCase();
                         // Remove any characters that aren't alphanumeric or hyphen
-                        value = value.replace(/[^A-Z0-9-]/g, '');
+                        value = value.replace(/[^A-Z0-9-]/g, "");
                         // Ensure it starts with SGF26-
-                        if (value && !value.startsWith('SGF26-')) {
-                          if (value.startsWith('SGF26')) {
-                            value = 'SGF26-' + value.slice(5).replace(/-/g, '');
+                        if (value && !value.startsWith("SGF26-")) {
+                          if (value.startsWith("SGF26")) {
+                            value = "SGF26-" + value.slice(5).replace(/-/g, "");
                           } else if (value.length <= 5) {
-                            value = 'SGF26-' + value.replace(/SGF26/g, '').replace(/-/g, '');
+                            value =
+                              "SGF26-" +
+                              value.replace(/SGF26/g, "").replace(/-/g, "");
                           } else {
-                            value = 'SGF26-' + value.replace(/SGF26-?/g, '').replace(/-/g, '').slice(0, 8);
+                            value =
+                              "SGF26-" +
+                              value
+                                .replace(/SGF26-?/g, "")
+                                .replace(/-/g, "")
+                                .slice(0, 8);
                           }
                         }
                         // Limit to SGF26- + 8 characters
-                        if (value.startsWith('SGF26-')) {
-                          const suffix = value.slice(6).replace(/-/g, '').slice(0, 8);
-                          value = 'SGF26-' + suffix;
+                        if (value.startsWith("SGF26-")) {
+                          const suffix = value
+                            .slice(6)
+                            .replace(/-/g, "")
+                            .slice(0, 8);
+                          value = "SGF26-" + suffix;
                         }
                         setValue("bookingId", value, { shouldValidate: true });
                       }}
@@ -629,7 +684,12 @@ export default function EventRegistration() {
                         : "Booking ID auto-fills from your profile. If missing, visit "}
                       {!isPrefillLoading && (
                         <>
-                          <Link href="/profile" className="underline font-semibold text-zinc-700">Profile</Link>
+                          <Link
+                            href="/profile"
+                            className="underline font-semibold text-zinc-700"
+                          >
+                            Profile
+                          </Link>
                           {" and complete your details."}
                         </>
                       )}
@@ -666,7 +726,9 @@ export default function EventRegistration() {
                     <div className="bg-green-100 border-2 border-green-600 rounded-xl p-3 flex items-center justify-between animate-pulse">
                       <div className="flex items-center gap-2">
                         <span className="text-lg">🔥</span>
-                        <span className="font-black text-green-800 text-sm uppercase">{activeDiscount.label}</span>
+                        <span className="font-black text-green-800 text-sm uppercase">
+                          {activeDiscount.label}
+                        </span>
                       </div>
                       {discountTimeLeft && (
                         <span className="font-mono font-bold text-green-700 text-xs bg-green-200 px-2 py-1 rounded-lg">
@@ -675,34 +737,49 @@ export default function EventRegistration() {
                       )}
                     </div>
                   )}
-                  <div ref={eventListRef} className="space-y-3 h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                  <div
+                    ref={eventListRef}
+                    className="space-y-3 h-[400px] overflow-y-auto pr-2 custom-scrollbar"
+                  >
                     {eventsList.map((ev) => {
                       const isSelected = selectedEventIds.includes(ev.id);
                       return (
                         <div
                           key={ev.id}
                           onClick={() => toggleEvent(ev.id)}
-                          className={`cursor-none border-2 p-4 rounded-xl transition-all relative overflow-hidden ${isSelected
-                            ? "border-black bg-[#deb3fa] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
-                            : "border-zinc-300 bg-white hover:border-zinc-400"
-                            }`}
+                          className={`cursor-none border-2 p-4 rounded-xl transition-all relative overflow-hidden ${
+                            isSelected
+                              ? "border-black bg-[#deb3fa] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+                              : "border-zinc-300 bg-white hover:border-zinc-400"
+                          }`}
                         >
                           <div className="flex justify-between items-start relative z-10">
                             <div>
-                              <h3 className={`font-black text-lg uppercase ${isSelected ? "text-black" : "text-zinc-400"}`}>
+                              <h3
+                                className={`font-black text-lg uppercase ${isSelected ? "text-black" : "text-zinc-400"}`}
+                              >
                                 {ev.name}
                               </h3>
-                              <p className={`text-xs font-bold mt-1 ${isSelected ? "text-black/70" : "text-zinc-300"}`}>
+                              <p
+                                className={`text-xs font-bold mt-1 ${isSelected ? "text-black/70" : "text-zinc-300"}`}
+                              >
                                 {ev.date}
                               </p>
                             </div>
-                            <div className={`px-2 py-1 rounded text-xs font-bold border-2 ${isSelected ? "bg-black text-white border-black" : "bg-zinc-100 text-zinc-400 border-zinc-200"}`}>
+                            <div
+                              className={`px-2 py-1 rounded text-xs font-bold border-2 ${isSelected ? "bg-black text-white border-black" : "bg-zinc-100 text-zinc-400 border-zinc-200"}`}
+                            >
                               {(() => {
-                                const { original, discounted, hasDiscount } = getDiscountedPrice(ev.price, activeDiscount);
+                                const { original, discounted, hasDiscount } =
+                                  getDiscountedPrice(ev.price, activeDiscount);
                                 return hasDiscount ? (
                                   <span className="flex items-center gap-1">
-                                    <span className="line-through opacity-60">₹{original}</span>
-                                    <span className="text-green-500">₹{discounted}</span>
+                                    <span className="line-through opacity-60">
+                                      ₹{original}
+                                    </span>
+                                    <span className="text-green-500">
+                                      ₹{discounted}
+                                    </span>
                                   </span>
                                 ) : (
                                   <span>₹{original}</span>
@@ -746,26 +823,61 @@ export default function EventRegistration() {
                   </p>
 
                   <div className="bg-amber-100 border-2 border-amber-400 p-3 rounded-xl mb-4">
-                    <p className="text-amber-800 text-xs font-bold"> Note: Team leader is automatically included. Add other members here.</p>
+                    <p className="text-amber-800 text-xs font-bold">
+                      {" "}
+                      Note: Team leader is automatically included. Add other
+                      members here.
+                    </p>
                   </div>
 
                   <div className="space-y-4">
                     {fields.map((field, index) => (
-                      <div key={field.id} className="bg-white border-2 border-black p-4 rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] relative">
+                      <div
+                        key={field.id}
+                        className="bg-white border-2 border-black p-4 rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] relative"
+                      >
                         <button
                           type="button"
                           onClick={() => remove(index)}
                           className="absolute -top-3 -right-3 w-8 h-8 flex items-center justify-center bg-red-500 border-2 border-black rounded-full text-white hover:bg-red-600 transition-colors z-10"
                         >
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="3"
+                          >
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                          </svg>
                         </button>
-                        <h4 className="font-bold text-xs uppercase mb-3 text-zinc-400">Member {index + 1}</h4>
+                        <h4 className="font-bold text-xs uppercase mb-3 text-zinc-400">
+                          Member {index + 1}
+                        </h4>
                         <div className="grid gap-3">
-                          <Input {...register(`members.${index}.name`)} className={inputStyles} placeholder="Name" />
-                          <Input {...register(`members.${index}.college`)} className={inputStyles} placeholder="College" />
+                          <Input
+                            {...register(`members.${index}.name`)}
+                            className={inputStyles}
+                            placeholder="Name"
+                          />
+                          <Input
+                            {...register(`members.${index}.college`)}
+                            className={inputStyles}
+                            placeholder="College"
+                          />
                           <div className="grid grid-cols-2 gap-3">
-                            <Input {...register(`members.${index}.email`)} className={inputStyles} placeholder="Email" />
-                            <Input {...register(`members.${index}.phone`)} className={inputStyles} placeholder="Phone" />
+                            <Input
+                              {...register(`members.${index}.email`)}
+                              className={inputStyles}
+                              placeholder="Email"
+                            />
+                            <Input
+                              {...register(`members.${index}.phone`)}
+                              className={inputStyles}
+                              placeholder="Phone"
+                            />
                           </div>
                         </div>
                       </div>
@@ -774,7 +886,9 @@ export default function EventRegistration() {
 
                   <Button
                     type="button"
-                    onClick={() => append({ name: "", college: "", email: "", phone: "" })}
+                    onClick={() =>
+                      append({ name: "", college: "", email: "", phone: "" })
+                    }
                     className="w-full bg-white text-black font-bold py-4 rounded-xl border-2 border-dashed border-zinc-400 hover:border-black hover:bg-zinc-50 transition-all uppercase"
                   >
                     + Add Member
@@ -822,14 +936,19 @@ export default function EventRegistration() {
                     {selectedEventIds.map((id) => {
                       const ev = eventsList.find((e) => e.id === id);
                       if (!ev) return null;
-                      const { original, discounted, hasDiscount } = getDiscountedPrice(ev.price, activeDiscount);
+                      const { original, discounted, hasDiscount } =
+                        getDiscountedPrice(ev.price, activeDiscount);
                       return (
                         <div key={id} className="flex justify-between mb-1">
                           <span>{ev.name}</span>
                           {hasDiscount ? (
                             <span className="flex items-center gap-1">
-                              <span className="line-through opacity-50">₹{original}</span>
-                              <span className="text-green-600 font-bold">₹{discounted}</span>
+                              <span className="line-through opacity-50">
+                                ₹{original}
+                              </span>
+                              <span className="text-green-600 font-bold">
+                                ₹{discounted}
+                              </span>
                             </span>
                           ) : (
                             <span>₹{ev.price}</span>
@@ -841,7 +960,16 @@ export default function EventRegistration() {
                       <span>TOTAL</span>
                       {activeDiscount ? (
                         <span className="flex items-center gap-2">
-                          <span className="line-through opacity-40 text-sm">₹{selectedEventIds.reduce((s, id) => s + (eventsList.find(e => e.id === id)?.price || 0), 0)}</span>
+                          <span className="line-through opacity-40 text-sm">
+                            ₹
+                            {selectedEventIds.reduce(
+                              (s, id) =>
+                                s +
+                                (eventsList.find((e) => e.id === id)?.price ||
+                                  0),
+                              0,
+                            )}
+                          </span>
                           <span className="text-green-600">₹{totalCost}</span>
                         </span>
                       ) : (
@@ -857,7 +985,9 @@ export default function EventRegistration() {
 
                   {payError && (
                     <div className="bg-red-100 border-2 border-red-600 p-3 rounded-xl">
-                      <p className="text-red-600 font-bold text-sm">{payError}</p>
+                      <p className="text-red-600 font-bold text-sm">
+                        {payError}
+                      </p>
                     </div>
                   )}
 
@@ -866,8 +996,16 @@ export default function EventRegistration() {
                       Total Amount:{" "}
                       {activeDiscount ? (
                         <>
-                          <span className="line-through opacity-40">₹{selectedEventIds.reduce((s, id) => s + (eventsList.find(e => e.id === id)?.price || 0), 0)}</span>
-                          {" "}
+                          <span className="line-through opacity-40">
+                            ₹
+                            {selectedEventIds.reduce(
+                              (s, id) =>
+                                s +
+                                (eventsList.find((e) => e.id === id)?.price ||
+                                  0),
+                              0,
+                            )}
+                          </span>{" "}
                           <span className="text-green-600">₹{totalCost}</span>
                         </>
                       ) : (
@@ -876,15 +1014,22 @@ export default function EventRegistration() {
                     </p>
 
                     <div className="relative w-48 h-48 border-4 border-black rounded-xl overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mx-auto mb-4 bg-white">
-                      <Image src="/qr.jpeg" alt="Payment QR Code" fill className="object-contain p-2" />
+                      <Image
+                        src="/qr.jpeg"
+                        alt="Payment QR Code"
+                        fill
+                        className="object-contain p-2"
+                      />
                     </div>
                     <p className="text-xs font-bold text-zinc-600">
                       Scan to pay via UPI
                     </p>
-                  </div >
+                  </div>
 
                   <div>
-                    <Label className={labelStyles}>Enter Transaction / UTR ID</Label>
+                    <Label className={labelStyles}>
+                      Enter Transaction / UTR ID
+                    </Label>
                     <Input
                       value={utrId}
                       onChange={(e) => setUtrId(e.target.value)}
@@ -912,54 +1057,53 @@ export default function EventRegistration() {
                       {isLoading ? "VERIFYING…" : "SUBMIT PAYMENT DETAILS →"}
                     </Button>
                   </div>
-                </motion.div >
-              )
-              }
+                </motion.div>
+              )}
 
-              {
-                step === 5 && (
-                  <motion.div
-                    key="step5"
-                    initial={{ scale: 0.9, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    className="space-y-6 text-center"
-                  >
-                    <div className="bg-[#4caf50] text-white p-6 rounded-4xl border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-                      <h2 className={`text-4xl font-black uppercase mb-2 ${gilton.className}`}>
-                        Registration Successful!
-                      </h2>
-                      <p className="font-medium text-white/90">
-                        Your team registration is pending verification.
-                      </p>
-                      <p className="text-sm mt-2 opacity-80">
-                        Check your profile for the event pass once approved.
-                      </p>
-                    </div>
+              {step === 5 && (
+                <motion.div
+                  key="step5"
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  className="space-y-6 text-center"
+                >
+                  <div className="bg-[#4caf50] text-white p-6 rounded-4xl border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+                    <h2
+                      className={`text-4xl font-black uppercase mb-2 ${gilton.className}`}
+                    >
+                      Registration Successful!
+                    </h2>
+                    <p className="font-medium text-white/90">
+                      Your team registration is pending verification.
+                    </p>
+                    <p className="text-sm mt-2 opacity-80">
+                      Check your profile for the event pass once approved.
+                    </p>
+                  </div>
 
-                    <div className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4 w-full px-4 sm:px-0">
-                      <Button
-                        onClick={() => router.push("/profile")}
-                        className="w-full sm:w-auto bg-black text-white px-8 py-4 rounded-xl font-bold border-2 border-black shadow-[4px_4px_0px_0px_#a855f7] hover:shadow-none hover:translate-y-[2px]"
-                      >
-                        GO TO PROFILE
-                      </Button>
-                      <Button
-                        onClick={() => window.location.reload()}
-                        variant="outline"
-                        className="w-full sm:w-auto bg-white px-8 py-4 rounded-xl font-bold border-2 border-black"
-                      >
-                        REGISTER ANOTHER
-                      </Button>
-                    </div>
-                  </motion.div >
-                )
-              }
-            </AnimatePresence >
-          </div >
-        </div >
+                  <div className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4 w-full px-4 sm:px-0">
+                    <Button
+                      onClick={() => router.push("/profile")}
+                      className="w-full sm:w-auto bg-black text-white px-8 py-4 rounded-xl font-bold border-2 border-black shadow-[4px_4px_0px_0px_#a855f7] hover:shadow-none hover:translate-y-[2px]"
+                    >
+                      GO TO PROFILE
+                    </Button>
+                    <Button
+                      onClick={() => window.location.reload()}
+                      variant="outline"
+                      className="w-full sm:w-auto bg-white px-8 py-4 rounded-xl font-bold border-2 border-black"
+                    >
+                      REGISTER ANOTHER
+                    </Button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
 
         {/* --- RIGHT SIDE: VISUALS (Unchanged) --- */}
-        < div className="hidden lg:flex flex-1 bg-teal-100 relative items-center justify-center border-l-4 border-black p-8 overflow-hidden" >
+        <div className="hidden lg:flex flex-1 bg-teal-100 relative items-center justify-center border-l-4 border-black p-8 overflow-hidden">
           <div className="absolute top-10 left-10 w-20 h-20 bg-purple-500 border-4 border-black rounded-none rotate-12 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] z-10"></div>
           <div className="absolute bottom-20 right-10 w-16 h-16 bg-orange-500 border-4 border-black rounded-full animate-bounce shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] z-10"></div>
           <div className="relative w-[420px] h-[580px] bg-white border-4 border-black rounded-2xl shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] rotate-[-2deg] flex flex-col overflow-hidden group">
@@ -1012,8 +1156,8 @@ export default function EventRegistration() {
               </div>
             </div>
           </div>
-        </div >
-      </div >
-    </div >
+        </div>
+      </div>
+    </div>
   );
 }

@@ -25,15 +25,27 @@ import {
 } from "@/components/ui/select";
 import Image from "next/image";
 import { APP_CONFIG } from "@/config/app.config";
+import RegistrationComingSoon from "@/components/RegistrationComingSoon";
 
-const PASS_AMOUNTS = { single: APP_CONFIG.passPrices.single, dual: APP_CONFIG.passPrices.dual };
-const PASS_LABELS = { single: APP_CONFIG.passTypeLabels.single, dual: APP_CONFIG.passTypeLabels.dual };
+const REGISTRATION_OPEN_DATE = new Date("2026-02-23T00:00:00");
+
+const PASS_AMOUNTS = {
+  single: APP_CONFIG.passPrices.single,
+  dual: APP_CONFIG.passPrices.dual,
+};
+const PASS_LABELS = {
+  single: APP_CONFIG.passTypeLabels.single,
+  dual: APP_CONFIG.passTypeLabels.dual,
+};
 
 const formSchema = z.object({
   bookingId: z
     .string()
     .min(1, "Enter your Booking ID")
-    .regex(/^SGF26-[A-Z0-9]{8}$/, "Invalid Booking ID format. Must be SGF26-XXXXXXXX (8 alphanumeric characters)"),
+    .regex(
+      /^SGF26-[A-Z0-9]{8}$/,
+      "Invalid Booking ID format. Must be SGF26-XXXXXXXX (8 alphanumeric characters)",
+    ),
   passType: z.enum(["single", "dual"]),
   firstName: z.string().min(2, "Required"),
   lastName: z.string().min(2, "Required"),
@@ -92,7 +104,9 @@ export default function Register() {
         const lastName = rest.join(" ");
 
         if (userProfile?.bookingId) {
-          setValue("bookingId", userProfile.bookingId, { shouldValidate: true });
+          setValue("bookingId", userProfile.bookingId, {
+            shouldValidate: true,
+          });
           setIsBookingIdPrefilled(true);
         }
         if (firstName) {
@@ -105,12 +119,18 @@ export default function Register() {
           setValue("email", session.user.email, { shouldValidate: true });
         }
         if (userProfile?.mobileNo) {
-          setValue("phone", String(userProfile.mobileNo).replace(/\D/g, "").slice(0, 10), {
-            shouldValidate: true,
-          });
+          setValue(
+            "phone",
+            String(userProfile.mobileNo).replace(/\D/g, "").slice(0, 10),
+            {
+              shouldValidate: true,
+            },
+          );
         }
         if (userProfile?.collegeName) {
-          setValue("college", userProfile.collegeName, { shouldValidate: true });
+          setValue("college", userProfile.collegeName, {
+            shouldValidate: true,
+          });
         }
       } finally {
         setIsPrefillLoading(false);
@@ -119,14 +139,18 @@ export default function Register() {
 
     prefillFromDb();
   }, [session, isPending, setValue]);
-  
+
   // NOTE: isPending check MUST be AFTER hooks like useForm to avoid Render Error
   if (isPending) {
-     return (
-       <div className="flex items-center justify-center min-h-screen bg-zinc-950">
-         <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
-       </div>
-     );
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-zinc-950">
+        <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (new Date() < REGISTRATION_OPEN_DATE) {
+    return <RegistrationComingSoon type="visitor" />;
   }
 
   const onSubmit = (data: FormData) => {
@@ -263,21 +287,31 @@ export default function Register() {
                         if (isBookingIdPrefilled) return;
                         let value = e.target.value.toUpperCase();
                         // Remove any characters that aren't alphanumeric or hyphen
-                        value = value.replace(/[^A-Z0-9-]/g, '');
+                        value = value.replace(/[^A-Z0-9-]/g, "");
                         // Ensure it starts with SGF26-
-                        if (value && !value.startsWith('SGF26-')) {
-                          if (value.startsWith('SGF26')) {
-                            value = 'SGF26-' + value.slice(5).replace(/-/g, '');
+                        if (value && !value.startsWith("SGF26-")) {
+                          if (value.startsWith("SGF26")) {
+                            value = "SGF26-" + value.slice(5).replace(/-/g, "");
                           } else if (value.length <= 5) {
-                            value = 'SGF26-' + value.replace(/SGF26/g, '').replace(/-/g, '');
+                            value =
+                              "SGF26-" +
+                              value.replace(/SGF26/g, "").replace(/-/g, "");
                           } else {
-                            value = 'SGF26-' + value.replace(/SGF26-?/g, '').replace(/-/g, '').slice(0, 8);
+                            value =
+                              "SGF26-" +
+                              value
+                                .replace(/SGF26-?/g, "")
+                                .replace(/-/g, "")
+                                .slice(0, 8);
                           }
                         }
                         // Limit to SGF26- + 8 characters
-                        if (value.startsWith('SGF26-')) {
-                          const suffix = value.slice(6).replace(/-/g, '').slice(0, 8);
-                          value = 'SGF26-' + suffix;
+                        if (value.startsWith("SGF26-")) {
+                          const suffix = value
+                            .slice(6)
+                            .replace(/-/g, "")
+                            .slice(0, 8);
+                          value = "SGF26-" + suffix;
                         }
                         setValue("bookingId", value, { shouldValidate: true });
                       }}
@@ -288,7 +322,12 @@ export default function Register() {
                         : "Booking ID auto-fills from your profile. If missing, visit "}
                       {!isPrefillLoading && (
                         <>
-                          <Link href="/profile" className="underline font-semibold text-zinc-700">Profile</Link>
+                          <Link
+                            href="/profile"
+                            className="underline font-semibold text-zinc-700"
+                          >
+                            Profile
+                          </Link>
                           {" and complete your details."}
                         </>
                       )}
@@ -302,13 +341,24 @@ export default function Register() {
 
                   <div>
                     <Label className={labelStyles}>Select pass</Label>
-                    <Select value={watch("passType") ?? "single"} onValueChange={(v) => setValue("passType", v as "single" | "dual")}>
+                    <Select
+                      value={watch("passType") ?? "single"}
+                      onValueChange={(v) =>
+                        setValue("passType", v as "single" | "dual")
+                      }
+                    >
                       <SelectTrigger className={inputStyles}>
                         <SelectValue placeholder="Select pass" />
                       </SelectTrigger>
                       <SelectContent className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                        <SelectItem value="single">{APP_CONFIG.passTypeLabels.single} — ₹{APP_CONFIG.passPrices.single}</SelectItem>
-                        <SelectItem value="dual">{APP_CONFIG.passTypeLabels.dual} — ₹{APP_CONFIG.passPrices.dual}</SelectItem>
+                        <SelectItem value="single">
+                          {APP_CONFIG.passTypeLabels.single} — ₹
+                          {APP_CONFIG.passPrices.single}
+                        </SelectItem>
+                        <SelectItem value="dual">
+                          {APP_CONFIG.passTypeLabels.dual} — ₹
+                          {APP_CONFIG.passPrices.dual}
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                     {errors.passType && (
@@ -460,49 +510,71 @@ export default function Register() {
                   <p className="font-bold text-sm text-zinc-700">
                     PAYING FOR: {PASS_LABELS[watch("passType") || "single"]}
                   </p>
-                  <p className="text-3xl font-black text-black mt-1">₹{calculateTotal()}</p>
+                  <p className="text-3xl font-black text-black mt-1">
+                    ₹{calculateTotal()}
+                  </p>
                 </div>
 
                 <div className="flex flex-col items-center mb-6">
-                   <div className="relative w-48 h-48 border-4 border-black rounded-xl overflow-hidden shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4">
-                     <Image src="/qr.jpeg" alt="Payment QR Code" fill className="object-contain p-2" />
-                   </div>
-                   <p className="text-sm font-bold text-center text-zinc-600 max-w-xs">
-                     Scan this QR code with any UPI app to pay.
-                   </p>
+                  <div className="relative w-48 h-48 border-4 border-black rounded-xl overflow-hidden shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4">
+                    <Image
+                      src="/qr.jpeg"
+                      alt="Payment QR Code"
+                      fill
+                      className="object-contain p-2"
+                    />
+                  </div>
+                  <p className="text-sm font-bold text-center text-zinc-600 max-w-xs">
+                    Scan this QR code with any UPI app to pay.
+                  </p>
                 </div>
 
                 <div className="space-y-4">
-                   <div>
-                     <Label className={labelStyles}>Enter Transaction / UTR ID</Label>
-                     <Input
-                       value={utrId}
-                       onChange={(e) => setUtrId(e.target.value)}
-                       className={inputStyles}
-                       placeholder="Enter 12-digit UTR ID"
-                     />
-                     <p className="text-xs text-zinc-500 mt-1">
-                       Usually starts with banking ref no. or 'UPI...'
-                     </p>
-                   </div>
+                  <div>
+                    <Label className={labelStyles}>
+                      Enter Transaction / UTR ID
+                    </Label>
+                    <Input
+                      value={utrId}
+                      onChange={(e) => setUtrId(e.target.value)}
+                      className={inputStyles}
+                      placeholder="Enter 12-digit UTR ID"
+                    />
+                    <p className="text-xs text-zinc-500 mt-1">
+                      Usually starts with banking ref no. or 'UPI...'
+                    </p>
+                  </div>
 
-                   {!session?.user && (
-                     <div className="bg-amber-100 border-2 border-amber-600 p-4 rounded-xl mb-4">
-                       <p className="font-bold text-sm text-amber-900">Sign in required.</p>
-                       <p className="text-xs text-amber-800 mt-1">Sign in to complete registration.</p>
-                       <Link href="/sign-in?callbackUrl=/register" className="inline-block mt-2 text-sm font-bold text-amber-900 underline">Sign in →</Link>
-                     </div>
-                   )}
+                  {!session?.user && (
+                    <div className="bg-amber-100 border-2 border-amber-600 p-4 rounded-xl mb-4">
+                      <p className="font-bold text-sm text-amber-900">
+                        Sign in required.
+                      </p>
+                      <p className="text-xs text-amber-800 mt-1">
+                        Sign in to complete registration.
+                      </p>
+                      <Link
+                        href="/sign-in?callbackUrl=/register"
+                        className="inline-block mt-2 text-sm font-bold text-amber-900 underline"
+                      >
+                        Sign in →
+                      </Link>
+                    </div>
+                  )}
 
-                   {payError && <p className="text-red-600 font-bold text-sm bg-red-50 p-2 border-l-4 border-red-600">{payError}</p>}
+                  {payError && (
+                    <p className="text-red-600 font-bold text-sm bg-red-50 p-2 border-l-4 border-red-600">
+                      {payError}
+                    </p>
+                  )}
 
-                   <Button
-                     className="w-full bg-green-500 text-black font-black text-lg py-6 rounded-xl border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:bg-green-400 transition-all active:shadow-none disabled:opacity-60 disabled:cursor-not-allowed"
-                     disabled={isLoading || !session?.user || !utrId}
-                     onClick={handleConfirmRegister}
-                   >
-                     {isLoading ? "SUBMITTING..." : "SUBMIT PAYMENT DETAILS →"}
-                   </Button>
+                  <Button
+                    className="w-full bg-green-500 text-black font-black text-lg py-6 rounded-xl border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:bg-green-400 transition-all active:shadow-none disabled:opacity-60 disabled:cursor-not-allowed"
+                    disabled={isLoading || !session?.user || !utrId}
+                    onClick={handleConfirmRegister}
+                  >
+                    {isLoading ? "SUBMITTING..." : "SUBMIT PAYMENT DETAILS →"}
+                  </Button>
                 </div>
               </motion.div>
             )}
@@ -533,9 +605,17 @@ export default function Register() {
                 </h2>
 
                 <p className="text-zinc-800 font-bold text-lg mb-6 max-w-md mx-auto leading-relaxed">
-                  Thank You for Registering. We will review and send your pass to your email soon.
+                  Thank You for Registering. We will review and send your pass
+                  to your email soon.
                   <span className="block mt-2 text-zinc-600 font-medium text-base">
-                    You can also check your <Link href="/profile" className="underline font-bold text-black">Profile</Link> section for ticket status.
+                    You can also check your{" "}
+                    <Link
+                      href="/profile"
+                      className="underline font-bold text-black"
+                    >
+                      Profile
+                    </Link>{" "}
+                    section for ticket status.
                   </span>
                 </p>
 
