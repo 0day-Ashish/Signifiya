@@ -50,14 +50,14 @@ export default function RegistrationComingSoon({ type }: Props) {
         {/* ── Top label sticker ── */}
         <div className="self-start">
           <div
-            className={`${accentColor} border-4 border-black px-4 py-1 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] font-mono text-xs font-black uppercase tracking-widest text-black -mb-0.5 relative z-10`}
+            className={`${accentColor} border-4 border-black px-4 py-1 rounded-t-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] font-mono text-xs font-black uppercase tracking-widest text-black -mb-0.5 relative z-10`}
           >
             ⚠ {label} REGISTRATION
           </div>
         </div>
 
         {/* ── Main card ── */}
-        <div className="bg-white border-4 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] overflow-hidden">
+        <div className="bg-white rounded-[2rem] border-4 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] overflow-hidden">
           {/* Striped top bar */}
           <div
             className="h-4 w-full border-b-4 border-black"
@@ -91,7 +91,7 @@ export default function RegistrationComingSoon({ type }: Props) {
 
               {/* Date badge */}
               <div
-                className={`${accentColor} border-4 border-black p-5 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]`}
+                className={`${accentColor} border-4 border-black rounded-2xl p-5 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]`}
               >
                 <p className="font-mono text-[10px] font-black uppercase tracking-[0.2em] text-black/60 mb-1">
                   Registrations open on
@@ -107,7 +107,7 @@ export default function RegistrationComingSoon({ type }: Props) {
               {/* Back home button */}
               <Link
                 href="/"
-                className="inline-flex w-fit items-center gap-2 px-5 py-3 bg-white border-4 border-black font-black text-black text-sm uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all font-mono"
+                className="inline-flex w-fit items-center gap-2 px-5 py-3 bg-white border-4 border-black rounded-xl font-black text-black text-sm uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all font-mono"
               >
                 ← RETURN HOME
               </Link>
@@ -115,7 +115,7 @@ export default function RegistrationComingSoon({ type }: Props) {
 
             {/* ── RIGHT: Countdown ── */}
             <div className="lg:w-64 flex flex-col justify-center gap-4">
-              <div className="bg-black px-4 py-2 self-start shadow-[3px_3px_0px_0px_rgba(255,229,0,1)]">
+              <div className="bg-black px-4 py-2 self-start rounded-lg shadow-[3px_3px_0px_0px_rgba(255,229,0,1)]">
                 <p className="font-mono text-[10px] font-black uppercase tracking-[0.25em] text-yellow-300">
                   {timeLeft ? "— Opens in —" : "— Check now —"}
                 </p>
@@ -130,7 +130,7 @@ export default function RegistrationComingSoon({ type }: Props) {
                   ].map(({ label, value }, i) => (
                     <div
                       key={label}
-                      className={`border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] flex items-center justify-between px-5 py-4 ${
+                      className={`border-4 border-black rounded-2xl shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] flex items-center justify-between px-5 py-4 ${
                         i === 0
                           ? "bg-yellow-300"
                           : i === 1
@@ -156,7 +156,7 @@ export default function RegistrationComingSoon({ type }: Props) {
                   ))}
                 </>
               ) : (
-                <div className="border-4 border-black bg-yellow-300 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] px-5 py-6 text-center">
+                <div className="border-4 border-black rounded-2xl bg-yellow-300 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] px-5 py-6 text-center">
                   <p className="font-black text-black text-sm uppercase tracking-wider">
                     🎉 We&apos;re live!
                   </p>
@@ -168,7 +168,7 @@ export default function RegistrationComingSoon({ type }: Props) {
 
               {/* Decorative striped block */}
               <div
-                className="h-6 w-full border-4 border-black"
+                className="h-6 w-full border-4 border-black rounded-xl"
                 style={{
                   backgroundImage:
                     "repeating-linear-gradient(90deg, #FFE500, #FFE500 8px, #000 8px, #000 16px)",
@@ -180,7 +180,7 @@ export default function RegistrationComingSoon({ type }: Props) {
 
         {/* ── Bottom tag ── */}
         <div className="self-end">
-          <div className="bg-black border-4 border-black px-4 py-1 -mt-0.5 shadow-[4px_4px_0px_0px_rgba(255,229,0,0.8)]">
+          <div className="bg-black border-4 border-black px-4 py-1 -mt-0.5 rounded-b-xl shadow-[4px_4px_0px_0px_rgba(255,229,0,0.8)]">
             <p className="font-mono text-[10px] text-yellow-300 font-black uppercase tracking-widest">
               SIGNIFIYA &apos;26 · REGISTRATION PORTAL
             </p>
