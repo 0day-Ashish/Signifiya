@@ -75,7 +75,7 @@ export const APP_CONFIG = {
       {
         id: 3,
         name: "Garima Roy",
-        role: "Core Committee",
+        role: "Documentations Head",
         email: "roygarima@gmail.com",
         phone: "+91 9073377527",
         image: "/team/Garima.jpeg",
