@@ -222,7 +222,7 @@ export const ALL_EVENTS: MasterEvent[] = [
   },
   {
     id: 9,
-    title: "Robo Soccer",
+    title: "Robo Terrain",
     eventTitle: "ROBO TERRAIN",
     category: "ROBOTICS",
     department: "Robotics (Tech)",

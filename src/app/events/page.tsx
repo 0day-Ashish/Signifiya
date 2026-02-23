@@ -104,7 +104,7 @@ const eventsList = [
   },
   {
     id: "robo",
-    name: "Robo Terrain (Robo Soccer)",
+    name: "Robo Terrain",
     price: 219,
     type: "Team (3)",
     date: "March 27-28",
