@@ -452,11 +452,26 @@ export default function EventRegistration() {
   };
 
   const onSubmitStep3 = async () => {
-    // Optional: Validate members if you want strictly non-empty names
+    // Optional: Validate members and enforce event-specific teammate counts
     const isValid = await trigger("members");
-    if (isValid) {
-      setStep(4);
+    if (!isValid) return;
+
+    const selectedId = (watch("selectedEvents") || [])[0];
+    const members = watch("members") || [];
+
+    // For Valorant (id: 'gaming') require at least 4 teammates
+    if (selectedId === "gaming" && members.length < 4) {
+      toast.error("Valorant requires at least 4 teammates. Add 4 teammates to continue.");
+      return;
     }
+
+    // For BGMI and Free Fire require at least 3 teammates
+    if ((selectedId === "bgmi" || selectedId === "freefire") && members.length < 3) {
+      toast.error("This event requires at least 3 teammates. Add teammates to continue.");
+      return;
+    }
+
+    setStep(4);
   };
 
   const handleFinalSubmit = async () => {
