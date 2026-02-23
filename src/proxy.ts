@@ -11,29 +11,26 @@ const redis =
       })
     : null;
 
-const authLimit = redis
-  ? new Ratelimit({
-      redis,
-      limiter: Ratelimit.slidingWindow(10, "60 s"),
-      analytics: true,
-    })
-  : null;
+// Cache Ratelimit instances so we only create them when needed
+const limiterCache = new Map<string, Ratelimit | null>();
 
-const registerLimit = redis
-  ? new Ratelimit({
-      redis,
-      limiter: Ratelimit.slidingWindow(5, "60 s"),
-      analytics: true,
-    })
-  : null;
+function getLimiter(key: string, count: number, windowSeconds: number) {
+  if (!redis) return null;
+  if (limiterCache.has(key)) return limiterCache.get(key) as Ratelimit | null;
 
-const contactLimit = redis
-  ? new Ratelimit({
-      redis,
-      limiter: Ratelimit.slidingWindow(3, "60 s"),
-      analytics: true,
-    })
-  : null;
+  const analyticsEnabled = process.env.NODE_ENV !== "production"; // reduce extra ops in prod
+
+  const limiter = new Ratelimit({
+    redis,
+    // Ratelimit Duration type is a template literal type (e.g. "60 s").
+    // We construct the duration string here and cast to any to satisfy the library types.
+    limiter: Ratelimit.slidingWindow(count, `${windowSeconds} s` as any),
+    analytics: analyticsEnabled,
+  });
+
+  limiterCache.set(key, limiter);
+  return limiter;
+}
 
 function getIp(req: NextRequest): string {
   return (
@@ -44,12 +41,22 @@ function getIp(req: NextRequest): string {
 }
 
 export async function proxy(request: NextRequest) {
-  // Only rate limit POST for these paths
+  // Skip non-POST early
   if (request.method !== "POST") return NextResponse.next();
 
   const pathname = request.nextUrl.pathname;
 
+  // Avoid touching middleware for static assets (in case matcher overlaps)
+  const isStaticAsset =
+    pathname.startsWith("/_next/") ||
+    pathname.startsWith("/static/") ||
+    pathname.startsWith("/fonts/") ||
+    /\.(?:svg|jpg|jpeg|png|gif|ico|webp|avif|mp4|pdf|css|js|map)$/i.test(pathname);
+  if (isStaticAsset) return NextResponse.next();
+
+  // Use lazily-created, cached limiters to reduce work during module init
   if (pathname.startsWith("/api/auth")) {
+    const authLimit = getLimiter("auth", 10, 60);
     if (authLimit) {
       const { success } = await authLimit.limit(getIp(request));
       if (!success)
@@ -59,6 +66,7 @@ export async function proxy(request: NextRequest) {
         );
     }
   } else if (pathname === "/register" || pathname === "/events") {
+    const registerLimit = getLimiter("register", 5, 60);
     if (registerLimit) {
       const { success } = await registerLimit.limit(getIp(request));
       if (!success)
@@ -68,6 +76,7 @@ export async function proxy(request: NextRequest) {
         );
     }
   } else if (pathname === "/contact") {
+    const contactLimit = getLimiter("contact", 3, 60);
     if (contactLimit) {
       const { success } = await contactLimit.limit(getIp(request));
       if (!success)
