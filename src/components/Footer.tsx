@@ -262,7 +262,7 @@ export default function Footer() {
                     {APP_CONFIG.organization.copyright}
                   </span>
                   <span className="text-black text-[10px] font-medium leading-tight">
-                    Designed and Developed by <a href="https://arddev.vercel.app" target="_blank" rel="noopener noreferrer" className="hover:underline hover:text-gray-700 transition-colors">ard.dev</a> and <a href="https://subham12r.me" target="_blank" rel="noopener noreferrer" className="hover:underline hover:text-gray-700 transition-colors">subham12r</a>
+                    Designed and Developed by <a href="https://arddev.in" target="_blank" rel="noopener noreferrer" className="hover:underline hover:text-gray-700 transition-colors">ard.dev</a> and <a href="https://subham12r.me" target="_blank" rel="noopener noreferrer" className="hover:underline hover:text-gray-700 transition-colors">subham12r</a>
                   </span>
                 </div>
               </div>

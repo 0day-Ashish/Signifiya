@@ -495,10 +495,32 @@ export type EventListingItem = {
   description: string;
   image: string;
   prizePool: string;
+  price?: number;
 };
 
 /** Derive events listing data from master events */
 export function getEventsListingData(): EventListingItem[] {
+  // Prices for events by exact title (fallback to 0 if missing)
+  const PRICE_BY_TITLE: Record<string, number> = {
+    "Valorant Tournament": 499,
+    "Free Fire": 399,
+    "Coding Premier League": 280,
+    "RE-FAB (Waste to Wealth)": 280,
+    "Path Follower": 219,
+    "Bridge Building": 280,
+    "Dance Battle": 200,
+    "Arm Wrestling": 100,
+    "BGMI": 399,
+    "E-Football": 149,
+    "Electrifying Circuits": 299,
+    "Tower Making": 280,
+    "Dil Se Design": 219,
+    "Lathe War": 219,
+    "Robo Terrain (Robo Soccer)": 219,
+    "Rap Battle": 149,
+    "Treasure Hunt": 300,
+    "Power Deal": 149,
+  };
   return ALL_EVENTS.map((e) => ({
     id: e.id,
     category: e.category,
@@ -507,6 +529,7 @@ export function getEventsListingData(): EventListingItem[] {
     description: e.description,
     image: e.image,
     prizePool: e.prizePool,
+    price: PRICE_BY_TITLE[e.title] ?? 0,
   }));
 }
 

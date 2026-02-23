@@ -297,11 +297,20 @@ export default function Events() {
                         >
                           {event.date}
                         </p>
-                        <span
-                          className={`inline-block mt-1.5 px-2 sm:px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs sm:text-sm font-bold ${softura.className}`}
-                        >
-                          Prize pool: {event.prizePool}
-                        </span>
+                        <div className="flex items-center gap-3 mt-1.5">
+                          <span
+                            className={`inline-block px-2 sm:px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs sm:text-sm font-bold ${softura.className}`}
+                          >
+                            Prize pool: {event.prizePool}
+                          </span>
+                          {typeof event.price === "number" && event.price > 0 && (
+                            <span
+                              className={`inline-block px-2 sm:px-3 py-1 rounded-full bg-yellow-100 text-yellow-800 text-xs sm:text-sm font-bold ${softura.className}`}
+                            >
+                              Fee: ₹{event.price}
+                            </span>
+                          )}
+                        </div>
                       </div>
                       <p
                         className={`text-sm sm:text-base text-gray-800 font-medium leading-snug line-clamp-3 ${softura.className}`}
