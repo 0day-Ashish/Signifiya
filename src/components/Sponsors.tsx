@@ -11,6 +11,7 @@ const SPONSOR_LOGO_FILES = [
     "arun.png",
     "axis.jpeg",
     "burgerking.png",
+    "the-wall.png",
     "Domino.png",
     "jawa.jpeg",
     "nikon.png",
