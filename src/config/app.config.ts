@@ -37,7 +37,7 @@ export const APP_CONFIG = {
    * Active discount is the first window where now >= start && now < start + duration.
    */
   eventDiscounts: [
-    { start: "2026-02-23T00:00:00+05:30", durationHours: 6,  discountPercent: 10, label: "Flash Sale 10% OFF" },
+    { start: "2026-02-23T16:00:00+05:30", durationHours: 6,  discountPercent: 10, label: "Flash Sale 10% OFF" },
     { start: "2026-03-01T00:00:00+05:30", durationHours: 12, discountPercent: 5,  label: "Early Bird 5% OFF" },
     { start: "2026-03-22T00:00:00+05:30", durationHours: 24, discountPercent: 10, label: "Last Chance 10% OFF" },
   ] as const,
