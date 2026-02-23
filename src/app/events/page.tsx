@@ -1037,14 +1037,36 @@ export default function EventRegistration() {
                       )}
                     </p>
 
-                    <div className="relative w-48 h-48 border-4 border-black rounded-xl overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mx-auto mb-4 bg-white">
-                      <Image
-                        src="/qrcode.png"
-                        alt="Payment QR Code"
-                        fill
-                        className="object-contain p-2"
-                      />
-                    </div>
+                    {/* Show special SID QR for esports events, otherwise default payment QR */}
+                    {(() => {
+                      // Determine selected event (robust: check id and name keywords)
+                      const selectedId = (selectedEventIds || [])[0];
+                      const selectedEvent = eventsList.find((e) => e.id === selectedId);
+
+                      const esportsKeywords = [
+                        "valorant",
+                        "free fire",
+                        "freefire",
+                        "bgmi",
+                        "e-football",
+                        "efootball",
+                        "gaming",
+                      ];
+
+                      const nameMatches = selectedEvent?.name
+                        ? esportsKeywords.some((k) =>
+                            selectedEvent.name.toLowerCase().includes(k),
+                          )
+                        : false;
+
+                      const isEsportsSelected = nameMatches || esportsKeywords.includes(selectedId || "");
+                      const qrSrc = isEsportsSelected ? "/sidqr.jpeg" : "/qrcode.png";
+                      return (
+                        <div className="relative w-48 h-48 border-4 border-black rounded-xl overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mx-auto mb-4 bg-white">
+                          <Image src={qrSrc} alt="Payment QR Code" fill className="object-contain p-2" />
+                        </div>
+                      );
+                    })()}
                     <p className="text-xs font-bold text-zinc-600">
                       Scan to pay via UPI
                     </p>
