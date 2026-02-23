@@ -505,7 +505,7 @@ export function getEventsListingData(): EventListingItem[] {
     "Valorant Tournament": 499,
     "Free Fire": 399,
     "Coding Premier League": 280,
-    "RE-FAB (Waste to Wealth)": 280,
+    "Refab": 280,
     "Path Follower": 219,
     "Bridge Building": 280,
     "Dance Battle": 200,
