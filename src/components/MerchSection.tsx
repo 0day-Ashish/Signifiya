@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import localFont from "next/font/local";
 import { motion, AnimatePresence } from "motion/react";
 import FadeIn from "./FadeIn";
@@ -228,12 +227,12 @@ export default function MerchSection() {
 
               {/* Book Now Button */}
               <div className="flex flex-col sm:flex-row gap-3 mt-2">
-                <Link
-                  href="/merch"
-                  className={`inline-flex text-center  bg-black text-white px-8 py-4 rounded-2xl border-2 border-black font-bold text-base sm:text-lg uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-200 ${gilton.className}`}
+                <span
+                  className={`inline-flex text-center bg-gray-400 text-white px-8 py-4 rounded-2xl border-2 border-gray-400 font-bold text-base sm:text-lg uppercase tracking-wider cursor-not-allowed opacity-60 ${gilton.className}`}
+                  aria-disabled="true"
                 >
-                  Book Now
-                </Link>
+                  Coming Soon
+                </span>
               </div>
             </div>
           </div>
