@@ -234,7 +234,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     day: 1,
     time: "12:30 PM - 3:00 PM",
     venue: "Canopy Area",
-    coordinators: "Digant Mishra, Suvankar Pramanik",
+    coordinators: "Digant Mishra, Subhangkar Barui",
     facultyCoordinators: "Bishal Mondal",
     lottie:
       "https://lottie.host/34b5f811-28e8-4ac1-9f7a-7857fb6cbb50/C28AMF6Pa6.lottie",
