@@ -1067,3 +1067,185 @@ export async function updateMerchOrderStatus(id: string, status: string) {
     return { success: false, error: error.message || "Failed to update order" };
   }
 }
+
+// ────────────────────────────────────────────────────────
+// CSV Export helpers
+// ────────────────────────────────────────────────────────
+
+function csvEscape(value: unknown): string {
+  if (value == null) return "";
+  const str = String(value);
+  if (str.includes(",") || str.includes('"') || str.includes("\n")) {
+    return `"${str.replace(/"/g, '""')}"`;
+  }
+  return str;
+}
+
+function toCsv(headers: string[], rows: unknown[][]): string {
+  const lines = [headers.map(csvEscape).join(",")];
+  for (const row of rows) {
+    lines.push(row.map(csvEscape).join(","));
+  }
+  return lines.join("\n");
+}
+
+const IST_FORMAT: Intl.DateTimeFormatOptions = {
+  timeZone: "Asia/Kolkata",
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+  hour12: false,
+};
+
+function fmtDate(d: Date | string | null | undefined): string {
+  if (!d) return "";
+  return new Date(d).toLocaleString("en-IN", IST_FORMAT);
+}
+
+// --- Attendees CSV ---
+export async function exportAttendeesCsv(): Promise<string> {
+  await guard();
+  const { attendees } = await getAttendees({ limit: 100000, offset: 0 });
+
+  const headers = [
+    "Name",
+    "Email",
+    "Role",
+    "Detail",
+    "College",
+    "Phone",
+    "Last Verified At",
+    "Attendance",
+    "Team Members",
+  ];
+  const rows = attendees.map((a) => [
+    a.name,
+    a.email,
+    a.role,
+    a.detail,
+    a.college,
+    a.phone,
+    fmtDate(a.lastAttendedAt),
+    a.attendance.map((r) => `${r.label}: ${fmtDate(r.date)}`).join(" | "),
+    a.teamMembers
+      ?.map((m) => `${m.name} (${fmtDate(m.attendedAt)})`)
+      .join(" | ") ?? "",
+  ]);
+  return toCsv(headers, rows);
+}
+
+// --- Revenue: Passes CSV ---
+export async function exportVisitorRegistrationsCsv(): Promise<string> {
+  await guard();
+  const { list } = await getVisitorRegistrations({ limit: 100000, offset: 0 });
+
+  const headers = [
+    "Booking ID",
+    "Name",
+    "Email",
+    "Phone",
+    "College",
+    "Pass Type",
+    "Amount (₹)",
+    "UTR / Payment Proof",
+    "Status",
+    "Date",
+  ];
+  const rows = list.map((v: any) => [
+    v.userBookingId || v.bookingId || "",
+    v.name,
+    v.email,
+    v.phone,
+    v.college,
+    v.passType,
+    v.amount,
+    v.paymentProofUrl || "",
+    v.status,
+    fmtDate(v.createdAt),
+  ]);
+  return toCsv(headers, rows);
+}
+
+// --- Revenue: Event Teams CSV ---
+export async function exportParticipantTeamsCsv(): Promise<string> {
+  await guard();
+  const teams = await prisma.participantTeam.findMany({
+    include: { members: true, events: { include: { event: true } } },
+    orderBy: { createdAt: "desc" },
+  });
+
+  const headers = [
+    "Team Name",
+    "Leader Name",
+    "Leader Email",
+    "Leader Booking ID",
+    "Events",
+    "Members",
+    "Amount (₹)",
+    "UTR / Payment Proof",
+    "Status",
+    "Date",
+  ];
+  const rows = teams.map((t) => [
+    t.teamName,
+    t.leaderName,
+    t.leaderEmail,
+    t.leaderBookingId,
+    t.events.map((e) => e.event.name).join(", "),
+    t.members.map((m) => `${m.name} (${m.college || "N/A"})`).join(" | "),
+    t.totalAmount,
+    t.paymentProofUrl || "",
+    t.status,
+    fmtDate(t.createdAt),
+  ]);
+  return toCsv(headers, rows);
+}
+
+// --- Merch Orders CSV ---
+export async function exportMerchOrdersCsv(): Promise<string> {
+  await guard();
+  const orders = await prisma.merchOrder.findMany({
+    orderBy: { createdAt: "desc" },
+  });
+
+  const headers = [
+    "Order #",
+    "Name",
+    "Email",
+    "Phone",
+    "College",
+    "Item",
+    "Size",
+    "Color",
+    "Quantity",
+    "Unit Price (₹)",
+    "Discount (₹)",
+    "Total (₹)",
+    "UTR",
+    "Referral Booking ID",
+    "Status",
+    "Date",
+  ];
+  const rows = orders.map((o) => [
+    o.orderNumber,
+    o.name,
+    o.email,
+    o.phone,
+    o.college,
+    o.merchItemName,
+    o.size,
+    o.color,
+    o.quantity,
+    o.unitPrice,
+    o.discountAmount,
+    o.totalAmount,
+    o.utrId,
+    o.referralBookingId,
+    o.status,
+    fmtDate(o.createdAt),
+  ]);
+  return toCsv(headers, rows);
+}
