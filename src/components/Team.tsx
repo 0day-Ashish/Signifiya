@@ -42,12 +42,12 @@ const TEAM_MEMBERS: TeamMember[] = [
   { id: 14, name: "Garima Roy", role: "Documentations Lead", image: "/team/Garima.jpeg", linkedin: "https://www.linkedin.com/in/garima-roy-032277290/", instagram: "https://instagram.com/_garimaa.07_", github: "https://github.com/Groy416" },
   { id: 15, name: "Leeza Bhowal", role: "Design Lead", image: "/team/Leeza.jpg", linkedin: "https://in.linkedin.com/in/leeza-bhowal", instagram: "https://instagram.com/leeza_bhowal" },
   { id: 16, name: "Srijita Bera", role: "Marketing Lead", image: "/team/Srijita.jpeg", linkedin: "https://linkedin.com/in/srijita-bera-ab5578291/", instagram: "https://instagram.com/veilof_mist", github: "https://github.com/Srijiiii" },
-  { id: 17, name: "Keshav Maheshwari", role: "Execution Cell", image: "/team/keshav.jpeg", linkedin: "https://linkedin.com/in/", instagram: "https://instagram.com/keshav.maheshwari", github: "https://github.com/" },
-  { id: 18, name: "Sampad Ghosh", role: "Execution Cell", image: "/team/sampad.jpeg", linkedin: "https://linkedin.com/in/", instagram: "https://instagram.com/sampad.ghosh", github: "https://github.com/" },
+  // { id: 17, name: "Keshav Maheshwari", role: "Execution Cell", image: "/team/keshav.jpeg", linkedin: "https://linkedin.com/in/", instagram: "https://instagram.com/keshav.maheshwari", github: "https://github.com/" },
+  // { id: 18, name: "Sampad Ghosh", role: "Execution Cell", image: "/team/sampad.jpeg", linkedin: "https://linkedin.com/in/", instagram: "https://instagram.com/sampad.ghosh", github: "https://github.com/" },
   // { id: 9, name: "Sudipto Barman", role: "Ex Support", image: "/team/Sudipto.jpg", linkedin:" https://linkedin.com/in/sudipto-barman-3b5b4b3b5/", instagram:" https://instagram.com/sudipto.barman" , github:" https://github.com/sudiptobarman" },
-  { id: 19, name: "Titas Sarkar", role: "Ex Support", image: "/team/Titas.jpg", linkedin: "https://www.linkedin.com/in/titas-sarkar-7b0978343/", instagram: "https://instagram.com/t.i.t.a.s", github: "https://github.com/titas841-web" },
-  { id: 20, name: "Sayan Mukherjee", role: "App Development", image: "/team/Sayan.jpeg", linkedin: "https://www.linkedin.com/in/sayan-mukherjee-258751356", instagram: "https://www.instagram.com/sa.yan1047", github: "https://github.com/Sani05M" },
-  { id: 21, name: "Tushar Kanti Dey", role: "App Development", image: "/team/Tushar.jpg", linkedin: "https://www.linkedin.com/in/tushar-kanti-dey/", instagram: "https://www.instagram.com/tushardevx01", github: "https://github.com/Tusharxhub" },
+  { id: 17, name: "Titas Sarkar", role: "Ex Support", image: "/team/Titas.jpg", linkedin: "https://www.linkedin.com/in/titas-sarkar-7b0978343/", instagram: "https://instagram.com/t.i.t.a.s", github: "https://github.com/titas841-web" },
+  { id: 18, name: "Sayan Mukherjee", role: "App Development", image: "/team/Sayan.jpeg", linkedin: "https://www.linkedin.com/in/sayan-mukherjee-258751356", instagram: "https://www.instagram.com/sa.yan1047", github: "https://github.com/Sani05M" },
+  { id: 19, name: "Tushar Kanti Dey", role: "App Development", image: "/team/Tushar.jpg", linkedin: "https://www.linkedin.com/in/tushar-kanti-dey/", instagram: "https://www.instagram.com/tushardevx01", github: "https://github.com/Tusharxhub" },
   // { id: 15, name: "Somnath Singha Roy", role: "Ex Support", image: "/1.jpg" },
 
 ];
