@@ -1155,7 +1155,7 @@ export default function EventRegistration() {
           <div className="relative w-[420px] h-[580px] bg-white border-4 border-black rounded-2xl shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] rotate-[-2deg] flex flex-col overflow-hidden group">
             <div className="h-2/3 bg-zinc-900 relative border-b-4 border-black overflow-hidden">
               <Image
-                src="/event-reg-bg.jpg"
+                src="/gall13.jpg"
                 alt="Event"
                 fill
                 className="object-cover opacity-80 group-hover:scale-105 transition-transform duration-700"
