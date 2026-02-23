@@ -17,6 +17,7 @@ export default function SignIn() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -152,14 +153,38 @@ export default function SignIn() {
 
           <div className="flex flex-col gap-2">
             <label className={`font-bold text-black uppercase text-sm ${softura.className}`}>Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className={`w-full bg-white border-2 border-black rounded-lg p-3 text-black placeholder-gray-500 focus:outline-none focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all ${softura.className}`}
-              placeholder="Enter your password"
-              required
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className={`w-full bg-white border-2 border-black rounded-lg p-3 pr-12 text-black placeholder-gray-500 focus:outline-none focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all ${softura.className}`}
+                placeholder="Enter your password"
+                required
+                aria-label="Password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((s) => !s)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-zinc-700 hover:text-black"
+                aria-pressed={showPassword}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? (
+                  // Eye-off: eye outline with a diagonal slash
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7S3.732 16.057 2.458 12z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3l18 18" />
+                  </svg>
+                ) : (
+                  // Eye (open)
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7S3.732 16.057 2.458 12z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                )}
+              </button>
+            </div>
           </div>
 
           <button
