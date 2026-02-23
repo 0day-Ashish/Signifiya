@@ -8,6 +8,7 @@ import {
   GithubIcon,
   InstagramIcon,
   LinkedinIcon,
+  Globe,
   Pause,
   Play,
 } from "lucide-react";
@@ -21,6 +22,7 @@ type TeamMember = {
   instagram?: string;
   linkedin?: string;
   github?: string;
+  website?: string;
 };
 const gilton = localFont({ src: "../../public/fonts/GiltonRegular.otf" });
 const softura = localFont({ src: "../../public/fonts/Softura-Demo.otf" });
@@ -36,9 +38,9 @@ const TEAM_MEMBERS: TeamMember[] = [
   { id: 8, name: "Snehasish Mondal", role: "Operations Lead", image: "/team/Snehasish.jpg", linkedin: "https://www.linkedin.com/in/snehasish-mondal", instagram: "https://instagram.com/sn3hasishhhhh", github: "https://github.com/Snehasish321" },
   { id: 9, name: "Samriddhi Sinha", role: "Decorations Lead", image: "/team/samriddhi.jpg", linkedin: "https://www.linkedin.com/in/samriddhi-sinha-555768280", instagram: "https://www.instagram.com/samriddhibelike_?igsh=bGczcmY5NGFydTA2", github: "https://github.com/Samriddhie" },
   { id: 10, name: "Arnab Mandal", role: "Social Media Head", image: "/team/Arnab.jpeg", linkedin: "https://www.linkedin.com/in/arnab-mandal-4b61151a1", instagram: "https://instagram.com/arna4b", github: "https://github.com/arnaabh" },
-  { id: 11, name: "Ashish R. Das", role: "Tech Lead", image: "/team/Ashish.jpg", linkedin: "https://linkedin.com/in/arddev", instagram: "https://instagram.com/ashishh_rd_", github: "https://github.com/0day-Ashish" },
-  { id: 12, name: "Subham Karmakar", role: "Web Dev Lead", image: "/team/Subham.jpeg", linkedin: "https://linkedin.com/in/subham12r", instagram: "https://instagram.com/5ubhamkarmakar", github: "https://github.com/subham12r" },
-  { id: 13, name: "Abhisekh Singh", role: "App Development", image: "/team/Abhishek.jpg", linkedin: "https://www.linkedin.com/in/abhi3hekk", instagram: "https://instagram.com/abhi3hekk", github: "https://github.com/AbhishekS04" },
+  { id: 11, name: "Ashish R. Das", role: "Tech Lead", image: "/team/Ashish.jpg", linkedin: "https://linkedin.com/in/arddev", instagram: "https://instagram.com/ashishh_rd_", github: "https://github.com/0day-Ashish", website: "https://arddev.in" },
+  { id: 12, name: "Subham Karmakar", role: "Web Dev Lead", image: "/team/Subham.jpeg", linkedin: "https://linkedin.com/in/subham12r", instagram: "https://instagram.com/5ubhamkarmakar", github: "https://github.com/subham12r", website: "https://subham12r.me" },
+  { id: 13, name: "Abhisekh Singh", role: "App Dev Lead", image: "/team/Abhishek.jpg", linkedin: "https://www.linkedin.com/in/abhi3hekk", instagram: "https://instagram.com/abhi3hekk", github: "https://github.com/AbhishekS04", website: "https://www.abhisheksingh.tech/" },
   { id: 14, name: "Garima Roy", role: "Documentations Lead", image: "/team/Garima.jpeg", linkedin: "https://www.linkedin.com/in/garima-roy-032277290/", instagram: "https://instagram.com/_garimaa.07_", github: "https://github.com/Groy416" },
   { id: 15, name: "Leeza Bhowal", role: "Design Lead", image: "/team/Leeza.jpg", linkedin: "https://in.linkedin.com/in/leeza-bhowal", instagram: "https://instagram.com/leeza_bhowal" },
   { id: 16, name: "Srijita Bera", role: "Marketing Lead", image: "/team/Srijita.jpeg", linkedin: "https://linkedin.com/in/srijita-bera-ab5578291/", instagram: "https://instagram.com/veilof_mist", github: "https://github.com/Srijiiii" },
@@ -268,6 +270,17 @@ export default function Team() {
                         className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-black bg-[#7dc8ff] shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none"
                       >
                         <LinkedinIcon className="h-4 w-4 text-black" />
+                      </a>
+                    )}
+                    {member.website && (
+                      <a
+                        href={member.website}
+                        target="_blank"
+                        rel="noreferrer"
+                        aria-label={`${member.name} Website`}
+                        className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-black bg-[#c7f9d8] shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none"
+                      >
+                        <Globe className="h-4 w-4 text-black" />
                       </a>
                     )}
                   </div>
