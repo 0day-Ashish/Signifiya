@@ -227,7 +227,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     description:
       "Lock hands, hold your ground, and power through to pin your opponent down.",
     scheduleDescription:
-      "Lock hands, hold your ground, and power through to pin your opponent down.",
+      "Lock hands, hold your ground, and power through to pin your opponent down. Weight categories will lie between: 60kgs - 90kgs+.",
     date: "March 27th",
     image: "/non-tech1.jpg",
     prizePool: "₹3,000",
