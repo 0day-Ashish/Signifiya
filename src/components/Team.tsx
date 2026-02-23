@@ -37,7 +37,7 @@ const TEAM_MEMBERS: TeamMember[] = [
   { id: 9, name: "Samriddhi Sinha", role: "Decorations Lead", image: "/team/samriddhi.jpg", linkedin: "https://www.linkedin.com/in/samriddhi-sinha-555768280", instagram: "https://www.instagram.com/samriddhibelike_?igsh=bGczcmY5NGFydTA2", github: "https://github.com/Samriddhie" },
   { id: 10, name: "Arnab Mandal", role: "Social Media Head", image: "/team/Arnab.jpeg", linkedin: "https://www.linkedin.com/in/arnab-mandal-4b61151a1", instagram: "https://instagram.com/arna4b", github: "https://github.com/arnaabh" },
   { id: 11, name: "Ashish R. Das", role: "Tech Lead", image: "/team/Ashish.jpg", linkedin: "https://linkedin.com/in/arddev", instagram: "https://instagram.com/ashishh_rd_", github: "https://github.com/0day-Ashish" },
-  { id: 12, name: "Subham Karmakar", role: "Tech Support", image: "/team/Subham.jpeg", linkedin: "https://linkedin.com/in/subham12r", instagram: "https://instagram.com/5ubhamkarmakar", github: "https://github.com/subham12r" },
+  { id: 12, name: "Subham Karmakar", role: "Web Dev Lead", image: "/team/Subham.jpeg", linkedin: "https://linkedin.com/in/subham12r", instagram: "https://instagram.com/5ubhamkarmakar", github: "https://github.com/subham12r" },
   { id: 13, name: "Abhisekh Singh", role: "App Development", image: "/team/Abhishek.jpg", linkedin: "https://www.linkedin.com/in/abhi3hekk", instagram: "https://instagram.com/abhi3hekk", github: "https://github.com/AbhishekS04" },
   { id: 14, name: "Garima Roy", role: "Documentations Lead", image: "/team/Garima.jpeg", linkedin: "https://www.linkedin.com/in/garima-roy-032277290/", instagram: "https://instagram.com/_garimaa.07_", github: "https://github.com/Groy416" },
   { id: 15, name: "Leeza Bhowal", role: "Design Lead", image: "/team/Leeza.jpg", linkedin: "https://in.linkedin.com/in/leeza-bhowal", instagram: "https://instagram.com/leeza_bhowal" },
@@ -46,7 +46,10 @@ const TEAM_MEMBERS: TeamMember[] = [
   { id: 18, name: "Sampad Ghosh", role: "Execution Cell", image: "/team/sampad.jpeg", linkedin: "https://linkedin.com/in/", instagram: "https://instagram.com/sampad.ghosh", github: "https://github.com/" },
   // { id: 9, name: "Sudipto Barman", role: "Ex Support", image: "/team/Sudipto.jpg", linkedin:" https://linkedin.com/in/sudipto-barman-3b5b4b3b5/", instagram:" https://instagram.com/sudipto.barman" , github:" https://github.com/sudiptobarman" },
   { id: 19, name: "Titas Sarkar", role: "Ex Support", image: "/team/Titas.jpg", linkedin: "https://www.linkedin.com/in/titas-sarkar-7b0978343/", instagram: "https://instagram.com/t.i.t.a.s", github: "https://github.com/titas841-web" },
+  { id: 20, name: "Sayan Mukherjee", role: "App Development", image: "/team/Sayan.jpeg", linkedin: "https://www.linkedin.com/in/sayan-mukherjee-258751356", instagram: "https://www.instagram.com/sa.yan1047", github: "https://github.com/Sani05M" },
+  { id: 21, name: "Tushar Kanti Dey", role: "App Development", image: "/team/Tushar.jpg", linkedin: "https://www.linkedin.com/in/tushar-kanti-dey/", instagram: "https://www.instagram.com/tushardevx01", github: "https://github.com/Tusharxhub" },
   // { id: 15, name: "Somnath Singha Roy", role: "Ex Support", image: "/1.jpg" },
+
 ];
 
 export default function Team() {
