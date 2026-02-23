@@ -62,7 +62,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     prizePool: "₹30,000",
     day: 1,
     time: "12:00 PM - 7:00 PM",
-    venue: "SV Hall",
+    venue: "Swami Vivekananda Hall",
     coordinators: "Hrittima Sen",
     facultyCoordinators: "Ayushman Bilash Thakur",
     lottie:
