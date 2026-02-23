@@ -27,10 +27,10 @@ type TeamMember = {
 const gilton = localFont({ src: "../../public/fonts/GiltonRegular.otf" });
 const softura = localFont({ src: "../../public/fonts/Softura-Demo.otf" });
 const TEAM_MEMBERS: TeamMember[] = [
-  { id: 1, name: "Nisarga Chand", role: "Faculty Lead", image: "/team/Nisarga.jpeg", linkedin: "https://www.linkedin.com/in/nisarga-chand-48634667/", instagram: "https://www.instagram.com/nisarga_chand/" },
-  { id: 2, name: "Soodipa Chakraborty", role: "Faculty Lead", image: "/team/Soodipa.jpg", linkedin: "https://www.linkedin.com/in/soodipachakraborty/", instagram: "https://www.instagram.com/soodipa_c" },
+  { id: 1, name: "Mr. Nisarga Chand", role: "Faculty Lead", image: "/team/Nisarga.jpeg", linkedin: "https://www.linkedin.com/in/nisarga-chand-48634667/", instagram: "https://www.instagram.com/nisarga_chand/" },
+  { id: 2, name: "Ms. Soodipa Chakraborty", role: "Faculty Lead", image: "/team/Soodipa.jpg", linkedin: "https://www.linkedin.com/in/soodipachakraborty/", instagram: "https://www.instagram.com/soodipa_c" },
   { id: 20, name: " Dr. Soumitra Roy", role: "Faculty Lead", image: "/team/SR.jpg", linkedin: "https://www.linkedin.com/in/soumitra-roy-8987b91a/" },
-  { id: 3, name: "Prabhat Das", role: "Tech Mentor", image: "/team/Prabhat.jpg", linkedin: "https://www.linkedin.com/in/prabhatd/", github: "https://github.com/prabhatdash/" },
+  { id: 3, name: "Mr. Prabhat Das", role: "Tech Mentor", image: "/team/Prabhat.jpg", linkedin: "https://www.linkedin.com/in/prabhatd/", github: "https://github.com/prabhatdash/" },
   { id: 4, name: "Hrishav Dey", role: "Event Advisor", image: "/avatar4.jpg", linkedin: "https://www.linkedin.com/in/hrishav-dey-60a8292aa", instagram: "https://www.instagram.com/hrishav_02?igsh=bHI5ZWE4OHc2YTY3" },
   { id: 5, name: "Digant Mishra", role: "Administratiion Head", image: "/team/Digant.jpeg", linkedin: "https://www.linkedin.com/in/digant-m-a325b61a4", instagram: "https://www.instagram.com/digantt._?igsh=YTZmZTUwcTkxaXp5", github: "https://github.com/diggu92" },
   { id: 6, name: "Arijit De", role: "Financial & Sponsorship Lead", image: "/team/Arijit.jpg", linkedin: "https://www.linkedin.com/in/arijit-de-ba1594358", instagram: "https://instagram.com/arijit_.04" },

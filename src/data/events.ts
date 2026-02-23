@@ -83,7 +83,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     prizePool: "₹20,000",
     day: 1,
     time: "1:30 PM - 7:00 PM",
-    venue: "Convention Hall",
+    venue: "APJ Abdul Kalam Convention Hall",
     coordinators: "Anis Imtahan Nayan",
     facultyCoordinators: "Ayushman Bilash Thakur",
     lottie:
@@ -257,7 +257,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     prizePool: "₹3,000",
     day: 2,
     time: "9:30 AM - 1:00 PM",
-    venue: "AU Auditorium",
+    venue: "Rabindranath Tagore Auditorium",
     coordinators: "Preyashee Saha",
     facultyCoordinators: "Soodipa Chakraborty",
     lottie: "",
@@ -362,7 +362,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     prizePool: "₹40,000",
     day: 2,
     time: "10:00 AM - 4:00 PM",
-    venue: "Convention Hall",
+    venue: "APJ Abdul Kalam Convention Hall",
     coordinators: "Anubrata Sadukhan",
     facultyCoordinators: "Ayushman Bilash Thakur",
     lottie:
@@ -383,7 +383,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     prizePool: "₹20,000",
     day: 2,
     time: "10:00 AM - 4:00 PM",
-    venue: "Seminar Hall",
+    venue: "Vivekananda Seminar Hall",
     coordinators: "Reyansh Dalui",
     facultyCoordinators: "Ayushman Bilash Thakur",
     lottie:
