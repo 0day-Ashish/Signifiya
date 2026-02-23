@@ -45,13 +45,34 @@ export const ALL_MERCH: MerchItem[] = [
     images: ["/merch/Merch-1.png", "/merch/Merch-2.png", "/merch/Merch-1.png"],
     sizes: ["S", "M", "L", "XL", "XXL"],
     colors: [
-      { name: "Black", hex: "#1a1a1a" },
       { name: "White", hex: "#ffffff" },
-      { name: "Purple", hex: "#9c27b0" },
+      { name: "Black", hex: "#1a1a1a" },
+      { name: "Deep Green", hex: "#1b5e20" },
+      { name: "Deep Blue", hex: "#0d47a1" },
     ],
     inStock: true,
     badge: "BESTSELLER",
     badgeColor: "bg-yellow-300",
   },
-
+  {
+    id: 2,
+    name: "Signifiya Polo Tee",
+    description:
+      "Coming Soon! Elevate your style with the Signifiya Polo — a premium collared tee with embroidered logo detail, crafted from breathable cotton-poly blend. Smart enough for class, cool enough for the fest.",
+    price: 599,
+    originalPrice: 899,
+    category: "tshirt",
+    categoryLabel: "Polo T-Shirt",
+    images: ["/merch/Merch-1.png", "/merch/Merch-2.png", "/merch/Merch-1.png"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    colors: [
+      { name: "White", hex: "#ffffff" },
+      { name: "Black", hex: "#1a1a1a" },
+      { name: "Deep Green", hex: "#1b5e20" },
+      { name: "Deep Blue", hex: "#0d47a1" },
+    ],
+    inStock: true,
+    badge: "NEW",
+    badgeColor: "bg-green-300",
+  },
 ];

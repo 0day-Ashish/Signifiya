@@ -26,7 +26,7 @@ import { APP_CONFIG } from "@/config/app.config";
 import { getUserProfile } from "@/app/actions";
 import RegistrationComingSoon from "@/components/RegistrationComingSoon";
 
-const REGISTRATION_OPEN_DATE = new Date("2026-02-23T00:00:00");
+const REGISTRATION_OPEN_DATE = new Date("2026-02-23T12:00:00");
 
 // ... (Configuration Data remains the same) ...
 const eventsList = [
@@ -252,6 +252,9 @@ export default function EventRegistration() {
   const { data: sessionData, isPending: isSessionPending } =
     authClient.useSession();
   const eventListRef = React.useRef<HTMLDivElement>(null);
+  const [isOpen, setIsOpen] = useState(
+    () => new Date() >= REGISTRATION_OPEN_DATE,
+  );
   const [step, setStep] = useState(1);
   const [timeLeft, setTimeLeft] = useState(900);
   const [isLoading, setIsLoading] = useState(false);
@@ -296,6 +299,18 @@ export default function EventRegistration() {
   });
 
   const selectedEventIds = watch("selectedEvents");
+
+  // Re-check the open date every second so the page auto-transitions
+  useEffect(() => {
+    if (isOpen) return;
+    const interval = setInterval(() => {
+      if (new Date() >= REGISTRATION_OPEN_DATE) {
+        setIsOpen(true);
+        clearInterval(interval);
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [isOpen]);
 
   // Check for active discount and keep countdown
   useEffect(() => {
@@ -511,8 +526,8 @@ export default function EventRegistration() {
     el.scrollTop += e.deltaY;
   };
 
-  if (new Date() < REGISTRATION_OPEN_DATE) {
-    return <RegistrationComingSoon type="event" />;
+  if (!isOpen) {
+    return <RegistrationComingSoon type="event" openDate={REGISTRATION_OPEN_DATE} />;
   }
 
   return (

@@ -278,13 +278,24 @@ export default function Contact() {
       return;
     }
 
+    if (!issueEmail.trim()) {
+      setSubmitMessage({ type: 'error', text: 'Please enter your email address' });
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(issueEmail)) {
+      setSubmitMessage({ type: 'error', text: 'Please enter a valid email address' });
+      return;
+    }
+
     setSubmitting(true);
     setSubmitMessage(null);
 
     try {
       const result = await submitIssue({
         text: issueText,
-        email: issueEmail || undefined,
+        email: issueEmail,
         name: issueName || undefined,
       });
 
@@ -417,6 +428,8 @@ export default function Contact() {
                       value={issueEmail}
                       onChange={(e) => setIssueEmail(e.target.value)}
                       placeholder="Enter your email"
+                      required
+                      aria-required="true"
                       className={`w-full bg-white border-2 border-black rounded-lg p-3 text-black font-medium focus:outline-none focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all ${softura.className}`}
                     />
                   </div>

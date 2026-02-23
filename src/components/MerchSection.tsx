@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import localFont from "next/font/local";
 import { motion, AnimatePresence } from "motion/react";
 import FadeIn from "./FadeIn";
@@ -11,8 +10,8 @@ import { ALL_MERCH, type MerchItem } from "@/data/merch";
 const gilton = localFont({ src: "../../public/fonts/GiltonRegular.otf" });
 const softura = localFont({ src: "../../public/fonts/Softura-Demo.otf" });
 
-// Use only the first merch item
-const FEATURED_ITEM = ALL_MERCH[0];
+// Featured merch items for tab selector
+const MERCH_TABS = ALL_MERCH.slice(0, 2);
 
 // ─── Image Gallery for a single product ─────────────────────
 function ProductImageGallery({ item }: { item: MerchItem }) {
@@ -90,9 +89,10 @@ function ProductImageGallery({ item }: { item: MerchItem }) {
   );
 }
 
-// ─── Main MerchSection (Single Featured Product) ─────────────
+// ─── Main MerchSection (Tabbed Featured Products) ────────────
 export default function MerchSection() {
-  const item = FEATURED_ITEM;
+  const [activeTab, setActiveTab] = useState(0);
+  const item = MERCH_TABS[activeTab] ?? MERCH_TABS[0];
 
   const [selectedSize, setSelectedSize] = useState<string | null>(
     item.sizes ? item.sizes[1] || item.sizes[0] : null,
@@ -100,6 +100,14 @@ export default function MerchSection() {
   const [selectedColor, setSelectedColor] = useState<string | null>(
     item.colors ? item.colors[0].name : null,
   );
+
+  // Reset size/color when switching tabs
+  const handleTabChange = (idx: number) => {
+    setActiveTab(idx);
+    const next = MERCH_TABS[idx];
+    setSelectedSize(next.sizes ? next.sizes[1] || next.sizes[0] : null);
+    setSelectedColor(next.colors ? next.colors[0].name : null);
+  };
 
   const discount = item.originalPrice
     ? Math.round(((item.originalPrice - item.price) / item.originalPrice) * 100)
@@ -124,7 +132,30 @@ export default function MerchSection() {
           </div>
         </FadeIn>
 
-        {/* Single Product — Side-by-side layout */}
+        {/* Product Tabs */}
+        {MERCH_TABS.length > 1 && (
+          <FadeIn delay={100}>
+            <div className="flex justify-center">
+              <div className="inline-flex bg-white border-2 border-black rounded-xl overflow-hidden shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
+                {MERCH_TABS.map((tab, idx) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => handleTabChange(idx)}
+                    className={`px-5 sm:px-8 py-2.5 text-sm sm:text-base font-bold uppercase tracking-wider transition-all duration-150 ${softura.className} ${
+                      activeTab === idx
+                        ? "bg-black text-white"
+                        : "bg-white text-black hover:bg-gray-100"
+                    } ${idx > 0 ? "border-l-2 border-black" : ""}`}
+                  >
+                    {tab.id === 1 ? "Classic Tee" : tab.id === 2 ? "Polo Tee" : tab.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </FadeIn>
+        )}
+
+        {/* Product — Side-by-side layout */}
         <FadeIn delay={150}>
           <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-start max-w-5xl mx-auto w-full">
             {/* Left: Image Gallery */}
@@ -228,12 +259,12 @@ export default function MerchSection() {
 
               {/* Book Now Button */}
               <div className="flex flex-col sm:flex-row gap-3 mt-2">
-                <Link
-                  href="/merch"
-                  className={`inline-flex text-center  bg-black text-white px-8 py-4 rounded-2xl border-2 border-black font-bold text-base sm:text-lg uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-200 ${gilton.className}`}
+                <span
+                  className={`inline-flex text-center bg-gray-400 text-white px-8 py-4 rounded-2xl border-2 border-gray-400 font-bold text-base sm:text-lg uppercase tracking-wider cursor-not-allowed opacity-60 ${gilton.className}`}
+                  aria-disabled="true"
                 >
-                  Book Now
-                </Link>
+                  Coming Soon
+                </span>
               </div>
             </div>
           </div>

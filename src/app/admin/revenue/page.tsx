@@ -1,8 +1,9 @@
-import { getRevenueBreakdown, getVisitorRegistrations, getParticipantTeamsForRevenue } from "../actions";
+import { getRevenueBreakdown, getVisitorRegistrations, getParticipantTeamsForRevenue, exportVisitorRegistrationsCsv, exportParticipantTeamsCsv } from "../actions";
 import { RevenueStatusButtons } from "./RevenueStatusButtons";
 import { AdminPagination, PAGE_SIZE } from "../components/AdminPagination";
 import { APP_CONFIG } from "@/config/app.config";
 import localFont from "next/font/local";
+import { CsvDownloadButton } from "../components/CsvDownloadButton";
 
 const gilton = localFont({ src: "../../../../public/fonts/GiltonRegular.otf" });
 const softura = localFont({ src: "../../../../public/fonts/Softura-Demo.otf" });
@@ -51,7 +52,11 @@ export default async function AdminRevenuePage({ searchParams }: { searchParams?
     <div className="space-y-8">
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <h1 className={`text-3xl sm:text-4xl font-black uppercase tracking-tight text-white ${gilton.className}`}>Revenue</h1>
-        <RefreshButton />
+        <div className="flex gap-2">
+          <CsvDownloadButton fetchCsv={exportVisitorRegistrationsCsv} filename="passes-revenue.csv" label="⬇ Passes CSV" />
+          <CsvDownloadButton fetchCsv={exportParticipantTeamsCsv} filename="teams-revenue.csv" label="⬇ Teams CSV" />
+          <RefreshButton />
+        </div>
       </div>
 
       <div className="grid sm:grid-cols-3 gap-4">

@@ -89,7 +89,7 @@ export default function SponsorsPage() {
             <div className="flex flex-col sm:flex-row gap-6 items-center justify-center">
               {/* Tech Brochure */}
               <a
-                href="/SPONSORSHIP%20BROCHURE%20SIGNIFIYA'26_TECH.pdf"
+                href="/tech.pdf"
                 download="SPONSORSHIP BROCHURE SIGNIFIYA'26_TECH.pdf"
                 className="bg-white text-black px-8 py-6 rounded-2xl border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[3px] hover:translate-y-[3px] transition-all duration-200 flex flex-col items-center gap-3 min-w-[200px] sm:min-w-[250px] group"
               >
@@ -106,7 +106,7 @@ export default function SponsorsPage() {
 
               {/* Non-Tech Brochure */}
               <a
-                href="/SPONSORSHIP%20BROCHURE%20SIGNIFIYA'26_NON-TECH.pdf"
+                href="/nontech.pdf"
                 download="SPONSORSHIP BROCHURE SIGNIFIYA'26_NON-TECH.pdf"
                 className="bg-white text-black px-8 py-6 rounded-2xl border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[3px] hover:translate-y-[3px] transition-all duration-200 flex flex-col items-center gap-3 min-w-[200px] sm:min-w-[250px] group"
               >
