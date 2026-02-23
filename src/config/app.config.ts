@@ -50,7 +50,7 @@ export const APP_CONFIG = {
         role: "Lead Developer",
         email: "0day.ashish@gmail.com",
         phone: "+91 8910114007",
-        image: "/team/ashish.jpg",
+        image: "/team/Ashish.jpg",
         color: "#deb3fa",
         social: {
           instagram: "https://instagram.com/ashishh_rd_",
