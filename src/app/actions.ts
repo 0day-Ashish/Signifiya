@@ -6,7 +6,14 @@ import { prisma } from "@/lib/db";
 import { s3Client } from "@/lib/s3";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { APP_CONFIG, PassType } from "@/config/app.config";
-import { getCache, setCache, deleteCache, CacheKeys, CACHE_TTL } from "@/lib/cache";
+import { getSession } from "@/lib/auth-server";
+import {
+  getCache,
+  setCache,
+  deleteCache,
+  CacheKeys,
+  CACHE_TTL,
+} from "@/lib/cache";
 
 const PASS_AMOUNTS = APP_CONFIG.passPrices;
 const PASS_TYPE_LABELS = APP_CONFIG.passTypeLabels;
@@ -66,7 +73,7 @@ export async function updateUserProfile(
     gender?: string;
     collegeName?: string;
     mobileNo?: string;
-  }
+  },
 ) {
   try {
     if (!userId) {
@@ -119,13 +126,19 @@ export async function getUserProfile(userId: string) {
     if (!user.bookingId) {
       const bid = generateUserBookingId();
       try {
-        await prisma.user.update({ where: { id: userId }, data: { bookingId: bid } });
+        await prisma.user.update({
+          where: { id: userId },
+          data: { bookingId: bid },
+        });
         user = { ...user, bookingId: bid };
         // Invalidate cache since bookingId was just assigned
         await deleteCache(cacheKey);
       } catch (e: any) {
         if (e?.code === "P2002") {
-          const u = await prisma.user.findUnique({ where: { id: userId }, select: { bookingId: true } });
+          const u = await prisma.user.findUnique({
+            where: { id: userId },
+            select: { bookingId: true },
+          });
           if (u?.bookingId) user = { ...user, bookingId: u.bookingId };
         }
       }
@@ -158,18 +171,30 @@ export async function getUserEventsAndPasses(userId: string) {
         // @ts-ignore
         generatedPasses: {
           include: {
-            visitorRegistration: true
-          }
-        }
-      }
+            visitorRegistration: true,
+          },
+        },
+      },
     });
     if (!user) return { registeredEventTeams: [], generatedPasses: [] };
 
     // Registered event teams (ParticipantTeam where leaderBookingId = user.bookingId)
-    let registeredEventTeams: { id: string; teamName: string; eventName: string; eventDate: Date | null; status: string; qrCode: string | null; leaderBookingId: string | null; leaderName: string; members: { name: string }[] }[] = [];
+    let registeredEventTeams: {
+      id: string;
+      teamName: string;
+      eventName: string;
+      eventDate: Date | null;
+      status: string;
+      qrCode: string | null;
+      leaderBookingId: string | null;
+      leaderName: string;
+      members: { name: string }[];
+    }[] = [];
     if (user.bookingId) {
       const teams = await prisma.participantTeam.findMany({
-        where: { leaderBookingId: { equals: user.bookingId!, mode: "insensitive" } },
+        where: {
+          leaderBookingId: { equals: user.bookingId!, mode: "insensitive" },
+        },
         include: { events: { include: { event: true } }, members: true },
         orderBy: { createdAt: "desc" },
       });
@@ -212,15 +237,38 @@ export async function createRazorpayOrder(data: {
   sessionUserId: string;
 }) {
   try {
-    const { bookingId: rawBookingId, name, email, phone, college, passType, sessionUserId } = data;
+    const {
+      bookingId: rawBookingId,
+      name,
+      email,
+      phone,
+      college,
+      passType,
+      sessionUserId,
+    } = data;
     const bid = rawBookingId?.trim();
-    if (!bid || !name?.trim() || !email?.trim() || !phone?.trim() || !college?.trim() || !passType || !sessionUserId) {
-      return { success: false, error: "All fields including Booking ID and login are required" };
+    if (
+      !bid ||
+      !name?.trim() ||
+      !email?.trim() ||
+      !phone?.trim() ||
+      !college?.trim() ||
+      !passType ||
+      !sessionUserId
+    ) {
+      return {
+        success: false,
+        error: "All fields including Booking ID and login are required",
+      };
     }
 
     const owner = await prisma.user.findUnique({ where: { bookingId: bid } });
     if (!owner) return { success: false, error: "Invalid Booking ID" };
-    if (owner.id !== sessionUserId) return { success: false, error: "This Booking ID does not belong to your account" };
+    if (owner.id !== sessionUserId)
+      return {
+        success: false,
+        error: "This Booking ID does not belong to your account",
+      };
 
     // Type guard to ensure passType is valid
     if (!(passType in PASS_AMOUNTS)) {
@@ -229,7 +277,8 @@ export async function createRazorpayOrder(data: {
 
     const amount = PASS_AMOUNTS[passType as PassType];
     const typeLabel = PASS_TYPE_LABELS[passType as PassType];
-    if (amount == null || !typeLabel) return { success: false, error: "Invalid pass type" };
+    if (amount == null || !typeLabel)
+      return { success: false, error: "Invalid pass type" };
 
     // Import Razorpay dynamically
     let Razorpay: any;
@@ -237,7 +286,11 @@ export async function createRazorpayOrder(data: {
       // @ts-ignore - Razorpay types will be available after npm install
       Razorpay = (await import("razorpay")).default;
     } catch (error) {
-      return { success: false, error: "Razorpay package not installed. Please run: npm install razorpay" };
+      return {
+        success: false,
+        error:
+          "Razorpay package not installed. Please run: npm install razorpay",
+      };
     }
 
     const razorpay = new Razorpay({
@@ -267,7 +320,10 @@ export async function createRazorpayOrder(data: {
     };
   } catch (error: any) {
     console.error("createRazorpayOrder error:", error);
-    return { success: false, error: error?.message || "Failed to create order" };
+    return {
+      success: false,
+      error: error?.message || "Failed to create order",
+    };
   }
 }
 
@@ -301,17 +357,32 @@ export async function verifyRazorpayPayment(data: {
     } = data;
 
     const bid = rawBookingId?.trim();
-    if (!bid || !name?.trim() || !email?.trim() || !phone?.trim() || !college?.trim() || !passType || !sessionUserId) {
+    if (
+      !bid ||
+      !name?.trim() ||
+      !email?.trim() ||
+      !phone?.trim() ||
+      !college?.trim() ||
+      !passType ||
+      !sessionUserId
+    ) {
       return { success: false, error: "All fields are required" };
     }
 
     const owner = await prisma.user.findUnique({ where: { bookingId: bid } });
     if (!owner) return { success: false, error: "Invalid Booking ID" };
-    if (owner.id !== sessionUserId) return { success: false, error: "This Booking ID does not belong to your account" };
+    if (owner.id !== sessionUserId)
+      return {
+        success: false,
+        error: "This Booking ID does not belong to your account",
+      };
 
     // Verify payment signature
     const crypto = await import("crypto");
-    const hmac = crypto.createHmac("sha256", process.env.RAZORPAY_KEY_SECRET || "");
+    const hmac = crypto.createHmac(
+      "sha256",
+      process.env.RAZORPAY_KEY_SECRET || "",
+    );
     hmac.update(`${razorpay_order_id}|${razorpay_payment_id}`);
     const generatedSignature = hmac.digest("hex");
 
@@ -326,7 +397,8 @@ export async function verifyRazorpayPayment(data: {
 
     const amount = PASS_AMOUNTS[passType as PassType];
     const typeLabel = PASS_TYPE_LABELS[passType as PassType];
-    if (amount == null || !typeLabel) return { success: false, error: "Invalid pass type" };
+    if (amount == null || !typeLabel)
+      return { success: false, error: "Invalid pass type" };
 
     const validUntil = new Date("2026-03-28T23:59:59.999Z");
     const userBookingId = owner.bookingId!;
@@ -368,12 +440,20 @@ export async function verifyRazorpayPayment(data: {
 
     return {
       success: true,
-      pass: { id: pass.id, type: pass.type, qrCode: pass.qrCode, userBookingId: pass.userBookingId ?? userBookingId },
+      pass: {
+        id: pass.id,
+        type: pass.type,
+        qrCode: pass.qrCode,
+        userBookingId: pass.userBookingId ?? userBookingId,
+      },
       visitorRegistration: reg,
     };
   } catch (error: any) {
     console.error("verifyRazorpayPayment error:", error);
-    return { success: false, error: error?.message || "Payment verification failed" };
+    return {
+      success: false,
+      error: error?.message || "Payment verification failed",
+    };
   }
 }
 
@@ -392,16 +472,41 @@ export async function submitVisitorRegistration(data: {
   utrId: string;
 }) {
   try {
-    const { bookingId: rawBookingId, name, email, phone, college, passType, sessionUserId, utrId } = data;
+    const {
+      bookingId: rawBookingId,
+      name,
+      email,
+      phone,
+      college,
+      passType,
+      sessionUserId,
+      utrId,
+    } = data;
     const bid = rawBookingId?.trim();
 
-    if (!bid || !name?.trim() || !email?.trim() || !phone?.trim() || !college?.trim() || !passType || !sessionUserId || !utrId?.trim()) {
-      return { success: false, error: "All fields including Transaction/UTR ID are required" };
+    if (
+      !bid ||
+      !name?.trim() ||
+      !email?.trim() ||
+      !phone?.trim() ||
+      !college?.trim() ||
+      !passType ||
+      !sessionUserId ||
+      !utrId?.trim()
+    ) {
+      return {
+        success: false,
+        error: "All fields including Transaction/UTR ID are required",
+      };
     }
 
     const owner = await prisma.user.findUnique({ where: { bookingId: bid } });
     if (!owner) return { success: false, error: "Invalid Booking ID" };
-    if (owner.id !== sessionUserId) return { success: false, error: "This Booking ID does not belong to your account" };
+    if (owner.id !== sessionUserId)
+      return {
+        success: false,
+        error: "This Booking ID does not belong to your account",
+      };
 
     // Type guard to ensure passType is valid
     if (!(passType in PASS_AMOUNTS)) {
@@ -410,7 +515,8 @@ export async function submitVisitorRegistration(data: {
 
     const amount = PASS_AMOUNTS[passType as PassType];
     const typeLabel = PASS_TYPE_LABELS[passType as PassType];
-    if (amount == null || !typeLabel) return { success: false, error: "Invalid pass type" };
+    if (amount == null || !typeLabel)
+      return { success: false, error: "Invalid pass type" };
 
     const userBookingId = owner.bookingId!;
 
@@ -443,8 +549,8 @@ export async function submitVisitorRegistration(data: {
     };
   } catch (error: any) {
     console.error("submitVisitorRegistration error:", error);
-    // Check for unique constraint violation on bookingId if applicable, though we removed unique constraint on bookingId in VisitorRegistration in schema logic previously or it might still be there. 
-    // Schema says: bookingId String? @unique // legacy per-reg id. 
+    // Check for unique constraint violation on bookingId if applicable, though we removed unique constraint on bookingId in VisitorRegistration in schema logic previously or it might still be there.
+    // Schema says: bookingId String? @unique // legacy per-reg id.
     // We are NOT setting legacy bookingId here, so it should be fine.
     return { success: false, error: error?.message || "Registration failed" };
   }
@@ -487,13 +593,47 @@ export async function createEventRazorpayOrder(data: {
   bookingId: string;
   eventName: string;
   eventPrice: number;
-  members: { name?: string; college?: string; phone?: string; email?: string }[];
+  members: {
+    name?: string;
+    college?: string;
+    phone?: string;
+    email?: string;
+  }[];
   totalAmount: number;
 }) {
   try {
-    const { teamName, leaderName, leaderEmail, leaderPhone, college, bookingId, eventName, totalAmount } = data;
-    if (!teamName?.trim() || !leaderName?.trim() || !leaderEmail?.trim() || !leaderPhone?.trim() || !college?.trim() || !bookingId?.trim() || !eventName?.trim()) {
-      return { success: false, error: "Team leader details, booking ID and event are required" };
+    // Server-side auth guard
+    const session = await getSession();
+    if (!session?.user?.id) {
+      return {
+        success: false,
+        error: "You must be logged in to register for events",
+      };
+    }
+
+    const {
+      teamName,
+      leaderName,
+      leaderEmail,
+      leaderPhone,
+      college,
+      bookingId,
+      eventName,
+      totalAmount,
+    } = data;
+    if (
+      !teamName?.trim() ||
+      !leaderName?.trim() ||
+      !leaderEmail?.trim() ||
+      !leaderPhone?.trim() ||
+      !college?.trim() ||
+      !bookingId?.trim() ||
+      !eventName?.trim()
+    ) {
+      return {
+        success: false,
+        error: "Team leader details, booking ID and event are required",
+      };
     }
 
     // Import Razorpay dynamically
@@ -502,7 +642,11 @@ export async function createEventRazorpayOrder(data: {
       // @ts-ignore - Razorpay types will be available after npm install
       Razorpay = (await import("razorpay")).default;
     } catch (error) {
-      return { success: false, error: "Razorpay package not installed. Please run: npm install razorpay" };
+      return {
+        success: false,
+        error:
+          "Razorpay package not installed. Please run: npm install razorpay",
+      };
     }
 
     const razorpay = new Razorpay({
@@ -531,7 +675,10 @@ export async function createEventRazorpayOrder(data: {
     };
   } catch (error: any) {
     console.error("createEventRazorpayOrder error:", error);
-    return { success: false, error: error?.message || "Failed to create order" };
+    return {
+      success: false,
+      error: error?.message || "Failed to create order",
+    };
   }
 }
 
@@ -550,10 +697,24 @@ export async function verifyEventRazorpayPayment(data: {
   bookingId: string;
   eventName: string;
   eventPrice: number;
-  members: { name?: string; college?: string; phone?: string; email?: string }[];
+  members: {
+    name?: string;
+    college?: string;
+    phone?: string;
+    email?: string;
+  }[];
   totalAmount: number;
 }) {
   try {
+    // Server-side auth guard
+    const session = await getSession();
+    if (!session?.user?.id) {
+      return {
+        success: false,
+        error: "You must be logged in to register for events",
+      };
+    }
+
     const {
       razorpay_order_id,
       razorpay_payment_id,
@@ -570,13 +731,27 @@ export async function verifyEventRazorpayPayment(data: {
       totalAmount,
     } = data;
 
-    if (!teamName?.trim() || !leaderName?.trim() || !leaderEmail?.trim() || !leaderPhone?.trim() || !college?.trim() || !bookingId?.trim() || !eventName?.trim()) {
-      return { success: false, error: "Team leader details, booking ID and event are required" };
+    if (
+      !teamName?.trim() ||
+      !leaderName?.trim() ||
+      !leaderEmail?.trim() ||
+      !leaderPhone?.trim() ||
+      !college?.trim() ||
+      !bookingId?.trim() ||
+      !eventName?.trim()
+    ) {
+      return {
+        success: false,
+        error: "Team leader details, booking ID and event are required",
+      };
     }
 
     // Verify payment signature
     const crypto = await import("crypto");
-    const hmac = crypto.createHmac("sha256", process.env.RAZORPAY_KEY_SECRET || "");
+    const hmac = crypto.createHmac(
+      "sha256",
+      process.env.RAZORPAY_KEY_SECRET || "",
+    );
     hmac.update(`${razorpay_order_id}|${razorpay_payment_id}`);
     const generatedSignature = hmac.digest("hex");
 
@@ -651,7 +826,10 @@ export async function verifyEventRazorpayPayment(data: {
     };
   } catch (error: any) {
     console.error("verifyEventRazorpayPayment error:", error);
-    return { success: false, error: error?.message || "Payment verification failed" };
+    return {
+      success: false,
+      error: error?.message || "Payment verification failed",
+    };
   }
 }
 
@@ -667,7 +845,12 @@ export async function submitEventRegistrationManual(data: {
   bookingId: string;
   eventName: string;
   eventPrice: number;
-  members: { name?: string; college?: string; phone?: string; email?: string }[];
+  members: {
+    name?: string;
+    college?: string;
+    phone?: string;
+    email?: string;
+  }[];
   totalAmount: number;
   utrId: string;
 }) {
@@ -683,11 +866,23 @@ export async function submitEventRegistrationManual(data: {
       eventPrice,
       members,
       totalAmount,
-      utrId
+      utrId,
     } = data;
 
-    if (!teamName?.trim() || !leaderName?.trim() || !leaderEmail?.trim() || !leaderPhone?.trim() || !college?.trim() || !bookingId?.trim() || !eventName?.trim() || !utrId?.trim()) {
-      return { success: false, error: "All fields including UTR ID are required" };
+    if (
+      !teamName?.trim() ||
+      !leaderName?.trim() ||
+      !leaderEmail?.trim() ||
+      !leaderPhone?.trim() ||
+      !college?.trim() ||
+      !bookingId?.trim() ||
+      !eventName?.trim() ||
+      !utrId?.trim()
+    ) {
+      return {
+        success: false,
+        error: "All fields including UTR ID are required",
+      };
     }
 
     const qrCode = `EP-${randomUUID()}`;
@@ -767,7 +962,12 @@ export async function registerEventTeam(data: {
   bookingId: string;
   eventName: string;
   eventPrice: number;
-  members: { name?: string; college?: string; phone?: string; email?: string }[];
+  members: {
+    name?: string;
+    college?: string;
+    phone?: string;
+    email?: string;
+  }[];
   totalAmount: number;
   paymentProofUrl?: string | null;
 }) {
@@ -795,21 +995,25 @@ export async function getUserPassStatus(userId: string) {
     // Check for visitor passes
     const passes = user.generatedPasses || [];
     const hasVisitorPass = passes.length > 0;
-    const hasDualDayPass = passes.some(p =>
-      p.type.toLowerCase().includes("dual") ||
-      p.type.toLowerCase().includes("double")
+    const hasDualDayPass = passes.some(
+      (p) =>
+        p.type.toLowerCase().includes("dual") ||
+        p.type.toLowerCase().includes("double"),
     );
-    const hasSingleDayPass = passes.some(p =>
-      p.type.toLowerCase().includes("single") ||
-      p.type.toLowerCase().includes("day 1") ||
-      p.type.toLowerCase().includes("day 2")
+    const hasSingleDayPass = passes.some(
+      (p) =>
+        p.type.toLowerCase().includes("single") ||
+        p.type.toLowerCase().includes("day 1") ||
+        p.type.toLowerCase().includes("day 2"),
     );
 
     // Check for event registrations
     let hasEventPass = false;
     if (user.bookingId) {
       const eventTeams = await prisma.participantTeam.findFirst({
-        where: { leaderBookingId: { equals: user.bookingId, mode: "insensitive" } },
+        where: {
+          leaderBookingId: { equals: user.bookingId, mode: "insensitive" },
+        },
       });
       hasEventPass = !!eventTeams;
     }
@@ -820,7 +1024,7 @@ export async function getUserPassStatus(userId: string) {
       hasSingleDayPass,
       hasEventPass,
       passCount: passes.length,
-      passes: passes.map(p => ({ id: p.id, type: p.type })),
+      passes: passes.map((p) => ({ id: p.id, type: p.type })),
     };
   } catch (error) {
     console.error("getUserPassStatus error:", error);
@@ -828,7 +1032,10 @@ export async function getUserPassStatus(userId: string) {
   }
 }
 
-export async function subscribeNewsletter(data: { email: string; consent: boolean }) {
+export async function subscribeNewsletter(data: {
+  email: string;
+  consent: boolean;
+}) {
   try {
     const email = data.email?.trim();
     if (!email) {
@@ -838,7 +1045,10 @@ export async function subscribeNewsletter(data: { email: string; consent: boolea
       return { success: false, error: "Please enter a valid email address" };
     }
     if (!data.consent) {
-      return { success: false, error: "Please agree to receive communications" };
+      return {
+        success: false,
+        error: "Please agree to receive communications",
+      };
     }
 
     await prisma.newsletterSubscription.create({

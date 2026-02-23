@@ -3,6 +3,7 @@
 import { randomUUID } from "crypto";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
+import { getSession } from "@/lib/auth-server";
 
 /**
  * Generate a unique merch order number: MERCH-26-XXXXXXXX
@@ -110,6 +111,12 @@ export async function submitMerchOrder(data: {
       userBookingId,
       referralBookingId,
     } = data;
+
+    // Server-side auth guard
+    const session = await getSession();
+    if (!session?.user?.id) {
+      return { success: false, error: "You must be logged in to order merch" };
+    }
 
     if (!name?.trim() || !email?.trim() || !phone?.trim()) {
       return { success: false, error: "Name, email, and phone are required" };

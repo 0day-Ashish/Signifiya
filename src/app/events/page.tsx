@@ -300,6 +300,13 @@ export default function EventRegistration() {
 
   const selectedEventIds = watch("selectedEvents");
 
+  // Redirect to sign-in if not authenticated
+  useEffect(() => {
+    if (!isSessionPending && !sessionData) {
+      router.push("/sign-in?callbackUrl=/events");
+    }
+  }, [sessionData, isSessionPending, router]);
+
   // Re-check the open date every second so the page auto-transitions
   useEffect(() => {
     if (isOpen) return;
@@ -527,7 +534,9 @@ export default function EventRegistration() {
   };
 
   if (!isOpen) {
-    return <RegistrationComingSoon type="event" openDate={REGISTRATION_OPEN_DATE} />;
+    return (
+      <RegistrationComingSoon type="event" openDate={REGISTRATION_OPEN_DATE} />
+    );
   }
 
   return (
