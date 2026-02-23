@@ -18,7 +18,6 @@ export default async function AdminDashboardPage() {
     { label: "Passes sold", value: stats.visitorCount, href: "/admin/revenue", bg: "bg-[#4caf50]", text: "text-white" },
     { label: "Event Teams", value: stats.teamCount, href: "/admin/teams", bg: "bg-[#FCD34D]", text: "text-black" },
     { label: "Revenue (₹)", value: stats.totalRevenue.toLocaleString("en-IN"), href: "/admin/revenue", bg: "bg-[#9c27b0]", text: "text-white" },
-    { label: "Newsletter", value: stats.newsletterCount, href: "/admin/newsletter", bg: "bg-[#3B82F6]", text: "text-white" },
     { label: "Issues Reported", value: stats.issueCount, href: "/admin/issues", bg: "bg-[#ff9800]", text: "text-black" },
   ];
 
