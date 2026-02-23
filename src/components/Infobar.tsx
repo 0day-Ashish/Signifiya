@@ -4,10 +4,10 @@ export default function Infobar() {
   const marqueeText = (
     <span className="text-black font-bold mx-4 uppercase tracking-wider text-xs">
       SIGNIFIYA'26 IS HERE:{" "}
-      <Link href="/events" className="underline  cursor-pointer">
+      <Link href="/events" className="underline  cursor-pointer text-blue-500">
         REGISTRATIONS
       </Link>
-      . STARTING SOON.
+       &nbsp; Are OPEN! &nbsp;|&nbsp; Don't miss out on the biggest fest of the year! &nbsp;|&nbsp; SIGNIFIYA'26 IS HERE:{" "}
     </span>
   );
 
