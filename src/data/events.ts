@@ -258,7 +258,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     day: 2,
     time: "9:30 AM - 1:00 PM",
     venue: "Rabindranath Tagore Auditorium",
-    coordinators: "Preyashee Saha",
+    coordinators: "Agniva chatterjee','Archita Khan",
     facultyCoordinators: "Soodipa Chakraborty",
     lottie: "",
     color: "bg-cyan-100",
@@ -433,6 +433,28 @@ export const ALL_EVENTS: MasterEvent[] = [
       "https://lottie.host/ce13941b-540c-4118-9e80-ff8ceb9afa1d/bsOQBQ1ZGm.lottie",
     color: "bg-fuchsia-100",
   },
+  {
+    id: 19,
+    title: "Tech Monopoly",
+    category: "NON-TECH",
+    department: "Non-Tech",
+    description:
+      "Rhythm & wordplay collide, drop sharp bars, own the mic, and outflow your opponent.",
+    scheduleDescription:
+      "Tech Monopoly is a live startup-investment simulation where teams act as Venture Capital Firms ",
+    date: "March 28th",
+    image: "/rap-battle.jpg",
+    scheduleImage: "/rap-battle.jpg",
+    prizePool: "₹3,000",
+    day: 2,
+    time: "3:00 PM - 5:00 PM",
+    venue: "Canopy Area",
+    coordinators: "Dimple Sharma, Debopriya Dey",
+    facultyCoordinators: "Soodipa Chakraborty",
+    lottie:
+      "https://lottie.host/ce13941b-540c-4118-9e80-ff8ceb9afa1d/bsOQBQ1ZGm.lottie",
+    color: "bg-fuchsia-100",
+  },
 ];
 
 // ============================================================
@@ -520,6 +542,7 @@ export function getEventsListingData(): EventListingItem[] {
     "Rap Battle": 149,
     "Treasure Hunt": 300,
     "Power Deal": 149,
+    "Tech Monopoly": 149,
   };
   return ALL_EVENTS.map((e) => ({
     id: e.id,
