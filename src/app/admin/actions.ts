@@ -194,7 +194,11 @@ export async function removeAdminAccess(userId: string) {
 // --- Events + per-event registrations ---
 export async function getEvents() {
   await guard();
+  // Exclude specific events from admin listing (e.g. deprecated or removed)
   return prisma.event.findMany({
+    where: {
+      NOT: [{ name: "Hackathon 2026" }, { name: "Tech Quiz" }],
+    },
     orderBy: { date: "asc" },
     include: { _count: { select: { participantTeams: true } } },
   });
