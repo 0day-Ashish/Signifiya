@@ -1,7 +1,23 @@
 "use server";
 
-import { getCache, setCache, deleteCache, CacheKeys, CACHE_TTL } from "@/lib/cache";
+import { createHash } from "crypto";
+import {
+  getCache,
+  setCache,
+  deleteCache,
+  deleteCachePattern,
+  CacheKeys,
+  CACHE_TTL,
+} from "@/lib/cache";
 import { getScheduleData, type DayData } from "@/data/events";
+
+function getScheduleCacheKey(eventsData: DayData[]): string {
+  const signature = createHash("sha1")
+    .update(JSON.stringify(eventsData))
+    .digest("hex")
+    .slice(0, 12);
+  return `${CacheKeys.schedule()}:${signature}`;
+}
 
 /**
  * Get schedule events data with Redis caching
@@ -11,7 +27,9 @@ import { getScheduleData, type DayData } from "@/data/events";
  * or by calling invalidateScheduleCache() after making changes to src/data/events.ts
  */
 export async function getScheduleEvents(forceRefresh = false): Promise<DayData[]> {
-  const cacheKey = CacheKeys.schedule();
+  // Derive data first so cache key changes whenever schedule content changes.
+  const eventsData = getScheduleData();
+  const cacheKey = getScheduleCacheKey(eventsData);
 
   // In development, allow bypassing cache with forceRefresh flag
   if (!forceRefresh && process.env.NODE_ENV !== "development") {
@@ -29,9 +47,6 @@ export async function getScheduleEvents(forceRefresh = false): Promise<DayData[]
     }
   }
 
-  // If not cached or force refresh, derive from shared event data
-  const eventsData = getScheduleData();
-
   // Cache it for 30 minutes (CACHE_TTL.LONG)
   await setCache(cacheKey, eventsData, CACHE_TTL.LONG, process.env.NODE_ENV === "development");
 
@@ -47,4 +62,5 @@ export async function getScheduleEvents(forceRefresh = false): Promise<DayData[]
  */
 export async function invalidateScheduleCache(): Promise<void> {
   await deleteCache(CacheKeys.schedule());
+  await deleteCachePattern(`${CacheKeys.schedule()}:*`);
 }

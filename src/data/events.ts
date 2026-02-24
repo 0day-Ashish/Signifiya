@@ -452,7 +452,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     coordinators: "Agniva Chatterjee, Archita Khan",
     facultyCoordinators: "Soodipa Chakraborty",
     lottie:
-      "https://lottie.host/ce13941b-540c-4118-9e80-ff8ceb9afa1d/bsOQBQ1ZGm.lottie",
+      "https://lottie.host/0f63fd76-3dec-4340-b124-c72eb23a19be/pmSxXvemID.lottie",
     color: "bg-amber-100",
   },
 ];
