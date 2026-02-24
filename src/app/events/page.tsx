@@ -170,6 +170,14 @@ const eventsList = [
     date: "March 28th",
     color: "bg-cyan-100",
   },
+    {
+    id: "techmonopoly",
+    name: "Tech Monopoly",
+    price: 149,
+    type: "Team (3)",
+    date: "March 28th",
+    color: "bg-amber-100",
+  },
 ];
 
 const formSchema = z.object({

@@ -439,21 +439,21 @@ export const ALL_EVENTS: MasterEvent[] = [
     category: "NON-TECH",
     department: "Non-Tech",
     description:
-      "Rhythm & wordplay collide, drop sharp bars, own the mic, and outflow your opponent.",
+      "Test your negotiation, strategy, and business acumen in this live startup-investment simulation.",
     scheduleDescription:
       "Tech Monopoly is a live startup-investment simulation where teams act as Venture Capital Firms ",
     date: "March 28th",
-    image: "/rap-battle.jpg",
-    scheduleImage: "/rap-battle.jpg",
+    image: "/monopoly.webp",
+    scheduleImage: "/monopoly.webp",
     prizePool: "₹3,000",
     day: 2,
-    time: "3:00 PM - 5:00 PM",
-    venue: "Canopy Area",
-    coordinators: "Dimple Sharma, Debopriya Dey",
+    time: "9:30 PM - 1:00 PM",
+    venue: "AU Auditoriium",
+    coordinators: "Agniva Chatterjee, Archita Khan",
     facultyCoordinators: "Soodipa Chakraborty",
     lottie:
       "https://lottie.host/ce13941b-540c-4118-9e80-ff8ceb9afa1d/bsOQBQ1ZGm.lottie",
-    color: "bg-fuchsia-100",
+    color: "bg-amber-100",
   },
 ];
 
