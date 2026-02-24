@@ -3,15 +3,8 @@
  * Server-side Razorpay instance
  */
 
-import Razorpay from "razorpay";
+// Razorpay integration disabled.
+// Keep helper to return empty key so client code doesn't break.
+export const getRazorpayKeyId = () => "";
 
-// Initialize Razorpay instance
-export const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID || "",
-  key_secret: process.env.RAZORPAY_KEY_SECRET || "",
-});
-
-// Get public key for client-side
-export const getRazorpayKeyId = () => {
-  return process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "";
-};
+// No server-side Razorpay instance exported when integration is disabled.

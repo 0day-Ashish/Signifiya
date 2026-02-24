@@ -18,10 +18,6 @@ import localFont from "next/font/local";
 const gilton = localFont({ src: "../../../public/fonts/GiltonRegular.otf" });
 const softura = localFont({ src: "../../../public/fonts/Softura-Demo.otf" });
 import EventCard from "@/components/Events-Pass";
-import {
-  createEventRazorpayOrder,
-  verifyEventRazorpayPayment,
-} from "@/app/actions";
 import { APP_CONFIG } from "@/config/app.config";
 import { getUserProfile } from "@/app/actions";
 import RegistrationComingSoon from "@/components/RegistrationComingSoon";
@@ -392,19 +388,7 @@ export default function EventRegistration() {
     prefillFromDb();
   }, [sessionData, isSessionPending, setValue]);
 
-  // Load Razorpay script
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://checkout.razorpay.com/v1/checkout.js";
-    script.async = true;
-    document.body.appendChild(script);
-
-    return () => {
-      if (document.body.contains(script)) {
-        document.body.removeChild(script);
-      }
-    };
-  }, []);
+  // Razorpay removed — use manual UTR flow instead
 
   useEffect(() => {
     if (step === 4 && timeLeft > 0) {
