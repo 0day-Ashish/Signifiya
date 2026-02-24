@@ -24,7 +24,10 @@ export const CACHE_TTL = {
 /**
  * Get cached value
  */
-export async function getCache<T>(key: string, debug: boolean = false): Promise<T | null> {
+export async function getCache<T>(
+  key: string,
+  debug: boolean = false,
+): Promise<T | null> {
   if (!redis) {
     if (debug) console.log(`[CACHE] Redis not available for key: ${key}`);
     return null;
@@ -32,7 +35,7 @@ export async function getCache<T>(key: string, debug: boolean = false): Promise<
   try {
     const value = await redis.get<T>(key);
     if (debug) {
-      console.log(`[CACHE] ${value ? 'HIT' : 'MISS'} - Key: ${key}`);
+      console.log(`[CACHE] ${value ? "HIT" : "MISS"} - Key: ${key}`);
     }
     return value;
   } catch (error) {
@@ -48,10 +51,11 @@ export async function setCache<T>(
   key: string,
   value: T,
   ttl: number = CACHE_TTL.MEDIUM,
-  debug: boolean = false
+  debug: boolean = false,
 ): Promise<boolean> {
   if (!redis) {
-    if (debug) console.log(`[CACHE] Redis not available - cannot set key: ${key}`);
+    if (debug)
+      console.log(`[CACHE] Redis not available - cannot set key: ${key}`);
     return false;
   }
   try {
@@ -69,9 +73,13 @@ export async function setCache<T>(
 /**
  * Delete cached value
  */
-export async function deleteCache(key: string, debug: boolean = false): Promise<boolean> {
+export async function deleteCache(
+  key: string,
+  debug: boolean = false,
+): Promise<boolean> {
   if (!redis) {
-    if (debug) console.log(`[CACHE] Redis not available - cannot delete key: ${key}`);
+    if (debug)
+      console.log(`[CACHE] Redis not available - cannot delete key: ${key}`);
     return false;
   }
   try {
@@ -115,5 +123,6 @@ export const CacheKeys = {
   adminRevenue: () => `admin:revenue:breakdown`,
   adminEvents: () => `admin:events:all`,
   adminTeams: () => `admin:teams:all`,
-  adminUserSuggestions: (query: string) => `admin:users:suggestions:${query.toLowerCase()}`,
+  adminUserSuggestions: (query: string) =>
+    `admin:users:suggestions:${query.toLowerCase()}`,
 } as const;

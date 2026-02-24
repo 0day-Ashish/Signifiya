@@ -447,7 +447,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     scheduleImage: "/monopoly.webp",
     prizePool: "₹3,000",
     day: 2,
-    time: "9:30 PM - 1:00 PM",
+    time: "9:30 AM - 1:00 AM",
     venue: "AU Auditoriium",
     coordinators: "Agniva Chatterjee, Archita Khan",
     facultyCoordinators: "Soodipa Chakraborty",
