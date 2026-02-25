@@ -54,7 +54,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     title: "Valorant",
     category: "ESPORTS",
     department: "E-Sports",
-    teamMember: "Team Size: 5 + 1",
+    teamMember: "Team Size: 5 (+1 substitute)",
     description:
       "Precise gunplay with agent abilities with smart strategy and perfect coordination to secure victory.",
     scheduleDescription:
@@ -74,7 +74,7 @@ export const ALL_EVENTS: MasterEvent[] = [
   {
     id: 2,
     title: "Free Fire",
-    teamMember: "Team Size: 4 + 1",
+    teamMember: "Team Size: 4 (+1 substitute)",
     category: "ESPORTS",
     department: "E-Sports",
     description:
@@ -99,7 +99,8 @@ export const ALL_EVENTS: MasterEvent[] = [
     eventTitle: "CODING PREMIER LEAGUE",
     category: "CSE",
     department: "CSE (Tech)",
-    teamMember: "Team Size: 3 + 1",
+    // Spreadsheet: CPL total = 4 (including leader)
+    teamMember: "Team Size: 4 (+1 substitute)",
     description:
       "Teams battle through algorithmic challenges to prove their speed, logic, and coding mastery.",
     scheduleDescription:
@@ -122,7 +123,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     eventTitle: "RE-FAB (Waste to Wealth)",
     category: "MECHANICAL",
     department: "Mechanical (Tech)",
-    teamMember: "Team Size: 4 + 1",
+    teamMember: "Team Size: 4 (+1 substitute)",
     description:
       "Participants transform scrap materials into innovative, functional prototypes with suitable design.",
     scheduleDescription:
@@ -142,7 +143,7 @@ export const ALL_EVENTS: MasterEvent[] = [
   {
     id: 5,
     title: "Path Follower",
-    teamMember: "Team Size: 3 + 1",
+    teamMember: "Team Size: 3 (+1 substitute)",
     category: "ROBOTICS",
     department: "Robotics (Tech)",
     description:
@@ -167,7 +168,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     eventTitle: "BRIDGE BUILDING",
     category: "CIVIL",
     department: "Civil (Tech)",
-    teamMember: "Team Size: 4 + 1",
+    teamMember: "Team Size: 4 (+1 substitute)",
     description:
       "Bridge the gap between theory and reality. Build a truss bridge that can withstand maximum load.",
     scheduleDescription:
@@ -189,7 +190,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     eventTitle: "ELECTRIFYING CIRCUITS",
     category: "EEE",
     department: "EEE (Tech)",
-    teamMember: "Team Size: 4 + 1",
+    teamMember: "Team Size: 4 (+1 substitute)",
     description:
       "Students race against the clock to design, build, and troubleshoot complex circuits.",
     scheduleDescription:
@@ -211,7 +212,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     title: "Dance Battle",
     category: "NON-TECH",
     department: "Non-Tech",
-    teamMember: "Team Size: 5 + 1",
+    teamMember: "Team Size: 5 (+1 substitute)",
     description:
       "Rhythm, style, and attitude collide, bring your best moves, own the stage, and outshine the competition.",
     scheduleDescription:
@@ -258,7 +259,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     title: "Power Deal",
     category: "NON-TECH",
     department: "Non-Tech",
-    teamMember: "Team Size: 3 + 1",
+    teamMember: "Team Size: 3 (+1 substitute)",
     description:
       "Test your negotiating skills and business acumen in this exciting challenge.",
     scheduleDescription:
@@ -279,7 +280,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     title: "Lathe War",
     category: "MECHANICAL",
     department: "Mechanical (Tech)",
-    teamMember: "Team Size: 3 + 1",
+    teamMember: "Team Size: 3 (+1 substitute)",
     description:
       "Participants face off to machine raw materials into perfect components with speed and surgical accuracy.",
     scheduleDescription:
@@ -301,7 +302,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     title: "Dil Se Design",
     category: "CSE",
     department: "CSE (Tech)",
-    teamMember: "Team Size: 3 + 1",
+    teamMember: "Team Size: 3 (+1 substitute)",
     description:
       "A UI/UX challenge to craft intuitive, beautiful, and user-centered digital experiences.",
     scheduleDescription:
@@ -323,7 +324,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     title: "Tower Making",
     category: "CIVIL",
     department: "Civil (Tech)",
-    teamMember: "Team Size: 4 + 1",
+    teamMember: "Team Size: 4 (+1 substitute)",
     description:
       "Build the tallest, strongest tower using creativity, strategy, and skill.",
     scheduleDescription:
@@ -346,7 +347,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     eventTitle: "ROBO SOCCER",
     category: "ROBOTICS",
     department: "Robotics (Tech)",
-    teamMember: "Team Size: 3",
+    teamMember: "Team Size: 3 (+1 substitute)",
     description:
       "Custom built bots must navigate a grueling obstacle course of mud, sand, and steep inclines.",
     scheduleDescription:
@@ -368,7 +369,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     title: "BGMI",
     category: "ESPORTS",
     department: "E-Sports",
-    teamMember: "Team Member: 4 + 1",
+    teamMember: "Team Size: 4 (+1 substitute)",
     description:
       "Drop in, gear up, and fight through intense combat zones to be the last team standing.",
     scheduleDescription:
@@ -411,7 +412,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     id: 17,
     title: "Treasure Hunt",
     category: "NON-TECH",
-    teamMember: "Team Size: 3",
+    teamMember: "Team Size: 3 (+1 substitute)",
     department: "Non-Tech",
     description:
       "Solve puzzles, race against time, and uncover the hidden prize.",
@@ -434,7 +435,8 @@ export const ALL_EVENTS: MasterEvent[] = [
     title: "Rap Battle",
     category: "NON-TECH",
     department: "Non-Tech",
-    teamMember: "Team Size: 1",
+    // Spreadsheet: Rap Battle total = 3 (including leader)
+    teamMember: "Team Size: 3 (+1 substitute)",
     description:
       "Rhythm & wordplay collide, drop sharp bars, own the mic, and outflow your opponent.",
     scheduleDescription:
@@ -459,6 +461,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     department: "Non-Tech",
     description:
       "Test your negotiation, strategy, and business acumen in this live startup-investment simulation.",
+    teamMember: "Team Size: 3 (+1 substitute)",
     scheduleDescription:
       "Tech Monopoly is a live startup-investment simulation where teams act as Venture Capital Firms ",
     date: "March 28th",
@@ -547,7 +550,7 @@ export function getEventsListingData(): EventListingItem[] {
   const PRICE_BY_TITLE: Record<string, number> = {
     Valorant: 499,
     "Free Fire": 399,
-    "Coding Premier League": 200,
+    "Coding Premier League": 240,
     Refab: 280,
     "Path Follower": 219,
     "Bridge Building": 280,

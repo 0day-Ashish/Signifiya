@@ -30,7 +30,9 @@ const eventsList = [
     id: "cpl",
     name: "Coding Premier League",
     price: 200,
-    type: "Team (2)",
+    // Spreadsheet: CPL total members per team = 4 (including leader)
+    // Stored type uses members EXCLUDING leader, so set to 3
+    type: "Team (3)",
     date: "March 27th",
     color: "bg-purple-100",
   },
@@ -38,7 +40,8 @@ const eventsList = [
     id: "circuit",
     name: "Electrifying Circuits",
     price: 299,
-    type: "Team (4)",
+    // Spreadsheet: Circuitronics total = 4 => members excluding leader = 3
+    type: "Team (3)",
     date: "March 27th",
     color: "bg-yellow-100",
   },
@@ -46,7 +49,8 @@ const eventsList = [
     id: "refab",
     name: "RE-FAB (Waste to Wealth)",
     price: 280,
-    type: "Team (4)",
+    // Spreadsheet: Refab total = 4 => members excluding leader = 3
+    type: "Team (3)",
     date: "March 27th",
     color: "bg-green-100",
   },
@@ -54,7 +58,8 @@ const eventsList = [
     id: "path",
     name: "Path Follower",
     price: 219,
-    type: "Team (3)",
+    // Spreadsheet: Path Follower total = 3 => members excluding leader = 2
+    type: "Team (2)",
     date: "March 27th",
     color: "bg-red-100",
   },
@@ -62,7 +67,8 @@ const eventsList = [
     id: "bridge",
     name: "Bridge Building",
     price: 280,
-    type: "Team (4)",
+    // Spreadsheet: Bridge Building total = 4 => members excluding leader = 3
+    type: "Team (3)",
     date: "March 27th",
     color: "bg-orange-100",
   },
@@ -86,7 +92,8 @@ const eventsList = [
     id: "gaming",
     name: "Valorant",
     price: 499,
-    type: "Team (5)",
+    // Spreadsheet: Valorant total = 5 => members excluding leader = 4
+    type: "Team (4)",
     date: "March 27th",
     color: "bg-gray-100",
   },
@@ -94,7 +101,8 @@ const eventsList = [
     id: "freefire",
     name: "Free Fire",
     price: 399,
-    type: "Team (4)",
+    // Spreadsheet: Free Fire total = 4 => members excluding leader = 3
+    type: "Team (3)",
     date: "March 27th",
     color: "bg-gray-100",
   },
@@ -102,7 +110,8 @@ const eventsList = [
     id: "tower",
     name: "Tower Making",
     price: 280,
-    type: "Team (4)",
+    // Spreadsheet: Tower Making total = 4 => members excluding leader = 3
+    type: "Team (3)",
     date: "March 28th",
     color: "bg-blue-100",
   },
@@ -110,7 +119,8 @@ const eventsList = [
     id: "design",
     name: "Dil Se Design",
     price: 219,
-    type: "Team (3)",
+    // Spreadsheet: Dil Se Design total = 3 => members excluding leader = 2
+    type: "Team (2)",
     date: "March 28th",
     color: "bg-pink-100",
   },
@@ -118,7 +128,8 @@ const eventsList = [
     id: "lathe",
     name: "Lathe War",
     price: 219,
-    type: "Team (3)",
+    // Spreadsheet: Lathe War total = 3 => members excluding leader = 2
+    type: "Team (2)",
     date: "March 28th",
     color: "bg-indigo-100",
   },
@@ -126,7 +137,8 @@ const eventsList = [
     id: "robo",
     name: "Robo Terrain",
     price: 219,
-    type: "Team (3)",
+    // Spreadsheet: Robo Soccer / Robo Terrain total = 3 => members excluding leader = 2
+    type: "Team (2)",
     date: "March 28th",
     color: "bg-teal-100",
   },
@@ -134,7 +146,8 @@ const eventsList = [
     id: "rap",
     name: "Rap Battle",
     price: 149,
-    type: "Team (1-4)",
+    // Spreadsheet: Rap Battle total = 3 => members excluding leader = 2
+    type: "Team (2)",
     date: "March 28th",
     color: "bg-fuchsia-100",
   },
@@ -142,7 +155,8 @@ const eventsList = [
     id: "bgmi",
     name: "BGMI",
     price: 399,
-    type: "Team (4)",
+    // Spreadsheet: BGMI total = 4 => members excluding leader = 3
+    type: "Team (3)",
     date: "March 28th",
     color: "bg-gray-100",
   },
@@ -158,7 +172,8 @@ const eventsList = [
     id: "treasure",
     name: "Treasure Hunt",
     price: 300,
-    type: "Team (3)",
+    // Spreadsheet: Treasure Hunt total = 3 => members excluding leader = 2
+    type: "Team (2)",
     date: "March 28th",
     color: "bg-gray-100",
   },
@@ -203,12 +218,11 @@ const formSchema = z.object({
         phone: z.string().optional(),
         email: z.string().optional(),
         gameId: z.string().optional(),
-      }),
-    )
-    .optional(),
+      })
+    ),
 });
 
-type FormData = z.infer<typeof formSchema>;
+type EventFormData = z.infer<typeof formSchema>;
 
 const inputStyles =
   "rounded-lg border-2 border-black bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus:translate-x-[2px] focus:translate-y-[2px] focus:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all outline-none";
@@ -326,7 +340,7 @@ function EventRegistrationContent() {
     watch,
     control,
     formState: { errors },
-  } = useForm<FormData>({
+  } = useForm<EventFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       bookingId: "",
@@ -351,8 +365,10 @@ function EventRegistrationContent() {
     selectedEventIds?.[0] === "freefire";
   const isEFootball = selectedEventIds?.[0] === "efootball";
   const isSoloEvent = teamSizeLimit === 1;
-  const maxTeamMembers = isSoloEvent ? 0 : (teamSizeLimit || 6);
-  const maxTotalTeam = teamSizeLimit ? teamSizeLimit + 1 : 7;
+  // Allow one optional substitute beyond the regular team members for every event
+  const maxTeamMembers = isSoloEvent ? 0 : (teamSizeLimit ? teamSizeLimit + 1 : 6);
+  // maxTotalTeam shows the maximum possible total including leader and optional substitute
+  const maxTotalTeam = teamSizeLimit ? teamSizeLimit + 2 : 7;
   const currentGameIdLabel = selectedEventIds?.[0] ? getGameIdLabel(selectedEventIds[0]) : null;
   const currentGameIdPlaceholder = selectedEventIds?.[0] ? getGameIdPlaceholder(selectedEventIds[0]) : "";
 
@@ -524,21 +540,22 @@ function EventRegistrationContent() {
     const members = watch("members") || [];
     const totalTeamSize = members.length + 1; // +1 for leader
 
-    // For Valorant (id: 'gaming') require 5 players + 1 substitute = 6 total
-    if (selectedId === "gaming" && totalTeamSize < 6) {
+    // Enforce minimum required team counts (dynamic based on parsed type)
+    const requiredTotal = teamSizeLimit ? teamSizeLimit + 1 : null; // leader + regular members
+    if (selectedId === "gaming" && requiredTotal && totalTeamSize < requiredTotal) {
       toast.error(
-        "Valorant requires 5 players + 1 substitute (including leader). Add them to continue.",
+        `Valorant requires ${requiredTotal} players (including leader). Add them to continue.`,
       );
       return;
     }
 
-    // For BGMI and Free Fire require 4 players + 1 substitute = 5 total
     if (
       (selectedId === "bgmi" || selectedId === "freefire") &&
-      totalTeamSize < 5
+      requiredTotal &&
+      totalTeamSize < requiredTotal
     ) {
       toast.error(
-        "This event requires 4 players + 1 substitute (including leader). Add them to continue.",
+        `This event requires ${requiredTotal} players (including leader). Add them to continue.`,
       );
       return;
     }
@@ -1079,7 +1096,7 @@ function EventRegistrationContent() {
                   {isEsports && (
                     <div className="bg-amber-100 border-2 border-amber-500 p-3 rounded-xl">
                       <p className="text-amber-800 text-xs font-bold">
-                        Esports Event: Team = 1 Leader + {teamSizeLimit} Players + 1 Substitute
+                        Esports Event: 1 Leader + {teamSizeLimit} players (plus 1 optional substitute)
                       </p>
                     </div>
                   )}
@@ -1108,8 +1125,11 @@ function EventRegistrationContent() {
                             <line x1="6" y1="6" x2="18" y2="18"></line>
                           </svg>
                         </button>
-                        <h4 className="font-bold text-xs uppercase mb-3 text-zinc-400">
+                          <h4 className="font-bold text-xs uppercase mb-3 text-zinc-400">
                           Member {index + 1}
+                          {teamSizeLimit !== null && teamSizeLimit !== undefined && index >= teamSizeLimit ? (
+                            <span className="ml-2 text-[10px] font-medium text-zinc-600">(Substitute)</span>
+                          ) : null}
                         </h4>
                         <div className="grid gap-3">
                           <Input
@@ -1157,6 +1177,11 @@ function EventRegistrationContent() {
                     >
                       + Add Member ({fields.length}/{maxTeamMembers})
                     </Button>
+                  )}
+                  {!isSoloEvent && (
+                    <p className="text-xs text-center text-zinc-500 mt-1">
+                      You may add one optional substitute in addition to the regular team members.
+                    </p>
                   )}
 
                   {isSoloEvent && (
