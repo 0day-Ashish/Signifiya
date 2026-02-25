@@ -99,14 +99,14 @@ export const ALL_EVENTS: MasterEvent[] = [
     eventTitle: "CODING PREMIER LEAGUE",
     category: "CSE",
     department: "CSE (Tech)",
-    teamMember: "Team Size: 4",
+    teamMember: "Team Size: 3",
     description:
       "Teams battle through algorithmic challenges to prove their speed, logic, and coding mastery.",
     scheduleDescription:
       "An exhilarating coding competition where participants showcase their programming skills, problem-solving abilities, and creativity.",
     date: "March 27th",
     image: "/cse2.jpg",
-    prizePool: "₹6,000",
+    prizePool: "₹10,000",
     day: 1,
     time: "1:00 PM - 4:00 PM",
     venue: "Lab 2102 & 2103",
@@ -547,7 +547,7 @@ export function getEventsListingData(): EventListingItem[] {
   const PRICE_BY_TITLE: Record<string, number> = {
     Valorant: 499,
     "Free Fire": 399,
-    "Coding Premier League": 280,
+    "Coding Premier League": 200,
     Refab: 280,
     "Path Follower": 219,
     "Bridge Building": 280,

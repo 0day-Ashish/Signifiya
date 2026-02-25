@@ -29,8 +29,8 @@ const eventsList = [
   {
     id: "cpl",
     name: "Coding Premier League",
-    price: 280,
-    type: "Team (4)",
+    price: 200,
+    type: "Team (2)",
     date: "March 27th",
     color: "bg-purple-100",
   },
