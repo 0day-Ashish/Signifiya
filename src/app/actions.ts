@@ -445,6 +445,7 @@ export async function submitEventRegistrationManual(data: {
   leaderName: string;
   leaderEmail: string;
   leaderPhone: string;
+  leaderGameId?: string;
   college: string;
   bookingId: string;
   eventName: string;
@@ -454,6 +455,7 @@ export async function submitEventRegistrationManual(data: {
     college?: string;
     phone?: string;
     email?: string;
+    gameId?: string;
   }[];
   totalAmount: number;
   utrId: string;
@@ -464,6 +466,7 @@ export async function submitEventRegistrationManual(data: {
       leaderName,
       leaderEmail,
       leaderPhone,
+      leaderGameId,
       college,
       bookingId,
       eventName,
@@ -517,7 +520,20 @@ export async function submitEventRegistrationManual(data: {
       },
     });
 
-    // Add Members
+    // Add Members (including leader as first member)
+    if (leaderGameId?.trim()) {
+      await prisma.participantTeamMember.create({
+        data: {
+          teamId: team.id,
+          name: leaderName.trim(),
+          college: college.trim(),
+          phone: leaderPhone.trim(),
+          email: leaderEmail.trim().toLowerCase(),
+          gameId: leaderGameId.trim(),
+        },
+      });
+    }
+
     for (const m of members || []) {
       if (!m?.name?.trim()) continue;
       await prisma.participantTeamMember.create({
@@ -527,6 +543,7 @@ export async function submitEventRegistrationManual(data: {
           college: m.college?.trim() || null,
           phone: m.phone?.trim() || null,
           email: m.email?.trim() || null,
+          gameId: m.gameId?.trim() || null,
         },
       });
     }

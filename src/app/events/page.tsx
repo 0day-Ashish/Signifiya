@@ -183,6 +183,7 @@ const eventsList = [
 const formSchema = z.object({
   teamName: z.string().min(2, "Team Name is required"),
   leaderName: z.string().min(2, "Leader Name is required"),
+  leaderGameId: z.string().optional(),
   email: z.string().email("Invalid email"),
   phone: z.string().regex(/^[0-9]{10}$/, "Must be 10 digits"),
   college: z.string().min(2, "Required"),
@@ -201,6 +202,7 @@ const formSchema = z.object({
         college: z.string().optional(),
         phone: z.string().optional(),
         email: z.string().optional(),
+        gameId: z.string().optional(),
       }),
     )
     .optional(),
@@ -227,6 +229,36 @@ function getTeamSizeLimit(eventType: string): number | null {
     return 7;
   }
   return null;
+}
+
+function getGameIdLabel(eventId: string): string | null {
+  switch (eventId) {
+    case "gaming":
+      return "Riot ID";
+    case "freefire":
+      return "Free Fire ID";
+    case "bgmi":
+      return "UUID";
+    case "efootball":
+      return "eFootball ID";
+    default:
+      return null;
+  }
+}
+
+function getGameIdPlaceholder(eventId: string): string {
+  switch (eventId) {
+    case "gaming":
+      return "e.g., username#tag";
+    case "freefire":
+      return "e.g., 1234567890123456";
+    case "bgmi":
+      return "e.g., abc123def456";
+    case "efootball":
+      return "e.g., player123";
+    default:
+      return "";
+  }
 }
 
 /** Returns the currently active event discount (if any) based on current time */
@@ -299,7 +331,7 @@ function EventRegistrationContent() {
     defaultValues: {
       bookingId: "",
       selectedEvents: [],
-      members: [{ name: "", college: "", phone: "", email: "" }],
+      members: [{ name: "", college: "", phone: "", email: "", gameId: "" }],
     },
   });
 
@@ -317,8 +349,12 @@ function EventRegistrationContent() {
     selectedEventIds?.[0] === "gaming" ||
     selectedEventIds?.[0] === "bgmi" ||
     selectedEventIds?.[0] === "freefire";
-  const maxTeamMembers = teamSizeLimit ? teamSizeLimit - 1 : 6;
-  const maxTotalTeam = teamSizeLimit ? teamSizeLimit + (isEsports ? 1 : 0) : 7;
+  const isEFootball = selectedEventIds?.[0] === "efootball";
+  const isSoloEvent = teamSizeLimit === 1;
+  const maxTeamMembers = isSoloEvent ? 0 : (teamSizeLimit || 6);
+  const maxTotalTeam = teamSizeLimit ? teamSizeLimit + 1 : 7;
+  const currentGameIdLabel = selectedEventIds?.[0] ? getGameIdLabel(selectedEventIds[0]) : null;
+  const currentGameIdPlaceholder = selectedEventIds?.[0] ? getGameIdPlaceholder(selectedEventIds[0]) : "";
 
   // Redirect to sign-in if not authenticated
   useEffect(() => {
@@ -507,6 +543,22 @@ function EventRegistrationContent() {
       return;
     }
 
+    // Validate game IDs for esports events
+    if ((selectedId === "gaming" || selectedId === "freefire" || selectedId === "bgmi" || selectedId === "efootball")) {
+      const leaderGameId = watch("leaderGameId");
+      if (!leaderGameId?.trim()) {
+        toast.error(`Please enter your ${getGameIdLabel(selectedId)} to continue.`);
+        return;
+      }
+
+      // Check if all members have game IDs
+      const missingGameIds = members.filter(m => m?.name?.trim() && !m.gameId?.trim());
+      if (missingGameIds.length > 0) {
+        toast.error(`Please enter ${getGameIdLabel(selectedId)} for all team members.`);
+        return;
+      }
+    }
+
     setStep(4);
   };
 
@@ -529,6 +581,7 @@ function EventRegistrationContent() {
         leaderName: vals.leaderName,
         leaderEmail: vals.email,
         leaderPhone: vals.phone,
+        leaderGameId: vals.leaderGameId,
         college: vals.college,
         bookingId: vals.bookingId,
         eventName: ev?.name || "",
@@ -538,6 +591,7 @@ function EventRegistrationContent() {
           college: m?.college,
           phone: m?.phone,
           email: m?.email,
+          gameId: m?.gameId,
         })),
         totalAmount: totalCost,
         utrId: utrId.trim(),
@@ -996,14 +1050,37 @@ function EventRegistrationContent() {
                           {watch("college") || "—"}
                         </p>
                       </div>
+                      {currentGameIdLabel && (
+                        <div className="col-span-2">
+                          <p className="text-xs text-zinc-500 uppercase font-bold">
+                            {currentGameIdLabel}
+                          </p>
+                          <p className="font-bold text-black">
+                            {watch("leaderGameId") || "—"}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </div>
+
+                  {currentGameIdLabel && (
+                    <div className="bg-amber-50 border-2 border-amber-400 p-4 rounded-xl">
+                      <Label className={labelStyles}>{currentGameIdLabel} (Team Leader)</Label>
+                      <Input
+                        {...register("leaderGameId")}
+                        className={inputStyles}
+                        placeholder={`Enter your ${currentGameIdLabel} (${currentGameIdPlaceholder})`}
+                      />
+                      <p className="text-xs text-amber-600 mt-1">
+                        Required for all team members including leader
+                      </p>
+                    </div>
+                  )}
 
                   {isEsports && (
                     <div className="bg-amber-100 border-2 border-amber-500 p-3 rounded-xl">
                       <p className="text-amber-800 text-xs font-bold">
-                        Esports Event: Team = 1 Leader + {teamSizeLimit! - 1}{" "}
-                        Players + 1 Substitute
+                        Esports Event: Team = 1 Leader + {teamSizeLimit} Players + 1 Substitute
                       </p>
                     </div>
                   )}
@@ -1057,16 +1134,23 @@ function EventRegistrationContent() {
                               placeholder="Phone"
                             />
                           </div>
+                          {currentGameIdLabel && (
+                            <Input
+                              {...register(`members.${index}.gameId`)}
+                              className={inputStyles}
+                              placeholder={`${currentGameIdLabel} (${currentGameIdPlaceholder})`}
+                            />
+                          )}
                         </div>
                       </div>
                     ))}
                   </div>
 
-                  {fields.length < maxTeamMembers && (
+                  {!isSoloEvent && fields.length < maxTeamMembers && (
                     <Button
                       type="button"
                       onClick={() =>
-                        append({ name: "", college: "", email: "", phone: "" })
+                        append({ name: "", college: "", email: "", phone: "", gameId: "" })
                       }
                       className="w-full bg-white text-black font-bold py-4 rounded-xl border-2 border-dashed border-zinc-400 hover:border-black hover:bg-zinc-50 transition-all uppercase"
                     >
@@ -1074,10 +1158,18 @@ function EventRegistrationContent() {
                     </Button>
                   )}
 
-                  {teamSizeLimit && fields.length < teamSizeLimit - 1 && (
+                  {isSoloEvent && (
+                    <div className="bg-amber-100 border-2 border-amber-500 p-3 rounded-xl">
+                      <p className="text-amber-800 text-xs font-bold">
+                        Solo Event: No additional team members needed
+                      </p>
+                    </div>
+                  )}
+
+                  {teamSizeLimit && !isSoloEvent && fields.length < teamSizeLimit && (
                     <p className="text-xs text-center text-zinc-500">
-                      Add {teamSizeLimit - 1 - fields.length} more member
-                      {teamSizeLimit - 1 - fields.length > 1 ? "s" : ""} to
+                      Add {teamSizeLimit - fields.length} more member
+                      {teamSizeLimit - fields.length > 1 ? "s" : ""} to
                       complete team
                     </p>
                   )}

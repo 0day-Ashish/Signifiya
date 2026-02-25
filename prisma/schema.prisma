@@ -186,6 +186,7 @@ model ParticipantTeamMember {
   college    String?
   email      String?
   phone      String?
+  gameId     String?         // Riot ID (Valorant), Free Fire ID, UUID (BGMI), eFootball ID
   attendedAt DateTime?
   attendedBy String?
   team       ParticipantTeam @relation(fields: [teamId], references: [id], onDelete: Cascade)
