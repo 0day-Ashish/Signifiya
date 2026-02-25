@@ -147,7 +147,7 @@ const eventsList = [
     color: "bg-gray-100",
   },
   {
-    id: "efootball",
+    id: "efootball",  
     name: "E-Football",
     price: 149,
     type: "Solo",
@@ -170,7 +170,7 @@ const eventsList = [
     date: "March 28th",
     color: "bg-cyan-100",
   },
-    {
+  {
     id: "techmonopoly",
     name: "Tech Monopoly",
     price: 149,
@@ -309,9 +309,14 @@ function EventRegistrationContent() {
   });
 
   const selectedEventIds = watch("selectedEvents");
-  const selectedEvent = eventsList.find(e => e.id === selectedEventIds?.[0]);
-  const teamSizeLimit = selectedEvent ? getTeamSizeLimit(selectedEvent.type) : null;
-  const isEsports = selectedEventIds?.[0] === "gaming" || selectedEventIds?.[0] === "bgmi" || selectedEventIds?.[0] === "freefire";
+  const selectedEvent = eventsList.find((e) => e.id === selectedEventIds?.[0]);
+  const teamSizeLimit = selectedEvent
+    ? getTeamSizeLimit(selectedEvent.type)
+    : null;
+  const isEsports =
+    selectedEventIds?.[0] === "gaming" ||
+    selectedEventIds?.[0] === "bgmi" ||
+    selectedEventIds?.[0] === "freefire";
   const maxTeamMembers = teamSizeLimit ? teamSizeLimit - 1 : 6;
   const maxTotalTeam = teamSizeLimit ? teamSizeLimit + (isEsports ? 1 : 0) : 7;
 
@@ -485,13 +490,20 @@ function EventRegistrationContent() {
 
     // For Valorant (id: 'gaming') require 5 players + 1 substitute = 6 total
     if (selectedId === "gaming" && totalTeamSize < 6) {
-      toast.error("Valorant requires 5 players + 1 substitute (including leader). Add them to continue.");
+      toast.error(
+        "Valorant requires 5 players + 1 substitute (including leader). Add them to continue.",
+      );
       return;
     }
 
     // For BGMI and Free Fire require 4 players + 1 substitute = 5 total
-    if ((selectedId === "bgmi" || selectedId === "freefire") && totalTeamSize < 5) {
-      toast.error("This event requires 4 players + 1 substitute (including leader). Add them to continue.");
+    if (
+      (selectedId === "bgmi" || selectedId === "freefire") &&
+      totalTeamSize < 5
+    ) {
+      toast.error(
+        "This event requires 4 players + 1 substitute (including leader). Add them to continue.",
+      );
       return;
     }
 
@@ -799,105 +811,117 @@ function EventRegistrationContent() {
                         </span>
                       )}
                     </div>
-                    )}
+                  )}
                   <div
                     ref={eventListRef}
                     className="space-y-3 h-[400px] overflow-y-auto pr-2 custom-scrollbar"
                   >
-                    {singleEventMode && selectedEventIds.length > 0 ? (
-                      eventsList.filter(ev => selectedEventIds.includes(ev.id)).map((ev) => {
-                        const isSelected = true;
-                        return (
-                        <div
-                          key={ev.id}
-                          onClick={() => {
-                            setSingleEventMode(false);
-                            setValue("selectedEvents", []);
-                          }}
-                          className="cursor-pointer border-2 p-4 rounded-xl border-black bg-[#deb3fa] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
-                        >
-                          <div className="flex justify-between items-start relative z-10">
-                            <div>
-                              <h3 className="font-black text-lg uppercase text-black">
-                                {ev.name}
-                              </h3>
-                              <p className="text-xs font-bold mt-1 text-black/70">
-                                {ev.date} • Click to change
-                              </p>
-                            </div>
-                            <div className="px-2 py-1 rounded text-xs font-bold border-2 bg-black text-white border-black">
-                              {(() => {
-                                const { original, discounted, hasDiscount } =
-                                  getDiscountedPrice(ev.price, activeDiscount);
-                                return hasDiscount ? (
-                                  <span className="flex items-center gap-1">
-                                    <span className="line-through opacity-80">
-                                      ₹{original}
-                                    </span>
-                                    <span className="text-green-500">
-                                      ₹{discounted}
-                                    </span>
-                                  </span>
-                                ) : (
-                                  <span>₹{original}</span>
-                                );
-                              })()}
-                            </div>
-                          </div>
-                        </div>
-                        );
-                      })
-                    ) : (
-                      eventsList.map((ev) => {
-                        const isSelected = selectedEventIds.includes(ev.id);
-                        return (
-                        <div
-                          key={ev.id}
-                          onClick={() => toggleEvent(ev.id)}
-                          className={`cursor-pointer border-2 p-4 rounded-xl transition-all relative overflow-hidden ${
-                            isSelected
-                                ? "border-black bg-[#deb3fa] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
-                                : "border-zinc-900 bg-white hover:border-zinc-400"
-                            }`}
-                        >
-                          <div className="flex justify-between items-start relative z-10">
-                            <div>
-                              <h3
-                                className={`font-black text-lg uppercase ${isSelected ? "text-black" : "text-zinc-900"}`}
+                    {singleEventMode && selectedEventIds.length > 0
+                      ? eventsList
+                          .filter((ev) => selectedEventIds.includes(ev.id))
+                          .map((ev) => {
+                            const isSelected = true;
+                            return (
+                              <div
+                                key={ev.id}
+                                onClick={() => {
+                                  setSingleEventMode(false);
+                                  setValue("selectedEvents", []);
+                                }}
+                                className="cursor-pointer border-2 p-4 rounded-xl border-black bg-[#deb3fa] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
                               >
-                                {ev.name}
-                              </h3>
-                              <p
-                                className={`text-xs font-bold mt-1 ${isSelected ? "text-black/70" : "text-zinc-900"}`}
-                              >
-                                {ev.date}
-                              </p>
-                            </div>
+                                <div className="flex justify-between items-start relative z-10">
+                                  <div>
+                                    <h3 className="font-black text-lg uppercase text-black">
+                                      {ev.name}
+                                    </h3>
+                                    <p className="text-xs font-bold mt-1 text-black/70">
+                                      {ev.date} • Click to change
+                                    </p>
+                                  </div>
+                                  <div className="px-2 py-1 rounded text-xs font-bold border-2 bg-black text-white border-black">
+                                    {(() => {
+                                      const {
+                                        original,
+                                        discounted,
+                                        hasDiscount,
+                                      } = getDiscountedPrice(
+                                        ev.price,
+                                        activeDiscount,
+                                      );
+                                      return hasDiscount ? (
+                                        <span className="flex items-center gap-1">
+                                          <span className="line-through opacity-80">
+                                            ₹{original}
+                                          </span>
+                                          <span className="text-green-500">
+                                            ₹{discounted}
+                                          </span>
+                                        </span>
+                                      ) : (
+                                        <span>₹{original}</span>
+                                      );
+                                    })()}
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })
+                      : eventsList.map((ev) => {
+                          const isSelected = selectedEventIds.includes(ev.id);
+                          return (
                             <div
-                              className={`px-2 py-1 rounded text-xs font-bold border-2 ${isSelected ? "bg-black text-white border-black" : "bg-zinc-100 text-zinc-800 border-zinc-200"}`}
+                              key={ev.id}
+                              onClick={() => toggleEvent(ev.id)}
+                              className={`cursor-pointer border-2 p-4 rounded-xl transition-all relative overflow-hidden ${
+                                isSelected
+                                  ? "border-black bg-[#deb3fa] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+                                  : "border-zinc-900 bg-white hover:border-zinc-400"
+                              }`}
                             >
-                              {(() => {
-                                const { original, discounted, hasDiscount } =
-                                  getDiscountedPrice(ev.price, activeDiscount);
-                                return hasDiscount ? (
-                                  <span className="flex items-center gap-1">
-                                    <span className="line-through opacity-80">
-                                      ₹{original}
-                                    </span>
-                                    <span className="text-green-500">
-                                      ₹{discounted}
-                                    </span>
-                                  </span>
-                                ) : (
-                                  <span>₹{original}</span>
-                                );
-                              })()}
+                              <div className="flex justify-between items-start relative z-10">
+                                <div>
+                                  <h3
+                                    className={`font-black text-lg uppercase ${isSelected ? "text-black" : "text-zinc-900"}`}
+                                  >
+                                    {ev.name}
+                                  </h3>
+                                  <p
+                                    className={`text-xs font-bold mt-1 ${isSelected ? "text-black/70" : "text-zinc-900"}`}
+                                  >
+                                    {ev.date}
+                                  </p>
+                                </div>
+                                <div
+                                  className={`px-2 py-1 rounded text-xs font-bold border-2 ${isSelected ? "bg-black text-white border-black" : "bg-zinc-100 text-zinc-800 border-zinc-200"}`}
+                                >
+                                  {(() => {
+                                    const {
+                                      original,
+                                      discounted,
+                                      hasDiscount,
+                                    } = getDiscountedPrice(
+                                      ev.price,
+                                      activeDiscount,
+                                    );
+                                    return hasDiscount ? (
+                                      <span className="flex items-center gap-1">
+                                        <span className="line-through opacity-80">
+                                          ₹{original}
+                                        </span>
+                                        <span className="text-green-500">
+                                          ₹{discounted}
+                                        </span>
+                                      </span>
+                                    ) : (
+                                      <span>₹{original}</span>
+                                    );
+                                  })()}
+                                </div>
+                              </div>
                             </div>
-                          </div>
-                        </div>
-                        );
-                      })
-                    )}
+                          );
+                        })}
                   </div>
 
                   <div className="flex gap-4">
@@ -927,29 +951,50 @@ function EventRegistrationContent() {
                   className="space-y-4"
                 >
                   <p className="font-bold text-xs uppercase text-zinc-500">
-                    Step 3/4: Add Team Members {teamSizeLimit ? `(${fields.length + 1}/${maxTotalTeam}) - Including Leader` : "(Optional)"}
+                    Step 3/4: Add Team Members{" "}
+                    {teamSizeLimit
+                      ? `(${fields.length + 1}/${maxTotalTeam}) - Including Leader`
+                      : "(Optional)"}
                   </p>
 
                   <div className="bg-purple-100 border-2 border-black p-4 rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
                     <div className="flex items-center gap-2 mb-3">
-                      <span className="bg-black text-white text-xs font-bold px-2 py-1 rounded">TEAM LEADER</span>
+                      <span className="bg-black text-white text-xs font-bold px-2 py-1 rounded">
+                        TEAM LEADER
+                      </span>
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <p className="text-xs text-zinc-500 uppercase font-bold">Name</p>
-                        <p className="font-bold text-black">{watch("leaderName") || "—"}</p>
+                        <p className="text-xs text-zinc-500 uppercase font-bold">
+                          Name
+                        </p>
+                        <p className="font-bold text-black">
+                          {watch("leaderName") || "—"}
+                        </p>
                       </div>
                       <div>
-                        <p className="text-xs text-zinc-500 uppercase font-bold">Email</p>
-                        <p className="font-bold text-black text-sm">{watch("email") || "—"}</p>
+                        <p className="text-xs text-zinc-500 uppercase font-bold">
+                          Email
+                        </p>
+                        <p className="font-bold text-black text-sm">
+                          {watch("email") || "—"}
+                        </p>
                       </div>
                       <div>
-                        <p className="text-xs text-zinc-500 uppercase font-bold">Phone</p>
-                        <p className="font-bold text-black">{watch("phone") || "—"}</p>
+                        <p className="text-xs text-zinc-500 uppercase font-bold">
+                          Phone
+                        </p>
+                        <p className="font-bold text-black">
+                          {watch("phone") || "—"}
+                        </p>
                       </div>
                       <div>
-                        <p className="text-xs text-zinc-500 uppercase font-bold">College</p>
-                        <p className="font-bold text-black text-sm">{watch("college") || "—"}</p>
+                        <p className="text-xs text-zinc-500 uppercase font-bold">
+                          College
+                        </p>
+                        <p className="font-bold text-black text-sm">
+                          {watch("college") || "—"}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -957,7 +1002,8 @@ function EventRegistrationContent() {
                   {isEsports && (
                     <div className="bg-amber-100 border-2 border-amber-500 p-3 rounded-xl">
                       <p className="text-amber-800 text-xs font-bold">
-                        Esports Event: Team = 1 Leader + {teamSizeLimit! - 1} Players + 1 Substitute
+                        Esports Event: Team = 1 Leader + {teamSizeLimit! - 1}{" "}
+                        Players + 1 Substitute
                       </p>
                     </div>
                   )}
@@ -1030,7 +1076,9 @@ function EventRegistrationContent() {
 
                   {teamSizeLimit && fields.length < teamSizeLimit - 1 && (
                     <p className="text-xs text-center text-zinc-500">
-                      Add {teamSizeLimit - 1 - fields.length} more member{teamSizeLimit - 1 - fields.length > 1 ? "s" : ""} to complete team
+                      Add {teamSizeLimit - 1 - fields.length} more member
+                      {teamSizeLimit - 1 - fields.length > 1 ? "s" : ""} to
+                      complete team
                     </p>
                   )}
 
@@ -1157,7 +1205,9 @@ function EventRegistrationContent() {
                     {(() => {
                       // Determine selected event (robust: check id and name keywords)
                       const selectedId = (selectedEventIds || [])[0];
-                      const selectedEvent = eventsList.find((e) => e.id === selectedId);
+                      const selectedEvent = eventsList.find(
+                        (e) => e.id === selectedId,
+                      );
 
                       const esportsKeywords = [
                         "valorant",
@@ -1175,11 +1225,20 @@ function EventRegistrationContent() {
                           )
                         : false;
 
-                      const isEsportsSelected = nameMatches || esportsKeywords.includes(selectedId || "");
-                      const qrSrc = isEsportsSelected ? "/sidqr.jpeg" : "/qrcode.png";
+                      const isEsportsSelected =
+                        nameMatches ||
+                        esportsKeywords.includes(selectedId || "");
+                      const qrSrc = isEsportsSelected
+                        ? "/sidqr.jpeg"
+                        : "/qrcode.png";
                       return (
                         <div className="relative w-48 h-48 border-4 border-black rounded-xl overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mx-auto mb-4 bg-white">
-                          <Image src={qrSrc} alt="Payment QR Code" fill className="object-contain p-2" />
+                          <Image
+                            src={qrSrc}
+                            alt="Payment QR Code"
+                            fill
+                            className="object-contain p-2"
+                          />
                         </div>
                       );
                     })()}
