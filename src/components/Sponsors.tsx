@@ -16,6 +16,7 @@ const SPONSOR_LOGO_FILES = [
     "jawa.jpeg",
     "nikon.png",
     "Redbull.png",
+    "edu.webp",
 ];
 
 const toSponsorName = (filename: string) => {
