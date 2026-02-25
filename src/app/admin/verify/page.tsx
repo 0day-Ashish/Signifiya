@@ -27,7 +27,7 @@ type EventTeamRow = {
   leaderAttendedBy: string | null;
   eventNames: string;
   qrCode: string | null;
-  members: { id: string; name: string; college: string | null; attendedAt: Date | null; attendedBy: string | null }[];
+  members: { id: string; name: string; college: string | null; gameId: string | null; attendedAt: Date | null; attendedBy: string | null }[];
 };
 
 export default function AdminVerifyPage() {
@@ -386,7 +386,11 @@ export default function AdminVerifyPage() {
                             <p className="text-xs font-bold uppercase text-zinc-500">Teammates</p>
                             {t.members.map((m) => (
                               <div key={m.id} className="flex flex-wrap items-center justify-between gap-2">
-                                <span className="text-sm text-zinc-400">{m.name}{m.college ? ` (${m.college})` : ""}</span>
+                                <span className="text-sm text-zinc-400">
+                                  {m.name}
+                                  {m.gameId && <span className="text-amber-400 ml-1">[{m.gameId}]</span>}
+                                  {m.college ? ` (${m.college})` : ""}
+                                </span>
                                 {m.attendedAt ? (
                                   <span className="px-3 py-1 rounded-lg bg-emerald-500/20 text-emerald-400 text-xs font-medium">
                                     ✓ Attended {new Date(m.attendedAt).toLocaleString()}

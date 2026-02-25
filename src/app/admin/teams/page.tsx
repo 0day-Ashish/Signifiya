@@ -48,7 +48,14 @@ export default async function AdminTeamsPage({ searchParams }: { searchParams?: 
                   <tr id={`team-${t.id}`} key={t.id} className="border-b border-zinc-800/50 hover:bg-zinc-800/30">
                     <td className="px-4 py-3">
                       <span className="font-medium text-white">{t.teamName}</span>
-                      <p className="text-xs text-zinc-500">{t.members.map((m) => `${m.name || ""}${m.college ? ` (${m.college})` : ""}`).join(", ")}</p>
+                      <p className="text-xs text-zinc-500">
+                        {t.members.map((m) => {
+                          const parts = [m.name];
+                          if (m.gameId) parts.push(`[${m.gameId}]`);
+                          if (m.college) parts.push(`(${m.college})`);
+                          return parts.join(" ");
+                        }).join(" | ")}
+                      </p>
                     </td>
                     <td className="px-4 py-3 text-zinc-300">{t.leaderName}<br /><span className="text-xs">{t.leaderEmail}</span><br /><span className="text-xs">{t.leaderPhone}</span></td>
                     <td className="px-4 py-3 font-mono text-zinc-400 text-xs">{t.leaderBookingId || "—"}</td>

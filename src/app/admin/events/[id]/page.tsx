@@ -54,7 +54,11 @@ export default async function AdminEventDetailPage({ params, searchParams }: Pro
               </div>
               <ul className="mt-3 pl-4 border-l-2 border-zinc-700 text-sm text-zinc-400">
                 {t.members.map((m) => (
-                  <li key={m.id}>{m.name}{m.college ? ` (${m.college})` : ""}</li>
+                  <li key={m.id}>
+                    {m.name}
+                    {m.gameId && <span className="text-amber-400 ml-1">[{m.gameId}]</span>}
+                    {m.college ? ` (${m.college})` : ""}
+                  </li>
                 ))}
               </ul>
             </div>
