@@ -92,27 +92,31 @@ const EventCard = ({ event, index }: { event: any; index: number }) => {
             <span>{event.venue}</span>
           </div>
 
-          <div className="flex items-center px-4 py-3 border-2 border-black bg-white rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-            <span>{event.teamMember} </span>
-          </div>
+          {event.teamMember && (
+            <div className="flex items-center px-4 py-3 border-2 border-black bg-white rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+              <span>{event.teamMember} </span>
+            </div>
+          )}
         </div>
 
-        <div className="mt-8 pt-6 border-t-2 border-dashed border-zinc-300">
-          <div className="flex flex-col sm:flex-row gap-6 sm:gap-8">
-            <div className="flex-1">
-              <h4 className="text-xs font-black text-zinc-500 uppercase tracking-widest mb-1">
-                Student Coordinators
-              </h4>
-              <p className="text-black font-bold text-lg">{event.coordinators}</p>
-            </div>
-            <div className="flex-1">
-              <h4 className="text-xs font-black text-zinc-500 uppercase tracking-widest mb-1">
-                Faculty Coordinators
-              </h4>
-              <p className="text-black font-bold text-lg">{event.facultyCoordinators || "TBA"}</p>
+        {!event.excludeFromListing && (
+          <div className="mt-8 pt-6 border-t-2 border-dashed border-zinc-300">
+            <div className="flex flex-col sm:flex-row gap-6 sm:gap-8">
+              <div className="flex-1">
+                <h4 className="text-xs font-black text-zinc-500 uppercase tracking-widest mb-1">
+                  Student Coordinators
+                </h4>
+                <p className="text-black font-bold text-lg">{event.coordinators}</p>
+              </div>
+              <div className="flex-1">
+                <h4 className="text-xs font-black text-zinc-500 uppercase tracking-widest mb-1">
+                  Faculty Coordinators
+                </h4>
+                <p className="text-black font-bold text-lg">{event.facultyCoordinators || "TBA"}</p>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {registrationId && (
           <Link

@@ -37,6 +37,8 @@ export type MasterEvent = {
   lottie?: string;
   color?: string;
   teamMember?: string;
+  /** If true, this event will be excluded from the public events listing (but can still appear on the schedule) */
+  excludeFromListing?: boolean;
 };
 
 // ============================================================
@@ -48,6 +50,23 @@ export type MasterEvent = {
 
 export const ALL_EVENTS: MasterEvent[] = [
   // ─── DAY 1 EVENTS (MARCH 27TH) ──────────────────────────
+  {
+    id: 0,
+    title: "Inauguration",
+    category: "OFFICIAL",
+    department: "Official",
+    description: "Official inauguration ceremony for the event.",
+    scheduleDescription: "Opening ceremony for Signifiya 2026.",
+    date: "March 27th",
+    image: "/inauguration.jpg",
+    prizePool: "—",
+    day: 1,
+    time: "12:30 PM - 1:30 PM",
+    venue: "APJ Abdul Kalam Convention Hall",
+    lottie: "",
+    excludeFromListing: true,
+    color: "bg-yellow-50",
+  },
 
   {
     id: 1,
@@ -477,6 +496,25 @@ export const ALL_EVENTS: MasterEvent[] = [
       "https://lottie.host/0f63fd76-3dec-4340-b124-c72eb23a19be/pmSxXvemID.lottie",
     color: "bg-amber-100",
   },
+  {
+    id: 20,
+    title: "Prize Distribution",
+    category: "OFFICIAL",
+    department: "Official",
+    description: "Prize distribution and closing remarks for Signifiya 2026.",
+    scheduleDescription: "Prize distribution ceremony and closing of Signifiya 2026.",
+    date: "March 28th",
+    image: "/prize-distribution.jpg",
+    prizePool: "—",
+    day: 2,
+    time: "6:00 PM - 7:00 PM",
+    venue: "APJ Abdul Kalam Convention Hall",
+    coordinators: "",
+    facultyCoordinators: "",
+    lottie: "",
+    color: "bg-yellow-50",
+    excludeFromListing: true,
+  },
 ];
 
 // ============================================================
@@ -497,6 +535,7 @@ export type ScheduleEventItem = {
   lottie: string;
   color: string;
   teamMember: string;
+  excludeFromListing?: boolean;
 };
 
 /** Day data for schedule page */
@@ -521,6 +560,7 @@ export function getScheduleData(): DayData[] {
     lottie: e.lottie || "",
     color: e.color || "bg-white",
     teamMember: e.teamMember || "",
+    excludeFromListing: e.excludeFromListing || false,
   });
 
   const day1 = ALL_EVENTS.filter((e) => e.day === 1).map(toScheduleItem);
@@ -568,7 +608,7 @@ export function getEventsListingData(): EventListingItem[] {
     "Power Deal": 149,
     "Tech Monopoly": 149,
   };
-  return ALL_EVENTS.map((e) => ({
+  return ALL_EVENTS.filter((e) => !e.excludeFromListing).map((e) => ({
     id: e.id,
     category: e.category,
     title: (e.eventTitle || e.title).toUpperCase(),

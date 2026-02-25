@@ -32,7 +32,7 @@ const TEAM_MEMBERS: TeamMember[] = [
   { id: 21, name: " Dr. Soumitra Roy", role: "Faculty Lead", image: "/team/SR.jpg", linkedin: "https://www.linkedin.com/in/soumitra-roy-8987b91a/" },
   { id: 3, name: "Mr. Prabhat Das", role: "Tech Mentor", image: "/team/Prabhat.jpg", linkedin: "https://www.linkedin.com/in/prabhatd/", github: "https://github.com/prabhatdash/" },
   { id: 4, name: "Mr. Ayushman Bilas Thakur", role: "Tech Mentor", image: "/team/Ayushman.jpeg", linkedin: "https://www.linkedin.com/in/ayushmanbt/", github: "https://github.com/ayushmanbilas" },
-  { id: 4, name: "Hrishav Dey", role: "Event Advisor", image: "/avatar4.jpg", linkedin: "https://www.linkedin.com/in/hrishav-dey-60a8292aa", instagram: "https://www.instagram.com/hrishav_02?igsh=bHI5ZWE4OHc2YTY3" },
+  { id: 4, name: "Hrishav Dey", role: "Event Advisor", image: "/team/hrishav.jpeg", linkedin: "https://www.linkedin.com/in/hrishav-dey-60a8292aa", instagram: "https://www.instagram.com/hrishav_02?igsh=bHI5ZWE4OHc2YTY3" },
   { id: 5, name: "Digant Mishra", role: "Administration Head", image: "/team/Digant.jpeg", linkedin: "https://www.linkedin.com/in/digant-m-a325b61a4", instagram: "https://www.instagram.com/digantt._?igsh=YTZmZTUwcTkxaXp5", github: "https://github.com/diggu92" },
   { id: 6, name: "Arijit De", role: "Finance & Sponsorship Lead", image: "/team/Arijit.jpg", linkedin: "https://www.linkedin.com/in/arijit-de-ba1594358", instagram: "https://instagram.com/arijit_.04" },
   { id: 7, name: "Siddartha Chakraborty", role: "Esports Lead", image: "/team/Siddharth-01.jpeg", linkedin: "https://linkedin.com/in/siddarthachakraborty/", instagram: "https://instagram.com/siddarthachk", github: "https://github.com/siddarthachk" },
