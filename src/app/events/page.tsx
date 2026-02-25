@@ -314,7 +314,7 @@ function EventRegistrationContent() {
   const selectedEvent = eventsList.find(e => e.id === selectedEventIds?.[0]);
   const teamSizeLimit = selectedEvent ? getTeamSizeLimit(selectedEvent.type) : null;
   const isEsports = selectedEventIds?.[0] === "gaming" || selectedEventIds?.[0] === "bgmi" || selectedEventIds?.[0] === "freefire";
-  const maxTeamMembers = teamSizeLimit ? teamSizeLimit - 1 : 6;
+  const maxTeamMembers = teamSizeLimit ? teamSizeLimit - 1 + (isEsports ? 1 : 0) : 6;
 
   // Redirect to sign-in if not authenticated
   useEffect(() => {
@@ -483,15 +483,15 @@ function EventRegistrationContent() {
     const selectedId = (watch("selectedEvents") || [])[0];
     const members = watch("members") || [];
 
-    // For Valorant (id: 'gaming') require at least 4 teammates
-    if (selectedId === "gaming" && members.length < 4) {
-      toast.error("Valorant requires at least 4 teammates. Add 4 teammates to continue.");
+    // For Valorant (id: 'gaming') require 4 teammates + 1 substitute = 5
+    if (selectedId === "gaming" && members.length < 5) {
+      toast.error("Valorant requires 4 teammates + 1 substitute. Add them to continue.");
       return;
     }
 
-    // For BGMI and Free Fire require at least 3 teammates
-    if ((selectedId === "bgmi" || selectedId === "freefire") && members.length < 3) {
-      toast.error("This event requires at least 3 teammates. Add teammates to continue.");
+    // For BGMI and Free Fire require 3 teammates + 1 substitute = 4
+    if ((selectedId === "bgmi" || selectedId === "freefire") && members.length < 4) {
+      toast.error("This event requires 3 teammates + 1 substitute. Add them to continue.");
       return;
     }
 
@@ -953,6 +953,14 @@ function EventRegistrationContent() {
                       </div>
                     </div>
                   </div>
+
+                  {isEsports && (
+                    <div className="bg-amber-100 border-2 border-amber-500 p-3 rounded-xl">
+                      <p className="text-amber-800 text-xs font-bold">
+                        Esports Event: Add {teamSizeLimit! - 1} players + 1 substitute
+                      </p>
+                    </div>
+                  )}
 
                   <div className="space-y-4">
                     {fields.map((field, index) => (

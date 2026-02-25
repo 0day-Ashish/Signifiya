@@ -21,11 +21,11 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
-  plugins: [
-    expo(),
-  ],
+  plugins: [expo()],
   trustedOrigins: [
-    "exp://",           // Expo Go development
-    "signifiya://",     // Production builds (your app scheme)
+    "*/*",
+    "http://localhost:3000",
+    "exp://", // Expo Go development
+    "signifiya://", // Production builds (your app scheme)
   ],
 });
