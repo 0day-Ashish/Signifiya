@@ -36,6 +36,7 @@ export type MasterEvent = {
   facultyCoordinators?: string;
   lottie?: string;
   color?: string;
+  teamMember?: string;
 };
 
 // ============================================================
@@ -53,6 +54,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     title: "Valorant",
     category: "ESPORTS",
     department: "E-Sports",
+    teamMember: "Team Size: 5 + 1",
     description:
       "Precise gunplay with agent abilities with smart strategy and perfect coordination to secure victory.",
     scheduleDescription:
@@ -72,6 +74,7 @@ export const ALL_EVENTS: MasterEvent[] = [
   {
     id: 2,
     title: "Free Fire",
+    teamMember: "Team Size: 4 + 1",
     category: "ESPORTS",
     department: "E-Sports",
     description:
@@ -96,6 +99,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     eventTitle: "CODING PREMIER LEAGUE",
     category: "CSE",
     department: "CSE (Tech)",
+    teamMember: "Team Size: 2",
     description:
       "Teams battle through algorithmic challenges to prove their speed, logic, and coding mastery.",
     scheduleDescription:
@@ -118,6 +122,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     eventTitle: "RE-FAB (Waste to Wealth)",
     category: "MECHANICAL",
     department: "Mechanical (Tech)",
+    teamMember: "Team Size: 2",
     description:
       "Participants transform scrap materials into innovative, functional prototypes with suitable design.",
     scheduleDescription:
@@ -137,6 +142,7 @@ export const ALL_EVENTS: MasterEvent[] = [
   {
     id: 5,
     title: "Path Follower",
+    teamMember: "1-2",
     category: "ROBOTICS",
     department: "Robotics (Tech)",
     description:
@@ -161,6 +167,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     eventTitle: "BRIDGE BUILDING",
     category: "CIVIL",
     department: "Civil (Tech)",
+    teamMember: "Team Size: 2",
     description:
       "Bridge the gap between theory and reality. Build a truss bridge that can withstand maximum load.",
     scheduleDescription:
@@ -182,6 +189,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     eventTitle: "ELECTRIFYING CIRCUITS",
     category: "EEE",
     department: "EEE (Tech)",
+    teamMember: "Team Size: 2",
     description:
       "Students race against the clock to design, build, and troubleshoot complex circuits.",
     scheduleDescription:
@@ -203,6 +211,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     title: "Dance Battle",
     category: "NON-TECH",
     department: "Non-Tech",
+    teamMember: "Team Size: 1-8",
     description:
       "Rhythm, style, and attitude collide, bring your best moves, own the stage, and outshine the competition.",
     scheduleDescription:
@@ -224,6 +233,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     title: "Arm Wrestling",
     category: "NON-TECH",
     department: "Non-Tech",
+    teamMember: "Team Size: 1",
     description:
       "Lock hands, hold your ground, and power through to pin your opponent down.",
     scheduleDescription:
@@ -353,6 +363,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     title: "BGMI",
     category: "ESPORTS",
     department: "E-Sports",
+    teamMember: "Team Member: 4 + 1",
     description:
       "Drop in, gear up, and fight through intense combat zones to be the last team standing.",
     scheduleDescription:
@@ -372,6 +383,7 @@ export const ALL_EVENTS: MasterEvent[] = [
   {
     id: 16,
     title: "E-Football",
+    teamMember: "Team Size: 1",
     eventTitle: "E-FOOTBALL",
     category: "ESPORTS",
     department: "E-Sports",
@@ -474,6 +486,7 @@ export type ScheduleEventItem = {
   image1: string;
   lottie: string;
   color: string;
+  teamMember: string;
 };
 
 /** Day data for schedule page */
@@ -497,6 +510,7 @@ export function getScheduleData(): DayData[] {
     image1: e.scheduleImage || e.image,
     lottie: e.lottie || "",
     color: e.color || "bg-white",
+    teamMember: e.teamMember || "",
   });
 
   const day1 = ALL_EVENTS.filter((e) => e.day === 1).map(toScheduleItem);
@@ -524,15 +538,15 @@ export type EventListingItem = {
 export function getEventsListingData(): EventListingItem[] {
   // Prices for events by exact title (fallback to 0 if missing)
   const PRICE_BY_TITLE: Record<string, number> = {
-    "Valorant": 499,
+    Valorant: 499,
     "Free Fire": 399,
     "Coding Premier League": 280,
-    "Refab": 280,
+    Refab: 280,
     "Path Follower": 219,
     "Bridge Building": 280,
     "Dance Battle": 200,
     "Arm Wrestling": 100,
-    "BGMI": 399,
+    BGMI: 399,
     "E-Football": 149,
     "Electrifying Circuits": 299,
     "Tower Making": 280,

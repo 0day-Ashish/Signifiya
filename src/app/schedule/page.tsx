@@ -91,6 +91,10 @@ const EventCard = ({ event, index }: { event: any; index: number }) => {
             <span className="font-bold mr-2">📍 VENUE:</span>
             <span>{event.venue}</span>
           </div>
+
+          <div className="flex items-center px-4 py-3 border-2 border-black bg-white rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+            <span>{event.teamMember} </span>
+          </div>
         </div>
 
         <div className="mt-8 pt-6 border-t-2 border-dashed border-zinc-300">
