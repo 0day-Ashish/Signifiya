@@ -314,7 +314,8 @@ function EventRegistrationContent() {
   const selectedEvent = eventsList.find(e => e.id === selectedEventIds?.[0]);
   const teamSizeLimit = selectedEvent ? getTeamSizeLimit(selectedEvent.type) : null;
   const isEsports = selectedEventIds?.[0] === "gaming" || selectedEventIds?.[0] === "bgmi" || selectedEventIds?.[0] === "freefire";
-  const maxTeamMembers = teamSizeLimit ? teamSizeLimit - 1 + (isEsports ? 1 : 0) : 6;
+  const maxTeamMembers = teamSizeLimit ? teamSizeLimit - 1 : 6;
+  const maxTotalTeam = teamSizeLimit ? teamSizeLimit + (isEsports ? 1 : 0) : 7;
 
   // Redirect to sign-in if not authenticated
   useEffect(() => {
@@ -482,16 +483,17 @@ function EventRegistrationContent() {
 
     const selectedId = (watch("selectedEvents") || [])[0];
     const members = watch("members") || [];
+    const totalTeamSize = members.length + 1; // +1 for leader
 
-    // For Valorant (id: 'gaming') require 4 teammates + 1 substitute = 5
-    if (selectedId === "gaming" && members.length < 5) {
-      toast.error("Valorant requires 4 teammates + 1 substitute. Add them to continue.");
+    // For Valorant (id: 'gaming') require 5 players + 1 substitute = 6 total
+    if (selectedId === "gaming" && totalTeamSize < 6) {
+      toast.error("Valorant requires 5 players + 1 substitute (including leader). Add them to continue.");
       return;
     }
 
-    // For BGMI and Free Fire require 3 teammates + 1 substitute = 4
-    if ((selectedId === "bgmi" || selectedId === "freefire") && members.length < 4) {
-      toast.error("This event requires 3 teammates + 1 substitute. Add them to continue.");
+    // For BGMI and Free Fire require 4 players + 1 substitute = 5 total
+    if ((selectedId === "bgmi" || selectedId === "freefire") && totalTeamSize < 5) {
+      toast.error("This event requires 4 players + 1 substitute (including leader). Add them to continue.");
       return;
     }
 
@@ -927,7 +929,7 @@ function EventRegistrationContent() {
                   className="space-y-4"
                 >
                   <p className="font-bold text-xs uppercase text-zinc-500">
-                    Step 3/4: Add Team Members {teamSizeLimit ? `(${fields.length + 1}/${teamSizeLimit})` : "(Optional)"}
+                    Step 3/4: Add Team Members {teamSizeLimit ? `(${fields.length + 1}/${maxTotalTeam}) - Including Leader` : "(Optional)"}
                   </p>
 
                   <div className="bg-purple-100 border-2 border-black p-4 rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
@@ -957,7 +959,7 @@ function EventRegistrationContent() {
                   {isEsports && (
                     <div className="bg-amber-100 border-2 border-amber-500 p-3 rounded-xl">
                       <p className="text-amber-800 text-xs font-bold">
-                        Esports Event: Add {teamSizeLimit! - 1} players + 1 substitute
+                        Esports Event: Team = 1 Leader + {teamSizeLimit! - 1} Players + 1 Substitute
                       </p>
                     </div>
                   )}
