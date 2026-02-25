@@ -75,7 +75,7 @@ const eventsList = [
   {
     id: "dance",
     name: "Dance Battle",
-    price: 200,
+    price: 199,
     type: "Solo/Group (1-7)",
     date: "March 27th",
     color: "bg-fuchsia-100",
@@ -161,7 +161,7 @@ const eventsList = [
     color: "bg-gray-100",
   },
   {
-    id: "efootball",  
+    id: "efootball",
     name: "E-Football",
     price: 149,
     type: "Solo",
@@ -255,6 +255,10 @@ function getGameIdLabel(eventId: string): string | null {
       return "UUID";
     case "efootball":
       return "eFootball ID";
+    case "arm":
+      return "Weight Category";
+    case "dance":
+      return "Dance Form";
     default:
       return null;
   }
@@ -270,10 +274,31 @@ function getGameIdPlaceholder(eventId: string): string {
       return "e.g., abc123def456";
     case "efootball":
       return "e.g., player123";
+    case "arm":
+      return "Select your weight category";
+    case "dance":
+      return "Select your dance form";
     default:
       return "";
   }
 }
+
+const WEIGHT_CATEGORIES = [
+  "60–70 kg",
+  "70–80 kg",
+  "80–90 kg",
+  "90 kg+",
+];
+
+const DANCE_FORMS = [
+  "Bollywood",
+  "Hip-Hop",
+  "Classical",
+  "Contemporary",
+  "Western",
+  "Folk",
+  "Freestyle",
+];
 
 /** Returns the currently active event discount (if any) based on current time */
 function getActiveEventDiscount() {
@@ -323,6 +348,7 @@ function EventRegistrationContent() {
     useState<ReturnType<typeof getActiveEventDiscount>>(null);
   const [discountTimeLeft, setDiscountTimeLeft] = useState("");
   const [singleEventMode, setSingleEventMode] = useState(false);
+  const [danceMode, setDanceMode] = useState<"solo" | "team" | null>(null);
   const [createdEventPass, setCreatedEventPass] = useState<{
     teamLeadName: string;
     eventName: string;
@@ -335,7 +361,7 @@ function EventRegistrationContent() {
 
   const {
     register,
-    trigger, 
+    trigger,
     setValue,
     watch,
     control,
@@ -356,14 +382,21 @@ function EventRegistrationContent() {
 
   const selectedEventIds = watch("selectedEvents");
   const selectedEvent = eventsList.find((e) => e.id === selectedEventIds?.[0]);
-  const teamSizeLimit = selectedEvent
-    ? getTeamSizeLimit(selectedEvent.type)
+  const isDanceBattle = selectedEventIds?.[0] === "dance";
+
+  // Override type for dance battle based on mode
+  const effectiveType = isDanceBattle
+    ? (danceMode === "team" ? "Team (6)" : "Solo")
+    : selectedEvent?.type;
+  const teamSizeLimit = effectiveType
+    ? getTeamSizeLimit(effectiveType)
     : null;
   const isEsports =
     selectedEventIds?.[0] === "gaming" ||
     selectedEventIds?.[0] === "bgmi" ||
     selectedEventIds?.[0] === "freefire";
   const isEFootball = selectedEventIds?.[0] === "efootball";
+  const isArmWrestling = selectedEventIds?.[0] === "arm";
   const isSoloEvent = teamSizeLimit === 1;
   // Allow one optional substitute beyond the regular team members for every event
   const maxTeamMembers = isSoloEvent ? 0 : (teamSizeLimit ? teamSizeLimit + 1 : 6);
@@ -371,6 +404,10 @@ function EventRegistrationContent() {
   const maxTotalTeam = teamSizeLimit ? teamSizeLimit + 2 : 7;
   const currentGameIdLabel = selectedEventIds?.[0] ? getGameIdLabel(selectedEventIds[0]) : null;
   const currentGameIdPlaceholder = selectedEventIds?.[0] ? getGameIdPlaceholder(selectedEventIds[0]) : "";
+
+  // Effective dance price based on mode
+  const getEventPrice = (ev: typeof eventsList[number]) =>
+    ev.id === "dance" && danceMode === "team" ? 499 : ev.price;
 
   // Redirect to sign-in if not authenticated
   useEffect(() => {
@@ -432,11 +469,12 @@ function EventRegistrationContent() {
     const total = selectedEventIds.reduce((sum, eventId) => {
       const event = eventsList.find((e) => e.id === eventId);
       if (!event) return sum;
-      const { discounted } = getDiscountedPrice(event.price, discount);
+      const price = getEventPrice(event);
+      const { discounted } = getDiscountedPrice(price, discount);
       return sum + discounted;
     }, 0);
     setTotalCost(total);
-  }, [selectedEventIds, activeDiscount]);
+  }, [selectedEventIds, activeDiscount, danceMode]);
 
   useEffect(() => {
     const prefillFromDb = async () => {
@@ -523,6 +561,11 @@ function EventRegistrationContent() {
     const isValid = await trigger("selectedEvents");
 
     if (isValid) {
+      // Require dance mode selection for Dance Battle
+      if (selectedEventIds?.[0] === "dance" && !danceMode) {
+        toast.warning("Please select Solo or Team for Dance Battle.");
+        return;
+      }
       setStep(3);
     } else {
       toast.warning("No event selected!", {
@@ -558,6 +601,24 @@ function EventRegistrationContent() {
         `This event requires ${requiredTotal} players (including leader). Add them to continue.`,
       );
       return;
+    }
+
+    // Validate weight category for arm wrestling
+    if (selectedId === "arm") {
+      const leaderGameId = watch("leaderGameId");
+      if (!leaderGameId?.trim()) {
+        toast.error("Please select your weight category to continue.");
+        return;
+      }
+    }
+
+    // Validate dance form for dance battle
+    if (selectedId === "dance") {
+      const leaderGameId = watch("leaderGameId");
+      if (!leaderGameId?.trim()) {
+        toast.error("Please select your dance form to continue.");
+        return;
+      }
     }
 
     // Validate game IDs for esports events
@@ -601,8 +662,8 @@ function EventRegistrationContent() {
         leaderGameId: vals.leaderGameId,
         college: vals.college,
         bookingId: vals.bookingId,
-        eventName: ev?.name || "",
-        eventPrice: ev?.price || 0,
+        eventName: ev?.id === "dance" ? `Dance Battle (${danceMode === "team" ? "Team" : "Solo"})` : (ev?.name || ""),
+        eventPrice: ev ? getEventPrice(ev) : 0,
         members: (vals.members || []).map((m) => ({
           name: m?.name,
           college: m?.college,
@@ -632,20 +693,17 @@ function EventRegistrationContent() {
 
   const toggleEvent = (id: string) => {
     const current = watch("selectedEvents");
+    // Reset dance mode when changing events
+    if (id !== "dance") setDanceMode(null);
     if (current.includes(id)) {
       setValue("selectedEvents", []);
+      setDanceMode(null);
     } else {
       setValue("selectedEvents", [id]);
     }
   };
 
-  const handleEventListWheel = (e: React.WheelEvent<HTMLDivElement>) => {
-    const el = eventListRef.current;
-    if (!el) return;
-    e.preventDefault();
-    e.stopPropagation();
-    el.scrollTop += e.deltaY;
-  };
+
 
   if (!isOpen) {
     return (
@@ -655,8 +713,8 @@ function EventRegistrationContent() {
 
   return (
     <div className="bg-zinc-950 h-screen max-h-screen flex items-center justify-center p-4 lg:p-8 font-sans overflow-hidden">
-      <div className="bg-white rounded-[2rem] w-full max-w-full h-full max-h-full overflow-hidden flex flex-col lg:flex-row min-h-[85vh]">
-        <div className="flex-1 flex flex-col p-6 lg:p-10 relative overflow-hidden">
+      <div className="bg-white rounded-[2rem] w-full max-w-full h-full max-h-full overflow-hidden flex flex-col lg:flex-row">
+        <div className="flex-1 flex flex-col p-6 lg:p-10 relative overflow-hidden min-h-0">
           <div className="flex flex-col mb-6">
             <Link
               href="/"
@@ -694,7 +752,7 @@ function EventRegistrationContent() {
           </div>
 
           <div
-            className={`flex-1 pr-2 custom-scrollbar ${step === 2 ? "overflow-y-hidden" : "overflow-y-auto"}`}
+            className="flex-1 min-h-0 pr-2 custom-scrollbar overflow-y-auto"
           >
             {/* Form Steps */}
             <AnimatePresence mode="wait">
@@ -863,7 +921,7 @@ function EventRegistrationContent() {
                   animate={{ x: 0, opacity: 1 }}
                   exit={{ x: -20, opacity: 0 }}
                   className="space-y-4"
-                  onWheelCapture={handleEventListWheel}
+
                 >
                   <p className="font-bold text-xs uppercase text-zinc-500">
                     Step 2/4: Select Event
@@ -889,15 +947,18 @@ function EventRegistrationContent() {
                   >
                     {singleEventMode && selectedEventIds.length > 0
                       ? eventsList
-                          .filter((ev) => selectedEventIds.includes(ev.id))
-                          .map((ev) => {
-                            const isSelected = true;
-                            return (
+                        .filter((ev) => selectedEventIds.includes(ev.id))
+                        .map((ev) => {
+                          const isSelected = true;
+                          return (
+                            <div
+                              key={ev.id}
+                            >
                               <div
-                                key={ev.id}
                                 onClick={() => {
                                   setSingleEventMode(false);
                                   setValue("selectedEvents", []);
+                                  setDanceMode(null);
                                 }}
                                 className="cursor-pointer border-2 p-4 rounded-xl border-black bg-[#deb3fa] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
                               >
@@ -907,17 +968,18 @@ function EventRegistrationContent() {
                                       {ev.name}
                                     </h3>
                                     <p className="text-xs font-bold mt-1 text-black/70">
-                                      {ev.date} • Click to change
+                                      {ev.date} • Click to change{ev.id === "dance" ? " • Team Size: 1/2/3/4/5/6/7" : ""}
                                     </p>
                                   </div>
                                   <div className="px-2 py-1 rounded text-xs font-bold border-2 bg-black text-white border-black">
                                     {(() => {
+                                      const price = getEventPrice(ev);
                                       const {
                                         original,
                                         discounted,
                                         hasDiscount,
                                       } = getDiscountedPrice(
-                                        ev.price,
+                                        price,
                                         activeDiscount,
                                       );
                                       return hasDiscount ? (
@@ -936,19 +998,44 @@ function EventRegistrationContent() {
                                   </div>
                                 </div>
                               </div>
-                            );
-                          })
+                              {/* Dance Battle Solo/Team toggle */}
+                              {ev.id === "dance" && (
+                                <div className="flex gap-2 mt-2">
+                                  <button
+                                    type="button"
+                                    onClick={(e) => { e.stopPropagation(); setDanceMode("solo"); }}
+                                    className={`flex-1 py-2 px-3 rounded-lg border-2 font-bold text-sm uppercase transition-all ${danceMode === "solo"
+                                      ? "bg-fuchsia-600 text-white border-fuchsia-700 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
+                                      : "bg-white text-black border-black hover:bg-fuchsia-50"
+                                      }`}
+                                  >
+                                    Solo — ₹199
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={(e) => { e.stopPropagation(); setDanceMode("team"); }}
+                                    className={`flex-1 py-2 px-3 rounded-lg border-2 font-bold text-sm uppercase transition-all ${danceMode === "team"
+                                      ? "bg-fuchsia-600 text-white border-fuchsia-700 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
+                                      : "bg-white text-black border-black hover:bg-fuchsia-50"
+                                      }`}
+                                  >
+                                    Team — ₹499
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })
                       : eventsList.map((ev) => {
-                          const isSelected = selectedEventIds.includes(ev.id);
-                          return (
+                        const isSelected = selectedEventIds.includes(ev.id);
+                        return (
+                          <div key={ev.id}>
                             <div
-                              key={ev.id}
                               onClick={() => toggleEvent(ev.id)}
-                              className={`cursor-pointer border-2 p-4 rounded-xl transition-all relative overflow-hidden ${
-                                isSelected
-                                  ? "border-black bg-[#deb3fa] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
-                                  : "border-zinc-900 bg-white hover:border-zinc-400"
-                              }`}
+                              className={`cursor-pointer border-2 p-4 rounded-xl transition-all relative overflow-hidden ${isSelected
+                                ? "border-black bg-[#deb3fa] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+                                : "border-zinc-900 bg-white hover:border-zinc-400"
+                                }`}
                             >
                               <div className="flex justify-between items-start relative z-10">
                                 <div>
@@ -960,19 +1047,20 @@ function EventRegistrationContent() {
                                   <p
                                     className={`text-xs font-bold mt-1 ${isSelected ? "text-black/70" : "text-zinc-900"}`}
                                   >
-                                    {ev.date}
+                                    {ev.date}{ev.id === "dance" && isSelected ? " • Team Size: 1/2/3/4/5/6/7" : ""}
                                   </p>
                                 </div>
                                 <div
                                   className={`px-2 py-1 rounded text-xs font-bold border-2 ${isSelected ? "bg-black text-white border-black" : "bg-zinc-100 text-zinc-800 border-zinc-200"}`}
                                 >
                                   {(() => {
+                                    const price = getEventPrice(ev);
                                     const {
                                       original,
                                       discounted,
                                       hasDiscount,
                                     } = getDiscountedPrice(
-                                      ev.price,
+                                      price,
                                       activeDiscount,
                                     );
                                     return hasDiscount ? (
@@ -991,8 +1079,34 @@ function EventRegistrationContent() {
                                 </div>
                               </div>
                             </div>
-                          );
-                        })}
+                            {/* Dance Battle Solo/Team toggle */}
+                            {ev.id === "dance" && isSelected && (
+                              <div className="flex gap-2 mt-2">
+                                <button
+                                  type="button"
+                                  onClick={(e) => { e.stopPropagation(); setDanceMode("solo"); }}
+                                  className={`flex-1 py-2 px-3 rounded-lg border-2 font-bold text-sm uppercase transition-all ${danceMode === "solo"
+                                    ? "bg-fuchsia-600 text-white border-fuchsia-700 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
+                                    : "bg-white text-black border-black hover:bg-fuchsia-50"
+                                    }`}
+                                >
+                                  Solo — ₹199
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={(e) => { e.stopPropagation(); setDanceMode("team"); }}
+                                  className={`flex-1 py-2 px-3 rounded-lg border-2 font-bold text-sm uppercase transition-all ${danceMode === "team"
+                                    ? "bg-fuchsia-600 text-white border-fuchsia-700 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
+                                    : "bg-white text-black border-black hover:bg-fuchsia-50"
+                                    }`}
+                                >
+                                  Team — ₹499
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
                   </div>
 
                   <div className="flex gap-4">
@@ -1022,8 +1136,8 @@ function EventRegistrationContent() {
                   className="space-y-4"
                 >
                   <p className="font-bold text-xs uppercase text-zinc-500">
-                    {isSoloEvent 
-                      ? "Step 3/4: Your Details" 
+                    {isSoloEvent
+                      ? "Step 3/4: Your Details"
                       : `Step 3/4: Add Team Members (${fields.length + 1}/${maxTotalTeam}) - Including Leader`}
                   </p>
 
@@ -1079,7 +1193,45 @@ function EventRegistrationContent() {
                     </div>
                   </div>
 
-                  {currentGameIdLabel && (
+                  {isArmWrestling && (
+                    <div className="bg-amber-50 border-2 border-amber-400 p-4 rounded-xl">
+                      <Label className={labelStyles}>Weight Category</Label>
+                      <select
+                        className={`${inputStyles} w-full px-3 py-2 cursor-pointer`}
+                        value={watch("leaderGameId") || ""}
+                        onChange={(e) => setValue("leaderGameId", e.target.value, { shouldValidate: true })}
+                      >
+                        <option value="">Select your weight category</option>
+                        {WEIGHT_CATEGORIES.map((cat) => (
+                          <option key={cat} value={cat}>{cat}</option>
+                        ))}
+                      </select>
+                      <p className="text-xs text-amber-600 mt-1">
+                        Required — choose the category you will compete in
+                      </p>
+                    </div>
+                  )}
+
+                  {isDanceBattle && (
+                    <div className="bg-fuchsia-50 border-2 border-fuchsia-400 p-4 rounded-xl">
+                      <Label className={labelStyles}>Dance Form</Label>
+                      <select
+                        className={`${inputStyles} w-full px-3 py-2 cursor-pointer`}
+                        value={watch("leaderGameId") || ""}
+                        onChange={(e) => setValue("leaderGameId", e.target.value, { shouldValidate: true })}
+                      >
+                        <option value="">Select your dance form</option>
+                        {DANCE_FORMS.map((form) => (
+                          <option key={form} value={form}>{form}</option>
+                        ))}
+                      </select>
+                      <p className="text-xs text-fuchsia-600 mt-1">
+                        Required — choose the dance style you will perform
+                      </p>
+                    </div>
+                  )}
+
+                  {currentGameIdLabel && !isArmWrestling && !isDanceBattle && (
                     <div className="bg-amber-50 border-2 border-amber-400 p-4 rounded-xl">
                       <Label className={labelStyles}>{currentGameIdLabel} (Team Leader)</Label>
                       <Input
@@ -1102,69 +1254,69 @@ function EventRegistrationContent() {
                   )}
 
                   {!isSoloEvent && (
-                  <div className="space-y-4">
-                    {fields.map((field, index) => (
-                      <div
-                        key={field.id}
-                        className="bg-white border-2 border-black p-4 rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] relative"
-                      >
-                        <button
-                          type="button"
-                          onClick={() => remove(index)}
-                          className="absolute -top-3 -right-3 w-8 h-8 flex items-center justify-center bg-red-500 border-2 border-black rounded-full text-white hover:bg-red-600 transition-colors z-10"
+                    <div className="space-y-4">
+                      {fields.map((field, index) => (
+                        <div
+                          key={field.id}
+                          className="bg-white border-2 border-black p-4 rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] relative"
                         >
-                          <svg
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="3"
+                          <button
+                            type="button"
+                            onClick={() => remove(index)}
+                            className="absolute -top-3 -right-3 w-8 h-8 flex items-center justify-center bg-red-500 border-2 border-black rounded-full text-white hover:bg-red-600 transition-colors z-10"
                           >
-                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                            <line x1="6" y1="6" x2="18" y2="18"></line>
-                          </svg>
-                        </button>
+                            <svg
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="3"
+                            >
+                              <line x1="18" y1="6" x2="6" y2="18"></line>
+                              <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                          </button>
                           <h4 className="font-bold text-xs uppercase mb-3 text-zinc-400">
-                          Member {index + 1}
-                          {teamSizeLimit !== null && teamSizeLimit !== undefined && index >= teamSizeLimit ? (
-                            <span className="ml-2 text-[10px] font-medium text-zinc-600">(Substitute)</span>
-                          ) : null}
-                        </h4>
-                        <div className="grid gap-3">
-                          <Input
-                            {...register(`members.${index}.name`)}
-                            className={inputStyles}
-                            placeholder="Name"
-                          />
-                          <Input
-                            {...register(`members.${index}.college`)}
-                            className={inputStyles}
-                            placeholder="College"
-                          />
-                          <div className="grid grid-cols-2 gap-3">
+                            Member {index + 1}
+                            {teamSizeLimit !== null && teamSizeLimit !== undefined && index >= teamSizeLimit ? (
+                              <span className="ml-2 text-[10px] font-medium text-zinc-600">(Substitute)</span>
+                            ) : null}
+                          </h4>
+                          <div className="grid gap-3">
                             <Input
-                              {...register(`members.${index}.email`)}
+                              {...register(`members.${index}.name`)}
                               className={inputStyles}
-                              placeholder="Email"
+                              placeholder="Name"
                             />
                             <Input
-                              {...register(`members.${index}.phone`)}
+                              {...register(`members.${index}.college`)}
                               className={inputStyles}
-                              placeholder="Phone"
+                              placeholder="College"
                             />
+                            <div className="grid grid-cols-2 gap-3">
+                              <Input
+                                {...register(`members.${index}.email`)}
+                                className={inputStyles}
+                                placeholder="Email"
+                              />
+                              <Input
+                                {...register(`members.${index}.phone`)}
+                                className={inputStyles}
+                                placeholder="Phone"
+                              />
+                            </div>
+                            {currentGameIdLabel && (
+                              <Input
+                                {...register(`members.${index}.gameId`)}
+                                className={inputStyles}
+                                placeholder={`${currentGameIdLabel} (${currentGameIdPlaceholder})`}
+                              />
+                            )}
                           </div>
-                          {currentGameIdLabel && (
-                            <Input
-                              {...register(`members.${index}.gameId`)}
-                              className={inputStyles}
-                              placeholder={`${currentGameIdLabel} (${currentGameIdPlaceholder})`}
-                            />
-                          )}
                         </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
                   )}
 
                   {!isSoloEvent && fields.length < maxTeamMembers && (
@@ -1243,7 +1395,7 @@ function EventRegistrationContent() {
                       const ev = eventsList.find((e) => e.id === id);
                       if (!ev) return null;
                       const { original, discounted, hasDiscount } =
-                        getDiscountedPrice(ev.price, activeDiscount);
+                        getDiscountedPrice(getEventPrice(ev), activeDiscount);
                       return (
                         <div key={id} className="flex justify-between mb-1">
                           <span>{ev.name}</span>
@@ -1257,7 +1409,7 @@ function EventRegistrationContent() {
                               </span>
                             </span>
                           ) : (
-                            <span>₹{ev.price}</span>
+                            <span>₹{getEventPrice(ev)}</span>
                           )}
                         </div>
                       );
@@ -1269,10 +1421,10 @@ function EventRegistrationContent() {
                           <span className="line-through opacity-40 text-sm">
                             ₹
                             {selectedEventIds.reduce(
-                              (s, id) =>
-                                s +
-                                (eventsList.find((e) => e.id === id)?.price ||
-                                  0),
+                              (s, id) => {
+                                const found = eventsList.find((e) => e.id === id);
+                                return s + (found ? getEventPrice(found) : 0);
+                              },
                               0,
                             )}
                           </span>
@@ -1339,8 +1491,8 @@ function EventRegistrationContent() {
 
                       const nameMatches = selectedEvent?.name
                         ? esportsKeywords.some((k) =>
-                            selectedEvent.name.toLowerCase().includes(k),
-                          )
+                          selectedEvent.name.toLowerCase().includes(k),
+                        )
                         : false;
 
                       const isEsportsSelected =
@@ -1448,7 +1600,7 @@ function EventRegistrationContent() {
           <div className="relative w-[420px] h-[580px] bg-white border-4 border-black rounded-2xl shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] rotate-[-2deg] flex flex-col overflow-hidden group">
             <div className="h-2/3 bg-zinc-900 relative border-b-4 border-black overflow-hidden">
               <Image
-                src="/gall13.JPG"
+                src="/gallery/gallery-13.jpeg"
                 alt="Event"
                 fill
                 className="object-cover opacity-80 group-hover:scale-105 transition-transform duration-700"
