@@ -290,7 +290,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     day: 2,
     time: "10:00 AM - 3:00 PM",
     venue: "Workshop",
-    coordinators: "Soumen Samanta",
+    coordinators: "Soumen Samanta, Suman Jana",
     facultyCoordinators: "Dr. Nataraj Mishra, Dr. Nitesh kumar",
     lottie:
       "https://lottie.host/84997780-9072-40eb-bf3c-b02910fa01ef/C7GW3im1LR.lottie",
