@@ -23,8 +23,8 @@ export const auth = betterAuth({
   },
   plugins: [expo()],
   trustedOrigins: [
-    "*/*",
-    "http://localhost:3000",
+    "*",
+    "http://localhost:8001",
     "exp://", // Expo Go development
     "signifiya://", // Production builds (your app scheme)
   ],
