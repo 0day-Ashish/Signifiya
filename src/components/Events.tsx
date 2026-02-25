@@ -31,6 +31,35 @@ const CATEGORIES = [
 const EVENTS_DATA = getEventsListingData();
 const EVENT_TITLE_TO_SCHEDULE_ID = getEventTitleToScheduleId();
 
+const EVENT_TITLE_TO_REG_ID: Record<string, string> = {
+  "VALORANT TOURNAMENT": "gaming",
+  "FREE FIRE": "freefire",
+  "CODING PREMIER LEAGUE": "cpl",
+  "RE-FAB (WASTE TO WEALTH)": "refab",
+  "PATH FOLLOWER": "path",
+  "BRIDGE BUILDING": "bridge",
+  "ELECTRIFYING CIRCUITS": "circuit",
+  "DANCE BATTLE": "dance",
+  "ARM WRESTLING": "arm",
+  "TOWER MAKING": "tower",
+  "DIL SE DESIGN": "design",
+  "LATHE WAR": "lathe",
+  "ROBO TERRAIN": "robo",
+  "RAP BATTLE": "rap",
+  "BGMI": "bgmi",
+  "E-FOOTBALL": "efootball",
+  "TREASURE HUNT": "treasure",
+  "POWER DEAL": "powerdeal",
+  "TECH MONOPOLY": "techmonopoly",
+  "CARROM": "carrom",
+  "CHESS": "chess",
+  "VOLLEYBALL": "volleyball",
+  "CRICKET": "cricket",
+  "BADMINTON": "badminton",
+  "FOOTBALL": "football",
+  "BOX CRICKET": "boxcricket",
+};
+
 export default function Events() {
   const [activeCategory, setActiveCategory] = useState("ALL");
 
@@ -334,7 +363,9 @@ export default function Events() {
                           </Link>
                         )}
                         <Link
-                          href="/events"
+                          href={EVENT_TITLE_TO_REG_ID[event.title.toUpperCase()] 
+                            ? `/events?event=${EVENT_TITLE_TO_REG_ID[event.title.toUpperCase()]}` 
+                            : "/events"}
                           className={`w-full bg-black text-white border-2 border-black rounded-xl py-1.5 sm:py-2 font-bold uppercase text-xs sm:text-sm transition-colors hover:bg-zinc-800 text-center ${softura.className}`}
                         >
                           Register

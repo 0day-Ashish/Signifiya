@@ -21,8 +21,39 @@ const fallbackEventsData = getScheduleData();
 
 // EventCard component (Commented out for now)
 
+const EVENT_ID_MAP: Record<string, string> = {
+  "Valorant Tournament": "gaming",
+  "Free Fire": "freefire",
+  "Coding Premier League": "cpl",
+  "RE-FAB (Waste to Wealth)": "refab",
+  "Refab": "refab",
+  "Path Follower": "path",
+  "Bridge Building": "bridge",
+  "Electrifying Circuits": "circuit",
+  "Dance Battle": "dance",
+  "Arm Wrestling": "arm",
+  "Tower Making": "tower",
+  "Dil Se Design": "design",
+  "Lathe War": "lathe",
+  "Robo Terrain": "robo",
+  "Rap Battle": "rap",
+  "BGMI": "bgmi",
+  "E-Football": "efootball",
+  "Treasure Hunt": "treasure",
+  "Power Deal": "powerdeal",
+  "Tech Monopoly": "techmonopoly",
+  "Carrom": "carrom",
+  "Chess": "chess",
+  "Volleyball": "volleyball",
+  "Cricket": "cricket",
+  "Badminton": "badminton",
+  "Football": "football",
+  "Box Cricket": "boxcricket",
+};
+
 const EventCard = ({ event, index }: { event: any; index: number }) => {
   const isTextLeft = index % 2 === 0;
+  const registrationId = EVENT_ID_MAP[event.title] || EVENT_ID_MAP[event.eventTitle];
 
   return (
     <div
@@ -78,6 +109,15 @@ const EventCard = ({ event, index }: { event: any; index: number }) => {
             </div>
           </div>
         </div>
+
+        {registrationId && (
+          <Link
+            href={`/events?event=${registrationId}`}
+            className="mt-6 inline-flex items-center justify-center px-6 py-3 bg-black text-white font-bold text-lg rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)] hover:translate-y-0.5 hover:shadow-none transition-all"
+          >
+            Register Now
+          </Link>
+        )}
       </div>
 
       <div className="relative w-full lg:w-1/2 flex justify-center items-center min-h-[400px]">

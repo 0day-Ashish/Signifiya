@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -213,7 +213,7 @@ const inputStyles =
 const labelStyles =
   "text-black font-bold uppercase text-xs tracking-wider mb-1 block";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 /** Returns the currently active event discount (if any) based on current time */
 function getActiveEventDiscount() {
@@ -243,8 +243,9 @@ function getDiscountedPrice(
   return { original: price, discounted, hasDiscount: true };
 }
 
-export default function EventRegistration() {
+function EventRegistrationContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { data: sessionData, isPending: isSessionPending } =
     authClient.useSession();
   const eventListRef = React.useRef<HTMLDivElement>(null);
@@ -262,6 +263,7 @@ export default function EventRegistration() {
   const [activeDiscount, setActiveDiscount] =
     useState<ReturnType<typeof getActiveEventDiscount>>(null);
   const [discountTimeLeft, setDiscountTimeLeft] = useState("");
+  const [singleEventMode, setSingleEventMode] = useState(false);
   const [createdEventPass, setCreatedEventPass] = useState<{
     teamLeadName: string;
     eventName: string;
@@ -302,6 +304,18 @@ export default function EventRegistration() {
       router.push("/sign-in?callbackUrl=/events");
     }
   }, [sessionData, isSessionPending, router]);
+
+  // Pre-select event from query parameter
+  useEffect(() => {
+    const eventId = searchParams.get("event");
+    if (eventId) {
+      const validEvent = eventsList.find((ev) => ev.id === eventId);
+      if (validEvent) {
+        setValue("selectedEvents", [eventId]);
+        setSingleEventMode(true);
+      }
+    }
+  }, [searchParams, setValue]);
 
   // Re-check the open date every second so the page auto-transitions
   useEffect(() => {
@@ -767,45 +781,39 @@ export default function EventRegistration() {
                         </span>
                       )}
                     </div>
-                  )}
+                    )}
                   <div
                     ref={eventListRef}
                     className="space-y-3 h-[400px] overflow-y-auto pr-2 custom-scrollbar"
                   >
-                    {eventsList.map((ev) => {
-                      const isSelected = selectedEventIds.includes(ev.id);
-                      return (
+                    {singleEventMode && selectedEventIds.length > 0 ? (
+                      eventsList.filter(ev => selectedEventIds.includes(ev.id)).map((ev) => {
+                        const isSelected = true;
+                        return (
                         <div
                           key={ev.id}
-                          onClick={() => toggleEvent(ev.id)}
-                          className={`cursor-none border-2 p-4 rounded-xl transition-all relative overflow-hidden ${
-                            isSelected
-                              ? "border-black bg-[#deb3fa] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
-                              : "border-zinc-300 bg-white hover:border-zinc-400"
-                          }`}
+                          onClick={() => {
+                            setSingleEventMode(false);
+                            setValue("selectedEvents", []);
+                          }}
+                          className="cursor-pointer border-2 p-4 rounded-xl border-black bg-[#deb3fa] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
                         >
                           <div className="flex justify-between items-start relative z-10">
                             <div>
-                              <h3
-                                className={`font-black text-lg uppercase ${isSelected ? "text-black" : "text-zinc-400"}`}
-                              >
+                              <h3 className="font-black text-lg uppercase text-black">
                                 {ev.name}
                               </h3>
-                              <p
-                                className={`text-xs font-bold mt-1 ${isSelected ? "text-black/70" : "text-zinc-300"}`}
-                              >
-                                {ev.date}
+                              <p className="text-xs font-bold mt-1 text-black/70">
+                                {ev.date} • Click to change
                               </p>
                             </div>
-                            <div
-                              className={`px-2 py-1 rounded text-xs font-bold border-2 ${isSelected ? "bg-black text-white border-black" : "bg-zinc-100 text-zinc-400 border-zinc-200"}`}
-                            >
+                            <div className="px-2 py-1 rounded text-xs font-bold border-2 bg-black text-white border-black">
                               {(() => {
                                 const { original, discounted, hasDiscount } =
                                   getDiscountedPrice(ev.price, activeDiscount);
                                 return hasDiscount ? (
                                   <span className="flex items-center gap-1">
-                                    <span className="line-through opacity-60">
+                                    <span className="line-through opacity-80">
                                       ₹{original}
                                     </span>
                                     <span className="text-green-500">
@@ -819,8 +827,59 @@ export default function EventRegistration() {
                             </div>
                           </div>
                         </div>
-                      );
-                    })}
+                        );
+                      })
+                    ) : (
+                      eventsList.map((ev) => {
+                        const isSelected = selectedEventIds.includes(ev.id);
+                        return (
+                        <div
+                          key={ev.id}
+                          onClick={() => toggleEvent(ev.id)}
+                          className={`cursor-pointer border-2 p-4 rounded-xl transition-all relative overflow-hidden ${
+                            isSelected
+                                ? "border-black bg-[#deb3fa] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+                                : "border-zinc-900 bg-white hover:border-zinc-400"
+                            }`}
+                        >
+                          <div className="flex justify-between items-start relative z-10">
+                            <div>
+                              <h3
+                                className={`font-black text-lg uppercase ${isSelected ? "text-black" : "text-zinc-900"}`}
+                              >
+                                {ev.name}
+                              </h3>
+                              <p
+                                className={`text-xs font-bold mt-1 ${isSelected ? "text-black/70" : "text-zinc-900"}`}
+                              >
+                                {ev.date}
+                              </p>
+                            </div>
+                            <div
+                              className={`px-2 py-1 rounded text-xs font-bold border-2 ${isSelected ? "bg-black text-white border-black" : "bg-zinc-100 text-zinc-800 border-zinc-200"}`}
+                            >
+                              {(() => {
+                                const { original, discounted, hasDiscount } =
+                                  getDiscountedPrice(ev.price, activeDiscount);
+                                return hasDiscount ? (
+                                  <span className="flex items-center gap-1">
+                                    <span className="line-through opacity-80">
+                                      ₹{original}
+                                    </span>
+                                    <span className="text-green-500">
+                                      ₹{discounted}
+                                    </span>
+                                  </span>
+                                ) : (
+                                  <span>₹{original}</span>
+                                );
+                              })()}
+                            </div>
+                          </div>
+                        </div>
+                        );
+                      })
+                    )}
                   </div>
 
                   <div className="flex gap-4">
@@ -1212,5 +1271,21 @@ export default function EventRegistration() {
         </div>
       </div>
     </div>
+  );
+}
+
+function LoadingFallback() {
+  return (
+    <div className="bg-zinc-950 h-screen flex items-center justify-center">
+      <div className="text-white text-xl">Loading...</div>
+    </div>
+  );
+}
+
+export default function EventRegistration() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <EventRegistrationContent />
+    </Suspense>
   );
 }
