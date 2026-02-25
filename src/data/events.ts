@@ -221,7 +221,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     time: "1:30 PM - 7:00 PM",
     venue: "SOET 5204",
     coordinators: "Suraj Rana, Chandril Bijoy Bhattacharyya, Sagar Talukdar",
-    facultyCoordinators: "Nihar karmakar, Jeet Banerjee",
+    facultyCoordinators: "Nihar Karmakar, Jeet Banerjee",
     lottie:
       "https://lottie.host/d4daf38b-2ffb-483d-b524-967a221f540e/okSpmUrCF7.lottie",
     color: "bg-yellow-100",
