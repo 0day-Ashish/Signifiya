@@ -8,7 +8,7 @@ import Link from "next/link";
 import localFont from "next/font/local";
 import { authClient } from "@/lib/auth-client";
 import { APP_CONFIG } from "@/config/app.config";
-import { getScheduleEvents } from "./actions";
+// Use the API route to GET schedule data from the server
 import { getScheduleData, type DayData } from "@/data/events";
 
 const gilton = localFont({ src: "../../../public/fonts/GiltonRegular.otf" });
@@ -125,13 +125,16 @@ export default function Schedule() {
 
   // Fetch schedule events with caching
   useEffect(() => {
-    const fetchEvents = async () => {
+      const fetchEvents = async () => {
       try {
         setIsLoading(true);
         // Check if nocache param is present to force refresh
         const urlParams = new URLSearchParams(window.location.search);
         const forceRefresh = urlParams.get('nocache') === 'true';
-        const data = await getScheduleEvents(forceRefresh);
+        const apiUrl = `/api/schedule${forceRefresh ? "?nocache=true" : ""}`;
+        const res = await fetch(apiUrl, { cache: 'no-store' });
+        if (!res.ok) throw new Error('Failed to fetch schedule');
+        const data = await res.json();
         setEventsData(data);
       } catch (error) {
         console.error("Error fetching schedule events:", error);

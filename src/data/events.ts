@@ -328,8 +328,8 @@ export const ALL_EVENTS: MasterEvent[] = [
   },
   {
     id: 14,
-    title: "Robo Terrain (Robo Soccer)",
-    eventTitle: "ROBO TERRAIN (ROBO SOCCER)",
+    title: "Robo Terrain",
+    eventTitle: "ROBO TERRAIN",
     category: "ROBOTICS",
     department: "Robotics (Tech)",
     description:
@@ -538,7 +538,7 @@ export function getEventsListingData(): EventListingItem[] {
     "Tower Making": 280,
     "Dil Se Design": 219,
     "Lathe War": 219,
-    "Robo Terrain (Robo Soccer)": 219,
+    "Robo Terrain": 219,
     "Rap Battle": 149,
     "Treasure Hunt": 300,
     "Power Deal": 149,

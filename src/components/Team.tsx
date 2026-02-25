@@ -50,7 +50,7 @@ const TEAM_MEMBERS: TeamMember[] = [
   { id: 17, name: "Titas Sarkar", role: "Ex Support", image: "/team/Titas.jpg", linkedin: "https://www.linkedin.com/in/titas-sarkar-7b0978343/", instagram: "https://instagram.com/t.i.t.a.s", github: "https://github.com/titas841-web" },
   { id: 18, name: "Sayan Mukherjee", role: "App Development", image: "/team/Sayan.jpeg", linkedin: "https://www.linkedin.com/in/sayan-mukherjee-258751356", instagram: "https://www.instagram.com/sa.yan1047", github: "https://github.com/Sani05M" },
   { id: 19, name: "Tushar Kanti Dey", role: "App Development", image: "/team/Tushar.jpg", linkedin: "https://www.linkedin.com/in/tushar-kanti-dey/", instagram: "https://www.instagram.com/tushardevx01", github: "https://github.com/Tusharxhub" },
-  // { id: 15, name: "Somnath Singha Roy", role: "Ex Support", image: "/1.jpg" },
+  { id: 20, name: "Somnath Singha Roy", role: "Ex Support", image: "/team/somnath.jpeg", linkedin: "https://www.linkedin.com/in/somnath-singha-roy/",},
 
 ];
 

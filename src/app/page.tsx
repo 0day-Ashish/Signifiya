@@ -150,14 +150,19 @@ export default function Home() {
   useEffect(() => {
     if (sessionData) {
       setSession(sessionData);
-      // Fetch user profile and pass status when user is logged in
+      // Fetch user profile and pass status via API when user is logged in
       if (sessionData.user?.id) {
-        getUserProfile(sessionData.user.id).then((profile) => {
-          if (profile) setUserProfile(profile);
-        });
-        getUserPassStatus(sessionData.user.id).then((status) => {
-          if (status) setPassStatus(status);
-        });
+        (async () => {
+          try {
+            const res = await fetch(`/api/user?userId=${sessionData.user.id}`, { cache: 'no-store' });
+            if (!res.ok) throw new Error('Failed to fetch user data');
+            const json = await res.json();
+            if (json.profile) setUserProfile(json.profile);
+            if (json.passStatus) setPassStatus(json.passStatus);
+          } catch (err) {
+            console.error('Error fetching user data:', err);
+          }
+        })();
       }
     }
   }, [sessionData]);
