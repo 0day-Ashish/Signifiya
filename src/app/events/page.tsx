@@ -1005,10 +1005,9 @@ function EventRegistrationContent() {
                   className="space-y-4"
                 >
                   <p className="font-bold text-xs uppercase text-zinc-500">
-                    Step 3/4: Add Team Members{" "}
-                    {teamSizeLimit
-                      ? `(${fields.length + 1}/${maxTotalTeam}) - Including Leader`
-                      : "(Optional)"}
+                    {isSoloEvent 
+                      ? "Step 3/4: Your Details" 
+                      : `Step 3/4: Add Team Members (${fields.length + 1}/${maxTotalTeam}) - Including Leader`}
                   </p>
 
                   <div className="bg-purple-100 border-2 border-black p-4 rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
@@ -1085,6 +1084,7 @@ function EventRegistrationContent() {
                     </div>
                   )}
 
+                  {!isSoloEvent && (
                   <div className="space-y-4">
                     {fields.map((field, index) => (
                       <div
@@ -1145,6 +1145,7 @@ function EventRegistrationContent() {
                       </div>
                     ))}
                   </div>
+                  )}
 
                   {!isSoloEvent && fields.length < maxTeamMembers && (
                     <Button
