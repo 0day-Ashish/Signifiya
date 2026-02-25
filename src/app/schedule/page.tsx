@@ -22,7 +22,7 @@ const fallbackEventsData = getScheduleData();
 // EventCard component (Commented out for now)
 
 const EVENT_ID_MAP: Record<string, string> = {
-  "Valorant Tournament": "gaming",
+  "Valorant": "gaming",
   "Free Fire": "freefire",
   "Coding Premier League": "cpl",
   "RE-FAB (Waste to Wealth)": "refab",

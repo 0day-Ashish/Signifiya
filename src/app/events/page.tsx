@@ -84,7 +84,7 @@ const eventsList = [
   },
   {
     id: "gaming",
-    name: "Valorant Tournament",
+    name: "Valorant",
     price: 499,
     type: "Team (5)",
     date: "March 27th",
@@ -215,6 +215,20 @@ const labelStyles =
 
 import { useRouter, useSearchParams } from "next/navigation";
 
+function getTeamSizeLimit(eventType: string): number | null {
+  const match = eventType.match(/Team \((\d+)\)/);
+  if (match) {
+    return parseInt(match[1], 10);
+  }
+  if (eventType.toLowerCase().includes("solo")) {
+    return 1;
+  }
+  if (eventType.includes("1-7")) {
+    return 7;
+  }
+  return null;
+}
+
 /** Returns the currently active event discount (if any) based on current time */
 function getActiveEventDiscount() {
   const now = new Date();
@@ -297,6 +311,10 @@ function EventRegistrationContent() {
   });
 
   const selectedEventIds = watch("selectedEvents");
+  const selectedEvent = eventsList.find(e => e.id === selectedEventIds?.[0]);
+  const teamSizeLimit = selectedEvent ? getTeamSizeLimit(selectedEvent.type) : null;
+  const isEsports = selectedEventIds?.[0] === "gaming" || selectedEventIds?.[0] === "bgmi" || selectedEventIds?.[0] === "freefire";
+  const maxTeamMembers = teamSizeLimit ? teamSizeLimit - 1 : 6;
 
   // Redirect to sign-in if not authenticated
   useEffect(() => {
@@ -909,15 +927,31 @@ function EventRegistrationContent() {
                   className="space-y-4"
                 >
                   <p className="font-bold text-xs uppercase text-zinc-500">
-                    Step 3/4: Add Team Members (Optional)
+                    Step 3/4: Add Team Members {teamSizeLimit ? `(${fields.length + 1}/${teamSizeLimit})` : "(Optional)"}
                   </p>
 
-                  <div className="bg-amber-100 border-2 border-amber-400 p-3 rounded-xl mb-4">
-                    <p className="text-amber-800 text-xs font-bold">
-                      {" "}
-                      Note: Team leader is automatically included. Add other
-                      members here.
-                    </p>
+                  <div className="bg-purple-100 border-2 border-black p-4 rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="bg-black text-white text-xs font-bold px-2 py-1 rounded">TEAM LEADER</span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <p className="text-xs text-zinc-500 uppercase font-bold">Name</p>
+                        <p className="font-bold text-black">{watch("leaderName") || "—"}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-zinc-500 uppercase font-bold">Email</p>
+                        <p className="font-bold text-black text-sm">{watch("email") || "—"}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-zinc-500 uppercase font-bold">Phone</p>
+                        <p className="font-bold text-black">{watch("phone") || "—"}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-zinc-500 uppercase font-bold">College</p>
+                        <p className="font-bold text-black text-sm">{watch("college") || "—"}</p>
+                      </div>
+                    </div>
                   </div>
 
                   <div className="space-y-4">
@@ -974,15 +1008,23 @@ function EventRegistrationContent() {
                     ))}
                   </div>
 
-                  <Button
-                    type="button"
-                    onClick={() =>
-                      append({ name: "", college: "", email: "", phone: "" })
-                    }
-                    className="w-full bg-white text-black font-bold py-4 rounded-xl border-2 border-dashed border-zinc-400 hover:border-black hover:bg-zinc-50 transition-all uppercase"
-                  >
-                    + Add Member
-                  </Button>
+                  {fields.length < maxTeamMembers && (
+                    <Button
+                      type="button"
+                      onClick={() =>
+                        append({ name: "", college: "", email: "", phone: "" })
+                      }
+                      className="w-full bg-white text-black font-bold py-4 rounded-xl border-2 border-dashed border-zinc-400 hover:border-black hover:bg-zinc-50 transition-all uppercase"
+                    >
+                      + Add Member ({fields.length}/{maxTeamMembers})
+                    </Button>
+                  )}
+
+                  {teamSizeLimit && fields.length < teamSizeLimit - 1 && (
+                    <p className="text-xs text-center text-zinc-500">
+                      Add {teamSizeLimit - 1 - fields.length} more member{teamSizeLimit - 1 - fields.length > 1 ? "s" : ""} to complete team
+                    </p>
+                  )}
 
                   <div className="flex gap-4 mt-6">
                     <Button
@@ -993,7 +1035,7 @@ function EventRegistrationContent() {
                       BACK
                     </Button>
                     <Button
-                      onClick={() => setStep(4)} // To Payment
+                      onClick={onSubmitStep3}
                       className="flex-[2] bg-black text-white font-bold py-6 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_#a855f7] hover:shadow-[2px_2px_0px_0px_#a855f7] hover:translate-y-[2px] hover:shadow-none transition-all"
                     >
                       NEXT: PAYMENT →

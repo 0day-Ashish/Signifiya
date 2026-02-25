@@ -50,7 +50,7 @@ export const ALL_EVENTS: MasterEvent[] = [
 
   {
     id: 1,
-    title: "Valorant Tournament",
+    title: "Valorant",
     category: "ESPORTS",
     department: "E-Sports",
     description:
@@ -63,7 +63,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     day: 1,
     time: "12:00 PM - 7:00 PM",
     venue: "SV Hall",
-    coordinators: "Hrittima Sen",
+    coordinators: "Hrittima Sen, Diptadip Roy",
     facultyCoordinators: "Ayushman Bilash Thakur",
     lottie:
       "https://lottie.host/5ef860f5-4e24-4a99-aae2-37cd4f5e9c5d/bFScJO6mZd.lottie",
@@ -524,7 +524,7 @@ export type EventListingItem = {
 export function getEventsListingData(): EventListingItem[] {
   // Prices for events by exact title (fallback to 0 if missing)
   const PRICE_BY_TITLE: Record<string, number> = {
-    "Valorant Tournament": 499,
+    "Valorant": 499,
     "Free Fire": 399,
     "Coding Premier League": 280,
     "Refab": 280,

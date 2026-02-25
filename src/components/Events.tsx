@@ -32,7 +32,7 @@ const EVENTS_DATA = getEventsListingData();
 const EVENT_TITLE_TO_SCHEDULE_ID = getEventTitleToScheduleId();
 
 const EVENT_TITLE_TO_REG_ID: Record<string, string> = {
-  "VALORANT TOURNAMENT": "gaming",
+  "VALORANT": "gaming",
   "FREE FIRE": "freefire",
   "CODING PREMIER LEAGUE": "cpl",
   "RE-FAB (WASTE TO WEALTH)": "refab",
