@@ -38,7 +38,7 @@ const eventsList = [
   },
   {
     id: "circuit",
-    name: "Electrifying Circuits",
+    name: "Circuitronix",
     price: 299,
     // Spreadsheet: Circuitronics total = 4 => members excluding leader = 3
     type: "Team (3)",

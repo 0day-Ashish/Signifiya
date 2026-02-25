@@ -38,7 +38,7 @@ const EVENT_TITLE_TO_REG_ID: Record<string, string> = {
   "RE-FAB (WASTE TO WEALTH)": "refab",
   "PATH FOLLOWER": "path",
   "BRIDGE BUILDING": "bridge",
-  "ELECTRIFYING CIRCUITS": "circuit",
+  "CIRCUITRONIX": "circuit",
   "DANCE BATTLE": "dance",
   "ARM WRESTLING": "arm",
   "TOWER MAKING": "tower",

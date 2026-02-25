@@ -29,7 +29,7 @@ const EVENT_ID_MAP: Record<string, string> = {
   "Refab": "refab",
   "Path Follower": "path",
   "Bridge Building": "bridge",
-  "Electrifying Circuits": "circuit",
+  "CIRCUITRONIX": "circuit",
   "Dance Battle": "dance",
   "Arm Wrestling": "arm",
   "Tower Making": "tower",

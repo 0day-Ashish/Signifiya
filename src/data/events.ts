@@ -205,8 +205,8 @@ export const ALL_EVENTS: MasterEvent[] = [
   },
   {
     id: 7,
-    title: "Electrifying Circuits",
-    eventTitle: "ELECTRIFYING CIRCUITS",
+    title: "Circuitronix",
+    eventTitle: "CIRCUITRONIX",
     category: "EEE",
     department: "EEE (Tech)",
     teamMember: "Team Size: 4 (+1 substitute)",
