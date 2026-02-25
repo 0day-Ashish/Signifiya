@@ -246,7 +246,6 @@ function getActiveEventDiscount() {
   return null;
 }
 
-/** Apply active discount to a price, returning { original, discounted, hasDiscount } */
 function getDiscountedPrice(
   price: number,
   discount: ReturnType<typeof getActiveEventDiscount>,
@@ -290,8 +289,7 @@ function EventRegistrationContent() {
 
   const {
     register,
-    // REMOVED: handleSubmit (not needed for manual step navigation)
-    trigger, // ADDED: trigger for manual partial validation
+    trigger, 
     setValue,
     watch,
     control,
@@ -1273,7 +1271,7 @@ function EventRegistrationContent() {
           <div className="relative w-[420px] h-[580px] bg-white border-4 border-black rounded-2xl shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] rotate-[-2deg] flex flex-col overflow-hidden group">
             <div className="h-2/3 bg-zinc-900 relative border-b-4 border-black overflow-hidden">
               <Image
-                src="/gall13.jpg"
+                src="/gall13.JPG"
                 alt="Event"
                 fill
                 className="object-cover opacity-80 group-hover:scale-105 transition-transform duration-700"

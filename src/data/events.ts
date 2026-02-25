@@ -267,7 +267,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     prizePool: "₹3,000",
     day: 2,
     time: "9:30 AM - 1:00 PM",
-    venue: "Ait video conference room",
+    venue: "AIT video conference room",
     coordinators: "Agniva Chatterjee, Archita Khan",
     facultyCoordinators: "Soodipa chakraborty",
     lottie: "",
@@ -460,7 +460,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     prizePool: "₹3,000",
     day: 2,
     time: "9:30 AM - 1:00 AM",
-    venue: "Ait video conference room",
+    venue: "AIT video conference room",
     coordinators: "Dimple Sharma, Debopriya Dey",
     facultyCoordinators: "Soodipa chakraborty",
     lottie:
