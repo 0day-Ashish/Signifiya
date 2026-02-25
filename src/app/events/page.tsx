@@ -166,7 +166,7 @@ const eventsList = [
     id: "powerdeal",
     name: "Power Deal",
     price: 149,
-    type: "Team (3)",
+    type: "Team (2)",
     date: "March 28th",
     color: "bg-cyan-100",
   },
