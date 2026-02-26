@@ -29,7 +29,7 @@ const eventsList = [
   {
     id: "cpl",
     name: "Coding Premier League",
-    price: 200,
+    price: 240,
     // Spreadsheet: CPL total members per team = 4 (including leader)
     // Stored type uses members EXCLUDING leader, so set to 3
     type: "Team (3)",
