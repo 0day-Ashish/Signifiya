@@ -85,7 +85,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     time: "12:30 PM - 7:00 PM",
     venue: "Swami Vivekananda Hall",
     coordinators: "Hrittima Sen, Diptadip Roy",
-    facultyCoordinators: "Ayushman Bilash Thakur",
+    facultyCoordinators: "Mr. Ayushman Bilash Thakur",
     lottie:
       "https://lottie.host/5ef860f5-4e24-4a99-aae2-37cd4f5e9c5d/bFScJO6mZd.lottie",
     color: "bg-gray-100",
@@ -107,7 +107,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     time: "1:30 PM - 7:00 PM",
     venue: "APJ Abdul Kalam Convention Hall",
     coordinators: "Anis Imtahan Nayan",
-    facultyCoordinators: "Ayushman Bilash Thakur",
+    facultyCoordinators: "Mr. Ayushman Bilash Thakur",
     lottie:
       "https://lottie.host/34b5f811-28e8-4ac1-9f7a-7857fb6cbb50/C28AMF6Pa6.lottie",
     color: "bg-gray-100",
@@ -131,7 +131,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     time: "1:30 PM - 4:30 PM",
     venue: "Lab 2102 & 2103",
     coordinators: "Aviroop Pal, Sourish Samanta, MD Samiul Islam",
-    facultyCoordinators: "Bodhi Chakraborty, Debdutta Pal",
+    facultyCoordinators: "Ms. Bodhi Chakraborty, Dr. Debdutta Pal",
     lottie:
       "https://lottie.host/5d55c618-6fa5-489d-82bf-a9e561c64414/w57drvo4fH.lottie",
     color: "bg-purple-100",
@@ -154,7 +154,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     time: "1:30 PM - 3:30 PM",
     venue: "SOET 3304",
     coordinators: "Barun Jana",
-    facultyCoordinators: "Tirupataiah Kasani, Ashish Khaira",
+    facultyCoordinators: "Mr. Tirupataiah Kasani, Mr. Ashish Khaira",
     lottie:
       "https://lottie.host/85932f49-c3cd-4483-ae12-6ddcc8e7cc34/b0nR37lbph.lottie",
     color: "bg-green-100",
@@ -176,7 +176,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     time: "1:30 PM - 4:30 PM",
     venue: "SOET 3103",
     coordinators: "Sumanto Roy",
-    facultyCoordinators: "Rupanwita Das Mahapatra",
+    facultyCoordinators: "Ms. Rupanwita Das Mahapatra",
     lottie:
       "https://lottie.host/927b9dd7-f2e5-471e-b14e-6d7402af9a9e/wzqLaYST4c.lottie",
     color: "bg-red-100",
@@ -243,7 +243,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     time: "4:30 PM - 6:30 PM",
     venue: "Basketball Court",
     coordinators: "Asmita Ghosh, Adityavardhan Singh",
-    facultyCoordinators: "Anusuya Bera",
+    facultyCoordinators: "Ms. Anusuya Bera",
     lottie:
       "https://lottie.host/8597f901-e7be-4086-9f99-317c1b123a0a/TtUunogZHF.lottie",
     color: "bg-fuchsia-100",
@@ -265,7 +265,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     time: "4:00 PM - 5:00 PM",
     venue: "Canopy Area",
     coordinators: "Digant Mishra, Subhangkar Barui",
-    facultyCoordinators: "Bishal Mondal",
+    facultyCoordinators: "Mr. Bishal Mondal",
     lottie:
       "https://lottie.host/34b5f811-28e8-4ac1-9f7a-7857fb6cbb50/C28AMF6Pa6.lottie",
     color: "bg-gray-100",
@@ -290,7 +290,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     time: "3:00 AM - 5:00 PM",
     venue: "AIT video conference room",
     coordinators: "Agniva Chatterjee, Archita Khan",
-    facultyCoordinators: "Soodipa chakraborty",
+    facultyCoordinators: "Ms. Soodipa chakraborty",
     lottie: "",
     color: "bg-cyan-100",
   },
@@ -333,7 +333,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     time: "10:00 AM - 2:00 PM",
     venue: "SOET 2103",
     coordinators: "Baibhab Adhikari, Prabhat Dey, Prithvi Prasad",
-    facultyCoordinators: "Toufique Ahammad Gazi",
+    facultyCoordinators: "Mr. Toufique Ahammad Gazi",
     lottie:
       "https://lottie.host/a593ed4c-830c-414a-a362-aa96c695fa40/xrcW0oe0cK.lottie",
     color: "bg-pink-100",
@@ -355,7 +355,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     time: "10:00 AM - 1:00 PM",
     venue: "SOET 5003",
     coordinators: "Arka Gain",
-    facultyCoordinators: "Shantanu Haldar, Dr. Argha kamal Guha",
+    facultyCoordinators: "Mr. Shantanu Haldar, Dr. Argha Kamal Guha",
     lottie:
       "https://lottie.host/2a0c41bc-2fb9-40e3-b13d-8b721a0abde8/20tioOZNVd.lottie",
     color: "bg-blue-100",
@@ -378,7 +378,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     time: "10:00 AM - 1:00 PM",
     venue: "SOET 3101",
     coordinators: "Anurag Biswas",
-    facultyCoordinators: "Rupanwita Das Mahapatra",
+    facultyCoordinators: "Ms. Rupanwita Das Mahapatra",
     lottie:
       "https://lottie.host/8fe04dad-d3fa-4254-93b7-304f52d3c857/yxrz9HKunG.lottie",
     color: "bg-teal-100",
@@ -400,7 +400,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     time: "10:00 AM - 4:00 PM",
     venue: "APJ Abdul Kalam Convention Hall",
     coordinators: "Anubrata Sadukhan",
-    facultyCoordinators: "Ayushman Bilash Thakur",
+    facultyCoordinators: "Mr. Ayushman Bilash Thakur",
     lottie:
       "https://lottie.host/7f2fbfd9-2f59-458a-bd35-5aa6133f3dc7/5yLGpgvIme.lottie",
     color: "bg-gray-100",
@@ -422,7 +422,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     time: "10:00 AM - 4:00 PM",
     venue: "Seminar Hall",
     coordinators: "Reyansh Dalui",
-    facultyCoordinators: "Ayushman Bilash Thakur",
+    facultyCoordinators: "Mr. Ayushman Bilash Thakur",
     lottie:
       "https://lottie.host/34b5f811-28e8-4ac1-9f7a-7857fb6cbb50/C28AMF6Pa6.lottie",
     color: "bg-gray-100",
@@ -444,7 +444,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     time: "2:00 PM - 5:00 PM",
     venue: "Adamas Campus",
     coordinators: "Arijit De, Garima Roy",
-    facultyCoordinators: "Koushik Mukhopadhyay",
+    facultyCoordinators: "Mr. Koushik Mukhopadhyay",
     lottie:
       "https://lottie.host/1846995a-7c92-4f8b-b524-cf6bcccd25a0/3ZauGqPRGA.lottie",
     color: "bg-gray-100",
@@ -454,7 +454,6 @@ export const ALL_EVENTS: MasterEvent[] = [
     title: "Rap Battle",
     category: "NON-TECH",
     department: "Non-Tech",
-    // Spreadsheet: Rap Battle total = 3 (including leader)
     teamMember: "Team Size: 3 (+1 substitute)",
     description:
       "Rhythm & wordplay collide, drop sharp bars, own the mic, and outflow your opponent.",
@@ -468,7 +467,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     time: "3:00 PM - 4:00 PM",
     venue: "Canopy Area",
     coordinators: "Mrinal sahoo, Arnab Mondal",
-    facultyCoordinators: "Saheb Adhikary",
+    facultyCoordinators: "Mr. Saheb Adhikary",
     lottie:
       "https://lottie.host/ce13941b-540c-4118-9e80-ff8ceb9afa1d/bsOQBQ1ZGm.lottie",
     color: "bg-fuchsia-100",
@@ -491,7 +490,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     time: "9:30 AM - 1:00 AM",
     venue: "AIT video conference room",
     coordinators: "Dimple Sharma, Debopriya Dey",
-    facultyCoordinators: "Soodipa chakraborty",
+    facultyCoordinators: "Ms. Soodipa chakraborty",
     lottie:
       "https://lottie.host/0f63fd76-3dec-4340-b124-c72eb23a19be/pmSxXvemID.lottie",
     color: "bg-amber-100",
