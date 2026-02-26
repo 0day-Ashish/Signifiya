@@ -284,7 +284,6 @@ export const ALL_EVENTS: MasterEvent[] = [
     scheduleDescription:
       "Negotiate, strategize, and close the best deals in this high-energy business simulation challenge.",
     date: "March 27th",
-    date: "March 27th",
     image: "/powerdeal.jpg",
     prizePool: "₹3,000",
     day: 1,
