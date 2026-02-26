@@ -35,7 +35,7 @@ const EVENT_ID_MAP: Record<string, string> = {
   "Tower Making": "tower",
   "Dil Se Design": "design",
   "Lathe War": "lathe",
-  "Robo Terrain": "robo",
+  "Robo Soccer": "robo",
   "Rap Battle": "rap",
   "BGMI": "bgmi",
   "E-Football": "efootball",

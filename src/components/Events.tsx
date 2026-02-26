@@ -44,7 +44,7 @@ const EVENT_TITLE_TO_REG_ID: Record<string, string> = {
   "TOWER MAKING": "tower",
   "DIL SE DESIGN": "design",
   "LATHE WAR": "lathe",
-  "ROBO TERRAIN": "robo",
+  "ROBO SOCCER": "robo",
   "RAP BATTLE": "rap",
   "BGMI": "bgmi",
   "E-FOOTBALL": "efootball",
