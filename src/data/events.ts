@@ -597,7 +597,7 @@ export function getEventsListingData(): EventListingItem[] {
     "Arm Wrestling": 100,
     BGMI: 399,
     "E-Football": 149,
-    "Electrifying Circuits": 299,
+    "Circuitronix": 299,
     "Tower Making": 280,
     "Dil Se Design": 219,
     "Lathe War": 219,
