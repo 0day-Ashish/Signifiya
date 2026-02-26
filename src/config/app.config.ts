@@ -30,16 +30,30 @@ export const APP_CONFIG = {
     full: "Visitor Pass",
   },
 
-
   /**
    * Event registration flash sale discounts.
    * Each entry: { start: ISO date, durationHours, discountPercent }
    * Active discount is the first window where now >= start && now < start + duration.
    */
   eventDiscounts: [
-    { start: "2026-02-23T16:00:00+05:30", durationHours: 6,  discountPercent: 10, label: "Flash Sale 10% OFF" },
-    { start: "2026-03-01T00:00:00+05:30", durationHours: 12, discountPercent: 5,  label: "Early Bird 5% OFF" },
-    { start: "2026-03-22T00:00:00+05:30", durationHours: 24, discountPercent: 10, label: "Last Chance 10% OFF" },
+    {
+      start: "2026-02-23T16:00:00+05:30",
+      durationHours: 6,
+      discountPercent: 10,
+      label: "Flash Sale 10% OFF",
+    },
+    {
+      start: "2026-03-01T00:00:00+05:30",
+      durationHours: 12,
+      discountPercent: 5,
+      label: "Early Bird 5% OFF",
+    },
+    {
+      start: "2026-03-22T00:00:00+05:30",
+      durationHours: 24,
+      discountPercent: 10,
+      label: "Last Chance 10% OFF",
+    },
   ] as const,
   // Contact Information
   contact: {
@@ -92,7 +106,7 @@ export const APP_CONFIG = {
   // Social Media Links
   social: {
     instagram: "https://www.instagram.com/signifiya/",
-    discord: "#",
+    discord: "https://discord.com/invite/qP7YC9EDRZ",
     twitter: "#",
     youtube: "https://www.youtube.com/@SIGNIFIYA/featured",
   },
@@ -111,5 +125,5 @@ export const APP_CONFIG = {
 } as const;
 
 // Type exports for better TypeScript support
-export type ContactMember = typeof APP_CONFIG.contact.members[number];
+export type ContactMember = (typeof APP_CONFIG.contact.members)[number];
 export type PassType = keyof typeof APP_CONFIG.passPrices;
