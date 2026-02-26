@@ -53,7 +53,13 @@ const EVENT_ID_MAP: Record<string, string> = {
 
 const EventCard = ({ event, index }: { event: any; index: number }) => {
   const isTextLeft = index % 2 === 0;
-  const registrationId = EVENT_ID_MAP[event.title] || EVENT_ID_MAP[event.eventTitle];
+  // Normalize title/eventTitle to uppercase before lookup so
+  // variants like "Circuitronix" (mixed case) match keys like "CIRCUITRONIX"
+  const registrationId =
+    EVENT_ID_MAP[event.title] ||
+    EVENT_ID_MAP[event.eventTitle] ||
+    EVENT_ID_MAP[(event.title || "").toUpperCase()] ||
+    EVENT_ID_MAP[(event.eventTitle || "").toUpperCase()];
 
   return (
     <div

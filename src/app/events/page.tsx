@@ -137,7 +137,7 @@ const eventsList = [
     id: "robo",
     name: "Robo Soccer",
     price: 219,
-    // Spreadsheet: Robo Soccer / Robo Terrain total = 3 => members excluding leader = 2
+    // Spreadsheet: Robo Soccer /  total = 3 => members excluding leader = 2
     type: "Team (2)",
     date: "March 28th",
     color: "bg-teal-100",
