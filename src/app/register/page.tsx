@@ -434,7 +434,7 @@ export default function Register() {
                     </div>
 
                     <div>
-                      <Label className={labelStyles}>College Name</Label>
+                      <Label className={labelStyles}>College/School Name</Label>
                       <Input
                         {...register("college")}
                         className={inputStyles}

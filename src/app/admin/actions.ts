@@ -1201,7 +1201,13 @@ export async function exportParticipantTeamsCsv(): Promise<string> {
     t.leaderEmail,
     t.leaderBookingId,
     t.events.map((e) => e.event.name).join(", "),
-    t.members.map((m) => `${m.name} (${m.college || "N/A"})`).join(" | "),
+    // Members: include name, email, phone, gameId, college for each member
+    t.members
+      .map(
+        (m: any) =>
+          `${m.name}${m.email ? ` <${m.email}>` : ""}${m.phone ? ` · ${m.phone}` : ""}${m.gameId ? ` · [${m.gameId}]` : ""}${m.college ? ` · (${m.college})` : ""}`,
+      )
+      .join(" | "),
     t.totalAmount,
     t.paymentProofUrl || "",
     t.status,

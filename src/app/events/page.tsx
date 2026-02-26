@@ -799,7 +799,7 @@ function EventRegistrationContent() {
                       )}
                     </div>
                     <div className="w-full">
-                      <Label className={labelStyles}>College</Label>
+                      <Label className={labelStyles}>College/School name</Label>
                       <Input
                         {...register("college")}
                         className={inputStyles}
