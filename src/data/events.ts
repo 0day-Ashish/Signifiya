@@ -154,7 +154,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     time: "1:30 PM - 3:30 PM",
     venue: "SOET 3304",
     coordinators: "Barun Jana",
-    facultyCoordinators: "Mr. Tirupataiah Kasani, Mr. Ashish Khaira",
+    facultyCoordinators: "Dr. Tirupataiah Kasani, Dr. Ashish Khaira",
     lottie:
       "https://lottie.host/85932f49-c3cd-4483-ae12-6ddcc8e7cc34/b0nR37lbph.lottie",
     color: "bg-green-100",
@@ -176,7 +176,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     time: "1:30 PM - 4:30 PM",
     venue: "SOET 3103",
     coordinators: "Sumanto Roy",
-    facultyCoordinators: "Ms. Rupanwita Das Mahapatra",
+    facultyCoordinators: "Mrs. Rupanwita Das Mahapatra",
     lottie:
       "https://lottie.host/927b9dd7-f2e5-471e-b14e-6d7402af9a9e/wzqLaYST4c.lottie",
     color: "bg-red-100",
@@ -290,7 +290,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     time: "3:00 AM - 5:00 PM",
     venue: "AIT video conference room",
     coordinators: "Agniva Chatterjee, Archita Khan",
-    facultyCoordinators: "Ms. Soodipa chakraborty",
+    facultyCoordinators: "Mrs. Soodipa chakraborty",
     lottie: "",
     color: "bg-cyan-100",
   },
@@ -378,7 +378,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     time: "10:00 AM - 1:00 PM",
     venue: "SOET 3101",
     coordinators: "Anurag Biswas",
-    facultyCoordinators: "Ms. Rupanwita Das Mahapatra",
+    facultyCoordinators: "Mrs. Rupanwita Das Mahapatra",
     lottie:
       "https://lottie.host/8fe04dad-d3fa-4254-93b7-304f52d3c857/yxrz9HKunG.lottie",
     color: "bg-teal-100",
@@ -490,7 +490,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     time: "9:30 AM - 1:00 AM",
     venue: "AIT video conference room",
     coordinators: "Dimple Sharma, Debopriya Dey",
-    facultyCoordinators: "Ms. Soodipa chakraborty",
+    facultyCoordinators: "Mrs. Soodipa chakraborty",
     lottie:
       "https://lottie.host/0f63fd76-3dec-4340-b124-c72eb23a19be/pmSxXvemID.lottie",
     color: "bg-amber-100",
