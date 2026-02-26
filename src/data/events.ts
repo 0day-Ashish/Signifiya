@@ -218,7 +218,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     image: "/eee.jpg",
     prizePool: "₹6,000",
     day: 2,
-    time: "10:00 AM - 7:00 PM",
+    time: "10:00 AM - 4:00 PM",
     venue: "SOET 5204",
     coordinators: "Suraj Rana, Chandril Bijoy Bhattacharyya, Sagar Talukdar",
     facultyCoordinators: "Dr. Nihar Karmakar, Dr. Jeet Banerjee",
