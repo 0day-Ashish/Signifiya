@@ -84,7 +84,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     day: 1,
     time: "12:30 PM - 7:00 PM",
     venue: "Swami Vivekananda Hall",
-    coordinators: "Hrittima Sen, Diptadip Roy",
+    coordinators: "Hrittima Sen, Diptadeep Roy",
     facultyCoordinators: "Mr. Ayushman Bilash Thakur",
     lottie:
       "https://lottie.host/5ef860f5-4e24-4a99-aae2-37cd4f5e9c5d/bFScJO6mZd.lottie",
