@@ -29,7 +29,7 @@ const eventsList = [
   {
     id: "cpl",
     name: "Coding Premier League",
-    price: 200,
+    price: 240,
     // Spreadsheet: CPL total members per team = 4 (including leader)
     // Stored type uses members EXCLUDING leader, so set to 3
     type: "Team (3)",
@@ -135,9 +135,9 @@ const eventsList = [
   },
   {
     id: "robo",
-    name: "Robo Terrain",
+    name: "Robo Soccer",
     price: 219,
-    // Spreadsheet: Robo Soccer / Robo Terrain total = 3 => members excluding leader = 2
+    // Spreadsheet: Robo Soccer /  total = 3 => members excluding leader = 2
     type: "Team (2)",
     date: "March 28th",
     color: "bg-teal-100",
@@ -799,7 +799,7 @@ function EventRegistrationContent() {
                       )}
                     </div>
                     <div className="w-full">
-                      <Label className={labelStyles}>College</Label>
+                      <Label className={labelStyles}>College/School name</Label>
                       <Input
                         {...register("college")}
                         className={inputStyles}

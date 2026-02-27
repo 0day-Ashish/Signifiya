@@ -125,15 +125,6 @@ model Issue {
   @@map("issue")
 }
 
-model NewsletterSubscription {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  consent   Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("newsletter_subscription")
-}
 
 model VisitorRegistration {
   id              String   @id @default(uuid())

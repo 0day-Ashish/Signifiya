@@ -15,7 +15,6 @@ const SPONSOR_LOGO_FILES = [
     "Domino.png",
     "jawa.jpeg",
     "nikon.png",
-    "Redbull.png",
     "edu.webp",
 ];
 
