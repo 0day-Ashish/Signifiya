@@ -25,16 +25,16 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "SIGNIFIYA'26 | SOET Techno-Cultural Fest",
+    default: "SIGNIFIYA'26 | SOET Tech-Cultural Fest",
     template: "%s | SIGNIFIYA'26",
   },
   description:
-    "Official website of SIGNIFIYA'26, the annual techno-cultural fest of SOET. Explore events, schedule, sponsors, gallery, and registration.",
+    "Official website of SIGNIFIYA'26, the annual tech fest of SOET. Explore events, schedule, sponsors, gallery, and registration.",
   keywords: [
     "Signifiya",
     "Signifiya 2026",
     "SOET fest",
-    "techno-cultural fest",
+    "tech-cultural fest",
     "college fest",
     "events",
     "gallery",
@@ -56,9 +56,9 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: siteUrl,
-    title: "SIGNIFIYA'26 | SOET Techno-Cultural Fest",
+    title: "SIGNIFIYA'26 | SOET Tech-Cultural Fest",
     description:
-      "Official website of SIGNIFIYA'26, the annual techno-cultural fest of SOET.",
+      "Official website of SIGNIFIYA'26, the annual tech-cultural fest of SOET.",
     siteName: "SIGNIFIYA'26",
     images: [
       {
@@ -71,9 +71,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "SIGNIFIYA'26 | SOET Techno-Cultural Fest",
+    title: "SIGNIFIYA'26 | SOET Tech-Cultural Fest",
     description:
-      "Official website of SIGNIFIYA'26, the annual techno-cultural fest of SOET.",
+      "Official website of SIGNIFIYA'26, the annual tech-cultural fest of SOET.",
     images: ["/logo2.png"],
   },
   icons: {

@@ -259,7 +259,7 @@ export default function Footer() {
                   {[
                     { label: "ASSETS", href: "/assets" },
                     { label: "TERMS OF SERVICE", href: "/terms" },
-                    { label: "PRIVACY POLICY", href: "/terms" },
+                    { label: "PRIVACY POLICY", href: "/privacy" },
                   ].map((item) => (
                     <Link
                       key={item.label}

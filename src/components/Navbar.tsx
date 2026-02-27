@@ -178,8 +178,10 @@ export default function Navbar({
             </div>
           </div>
 
-          <button
-            onClick={() => toast.info("Coming soon! 🚀")}
+          <a
+            href="https://expo.dev/accounts/tushardevx001/projects/signifiya/builds/5f647534-a2d4-4368-88d9-aed5817adfa5"
+            target="_blank"
+            rel="noopener noreferrer"
             className="group relative bg-black px-4 py-2 sm:px-8 sm:py-3 rounded-full border-2 border-transparent hover:border-black hover:bg-[#deb3fa] hover:scale-105 transition-all duration-300 overflow-hidden"
           >
             <div className="relative h-4 sm:h-5 overflow-hidden flex flex-col justify-center items-center">
@@ -194,7 +196,7 @@ export default function Navbar({
                 Launch App
               </span>
             </div>
-          </button>
+          </a>
         </div>
 
         {/* Music Control & Profile Container */}
