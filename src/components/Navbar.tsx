@@ -188,12 +188,12 @@ export default function Navbar({
               <span
                 className={`block text-white uppercase font-extrabold text-xs sm:text-base transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:-translate-y-full ${softura.className}`}
               >
-                Launch App
+                Download App
               </span>
               <span
                 className={`absolute top-0 left-0 w-full block text-black uppercase font-extrabold text-xs sm:text-base transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] translate-y-full group-hover:translate-y-0 ${softura.className}`}
               >
-                Launch App
+                Download App
               </span>
             </div>
           </a>
