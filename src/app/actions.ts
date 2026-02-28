@@ -653,34 +653,4 @@ export async function getUserPassStatus(userId: string) {
   }
 }
 
-export async function subscribeNewsletter(data: {
-  email: string;
-  consent: boolean;
-}) {
-  try {
-    const email = data.email?.trim();
-    if (!email) {
-      return { success: false, error: "Email is required" };
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      return { success: false, error: "Please enter a valid email address" };
-    }
-    if (!data.consent) {
-      return {
-        success: false,
-        error: "Please agree to receive communications",
-      };
-    }
 
-    await prisma.newsletterSubscription.create({
-      data: { email: email.toLowerCase(), consent: data.consent },
-    });
-    return { success: true };
-  } catch (error: any) {
-    if (error?.code === "P2002") {
-      return { success: false, error: "This email is already subscribed" };
-    }
-    console.error("Subscribe newsletter error:", error);
-    return { success: false, error: error?.message || "Something went wrong" };
-  }
-}
