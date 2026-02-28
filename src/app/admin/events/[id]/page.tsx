@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { AdminPagination, PAGE_SIZE } from "../../components/AdminPagination";
 import { RefreshButton } from "../../components/RefreshButton";
+import { EventCsvButton } from "../EventCsvButton";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -32,7 +33,10 @@ export default async function AdminEventDetailPage({ params, searchParams }: Pro
           <h1 className="text-2xl font-black uppercase tracking-tight text-white">{event.name}</h1>
           <p className="text-zinc-400 text-sm">₹{event.price} · {event.type || "—"} · {new Date(event.date).toLocaleDateString("en-IN", { timeZone: "Asia/Kolkata" })}</p>
         </div>
-        <RefreshButton />
+        <div className="flex items-center gap-3">
+          <EventCsvButton eventId={id} eventName={event.name} />
+          <RefreshButton />
+        </div>
       </div>
 
       <h2 className="font-bold text-white">Teams registered ({total})</h2>
@@ -69,3 +73,4 @@ export default async function AdminEventDetailPage({ params, searchParams }: Pro
     </div>
   );
 }
+

@@ -1194,6 +1194,92 @@ export async function exportParticipantTeamsCsv(): Promise<string> {
   return toCsv(headers, rows);
 }
 
+// --- Event Registrations CSV (per event) ---
+export async function exportEventRegistrationsCsv(eventId: string): Promise<string> {
+  await guard();
+  const event = await prisma.event.findUnique({
+    where: { id: eventId },
+    include: {
+      participantTeams: {
+        include: {
+          team: { include: { members: true } },
+        },
+        orderBy: { createdAt: "desc" },
+      },
+    },
+  });
+
+  if (!event) throw new Error("Event not found");
+
+  const headers = [
+    "Team Name",
+    "Leader Name",
+    "Leader Email",
+    "Leader Booking ID",
+    "College",
+    "Phone",
+    "Members",
+    "Amount (₹)",
+    "Payment Proof / UTR",
+    "Status",
+    "Registered At",
+  ];
+
+  const rows = event.participantTeams.map((pte) => {
+    const t = pte.team;
+    return [
+      t.teamName,
+      t.leaderName,
+      t.leaderEmail,
+      t.leaderBookingId || "",
+      t.college || "",
+      t.leaderPhone || "",
+      t.members
+        .map(
+          (m: any) =>
+            `${m.name}${m.email ? ` <${m.email}>` : ""}${m.phone ? ` · ${m.phone}` : ""}${m.gameId ? ` · [${m.gameId}]` : ""}${m.college ? ` · (${m.college})` : ""}`,
+        )
+        .join(" | "),
+      t.totalAmount,
+      t.paymentProofUrl || "",
+      t.status,
+      fmtDate(t.createdAt),
+    ];
+  });
+
+  return toCsv(headers, rows);
+}
+
+// --- All Events Summary CSV ---
+export async function exportAllEventsCsv(): Promise<string> {
+  await guard();
+  const events = await prisma.event.findMany({
+    where: {
+      NOT: [{ name: "Hackathon 2026" }, { name: "Tech Quiz" }],
+    },
+    orderBy: { date: "asc" },
+    include: { _count: { select: { participantTeams: true } } },
+  });
+
+  const headers = [
+    "Event Name",
+    "Type",
+    "Date",
+    "Price (₹)",
+    "Teams Registered",
+  ];
+
+  const rows = events.map((e) => [
+    e.name,
+    e.type || "",
+    new Date(e.date).toLocaleDateString("en-IN", { timeZone: "Asia/Kolkata" }),
+    e.price,
+    e._count.participantTeams,
+  ]);
+
+  return toCsv(headers, rows);
+}
+
 // --- Merch Orders CSV ---
 export async function exportMerchOrdersCsv(): Promise<string> {
   await guard();
