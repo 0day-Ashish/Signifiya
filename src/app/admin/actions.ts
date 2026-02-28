@@ -29,7 +29,6 @@ export async function getAdminDashboardStats() {
     visitorCount: number;
     teamCount: number;
     issueCount: number;
-    newsletterCount: number;
     totalRevenue: number;
     visitorRevenue: number;
     teamRevenue: number;
@@ -48,7 +47,6 @@ export async function getAdminDashboardStats() {
     visitorCount,
     teamCount,
     issueCount,
-    newsletterCount,
     visitorRevenue,
     teamRevenue,
   ] = await Promise.all([
@@ -56,7 +54,6 @@ export async function getAdminDashboardStats() {
     prisma.visitorRegistration.count(),
     prisma.participantTeam.count(),
     prisma.issue.count(),
-    prisma.newsletterSubscription.count(),
     prisma.visitorRegistration.aggregate({
       where: { status: "verified" },
       _sum: { amount: true },
@@ -74,7 +71,6 @@ export async function getAdminDashboardStats() {
     visitorCount,
     teamCount,
     issueCount,
-    newsletterCount,
     totalRevenue,
     visitorRevenue: visitorRevenue._sum.amount || 0,
     teamRevenue: teamRevenue._sum.totalAmount || 0,
@@ -360,25 +356,7 @@ export async function getParticipantTeamsForRevenue(params?: {
   return { teams, total };
 }
 
-// --- Newsletter subscriptions ---
-export async function getNewsletterSubscriptions(params?: {
-  limit?: number;
-  offset?: number;
-}) {
-  await guard();
-  const limit = params?.limit ?? 50;
-  const offset = params?.offset ?? 0;
-  const [subscriptions, total] = await Promise.all([
-    prisma.newsletterSubscription.findMany({
-      orderBy: { createdAt: "desc" },
-      take: limit,
-      skip: offset,
-      select: { id: true, email: true, consent: true, createdAt: true },
-    }),
-    prisma.newsletterSubscription.count(),
-  ]);
-  return { subscriptions, total };
-}
+
 
 // --- Issues (contact page reports) ---
 export async function getIssues(params?: {
@@ -457,7 +435,7 @@ export async function updateVisitorStatus(
       const { APP_CONFIG } = await import("@/config/app.config");
       const passTypeLabel =
         APP_CONFIG.passTypeLabels[
-          registration.passType as keyof typeof APP_CONFIG.passTypeLabels
+        registration.passType as keyof typeof APP_CONFIG.passTypeLabels
         ] || registration.passType;
 
       // Create Pass
@@ -849,13 +827,13 @@ export async function getAttendees(params?: {
       ],
       ...(search
         ? {
-            user: {
-              OR: [
-                { name: { contains: search, mode: "insensitive" } },
-                { email: { contains: search, mode: "insensitive" } },
-              ],
-            },
-          }
+          user: {
+            OR: [
+              { name: { contains: search, mode: "insensitive" } },
+              { email: { contains: search, mode: "insensitive" } },
+            ],
+          },
+        }
         : {}),
     },
     include: {
@@ -888,16 +866,16 @@ export async function getAttendees(params?: {
       ],
       ...(search
         ? {
-            OR: [
-              { leaderName: { contains: search, mode: "insensitive" } },
-              { leaderEmail: { contains: search, mode: "insensitive" } },
-              {
-                members: {
-                  some: { name: { contains: search, mode: "insensitive" } },
-                },
+          OR: [
+            { leaderName: { contains: search, mode: "insensitive" } },
+            { leaderEmail: { contains: search, mode: "insensitive" } },
+            {
+              members: {
+                some: { name: { contains: search, mode: "insensitive" } },
               },
-            ],
-          }
+            },
+          ],
+        }
         : {}),
     },
     include: {
