@@ -43,13 +43,11 @@ export const ALL_MERCH: MerchItem[] = [
     category: "tshirt",
     categoryLabel: "T-Shirt",
     images: [
-      "/merch/merch_black_tshirt.png",
       "/merch/merch_blue_tshirt.png",
       "/merch/merch_purple_tshirt.png",
     ],
     sizes: ["S", "M", "L", "XL", "XXL"],
     colors: [
-      { name: "Black", hex: "#1a1a1a" },
       { name: "Blue", hex: "#0d47a1" },
       { name: "Purple", hex: "#6a0dad" },
     ],
@@ -67,13 +65,11 @@ export const ALL_MERCH: MerchItem[] = [
     category: "tshirt",
     categoryLabel: "Polo T-Shirt",
     images: [
-      "/merch/merch_black_polo.png",
       "/merch/merch_blue_polo.png",
       "/merch/merch_purple_polo.png",
     ],
     sizes: ["S", "M", "L", "XL", "XXL"],
     colors: [
-      { name: "Black", hex: "#1a1a1a" },
       { name: "Blue", hex: "#0d47a1" },
       { name: "Purple", hex: "#6a0dad" },
     ],
