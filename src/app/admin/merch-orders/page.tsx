@@ -212,6 +212,11 @@ export default function MerchOrdersPage() {
                   Size/Color
                 </th>
                 <th
+                  className={`px-3 py-3 text-left text-[10px] uppercase tracking-wider hidden lg:table-cell ${softura.className}`}
+                >
+                  Print Text
+                </th>
+                <th
                   className={`px-3 py-3 text-left text-[10px] uppercase tracking-wider ${softura.className}`}
                 >
                   Amount
@@ -281,6 +286,15 @@ export default function MerchOrdersPage() {
                     className={`px-3 py-3 text-zinc-400 hidden lg:table-cell ${softura.className}`}
                   >
                     {[o.size, o.color].filter(Boolean).join(" / ") || "—"}
+                  </td>
+                  <td
+                    className={`px-3 py-3 text-zinc-400 hidden lg:table-cell ${softura.className}`}
+                  >
+                    {o.customText ? (
+                      <span className="text-orange-300 font-bold">&quot;{o.customText}&quot;</span>
+                    ) : (
+                      <span className="text-zinc-600">—</span>
+                    )}
                   </td>
                   <td
                     className={`px-3 py-3 font-bold text-white ${softura.className}`}

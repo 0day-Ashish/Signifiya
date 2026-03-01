@@ -233,6 +233,7 @@ model MerchOrder {
   merchItemName     String
   size              String?
   color             String?
+  customText        String?
   quantity          Int      @default(1)
   unitPrice         Int
   totalAmount       Int

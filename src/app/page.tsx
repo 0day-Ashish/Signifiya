@@ -32,6 +32,7 @@ import SignifiyaBuddy from "@/components/SignifiyaBuddy";
 import Gallery from "@/components/Gallery";
 import Sponsors from "@/components/Sponsors";
 import MerchSection from "@/components/MerchSection";
+import MerchPopup from "@/components/MerchPopup";
 import { APP_CONFIG } from "@/config/app.config";
 import CommunityPartner from "@/components/NewsletterSupport";
 
@@ -247,6 +248,9 @@ export default function Home() {
       {preloaderFinished === false && (
         <Preloader onFinish={handlePreloaderFinish} />
       )}
+
+      {/* Merch announcement popup */}
+      <MerchPopup />
 
       {/* Music Choice Modal */}
       {showModal && (

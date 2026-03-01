@@ -122,6 +122,7 @@ export default function MerchBooking() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [college, setCollege] = useState("");
+  const [customText, setCustomText] = useState("");
   const [userBookingId, setUserBookingId] = useState("");
 
   // Payment
@@ -255,6 +256,7 @@ export default function MerchBooking() {
         merchItemName: selectedItem.name,
         size: selectedSize || undefined,
         color: selectedColor || undefined,
+        customText: customText.trim() || undefined,
         quantity,
         unitPrice: selectedItem.price,
         name: name.trim(),
@@ -493,6 +495,25 @@ export default function MerchBooking() {
                     </div>
                   </div>
 
+                  {/* Custom Text for Print */}
+                  <div>
+                    <Label className={labelStyles}>
+                      Custom Text for Print (Optional)
+                    </Label>
+                    <Input
+                      value={customText}
+                      onChange={(e) =>
+                        setCustomText(e.target.value.slice(0, 20))
+                      }
+                      className={inputStyles}
+                      placeholder="e.g. YOUR NAME"
+                      maxLength={20}
+                    />
+                    <p className="text-xs text-zinc-500 mt-1">
+                      Up to 20 characters — printed on the back of your tee
+                    </p>
+                  </div>
+
                   {/* Referral */}
                   <div>
                     <Label className={labelStyles}>
@@ -588,6 +609,11 @@ export default function MerchBooking() {
                       </span>
                       <span>₹{subtotal}</span>
                     </div>
+                    {customText.trim() && (
+                      <p className="text-xs text-zinc-500 mt-1">
+                        Print: &quot;{customText.trim()}&quot;
+                      </p>
+                    )}
                     {discountAmount > 0 && (
                       <div className="flex justify-between items-center text-sm text-green-700 font-bold mt-1">
                         <span>Referral Discount</span>

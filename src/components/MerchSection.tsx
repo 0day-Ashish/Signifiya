@@ -34,7 +34,7 @@ function ProductImageGallery({ item }: { item: MerchItem }) {
               src={item.images[activeIndex]}
               alt={`${item.name} - view ${activeIndex + 1}`}
               fill
-              className="object-cover blur-xl"
+              className="object-cover"
               sizes="(max-width: 640px) 100vw, 500px"
             />
           </motion.div>
@@ -78,7 +78,7 @@ function ProductImageGallery({ item }: { item: MerchItem }) {
                 src={img}
                 alt={`${item.name} thumbnail ${i + 1}`}
                 fill
-                className="object-cover blur-sm"
+                className="object-cover"
                 sizes="80px"
               />
             </button>
@@ -259,12 +259,12 @@ export default function MerchSection() {
 
               {/* Book Now Button */}
               <div className="flex flex-col sm:flex-row gap-3 mt-2">
-                <span
-                  className={`inline-flex text-center bg-gray-400 text-white px-8 py-4 rounded-2xl border-2 border-gray-400 font-bold text-base sm:text-lg uppercase tracking-wider cursor-not-allowed opacity-60 ${gilton.className}`}
-                  aria-disabled="true"
+                <a
+                  href="/merch"
+                  className={`inline-flex items-center justify-center text-center bg-black text-white px-8 py-4 rounded-2xl border-2 border-black font-bold text-base sm:text-lg uppercase tracking-wider shadow-[4px_4px_0px_0px_#f97316] hover:translate-y-1 hover:shadow-[2px_2px_0px_0px_#f97316] hover:bg-zinc-900 transition-all active:shadow-none ${gilton.className}`}
                 >
-                  Coming Soon
-                </span>
+                  Order Now
+                </a>
               </div>
             </div>
           </div>
