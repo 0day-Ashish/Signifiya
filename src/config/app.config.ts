@@ -43,16 +43,22 @@ export const APP_CONFIG = {
       label: "Flash Sale 10% OFF",
     },
     {
-      start: "2026-03-01T00:00:00+05:30",
+      start: "2026-03-04T11:00:00+05:30",
       durationHours: 12,
       discountPercent: 5,
-      label: "Early Bird 5% OFF",
+      label: "Holi Festive Sale 5% OFF",
     },
     {
-      start: "2026-03-22T00:00:00+05:30",
+      start: "2026-03-15T11:00:00+05:30",
+      durationHours: 12,
+      discountPercent: 5,
+      label: "Weekend Blast Offer 5% OFF",
+    },
+    {
+      start: "2026-03-22T12:00:00+05:30",
       durationHours: 24,
       discountPercent: 10,
-      label: "Last Chance 10% OFF",
+      label: "Last Chance Offer 10% OFF",
     },
   ] as const,
   // Contact Information
