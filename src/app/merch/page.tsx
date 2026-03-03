@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import SizeChartModal from "@/components/SizeChartModal";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
@@ -62,11 +63,10 @@ function ProductImageGallery({ item }: { item: MerchItem }) {
             <button
               key={i}
               onClick={() => setActiveIndex(i)}
-              className={`relative w-14 h-14 rounded-lg overflow-hidden border-2 transition-all duration-150 shrink-0 ${
-                activeIndex === i
+              className={`relative w-14 h-14 rounded-lg overflow-hidden border-2 transition-all duration-150 shrink-0 ${activeIndex === i
                   ? "border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] scale-105"
                   : "border-gray-300 opacity-60 hover:opacity-90"
-              }`}
+                }`}
             >
               <Image
                 src={img}
@@ -131,6 +131,7 @@ export default function MerchBooking() {
   // Referral
   const [referralId, setReferralId] = useState("");
   const [referralValid, setReferralValid] = useState<boolean | null>(null);
+  const [showSizeChart, setShowSizeChart] = useState(false);
   const [referralMsg, setReferralMsg] = useState("");
   const [referralChecking, setReferralChecking] = useState(false);
   const [discountAmount, setDiscountAmount] = useState(0);
@@ -140,10 +141,10 @@ export default function MerchBooking() {
   const totalAmount = subtotal - discountAmount;
   const discount = selectedItem.originalPrice
     ? Math.round(
-        ((selectedItem.originalPrice - selectedItem.price) /
-          selectedItem.originalPrice) *
-          100,
-      )
+      ((selectedItem.originalPrice - selectedItem.price) /
+        selectedItem.originalPrice) *
+      100,
+    )
     : 0;
 
   // Redirect to sign-in if not authenticated
@@ -168,7 +169,7 @@ export default function MerchBooking() {
         }
         if (userProfile?.collegeName) setCollege(userProfile.collegeName);
         if (userProfile?.bookingId) setUserBookingId(userProfile.bookingId);
-      } catch {}
+      } catch { }
     };
     prefill();
   }, [session, isPending]);
@@ -373,11 +374,10 @@ export default function MerchBooking() {
                           <button
                             key={item.id}
                             onClick={() => handleItemChange(item)}
-                            className={`px-4 py-2 rounded-lg border-2 border-black text-xs font-bold uppercase tracking-wider transition-all duration-200 ${
-                              selectedItem.id === item.id
+                            className={`px-4 py-2 rounded-lg border-2 border-black text-xs font-bold uppercase tracking-wider transition-all duration-200 ${selectedItem.id === item.id
                                 ? "bg-black text-white shadow-[2px_2px_0px_0px_rgba(0,0,0,0.3)]"
                                 : "bg-white text-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5"
-                            }`}
+                              }`}
                           >
                             {item.name}
                           </button>
@@ -430,17 +430,25 @@ export default function MerchBooking() {
                   {/* Size selector */}
                   {selectedItem.sizes && selectedItem.sizes.length > 0 && (
                     <div>
-                      <Label className={labelStyles}>Size</Label>
+                      <div className="flex items-center justify-between mb-1">
+                        <Label className={labelStyles + " mb-0"}>Size</Label>
+                        <button
+                          type="button"
+                          onClick={() => setShowSizeChart(true)}
+                          className="text-[10px] font-black uppercase text-orange-600 hover:text-orange-700 transition-colors flex items-center gap-1"
+                        >
+                          <span className="text-sm">📏</span> Size Chart
+                        </button>
+                      </div>
                       <div className="flex gap-2 flex-wrap">
                         {selectedItem.sizes.map((size) => (
                           <button
                             key={size}
                             onClick={() => setSelectedSize(size)}
-                            className={`w-10 h-10 text-sm font-bold rounded-lg border-2 transition-all duration-150 ${
-                              selectedSize === size
+                            className={`w-10 h-10 text-sm font-bold rounded-lg border-2 transition-all duration-150 ${selectedSize === size
                                 ? "bg-black text-white border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,0.3)]"
                                 : "bg-white text-black border-gray-300 hover:border-black"
-                            }`}
+                              }`}
                           >
                             {size}
                           </button>
@@ -461,11 +469,10 @@ export default function MerchBooking() {
                             key={color.name}
                             onClick={() => setSelectedColor(color.name)}
                             title={color.name}
-                            className={`w-8 h-8 rounded-full border-2 transition-all duration-150 ${
-                              selectedColor === color.name
+                            className={`w-8 h-8 rounded-full border-2 transition-all duration-150 ${selectedColor === color.name
                                 ? "border-black scale-110 shadow-[2px_2px_0px_0px_rgba(0,0,0,0.3)]"
                                 : "border-gray-300 hover:border-black"
-                            }`}
+                              }`}
                             style={{ backgroundColor: color.hex }}
                           />
                         ))}
@@ -541,11 +548,10 @@ export default function MerchBooking() {
                     </div>
                     {referralMsg && (
                       <p
-                        className={`text-xs font-bold mt-1 ${
-                          referralValid
+                        className={`text-xs font-bold mt-1 ${referralValid
                             ? "text-green-700 bg-green-50 px-2 py-1 border border-green-300 rounded"
                             : "text-red-600 bg-red-50 px-2 py-1 border border-red-300 rounded"
-                        }`}
+                          }`}
                       >
                         {referralMsg}
                       </p>
@@ -830,6 +836,11 @@ export default function MerchBooking() {
           ></div>
         </div>
       </div>
+
+      <SizeChartModal
+        isOpen={showSizeChart}
+        onClose={() => setShowSizeChart(false)}
+      />
     </div>
   );
 }
