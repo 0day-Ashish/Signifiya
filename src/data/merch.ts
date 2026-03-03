@@ -17,6 +17,8 @@ export type MerchItem = {
   categoryLabel: string;
   /** Array of image paths (first is main, rest are gallery) */
   images: string[];
+  /** Map of color name to its specific images */
+  colorImages?: Record<string, string[]>;
   sizes?: string[];
   colors?: { name: string; hex: string }[];
   /** Whether this item is in stock */
@@ -43,9 +45,15 @@ export const ALL_MERCH: MerchItem[] = [
     category: "tshirt",
     categoryLabel: "T-Shirt",
     images: [
-      "/merch/merch_blue_tshirt.png",
-      "/merch/merch_purple_tshirt.png",
+      "/merch/blue-std1.png",
+      "/merch/blue-std2.png",
+      "/merch/purple-std1.png",
+      "/merch/purple-std2.png",
     ],
+    colorImages: {
+      Blue: ["/merch/blue-std1.png", "/merch/blue-std2.png"],
+      Purple: ["/merch/purple-std1.png", "/merch/purple-std2.png"],
+    },
     sizes: ["S", "M", "L", "XL", "XXL"],
     colors: [
       { name: "Blue", hex: "#0d47a1" },
@@ -65,9 +73,16 @@ export const ALL_MERCH: MerchItem[] = [
     category: "tshirt",
     categoryLabel: "Polo T-Shirt",
     images: [
-      "/merch/merch_blue_polo.png",
-      "/merch/merch_purple_polo.png",
+      "/merch/blue-polo1.png",
+      "/merch/blue-polo2.png",
+      "/merch/blue-polo3.png",
+      "/merch/purple-polo1.png",
+      "/merch/purple-polo2.png",
     ],
+    colorImages: {
+      Blue: ["/merch/blue-polo1.png", "/merch/blue-polo2.png", "/merch/blue-polo3.png"],
+      Purple: ["/merch/purple-polo1.png", "/merch/purple-polo2.png"],
+    },
     sizes: ["S", "M", "L", "XL", "XXL"],
     colors: [
       { name: "Blue", hex: "#0d47a1" },

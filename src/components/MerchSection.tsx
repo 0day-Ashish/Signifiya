@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
 import localFont from "next/font/local";
 import { motion, AnimatePresence } from "motion/react";
@@ -14,8 +14,29 @@ const softura = localFont({ src: "../../public/fonts/Softura-Demo.otf" });
 const MERCH_TABS = ALL_MERCH.slice(0, 2);
 
 // ─── Image Gallery for a single product ─────────────────────
-function ProductImageGallery({ item }: { item: MerchItem }) {
+function ProductImageGallery({
+  item,
+  selectedColor
+}: {
+  item: MerchItem,
+  selectedColor: string | null
+}) {
   const [activeIndex, setActiveIndex] = useState(0);
+
+  // Get color-specific images or fallback to all images
+  const displayImages = (selectedColor && item.colorImages?.[selectedColor])
+    ? item.colorImages[selectedColor]
+    : item.images;
+
+  // Effect to reset activeIndex when selectedColor changes
+  const lastColorRef = useRef(selectedColor);
+  if (lastColorRef.current !== selectedColor) {
+    setActiveIndex(0);
+    lastColorRef.current = selectedColor;
+  }
+
+  // Ensure activeIndex is valid for the current displayImages
+  const currentActiveIndex = activeIndex >= displayImages.length ? 0 : activeIndex;
 
   return (
     <div className="flex flex-col gap-3">
@@ -23,7 +44,7 @@ function ProductImageGallery({ item }: { item: MerchItem }) {
       <div className="relative w-full aspect-square rounded-2xl overflow-hidden border-3 border-black bg-gray-100 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
         <AnimatePresence mode="wait">
           <motion.div
-            key={activeIndex}
+            key={`${selectedColor}-${currentActiveIndex}`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -31,14 +52,34 @@ function ProductImageGallery({ item }: { item: MerchItem }) {
             className="absolute inset-0"
           >
             <Image
-              src={item.images[activeIndex]}
-              alt={`${item.name} - view ${activeIndex + 1}`}
+              src={displayImages[currentActiveIndex]}
+              alt={`${item.name} - view ${currentActiveIndex + 1}`}
               fill
               className="object-cover"
               sizes="(max-width: 640px) 100vw, 500px"
             />
           </motion.div>
         </AnimatePresence>
+
+        {/* Navigation Arrows */}
+        {displayImages.length > 1 && (
+          <>
+            <button
+              onClick={() => setActiveIndex((prev) => (prev > 0 ? prev - 1 : displayImages.length - 1))}
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center bg-white/20 backdrop-blur-md rounded-full border border-white/30 text-black shadow-lg hover:bg-white/40 transition-all z-20 group"
+              aria-label="Previous image"
+            >
+              <span className="text-xl group-hover:-translate-x-0.5 transition-transform">←</span>
+            </button>
+            <button
+              onClick={() => setActiveIndex((prev) => (prev < displayImages.length - 1 ? prev + 1 : 0))}
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center bg-white/20 backdrop-blur-md rounded-full border border-white/30 text-black shadow-lg hover:bg-white/40 transition-all z-20 group"
+              aria-label="Next image"
+            >
+              <span className="text-xl group-hover:translate-x-0.5 transition-transform">→</span>
+            </button>
+          </>
+        )}
 
         {/* Badge */}
         {item.badge && (
@@ -62,17 +103,16 @@ function ProductImageGallery({ item }: { item: MerchItem }) {
       </div>
 
       {/* Thumbnail Strip */}
-      {item.images.length > 1 && (
+      {displayImages.length > 1 && (
         <div className="flex gap-2 justify-center">
-          {item.images.map((img, i) => (
+          {displayImages.map((img, i) => (
             <button
-              key={i}
+              key={`${selectedColor}-${i}`}
               onClick={() => setActiveIndex(i)}
-              className={`relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden border-2 transition-all duration-150 shrink-0 ${
-                activeIndex === i
-                  ? "border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] scale-105"
-                  : "border-gray-300 opacity-60 hover:opacity-90"
-              }`}
+              className={`relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden border-2 transition-all duration-150 shrink-0 ${currentActiveIndex === i
+                ? "border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] scale-105"
+                : "border-gray-300 opacity-60 hover:opacity-90"
+                }`}
             >
               <Image
                 src={img}
@@ -141,11 +181,10 @@ export default function MerchSection() {
                   <button
                     key={tab.id}
                     onClick={() => handleTabChange(idx)}
-                    className={`px-5 sm:px-8 py-2.5 text-sm sm:text-base font-bold uppercase tracking-wider transition-all duration-150 ${softura.className} ${
-                      activeTab === idx
-                        ? "bg-black text-white"
-                        : "bg-white text-black hover:bg-gray-100"
-                    } ${idx > 0 ? "border-l-2 border-black" : ""}`}
+                    className={`px-5 sm:px-8 py-2.5 text-sm sm:text-base font-bold uppercase tracking-wider transition-all duration-150 ${softura.className} ${activeTab === idx
+                      ? "bg-black text-white"
+                      : "bg-white text-black hover:bg-gray-100"
+                      } ${idx > 0 ? "border-l-2 border-black" : ""}`}
                   >
                     {tab.id === 1 ? "Classic Tee" : tab.id === 2 ? "Polo Tee" : tab.name}
                   </button>
@@ -160,7 +199,7 @@ export default function MerchSection() {
           <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-start max-w-5xl mx-auto w-full">
             {/* Left: Image Gallery */}
             <div className="w-full md:w-1/2">
-              <ProductImageGallery item={item} />
+              <ProductImageGallery item={item} selectedColor={selectedColor} />
             </div>
 
             {/* Right: Product Details */}
@@ -218,11 +257,10 @@ export default function MerchSection() {
                       <button
                         key={size}
                         onClick={() => setSelectedSize(size)}
-                        className={`w-11 h-11 text-sm font-bold rounded-xl border-2 transition-all duration-150 ${
-                          selectedSize === size
-                            ? "bg-black text-white border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,0.3)]"
-                            : "bg-white text-black border-gray-300 hover:border-black"
-                        }`}
+                        className={`w-11 h-11 text-sm font-bold rounded-xl border-2 transition-all duration-150 ${selectedSize === size
+                          ? "bg-black text-white border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,0.3)]"
+                          : "bg-white text-black border-gray-300 hover:border-black"
+                          }`}
                       >
                         {size}
                       </button>
@@ -245,11 +283,10 @@ export default function MerchSection() {
                         key={color.name}
                         onClick={() => setSelectedColor(color.name)}
                         title={color.name}
-                        className={`w-9 h-9 rounded-full border-2 transition-all duration-150 ${
-                          selectedColor === color.name
-                            ? "border-black scale-110 shadow-[2px_2px_0px_0px_rgba(0,0,0,0.3)]"
-                            : "border-gray-300 hover:border-black"
-                        }`}
+                        className={`w-9 h-9 rounded-full border-2 transition-all duration-150 ${selectedColor === color.name
+                          ? "border-black scale-110 shadow-[2px_2px_0px_0px_rgba(0,0,0,0.3)]"
+                          : "border-gray-300 hover:border-black"
+                          }`}
                         style={{ backgroundColor: color.hex }}
                       />
                     ))}
