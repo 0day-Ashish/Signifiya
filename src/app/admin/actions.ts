@@ -1293,6 +1293,7 @@ export async function exportMerchOrdersCsv(): Promise<string> {
     "Email",
     "Phone",
     "College",
+    "Gender",
     "Item",
     "Size",
     "Color",
@@ -1305,12 +1306,13 @@ export async function exportMerchOrdersCsv(): Promise<string> {
     "Status",
     "Date",
   ];
-  const rows = orders.map((o) => [
+  const rows = orders.map((o: any) => [
     o.orderNumber,
     o.name,
     o.email,
     o.phone,
     o.college,
+    o.gender,
     o.merchItemName,
     o.size,
     o.color,

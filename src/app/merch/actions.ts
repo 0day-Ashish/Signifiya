@@ -84,6 +84,7 @@ export async function submitMerchOrder(data: {
   merchItemName: string;
   size?: string;
   color?: string;
+  gender?: string;
   customText?: string;
   quantity: number;
   unitPrice: number;
@@ -102,6 +103,7 @@ export async function submitMerchOrder(data: {
       merchItemName,
       size,
       color,
+      gender,
       customText,
       quantity,
       unitPrice,
@@ -170,6 +172,7 @@ export async function submitMerchOrder(data: {
         merchItemName,
         size: size || null,
         color: color || null,
+        gender: gender || null,
         customText: customText || null,
         quantity,
         unitPrice,

@@ -163,6 +163,7 @@ export default function MerchBooking() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [college, setCollege] = useState("");
+  const [gender, setGender] = useState("");
   const [customText, setCustomText] = useState("");
   const [userBookingId, setUserBookingId] = useState("");
 
@@ -209,6 +210,7 @@ export default function MerchBooking() {
           );
         }
         if (userProfile?.collegeName) setCollege(userProfile.collegeName);
+        if (userProfile?.gender) setGender(userProfile.gender);
         if (userProfile?.bookingId) setUserBookingId(userProfile.bookingId);
       } catch { }
     };
@@ -267,8 +269,8 @@ export default function MerchBooking() {
 
   // Step 1 → Step 2 validation
   const handleContinueToPayment = () => {
-    if (!name.trim() || !email.trim() || !phone.trim()) {
-      setError("Name, email, and phone are required");
+    if (!name.trim() || !email.trim() || !phone.trim() || !gender) {
+      setError("Name, email, phone, and gender are required");
       return;
     }
     if (!/^[0-9]{10}$/.test(phone.trim())) {
@@ -298,6 +300,7 @@ export default function MerchBooking() {
         merchItemName: selectedItem.name,
         size: selectedSize || undefined,
         color: selectedColor || undefined,
+        gender: gender || undefined,
         customText: customText.trim() || undefined,
         quantity,
         unitPrice: selectedItem.price,
@@ -347,7 +350,7 @@ export default function MerchBooking() {
   return (
     <div className="bg-zinc-950 min-h-screen flex items-center justify-center p-4 lg:p-8 font-sans overflow-x-hidden">
       {/* Main Card Container */}
-      <div className="bg-white rounded-[2rem] w-full border-4 border-black shadow-[12px_12px_0px_0px_rgba(20,20,20,1)] overflow-hidden flex flex-col lg:flex-row min-h-[85vh]">
+      <div className="bg-white rounded-[2rem] w-full border-4 border-black shadow-[12px_12px_0px_0px_rgba(20,20,20,1)] flex flex-col lg:flex-row min-h-screen lg:min-h-[85vh]">
         {/* --- LEFT SIDE: FORM --- */}
         <div className="flex-1 flex flex-col p-6 lg:p-10 relative">
           {/* Header */}
@@ -622,6 +625,23 @@ export default function MerchBooking() {
                         className={inputStyles}
                         placeholder="JOHN@EXAMPLE.COM"
                       />
+                    </div>
+                  </div>
+
+                  <div className="w-full">
+                    <Label className={labelStyles}>Gender</Label>
+                    <div className="flex gap-4">
+                      {["Male", "Female"].map((g) => (
+                        <button
+                          key={g}
+                          type="button"
+                          onClick={() => setGender(g)}
+                          className={`flex-1 py-3 rounded-lg border-2 border-black font-bold uppercase transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] ${gender === g ? "bg-black text-white" : "bg-white text-black"
+                            }`}
+                        >
+                          {g}
+                        </button>
+                      ))}
                     </div>
                   </div>
 

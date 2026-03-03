@@ -149,11 +149,10 @@ export default function MerchOrdersPage() {
             setStatusFilter("");
             setPage(0);
           }}
-          className={`px-3 py-1.5 rounded-full border-2 border-black text-xs font-bold uppercase tracking-wider transition-all ${
-            !statusFilter
-              ? "bg-white text-black shadow-inner"
-              : "bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
-          } ${softura.className}`}
+          className={`px-3 py-1.5 rounded-full border-2 border-black text-xs font-bold uppercase tracking-wider transition-all ${!statusFilter
+            ? "bg-white text-black shadow-inner"
+            : "bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
+            } ${softura.className}`}
         >
           All
         </button>
@@ -164,11 +163,10 @@ export default function MerchOrdersPage() {
               setStatusFilter(s);
               setPage(0);
             }}
-            className={`px-3 py-1.5 rounded-full border-2 border-black text-xs font-bold uppercase tracking-wider transition-all ${
-              statusFilter === s
-                ? `${STATUS_COLORS[s]}`
-                : "bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
-            } ${softura.className}`}
+            className={`px-3 py-1.5 rounded-full border-2 border-black text-xs font-bold uppercase tracking-wider transition-all ${statusFilter === s
+              ? `${STATUS_COLORS[s]}`
+              : "bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
+              } ${softura.className}`}
           >
             {STATUS_LABELS[s] || s}
           </button>
@@ -205,6 +203,11 @@ export default function MerchOrdersPage() {
                   className={`px-3 py-3 text-left text-[10px] uppercase tracking-wider hidden md:table-cell ${softura.className}`}
                 >
                   Item
+                </th>
+                <th
+                  className={`px-3 py-3 text-left text-[10px] uppercase tracking-wider hidden lg:table-cell ${softura.className}`}
+                >
+                  Gender
                 </th>
                 <th
                   className={`px-3 py-3 text-left text-[10px] uppercase tracking-wider hidden lg:table-cell ${softura.className}`}
@@ -281,6 +284,11 @@ export default function MerchOrdersPage() {
                         ×{o.quantity}
                       </span>
                     )}
+                  </td>
+                  <td
+                    className={`px-3 py-3 text-zinc-400 hidden lg:table-cell ${softura.className}`}
+                  >
+                    {o.gender || "—"}
                   </td>
                   <td
                     className={`px-3 py-3 text-zinc-400 hidden lg:table-cell ${softura.className}`}
