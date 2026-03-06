@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import SizeChartModal from "@/components/SizeChartModal";
@@ -140,7 +140,7 @@ function ProductImageGallery({
 }
 
 // ─── Main Merch Booking Page ─────────────────────────────────
-export default function MerchBooking() {
+function MerchBookingContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { data: session, isPending } = authClient.useSession();
@@ -463,7 +463,10 @@ export default function MerchBooking() {
                     <div className="flex gap-4 items-start">
                       <div className="relative w-20 h-20 rounded-xl overflow-hidden border-2 border-black shrink-0 bg-white">
                         <Image
-                          src={selectedItem.colorImages?.[selectedColor]?.[0] ?? selectedItem.images[0]}
+                          src={
+                            selectedItem.colorImages?.[selectedColor]?.[0] ??
+                            selectedItem.images[0]
+                          }
                           alt={selectedItem.name}
                           fill
                           className="object-contain"
@@ -940,5 +943,19 @@ export default function MerchBooking() {
         onClose={() => setShowSizeChart(false)}
       />
     </div>
+  );
+}
+
+export default function MerchBooking() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center min-h-screen bg-zinc-950">
+          <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      }
+    >
+      <MerchBookingContent />
+    </Suspense>
   );
 }
