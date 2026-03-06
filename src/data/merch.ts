@@ -29,10 +29,7 @@ export type MerchItem = {
   badgeColor?: string;
 };
 
-export const MERCH_CATEGORIES = [
-  { value: "all", label: "ALL" },
-
-] as const;
+export const MERCH_CATEGORIES = [{ value: "all", label: "ALL" }] as const;
 
 export const ALL_MERCH: MerchItem[] = [
   {
@@ -45,19 +42,36 @@ export const ALL_MERCH: MerchItem[] = [
     category: "tshirt",
     categoryLabel: "T-Shirt",
     images: [
-      "/merch/blue-std1.png",
-      "/merch/blue-std2.png",
-      "/merch/purple-std1.png",
-      "/merch/purple-std2.png",
+      "/merch/blue_tshirt_front.jpeg",
+      "/merch/blue_tshirt_back.jpeg",
+      "/merch/purple_tshirt_front.jpeg",
+      "/merch/purple_tshirt_back.jpeg",
+      "/merch/green_tshirt_front.jpeg",
+      "/merch/green_tshirt_back.jpeg",
+      "/merch/orange_tshirt_front.jpeg",
+      "/merch/orange_tshirt_back.jpeg",
     ],
     colorImages: {
-      Blue: ["/merch/blue-std1.png", "/merch/blue-std2.png"],
-      Purple: ["/merch/purple-std1.png", "/merch/purple-std2.png"],
+      Blue: ["/merch/blue_tshirt_front.jpeg", "/merch/blue_tshirt_back.jpeg"],
+      Purple: [
+        "/merch/purple_tshirt_front.jpeg",
+        "/merch/purple_tshirt_back.jpeg",
+      ],
+      Orange: [
+        "/merch/orange_tshirt_front.jpeg",
+        "/merch/orange_tshirt_back.jpeg",
+      ],
+      Green: [
+        "/merch/green_tshirt_front.jpeg",
+        "/merch/green_tshirt_back.jpeg",
+      ],
     },
     sizes: ["S", "M", "L", "XL", "XXL"],
     colors: [
       { name: "Blue", hex: "#0d47a1" },
       { name: "Purple", hex: "#6a0dad" },
+      { name: "Orange", hex: "#ff5722" },
+      { name: "Green", hex: "#388e3c" },
     ],
     inStock: true,
     badge: "BESTSELLER",
@@ -73,20 +87,27 @@ export const ALL_MERCH: MerchItem[] = [
     category: "tshirt",
     categoryLabel: "Polo T-Shirt",
     images: [
-      "/merch/blue-polo1.png",
-      "/merch/blue-polo2.png",
-      "/merch/blue-polo3.png",
-      "/merch/purple-polo1.png",
-      "/merch/purple-polo2.png",
+      "/merch/blue_polo_front.jpg",
+      "/merch/blue_polo_back.jpg",
+      "/merch/purple_polo_front.png",
+      "/merch/purple_polo_back.png",
+      "/merch/green_polo_front.jpg",
+      "/merch/green_polo_back.jpg",
+      "/merch/orange_polo_front.png",
+      "/merch/orange_polo_back.jpg",
     ],
     colorImages: {
-      Blue: ["/merch/blue-polo1.png", "/merch/blue-polo2.png", "/merch/blue-polo3.png"],
-      Purple: ["/merch/purple-polo1.png", "/merch/purple-polo2.png"],
+      Blue: ["/merch/blue_polo_front.jpg", "/merch/blue_polo_back.jpg"],
+      Purple: ["/merch/purple_polo_front.png", "/merch/purple_polo_back.png"],
+      Green: ["/merch/green_polo_front.jpg", "/merch/green_polo_back.jpg"],
+      Orange: ["/merch/orange_polo_front.png", "/merch/orange_polo_back.jpg"],
     },
     sizes: ["S", "M", "L", "XL", "XXL"],
     colors: [
       { name: "Blue", hex: "#0d47a1" },
       { name: "Purple", hex: "#6a0dad" },
+      { name: "Orange", hex: "#ff5722" },
+      { name: "Green", hex: "#388e3c" },
     ],
     inStock: true,
     badge: "NEW",

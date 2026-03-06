@@ -15,21 +15,20 @@ const gilton = localFont({ src: "../../../public/fonts/GiltonRegular.otf" });
 const softura = localFont({ src: "../../../public/fonts/Softura-Demo.otf" });
 const bicubik = localFont({ src: "../../../public/fonts/Bicubik.otf" });
 
-
 // Fallback data derived from the same shared source
 const fallbackEventsData = getScheduleData();
 
 // EventCard component (Commented out for now)
 
 const EVENT_ID_MAP: Record<string, string> = {
-  "Valorant": "gaming",
+  Valorant: "gaming",
   "Free Fire": "freefire",
   "Coding Premier League": "cpl",
   "RE-FAB (Waste to Wealth)": "refab",
-  "Refab": "refab",
+  Refab: "refab",
   "Path Follower": "path",
   "Bridge Building": "bridge",
-  "CIRCUITRONIX": "circuit",
+  CIRCUITRONIX: "circuit",
   "Dance Battle": "dance",
   "Arm Wrestling": "arm",
   "Tower Making": "tower",
@@ -37,17 +36,17 @@ const EVENT_ID_MAP: Record<string, string> = {
   "Lathe War": "lathe",
   "Robo Soccer": "robo",
   "Rap Battle": "rap",
-  "BGMI": "bgmi",
+  BGMI: "bgmi",
   "E-Football": "efootball",
   "Treasure Hunt": "treasure",
   "Power Deal": "powerdeal",
   "Tech Monopoly": "techmonopoly",
-  "Carrom": "carrom",
-  "Chess": "chess",
-  "Volleyball": "volleyball",
-  "Cricket": "cricket",
-  "Badminton": "badminton",
-  "Football": "football",
+  Carrom: "carrom",
+  Chess: "chess",
+  Volleyball: "volleyball",
+  Cricket: "cricket",
+  Badminton: "badminton",
+  Football: "football",
   "Box Cricket": "boxcricket",
 };
 
@@ -64,8 +63,9 @@ const EventCard = ({ event, index }: { event: any; index: number }) => {
   return (
     <div
       id={`event-${event.id}`}
-      className={`flex flex-col ${isTextLeft ? "lg:flex-row" : "lg:flex-row-reverse"
-        } justify-between items-center w-full gap-8 lg:gap-16 py-12 lg:py-16 scroll-mt-24`}
+      className={`flex flex-col ${
+        isTextLeft ? "lg:flex-row" : "lg:flex-row-reverse"
+      } justify-between items-center w-full gap-8 lg:gap-16 py-12 lg:py-16 scroll-mt-24`}
     >
       <div className="flex flex-col w-full lg:w-1/2 max-w-2xl">
         <div className="flex items-center gap-3 mb-4">
@@ -112,25 +112,37 @@ const EventCard = ({ event, index }: { event: any; index: number }) => {
                 <h4 className="text-xs font-black text-zinc-500 uppercase tracking-widest mb-1">
                   Student Coordinators
                 </h4>
-                <p className="text-black font-bold text-lg">{event.coordinators}</p>
+                <p className="text-black font-bold text-lg">
+                  {event.coordinators}
+                </p>
               </div>
               <div className="flex-1">
                 <h4 className="text-xs font-black text-zinc-500 uppercase tracking-widest mb-1">
                   Faculty Coordinators
                 </h4>
-                <p className="text-black font-bold text-lg">{event.facultyCoordinators || "TBA"}</p>
+                <p className="text-black font-bold text-lg">
+                  {event.facultyCoordinators || "TBA"}
+                </p>
               </div>
             </div>
           </div>
         )}
 
         {registrationId && (
-          <Link
-            href={`/events?event=${registrationId}`}
-            className="mt-6 inline-flex items-center justify-center px-6 py-3 bg-black text-white font-bold text-lg rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)] hover:translate-y-0.5 hover:shadow-none transition-all"
-          >
-            Register Now
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-4 mt-6">
+            <Link
+              href={`/schedule/${registrationId}`}
+              className="inline-flex items-center justify-center px-6 py-3 bg-white text-black font-bold text-lg rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-0.5 hover:shadow-none transition-all"
+            >
+              📖 View Details
+            </Link>
+            <Link
+              href={`/events?event=${registrationId}`}
+              className="inline-flex items-center justify-center px-6 py-3 bg-black text-white font-bold text-lg rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)] hover:translate-y-0.5 hover:shadow-none transition-all"
+            >
+              Register Now
+            </Link>
+          </div>
         )}
       </div>
 
@@ -138,8 +150,7 @@ const EventCard = ({ event, index }: { event: any; index: number }) => {
         <div className="relative w-[300px] h-[300px] lg:w-[400px] lg:h-[400px]">
           <div
             className={`absolute inset-0 ${event.color} border-3 border-black transform rotate-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] z-10 rounded-2xl`}
-          >
-          </div>
+          ></div>
 
           <div className="absolute inset-0 bg-white p-2 border-3 border-black transform -rotate-3 hover:rotate-0 transition-transform duration-300 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] z-20 rounded-2xl overflow-hidden">
             <div className="relative w-full h-full border border-black rounded-xl overflow-hidden">
@@ -165,7 +176,6 @@ const EventCard = ({ event, index }: { event: any; index: number }) => {
   );
 };
 
-
 // --- 3. MAIN PAGE COMPONENT ---
 export default function Schedule() {
   const [showNavLinks, setShowNavLinks] = useState(false);
@@ -179,15 +189,15 @@ export default function Schedule() {
 
   // Fetch schedule events with caching
   useEffect(() => {
-      const fetchEvents = async () => {
+    const fetchEvents = async () => {
       try {
         setIsLoading(true);
         // Check if nocache param is present to force refresh
         const urlParams = new URLSearchParams(window.location.search);
-        const forceRefresh = urlParams.get('nocache') === 'true';
+        const forceRefresh = urlParams.get("nocache") === "true";
         const apiUrl = `/api/schedule${forceRefresh ? "?nocache=true" : ""}`;
-        const res = await fetch(apiUrl, { cache: 'no-store' });
-        if (!res.ok) throw new Error('Failed to fetch schedule');
+        const res = await fetch(apiUrl, { cache: "no-store" });
+        if (!res.ok) throw new Error("Failed to fetch schedule");
         const data = await res.json();
         setEventsData(data);
       } catch (error) {
@@ -209,13 +219,13 @@ export default function Schedule() {
 
   // Handle hash navigation with smooth scroll
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.location.hash) {
+    if (typeof window !== "undefined" && window.location.hash) {
       const hash = window.location.hash;
       const element = document.querySelector(hash);
       if (element) {
         // Wait for content to load
         setTimeout(() => {
-          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
         }, 100);
       }
     }
@@ -274,16 +284,22 @@ export default function Schedule() {
       {/* Hero Section - Preserved Layout, Updated "Container" Style */}
       <div className="bg-gradient-to-b from-purple-950 via-purple-600 to-purple-100 min-h-[85vh] p-6 w-full rounded-[2rem] flex flex-col justify-center items-center relative overflow-hidden mb-8">
         <div className="z-10 flex flex-col items-center">
-          <h1 className={`text-[18vw] lg:text-[12vw] tracking-wider text-white leading-none text-center select-none ${gilton.className}`}>
+          <h1
+            className={`text-[18vw] lg:text-[12vw] tracking-wider text-white leading-none text-center select-none ${gilton.className}`}
+          >
             Schedule
           </h1>
           <div className="mt-4 lg:mt-0 lg:absolute lg:bottom-10 lg:right-10">
-            <span className={`tracking-wider text-white font-black text-3xl lg:text-4xl text-shadow-lg ${bicubik.className}`}>
+            <span
+              className={`tracking-wider text-white font-black text-3xl lg:text-4xl text-shadow-lg ${bicubik.className}`}
+            >
               {APP_CONFIG.event.fullName}.
             </span>
           </div>
 
-          <p className={`text-zinc-100 text-center text-xl lg:text-3xl max-w-full tracking-tight text-balance mt-6 lg:mt-0 ${softura.className}`}>
+          <p
+            className={`text-zinc-100 text-center text-xl lg:text-3xl max-w-full tracking-tight text-balance mt-6 lg:mt-0 ${softura.className}`}
+          >
             Get to know more about{" "}
             <span className="italic text-white underline decoration-wavy decoration-purple-400">
               Signifiya
@@ -306,40 +322,39 @@ export default function Schedule() {
       </div> */}
 
       {/* Days Loop (Commented out for now) */}
-      
+
       {isLoading ? (
         <div className="bg-[#fff1f2] min-h-screen mb-8 rounded-[2rem] p-6 lg:p-12 flex items-center justify-center">
           <p className="text-black text-xl">Loading schedule...</p>
         </div>
       ) : (
         eventsData.map((dayData, dayIndex) => (
-        <div
-          key={dayIndex}
-          className="bg-[#fff1f2] min-h-screen mb-8 rounded-[2rem] p-6 lg:p-12 relative overflow-visible"
-        >
-          <div className="w-full h-full relative mb-24">
-            <div className="absolute top-0 lg:top-0 right-0 flex flex-col items-end">
-              <h1 className="text-sm lg:text-lg text-black font-mono font-bold tracking-widest bg-yellow-300 px-3 py-1 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-lg mb-2 transform rotate-2">
-                {dayData.date}
-              </h1>
-              <h2 className="text-6xl lg:text-[10vw] font-black text-end tracking-tighter text-white text-stroke-2 text-stroke-black drop-shadow-[6px_6px_0px_rgba(0,0,0,1)] leading-[0.8]">
-                {dayData.day}
-              </h2>
-              <h1 className="text-sm font-bold tracking-tighter text-zinc-800 bg-zinc-100 px-2 py-1 rounded border border-zinc-300 mt-4">
-                Events & Guidelines
-              </h1>
+          <div
+            key={dayIndex}
+            className="bg-[#fff1f2] min-h-screen mb-8 rounded-[2rem] p-6 lg:p-12 relative overflow-visible"
+          >
+            <div className="w-full h-full relative mb-24">
+              <div className="absolute top-0 lg:top-0 right-0 flex flex-col items-end">
+                <h1 className="text-sm lg:text-lg text-black font-mono font-bold tracking-widest bg-yellow-300 px-3 py-1 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-lg mb-2 transform rotate-2">
+                  {dayData.date}
+                </h1>
+                <h2 className="text-6xl lg:text-[10vw] font-black text-end tracking-tighter text-white text-stroke-2 text-stroke-black drop-shadow-[6px_6px_0px_rgba(0,0,0,1)] leading-[0.8]">
+                  {dayData.day}
+                </h2>
+                <h1 className="text-sm font-bold tracking-tighter text-zinc-800 bg-zinc-100 px-2 py-1 rounded border border-zinc-300 mt-4">
+                  Events & Guidelines
+                </h1>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-12 mt-32 lg:mt-40">
+              {dayData.items.map((event, index) => (
+                <EventCard key={event.id} event={event} index={index} />
+              ))}
             </div>
           </div>
-
-          <div className="flex flex-col gap-12 mt-32 lg:mt-40">
-            {dayData.items.map((event, index) => (
-              <EventCard key={event.id} event={event} index={index} />
-            ))}
-          </div>
-        </div>
-      ))
-      )} 
-        
+        ))
+      )}
 
       <Footer />
 

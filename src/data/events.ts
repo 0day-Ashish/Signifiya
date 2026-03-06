@@ -431,7 +431,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     id: 17,
     title: "Treasure Hunt",
     category: "NON-TECH",
-    teamMember: "Team Size: 3 (+1 substitute)",
+    teamMember: "Team Size: 1+2 = 3 (+1 substitute)",
     department: "Non-Tech",
     description:
       "Solve puzzles, race against time, and uncover the hidden prize.",

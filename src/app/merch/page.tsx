@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import SizeChartModal from "@/components/SizeChartModal";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { getUserProfile } from "@/app/actions";
 import { submitMerchOrder, validateReferralBookingId } from "./actions";
@@ -20,17 +20,18 @@ const MERCH_OPEN_DATE = new Date("2026-02-23T12:00:00");
 // ─── Product Image Gallery ───────────────────────────────────
 function ProductImageGallery({
   item,
-  selectedColor
+  selectedColor,
 }: {
-  item: MerchItem,
-  selectedColor: string | null
+  item: MerchItem;
+  selectedColor: string | null;
 }) {
   const [activeIndex, setActiveIndex] = useState(0);
 
   // Get color-specific images or fallback to all images
-  const displayImages = (selectedColor && item.colorImages?.[selectedColor])
-    ? item.colorImages[selectedColor]
-    : item.images;
+  const displayImages =
+    selectedColor && item.colorImages?.[selectedColor]
+      ? item.colorImages[selectedColor]
+      : item.images;
 
   // Reset activeIndex when selectedColor changes
   const lastColorRef = useRef(selectedColor);
@@ -40,11 +41,12 @@ function ProductImageGallery({
   }
 
   // Ensure activeIndex is valid for the current displayImages
-  const currentActiveIndex = activeIndex >= displayImages.length ? 0 : activeIndex;
+  const currentActiveIndex =
+    activeIndex >= displayImages.length ? 0 : activeIndex;
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden border-2 border-black bg-gray-100 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+      <div className="relative w-full aspect-[3/4] rounded-xl overflow-hidden border-2 border-black bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
         <AnimatePresence mode="wait">
           <motion.div
             key={`${selectedColor}-${currentActiveIndex}`}
@@ -58,7 +60,7 @@ function ProductImageGallery({
               src={displayImages[currentActiveIndex]}
               alt={`${item.name} - view ${currentActiveIndex + 1}`}
               fill
-              className="object-cover"
+              className="object-contain"
               sizes="(max-width: 640px) 100vw, 500px"
             />
           </motion.div>
@@ -67,18 +69,30 @@ function ProductImageGallery({
         {displayImages.length > 1 && (
           <>
             <button
-              onClick={() => setActiveIndex((prev) => (prev > 0 ? prev - 1 : displayImages.length - 1))}
+              onClick={() =>
+                setActiveIndex((prev) =>
+                  prev > 0 ? prev - 1 : displayImages.length - 1,
+                )
+              }
               className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-white/20 backdrop-blur-md rounded-full border border-white/30 text-black shadow-lg hover:bg-white/40 transition-all z-20 group"
               aria-label="Previous image"
             >
-              <span className="text-sm group-hover:-translate-x-0.5 transition-transform">←</span>
+              <span className="text-sm group-hover:-translate-x-0.5 transition-transform">
+                ←
+              </span>
             </button>
             <button
-              onClick={() => setActiveIndex((prev) => (prev < displayImages.length - 1 ? prev + 1 : 0))}
+              onClick={() =>
+                setActiveIndex((prev) =>
+                  prev < displayImages.length - 1 ? prev + 1 : 0,
+                )
+              }
               className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-white/20 backdrop-blur-md rounded-full border border-white/30 text-black shadow-lg hover:bg-white/40 transition-all z-20 group"
               aria-label="Next image"
             >
-              <span className="text-sm group-hover:translate-x-0.5 transition-transform">→</span>
+              <span className="text-sm group-hover:translate-x-0.5 transition-transform">
+                →
+              </span>
             </button>
           </>
         )}
@@ -104,10 +118,11 @@ function ProductImageGallery({
             <button
               key={`${selectedColor}-${i}`}
               onClick={() => setActiveIndex(i)}
-              className={`relative w-14 h-14 rounded-lg overflow-hidden border-2 transition-all duration-150 shrink-0 ${currentActiveIndex === i
-                ? "border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] scale-105"
-                : "border-gray-300 opacity-60 hover:opacity-90"
-                }`}
+              className={`relative w-14 h-14 rounded-lg overflow-hidden border-2 transition-all duration-150 shrink-0 ${
+                currentActiveIndex === i
+                  ? "border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] scale-105"
+                  : "border-gray-300 opacity-60 hover:opacity-90"
+              }`}
             >
               <Image
                 src={img}
@@ -127,6 +142,7 @@ function ProductImageGallery({
 // ─── Main Merch Booking Page ─────────────────────────────────
 export default function MerchBooking() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { data: session, isPending } = authClient.useSession();
   const [isOpen, setIsOpen] = useState(() => new Date() >= MERCH_OPEN_DATE);
 
@@ -148,14 +164,25 @@ export default function MerchBooking() {
   const [error, setError] = useState<string | null>(null);
   const [orderNumber, setOrderNumber] = useState("");
 
-  // Product selection
-  const [selectedItem, setSelectedItem] = useState<MerchItem>(ALL_MERCH[0]);
-  const [selectedSize, setSelectedSize] = useState(
-    ALL_MERCH[0].sizes?.[1] || ALL_MERCH[0].sizes?.[0] || "",
-  );
-  const [selectedColor, setSelectedColor] = useState(
-    ALL_MERCH[0].colors?.[0]?.name || "",
-  );
+  // Product selection — init from URL params if present
+  const [selectedItem, setSelectedItem] = useState<MerchItem>(() => {
+    const itemId = searchParams.get("item");
+    return ALL_MERCH.find((m) => String(m.id) === itemId) ?? ALL_MERCH[0];
+  });
+  const [selectedSize, setSelectedSize] = useState(() => {
+    const initItem =
+      ALL_MERCH.find((m) => String(m.id) === searchParams.get("item")) ??
+      ALL_MERCH[0];
+    return initItem.sizes?.[1] || initItem.sizes?.[0] || "";
+  });
+  const [selectedColor, setSelectedColor] = useState(() => {
+    const initItem =
+      ALL_MERCH.find((m) => String(m.id) === searchParams.get("item")) ??
+      ALL_MERCH[0];
+    const paramColor = searchParams.get("color");
+    const validColor = initItem.colors?.find((c) => c.name === paramColor);
+    return validColor ? validColor.name : initItem.colors?.[0]?.name || "";
+  });
   const [quantity, setQuantity] = useState(1);
 
   // User details
@@ -183,10 +210,10 @@ export default function MerchBooking() {
   const totalAmount = subtotal - discountAmount;
   const discount = selectedItem.originalPrice
     ? Math.round(
-      ((selectedItem.originalPrice - selectedItem.price) /
-        selectedItem.originalPrice) *
-      100,
-    )
+        ((selectedItem.originalPrice - selectedItem.price) /
+          selectedItem.originalPrice) *
+          100,
+      )
     : 0;
 
   // Redirect to sign-in if not authenticated
@@ -212,7 +239,7 @@ export default function MerchBooking() {
         if (userProfile?.collegeName) setCollege(userProfile.collegeName);
         if (userProfile?.gender) setGender(userProfile.gender);
         if (userProfile?.bookingId) setUserBookingId(userProfile.bookingId);
-      } catch { }
+      } catch {}
     };
     prefill();
   }, [session, isPending]);
@@ -418,10 +445,11 @@ export default function MerchBooking() {
                           <button
                             key={item.id}
                             onClick={() => handleItemChange(item)}
-                            className={`px-4 py-2 rounded-lg border-2 border-black text-xs font-bold uppercase tracking-wider transition-all duration-200 ${selectedItem.id === item.id
-                              ? "bg-black text-white shadow-[2px_2px_0px_0px_rgba(0,0,0,0.3)]"
-                              : "bg-white text-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5"
-                              }`}
+                            className={`px-4 py-2 rounded-lg border-2 border-black text-xs font-bold uppercase tracking-wider transition-all duration-200 ${
+                              selectedItem.id === item.id
+                                ? "bg-black text-white shadow-[2px_2px_0px_0px_rgba(0,0,0,0.3)]"
+                                : "bg-white text-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5"
+                            }`}
                           >
                             {item.name}
                           </button>
@@ -433,12 +461,12 @@ export default function MerchBooking() {
                   {/* Selected product summary */}
                   <div className="bg-zinc-50 border-2 border-black rounded-xl p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
                     <div className="flex gap-4 items-start">
-                      <div className="relative w-20 h-20 rounded-xl overflow-hidden border-2 border-black shrink-0">
+                      <div className="relative w-20 h-20 rounded-xl overflow-hidden border-2 border-black shrink-0 bg-white">
                         <Image
-                          src={selectedItem.images[0]}
+                          src={selectedItem.colorImages?.[selectedColor]?.[0] ?? selectedItem.images[0]}
                           alt={selectedItem.name}
                           fill
-                          className="object-cover"
+                          className="object-contain"
                           sizes="80px"
                         />
                       </div>
@@ -489,10 +517,11 @@ export default function MerchBooking() {
                           <button
                             key={size}
                             onClick={() => setSelectedSize(size)}
-                            className={`w-10 h-10 text-sm font-bold rounded-lg border-2 transition-all duration-150 ${selectedSize === size
-                              ? "bg-black text-white border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,0.3)]"
-                              : "bg-white text-black border-gray-300 hover:border-black"
-                              }`}
+                            className={`w-10 h-10 text-sm font-bold rounded-lg border-2 transition-all duration-150 ${
+                              selectedSize === size
+                                ? "bg-black text-white border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,0.3)]"
+                                : "bg-white text-black border-gray-300 hover:border-black"
+                            }`}
                           >
                             {size}
                           </button>
@@ -513,10 +542,11 @@ export default function MerchBooking() {
                             key={color.name}
                             onClick={() => setSelectedColor(color.name)}
                             title={color.name}
-                            className={`w-8 h-8 rounded-full border-2 transition-all duration-150 ${selectedColor === color.name
-                              ? "border-black scale-110 shadow-[2px_2px_0px_0px_rgba(0,0,0,0.3)]"
-                              : "border-gray-300 hover:border-black"
-                              }`}
+                            className={`w-8 h-8 rounded-full border-2 transition-all duration-150 ${
+                              selectedColor === color.name
+                                ? "border-black scale-110 shadow-[2px_2px_0px_0px_rgba(0,0,0,0.3)]"
+                                : "border-gray-300 hover:border-black"
+                            }`}
                             style={{ backgroundColor: color.hex }}
                           />
                         ))}
@@ -592,10 +622,11 @@ export default function MerchBooking() {
                     </div>
                     {referralMsg && (
                       <p
-                        className={`text-xs font-bold mt-1 ${referralValid
-                          ? "text-green-700 bg-green-50 px-2 py-1 border border-green-300 rounded"
-                          : "text-red-600 bg-red-50 px-2 py-1 border border-red-300 rounded"
-                          }`}
+                        className={`text-xs font-bold mt-1 ${
+                          referralValid
+                            ? "text-green-700 bg-green-50 px-2 py-1 border border-green-300 rounded"
+                            : "text-red-600 bg-red-50 px-2 py-1 border border-red-300 rounded"
+                        }`}
                       >
                         {referralMsg}
                       </p>
@@ -636,8 +667,11 @@ export default function MerchBooking() {
                           key={g}
                           type="button"
                           onClick={() => setGender(g)}
-                          className={`flex-1 py-3 rounded-lg border-2 border-black font-bold uppercase transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] ${gender === g ? "bg-black text-white" : "bg-white text-black"
-                            }`}
+                          className={`flex-1 py-3 rounded-lg border-2 border-black font-bold uppercase transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] ${
+                            gender === g
+                              ? "bg-black text-white"
+                              : "bg-white text-black"
+                          }`}
                         >
                           {g}
                         </button>
@@ -874,7 +908,10 @@ export default function MerchBooking() {
 
           {/* Product Image Display */}
           <div className="relative w-[400px] bg-white p-6 border-4 border-black rounded-xl shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] rotate-1 hover:rotate-0 transition-transform duration-500">
-            <ProductImageGallery item={selectedItem} selectedColor={selectedColor} />
+            <ProductImageGallery
+              item={selectedItem}
+              selectedColor={selectedColor}
+            />
             <div className="mt-4 flex items-center justify-between px-1">
               <span className="font-black text-xl tracking-tighter">
                 {selectedItem.name}
