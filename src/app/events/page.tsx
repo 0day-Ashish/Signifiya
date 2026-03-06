@@ -172,8 +172,8 @@ const eventsList = [
     id: "treasure",
     name: "Treasure Hunt",
     price: 300,
-    // Spreadsheet: Treasure Hunt total = 1+2 = 3 => 1 leader + 2 members
-    type: "Team (1+2 = 3)",
+    // Max 4 members: 1 leader + 2 members + 1 substitute
+    type: "Team (2)",
     date: "March 28th",
     color: "bg-gray-100",
   },

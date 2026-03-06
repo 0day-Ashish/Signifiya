@@ -283,7 +283,7 @@ export const eventDetails: Record<string, EventDetail> = {
       "Provide an entertaining yet competitive campus experience",
     ],
     participation: {
-      teamSize: "1+2 = 3 Members",
+      teamSize: "3 + 1 Members",
       registrationFee: "₹299 per team",
       eligibility: "Open to inter-college participants",
     },
