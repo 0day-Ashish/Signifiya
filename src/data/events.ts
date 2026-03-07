@@ -102,7 +102,7 @@ export const ALL_EVENTS: MasterEvent[] = [
       "Survive the shrinking battlefield, outsmart opponents, and be the last squad standing.",
     date: "March 27th",
     image: "/freefire.jpg",
-    prizePool: "₹25,000",
+    prizePool: "₹20,000",
     day: 1,
     time: "1:30 PM - 7:00 PM",
     venue: "APJ Abdul Kalam Convention Hall",

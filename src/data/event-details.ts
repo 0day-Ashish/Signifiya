@@ -985,7 +985,7 @@ export const eventDetails: Record<string, EventDetail> = {
       "Projection display",
     ],
     prizeStructure: {
-      prizePool: "₹25,000",
+      prizePool: "₹20,000",
       details: ["Certificates for all participants"],
     },
     schedule: {
