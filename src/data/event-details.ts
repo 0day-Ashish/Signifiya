@@ -140,8 +140,8 @@ export const eventDetails: Record<string, EventDetail> = {
       "Develop teamwork and presentation skills among participants",
     ],
     participation: {
-      teamSize: "1–4 Members",
-      registrationFee: "₹300 per team",
+      teamSize: "4 Members",
+      registrationFee: "₹299 per team",
       eligibility:
         "Open to Engineering Students & Tech Enthusiasts (Inter-college participation allowed)",
     },
@@ -171,7 +171,7 @@ export const eventDetails: Record<string, EventDetail> = {
     schedule: {
       date: "28th March",
       venue: "SOET 5204",
-      time: "2 – 6 Hours",
+      time: "10:00 AM – 7:00 PM",
     },
   },
   cpl: {
@@ -985,7 +985,7 @@ export const eventDetails: Record<string, EventDetail> = {
       "Projection display",
     ],
     prizeStructure: {
-      prizePool: "₹20,000",
+      prizePool: "₹25,000",
       details: ["Certificates for all participants"],
     },
     schedule: {
