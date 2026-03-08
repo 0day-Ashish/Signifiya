@@ -65,7 +65,7 @@ export default function Navbar({
         <div className="fixed top-16 left-8 bg-black text-black rounded-full flex items-center justify-center transition-transform duration-300  active:scale-95 active:shadow-none z-50">
           <Link href="/">
             <Image
-              src="/logo2.png"
+              src="https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/logo2.png"
               alt="Logo"
               width={64}
               height={64}

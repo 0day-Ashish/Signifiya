@@ -120,7 +120,7 @@ export default function AssetsPage() {
                 <div className="bg-black p-8 flex items-center justify-center min-h-[200px] sm:min-h-[280px]">
                   <div className="relative w-40 h-40 sm:w-56 sm:h-56">
                     <Image
-                      src="/logo2.png"
+                      src="https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/logo2.png"
                       alt="Signifiya Logo"
                       fill
                       className="object-contain"
@@ -142,7 +142,7 @@ export default function AssetsPage() {
                 <div className="bg-white p-8 flex items-center justify-center min-h-[200px] sm:min-h-[280px]">
                   <div className="relative w-40 h-40 sm:w-56 sm:h-56">
                     <Image
-                      src="/logo1.png"
+                      src="https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/logo1.png"
                       alt="Signifiya Logo"
                       fill
                       className="object-contain"
@@ -162,7 +162,7 @@ export default function AssetsPage() {
 
             {/* Download Button */}
             <a
-              href="/logo2.png"
+              href="https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/logo2.png"
               download="signifiya-logo.png"
               className={`self-start bg-black text-white px-6 py-3 rounded-xl border-2 border-black font-bold text-sm uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(0,0,0,0.3)] hover:bg-[#deb3fa] hover:text-black hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all ${softura.className}`}
             >

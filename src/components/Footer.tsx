@@ -199,7 +199,7 @@ export default function Footer() {
                   <div className="mt-6 flex flex-col gap-3">
                     <button className="bg-white text-black px-4 py-1.5 rounded-lg border-2 border-black flex items-center gap-2 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all group/btn w-fit">
                       <Image
-                        src="/googleplay.png"
+                        src="https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/googleplay.png"
                         alt="Google Play"
                         width={24}
                         height={24}

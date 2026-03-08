@@ -70,7 +70,8 @@ export const APP_CONFIG = {
         role: "Lead Developer",
         email: "0day.ashish@gmail.com",
         phone: "+91 8910114007",
-        image: "/team/Ashish.jpg",
+        image:
+          "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/team/Ashish.jpg",
         color: "#deb3fa",
         social: {
           instagram: "https://instagram.com/ashishh_rd_",
@@ -84,7 +85,8 @@ export const APP_CONFIG = {
         role: "Finance Head",
         email: "arijit1504@gmail.com",
         phone: "+91 9831093297",
-        image: "/team/Arijit.jpg",
+        image:
+          "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/team/Arijit.jpg",
         color: "#FCD34D",
         social: {
           instagram: "https://instagram.com/arijit_.04",
@@ -98,7 +100,8 @@ export const APP_CONFIG = {
         role: "Documentations Head",
         email: "roygarima@gmail.com",
         phone: "+91 9073377527",
-        image: "/team/Garima.jpeg",
+        image:
+          "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/team/Garima.jpeg",
         color: "#3B82F6",
         social: {
           instagram: "https://instagram.com/_garimaa.07_",

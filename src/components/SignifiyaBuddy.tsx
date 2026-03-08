@@ -75,7 +75,7 @@ export default function SignifiyaBuddy() {
             {/* First Prize - Top of Triangle */}
             <div className="flex justify-center">
               <div className="bg-white rounded-2xl border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-8 w-48 h-48 flex flex-col items-center justify-center gap-3">
-               <Image src="/gold_trophy.png" alt="Gold Trophy" width={64} height={64} />
+               <Image src="https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/gold_trophy.png" alt="Gold Trophy" width={64} height={64} />
                 <div className={`text-sm font-bold text-black uppercase ${softura.className}`}>1st Prize</div>
               </div>
             </div>
@@ -84,13 +84,13 @@ export default function SignifiyaBuddy() {
             <div className="flex flex-row gap-6 justify-center">
               {/* Second Prize */}
               <div className="bg-white rounded-2xl border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-6 w-40 h-40 flex flex-col items-center justify-center gap-2">
-                <Image src="/silver_trophy.png" alt="Silver Trophy" width={48} height={48} />
+                <Image src="https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/silver_trophy.png" alt="Silver Trophy" width={48} height={48} />
                 <div className={`text-xs font-bold text-black uppercase ${softura.className}`}>2nd Prize</div>
               </div>
 
               {/* Third Prize */}
               <div className="bg-white rounded-2xl border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-6 w-40 h-40 flex flex-col items-center justify-center gap-2">
-                <Image src="/bronze_trophy.png" alt="Bronze Trophy" width={48} height={48} />
+                <Image src="https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/bronze_trophy.png" alt="Bronze Trophy" width={48} height={48} />
                 <div className={`text-xs font-bold text-black uppercase ${softura.className}`}>3rd Prize</div>
               </div>
             </div>

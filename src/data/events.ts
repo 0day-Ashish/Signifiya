@@ -58,7 +58,8 @@ export const ALL_EVENTS: MasterEvent[] = [
     description: "Official inauguration ceremony for the event.",
     scheduleDescription: "Opening ceremony for Signifiya 2026.",
     date: "March 27th",
-    image: "/gallery/gallery-01.jpeg",
+    image:
+      "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/gallery/gallery-01.jpeg",
     prizePool: "—",
     day: 1,
     time: "12:30 PM - 1:30 PM",
@@ -79,7 +80,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     scheduleDescription:
       "Assemble your squad and compete in the ultimate tactical FPS showdown.",
     date: "March 27th",
-    image: "/valorant.jpg",
+    image: "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/valorant.jpg",
     prizePool: "₹30,000",
     day: 1,
     time: "12:30 PM - 7:00 PM",
@@ -101,7 +102,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     scheduleDescription:
       "Survive the shrinking battlefield, outsmart opponents, and be the last squad standing.",
     date: "March 27th",
-    image: "/freefire.jpg",
+    image: "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/freefire.jpg",
     prizePool: "₹25,000",
     day: 1,
     time: "1:30 PM - 7:00 PM",
@@ -125,7 +126,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     scheduleDescription:
       "An exhilarating coding competition where participants showcase their programming skills, problem-solving abilities, and creativity.",
     date: "March 27th",
-    image: "/cse2.jpg",
+    image: "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/cse2.jpg",
     prizePool: "₹10,000",
     day: 1,
     time: "1:30 PM - 4:30 PM",
@@ -148,7 +149,8 @@ export const ALL_EVENTS: MasterEvent[] = [
     scheduleDescription:
       "Innovate and create useful products from waste materials. Show how mechanical engineering can drive sustainability.",
     date: "March 27th",
-    image: "/mechanical1.jpg",
+    image:
+      "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/mechanical1.jpg",
     prizePool: "₹5,000",
     day: 1,
     time: "1:30 PM - 3:30 PM",
@@ -170,7 +172,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     scheduleDescription:
       "Design an autonomous bot capable of following a complex black line path in the shortest time possible.",
     date: "March 27th",
-    image: "/robotics2.jpg",
+    image: "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/robotics2.jpg",
     prizePool: "₹5,000",
     day: 1,
     time: "1:30 PM - 4:30 PM",
@@ -193,7 +195,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     scheduleDescription:
       "Bridge the gap between theory and reality. Build a truss bridge that can withstand maximum load.",
     date: "March 27th",
-    image: "/civil2.jpg",
+    image: "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/civil2.jpg",
     prizePool: "₹3,000",
     day: 1,
     time: "1:00 PM - 3:15 PM",
@@ -215,7 +217,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     scheduleDescription:
       "Test your knowledge of circuits and electronics in this electrifying showdown designed for the brightest minds in EEE.",
     date: "March 28th",
-    image: "/eee.jpg",
+    image: "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/eee.jpg",
     prizePool: "₹6,000",
     day: 2,
     time: "10:00 AM - 7:00 PM",
@@ -237,7 +239,8 @@ export const ALL_EVENTS: MasterEvent[] = [
     scheduleDescription:
       "Bring your best moves and own the stage in this electrifying dance battle!",
     date: "March 27th",
-    image: "/dance-battle.jpg",
+    image:
+      "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/dance-battle.jpg",
     prizePool: "₹10,000",
     day: 1,
     time: "4:30 PM - 6:30 PM",
@@ -259,7 +262,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     scheduleDescription:
       "Lock hands, hold your ground, and power through to pin your opponent down. Weight categories will lie between: 60kgs - 90kgs+.",
     date: "March 27th",
-    image: "/non-tech1.jpg",
+    image: "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/non-tech1.jpg",
     prizePool: "₹3,000",
     day: 1,
     time: "4:00 PM - 5:00 PM",
@@ -284,7 +287,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     scheduleDescription:
       "Negotiate, strategize, and close the best deals in this high-energy business simulation challenge.",
     date: "March 27th",
-    image: "/powerdeal.jpg",
+    image: "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/powerdeal.jpg",
     prizePool: "₹3,000",
     day: 1,
     time: "2:30 PM - 4:30 PM",
@@ -305,7 +308,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     scheduleDescription:
       "A battle of precision turning. Machine the perfect component on the lathe within the given tolerance.",
     date: "March 28th",
-    image: "/lathe-war.jpg",
+    image: "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/lathe-war.jpg",
     prizePool: "₹5,000",
     day: 2,
     time: "10:00 AM - 3:00 PM",
@@ -327,7 +330,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     scheduleDescription:
       "Unleash your UI/UX creativity. Design interfaces that speak to the user's heart.",
     date: "March 28th",
-    image: "/cse1.jpg",
+    image: "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/cse1.jpg",
     prizePool: "₹3,000",
     day: 2,
     time: "10:00 AM - 2:00 PM",
@@ -349,7 +352,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     scheduleDescription:
       "Construct the tallest and most stable tower using limited resources. A test of structural engineering and patience.",
     date: "March 27th",
-    image: "/civil1.jpg",
+    image: "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/civil1.jpg",
     prizePool: "₹3,000",
     day: 1,
     time: "3:20 PM - 5:30 PM",
@@ -372,7 +375,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     scheduleDescription:
       "Navigate your bot through rough and uneven terrains without getting stuck or toppling over.",
     date: "March 28th",
-    image: "/robotics1.jpg",
+    image: "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/robotics1.jpg",
     prizePool: "₹5,000",
     day: 2,
     time: "10:00 AM - 1:00 PM",
@@ -394,7 +397,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     scheduleDescription:
       "Drop in, gear up, and fight through intense combat zones to be the last team standing.",
     date: "March 28th",
-    image: "/bgmi-01.jpg",
+    image: "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/bgmi-01.jpg",
     prizePool: "₹40,000",
     day: 2,
     time: "10:00 AM - 4:00 PM",
@@ -416,7 +419,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     scheduleDescription:
       "Master the pitch, command your squad, and score your way to glory.",
     date: "March 28th",
-    image: "/efootbal.jpg",
+    image: "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/efootbal.jpg",
     prizePool: "₹20,000",
     day: 2,
     time: "10:00 AM - 4:00 PM",
@@ -438,7 +441,8 @@ export const ALL_EVENTS: MasterEvent[] = [
     scheduleDescription:
       "Solve puzzles, race against time, and uncover the hidden prize across Adamas Campus.",
     date: "March 28th",
-    image: "/treasure-hunt.jpg",
+    image:
+      "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/treasure-hunt.jpg",
     prizePool: "₹5,555",
     day: 2,
     time: "2:00 PM - 5:00 PM",
@@ -460,8 +464,9 @@ export const ALL_EVENTS: MasterEvent[] = [
     scheduleDescription:
       "Rhythm & wordplay collide in this electrifying rap battle. Drop sharp bars, own the mic, and outflow your opponent with clever lyrics and flow.",
     date: "March 28th",
-    image: "/rap-battle.jpg",
-    scheduleImage: "/rap-battle.jpg",
+    image: "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/rap-battle.jpg",
+    scheduleImage:
+      "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/rap-battle.jpg",
     prizePool: "₹3,000",
     day: 2,
     time: "3:00 PM - 4:00 PM",
@@ -483,8 +488,9 @@ export const ALL_EVENTS: MasterEvent[] = [
     scheduleDescription:
       "Tech Monopoly is a live startup-investment simulation where teams act as Venture Capital Firms ",
     date: "March 28th",
-    image: "/monopoly.webp",
-    scheduleImage: "/monopoly.webp",
+    image: "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/monopoly.webp",
+    scheduleImage:
+      "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/monopoly.webp",
     prizePool: "₹3,000",
     day: 2,
     time: "10:00 AM - 1:00 PM",
@@ -504,7 +510,8 @@ export const ALL_EVENTS: MasterEvent[] = [
     scheduleDescription:
       "Prize distribution ceremony and closing of Signifiya 2026.",
     date: "March 28th",
-    image: "/prize-distribution.jpg",
+    image:
+      "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/prize-distribution.jpg",
     prizePool: "—",
     day: 2,
     time: "4:30 PM - 5:30 PM",

@@ -26,7 +26,7 @@ export default function CommunityPartner() {
               {/* Partner Icon */}
               <div className="w-20 h-20 bg-[#FCD34D] rounded-full border-2 border-black items-center justify-center relative overflow-hidden shrink-0 ml-4 hidden sm:flex transition-transform group-hover/partner:scale-105 group-hover/partner:rotate-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover/partner:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] group-hover/partner:translate-x-[2px] group-hover/partner:translate-y-[2px]">
           
-                  <Image src="/cerkle.png" alt="Cerkle Logo" fill
+                  <Image src="https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/cerkle.png" alt="Cerkle Logo" fill
                     className="object-cover" />
            
               </div>
@@ -54,7 +54,7 @@ export default function CommunityPartner() {
 
           {/* Mobile Logo - Bottom Right */}
           <div className="absolute bottom-6 right-6 w-16 h-16 rounded-full border-2 border-black overflow-hidden sm:hidden z-10 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-            <Image src="/cerkle.png" alt="Cerkle Logo" fill className="object-cover" />
+            <Image src="https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/cerkle.png" alt="Cerkle Logo" fill className="object-cover" />
           </div>
 
           {/* Background decorative shapes */}

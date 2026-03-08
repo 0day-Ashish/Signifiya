@@ -112,11 +112,11 @@ export default function EventCard({
         <div className={`w-full ${compact ? "min-h-[400px] sm:min-h-[440px]" : "min-h-[520px] sm:min-h-[620px]"} bg-zinc-950 px-4 sm:px-8 rounded-[18px] shadow-[0px_0px_10px_2px_rgba(0,0,255,0.8)] backdrop-blur-2xl relative overflow-hidden flex flex-col`}>
           {/* Background */}
           <div className="absolute top-0 left-0 w-full h-full pb-20 z-0">
-            <Image src="/logo2.png" alt="Signifiya Logo" width={50} height={50} className="absolute top-2 left-2 bg-transparent backdrop-blur-3xl outline-white/10 outline rounded-full" />
+            <Image src="https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/logo2.png" alt="Signifiya Logo" width={50} height={50} className="absolute top-2 left-2 bg-transparent backdrop-blur-3xl outline-white/10 outline rounded-full" />
             <video src="/bg.mp4" className="w-full h-50 object-cover" autoPlay loop muted playsInline />
           </div>
           <div>
-            <Image src="/robo.png" alt="" width={200} height={100} className="absolute top-5 right-0 w-32 sm:w-48 md:w-50 h-auto" />
+            <Image src="https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/robo.png" alt="" width={200} height={100} className="absolute top-5 right-0 w-32 sm:w-48 md:w-50 h-auto" />
           </div>
 
           {/* Header */}

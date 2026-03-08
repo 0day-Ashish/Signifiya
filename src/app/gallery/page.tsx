@@ -26,11 +26,13 @@ const imageColors = [
 ] as const;
 const imageRotations = ["rotate-2", "-rotate-1", "rotate-1", "-rotate-2", "rotate-3", "-rotate-3"] as const;
 
+const CDN = "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev";
+
 const galleryImages = Array.from({ length: 51 }, (_, index) => {
   const id = index + 1;
   return {
     id,
-    src: `/gallery/gallery-${String(id).padStart(2, "0")}.jpeg`,
+    src: `${CDN}/gallery/gallery-${String(id).padStart(2, "0")}.jpeg`,
     caption: `Gallery Moment ${id}`,
     category: galleryCategories[index % galleryCategories.length],
     size: id % 11 === 0 ? "tall" : id % 5 === 0 ? "large" : "small",
@@ -40,6 +42,34 @@ const galleryImages = Array.from({ length: 51 }, (_, index) => {
 });
 
 // --- 2. COMPONENTS ---
+
+// Skeleton-aware image wrapper
+function GalleryImage({ src, alt, category }: { src: string; alt: string; category: string }) {
+  const [loaded, setLoaded] = useState(false);
+  return (
+    <div className="relative w-full h-[300px] sm:h-[400px] border-2 border-black rounded-xl overflow-hidden bg-zinc-200">
+      {/* Skeleton shimmer */}
+      {!loaded && (
+        <div className="absolute inset-0 z-10 bg-zinc-300 animate-pulse">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full animate-[shimmer_1.4s_infinite]" />
+        </div>
+      )}
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        className={`object-cover grayscale group-hover:grayscale-0 transition-all duration-500 ${
+          loaded ? "opacity-100" : "opacity-0"
+        }`}
+        onLoad={() => setLoaded(true)}
+      />
+      {/* Category tag */}
+      <div className="absolute top-2 right-2 bg-black text-white text-xs font-mono px-2 py-1 border border-white z-20">
+        {category}
+      </div>
+    </div>
+  );
+}
 
 // Fixed Marquee: Added scale-105 to prevent white gaps on edges when rotated
 const Marquee = () => (
@@ -209,18 +239,7 @@ export default function Gallery() {
                 `}
               >
                 {/* Image Container */}
-                <div className="relative w-full h-[300px] sm:h-[400px] border-2 border-black rounded-xl overflow-hidden bg-zinc-200">
-                  <Image
-                    src={img.src}
-                    alt={img.caption}
-                    fill
-                    className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
-                  />
-                  {/* Overlay Tag */}
-                  <div className="absolute top-2 right-2 bg-black text-white text-xs font-mono px-2 py-1 border border-white z-10">
-                    {img.category}
-                  </div>
-                </div>
+                <GalleryImage src={img.src} alt={img.caption} category={img.category} />
 
                 {/* Caption Area */}
                 <div className="mt-4 px-2 pb-2 flex justify-between items-end">
@@ -286,6 +305,10 @@ export default function Gallery() {
           animation: heartConfetti 2s ease-out forwards;
         }
         
+        @keyframes shimmer {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(200%); }
+        }
         @keyframes heartConfetti {
           0% {
             transform: translate(-50%, -50%) translate(0, 0) scale(1) rotate(0deg);

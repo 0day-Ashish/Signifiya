@@ -3,8 +3,9 @@
 import { randomUUID } from "crypto";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
-import { s3Client } from "@/lib/s3";
+import { r2Client, getR2PublicUrl, R2_BUCKET } from "@/lib/r2";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { optimizeImage, buildStorageKey } from "@/lib/image-optimizer";
 import { APP_CONFIG, PassType } from "@/config/app.config";
 import { getSession } from "@/lib/auth-server";
 import {
@@ -25,36 +26,29 @@ export async function uploadAvatar(formData: FormData) {
       throw new Error("No file uploaded");
     }
 
-    const buffer = Buffer.from(await file.arrayBuffer());
-    const fileExt = file.name.split(".").pop();
-    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
+    const rawBuffer = Buffer.from(await file.arrayBuffer());
 
-    const bucketName = process.env.S3_BUCKET_NAME || "avatars";
-    const endpoint =
-      process.env.S3_ENDPOINT ||
-      (process.env.NEXT_PUBLIC_SUPABASE_URL
-        ? `${process.env.NEXT_PUBLIC_SUPABASE_URL.replace(/\/$/, "")}/storage/v1/s3`
-        : "");
+    // Optimise: resize to 200×200, convert to WebP, 80% quality, strip EXIF
+    const { buffer, contentType } = await optimizeImage(
+      rawBuffer,
+      file.type,
+      "avatar",
+    );
 
-    const command = new PutObjectCommand({
-      Bucket: bucketName,
-      Key: fileName,
-      Body: buffer,
-      ContentType: file.type,
-      ACL: "public-read",
-    });
+    const key = buildStorageKey("avatar", file.name);
 
-    await s3Client.send(command);
+    await r2Client.send(
+      new PutObjectCommand({
+        Bucket: R2_BUCKET,
+        Key: key,
+        Body: buffer,
+        ContentType: contentType,
+        CacheControl: "public, max-age=31536000, immutable",
+      }),
+    );
 
-    let publicUrl = "";
-    if (endpoint && endpoint.includes("supabase.co")) {
-      const baseUrl = endpoint.replace("/s3", "/object/public");
-      publicUrl = `${baseUrl}/${bucketName}/${fileName}`;
-    } else {
-      publicUrl = `${endpoint}/${bucketName}/${fileName}`;
-    }
-
-    return { success: true, url: publicUrl };
+    const url = getR2PublicUrl(key);
+    return { success: true, url };
   } catch (error: any) {
     console.error("Upload error:", error);
     return { success: false, error: error.message };
@@ -407,7 +401,10 @@ export async function createEventRazorpayOrder(data: {
   totalAmount: number;
 }) {
   // Razorpay integration disabled. Use manual UTR submission instead.
-  return { success: false, error: "Razorpay disabled. Use manual UTR payment flow." };
+  return {
+    success: false,
+    error: "Razorpay disabled. Use manual UTR payment flow.",
+  };
 }
 
 /**
@@ -652,5 +649,3 @@ export async function getUserPassStatus(userId: string) {
     return null;
   }
 }
-
-

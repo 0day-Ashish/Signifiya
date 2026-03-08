@@ -539,7 +539,7 @@ export default function Register() {
                   <div className="flex flex-col items-center mb-6">
                     <div className="relative w-48 h-48 border-4 border-black rounded-xl overflow-hidden shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4">
                       <Image
-                        src="/qrcode.png"
+                        src="https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/qrcode.png"
                         alt="Payment QR Code"
                         fill
                         className="object-contain p-2"
@@ -671,7 +671,7 @@ export default function Register() {
           <div className="relative w-[400px] h-[500px] bg-white p-4 border-4 border-black rounded-xl shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] rotate-2 hover:rotate-0 transition-transform duration-500">
             <div className="relative w-full h-[85%] border-2 border-black rounded bg-zinc-800 overflow-hidden">
               <Image
-                src="/portal.jpg"
+                src="https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/portal.jpg"
                 alt="Registration Visual"
                 fill
                 className="object-cover opacity-90 hover:scale-110 transition-transform duration-700"

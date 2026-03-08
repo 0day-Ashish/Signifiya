@@ -64,7 +64,7 @@ export default function AdminShell({
           onClick={() => setSidebarOpen(false)}
         >
           <div className="relative w-8 h-8">
-            <Image src="/logo2.png" alt="Logo" fill className="object-contain" />
+            <Image src="https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/logo2.png" alt="Logo" fill className="object-contain" />
           </div>
           <span className="font-black text-lg uppercase tracking-tight text-black">
             Admin

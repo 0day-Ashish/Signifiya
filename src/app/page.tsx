@@ -337,7 +337,7 @@ export default function Home() {
               }}
             >
               <Image
-                src="/logo2.png"
+                src="https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/logo2.png"
                 alt=""
                 fill
                 className="object-contain"

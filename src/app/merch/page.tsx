@@ -789,7 +789,7 @@ function MerchBookingContent() {
                 <div className="flex flex-col items-center mb-6">
                   <div className="relative w-48 h-48 border-4 border-black rounded-xl overflow-hidden shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-4">
                     <Image
-                      src="/qrcode.png"
+                      src="https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/qrcode.png"
                       alt="Payment QR Code"
                       fill
                       className="object-contain p-2"

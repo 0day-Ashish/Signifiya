@@ -62,7 +62,7 @@ export default function VisitorCard({
           {/* Background */}
           <div className="absolute top-0 left-0 w-full h-full pb-20 z-0">
             <Image
-              src="/logo2.png"
+              src="https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/logo2.png"
               alt="Signifiya Logo"
               width={50}
               height={50}
@@ -79,7 +79,7 @@ export default function VisitorCard({
           </div>
           <div>
             <Image
-              src="/robo.png"
+              src="https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/robo.png"
               alt=""
               width={200}
               height={100}

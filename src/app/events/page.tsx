@@ -1560,8 +1560,8 @@ function EventRegistrationContent() {
                         nameMatches ||
                         esportsKeywords.includes(selectedId || "");
                       const qrSrc = isEsportsSelected
-                        ? "/sidqr.jpeg"
-                        : "/qrcode.png";
+                        ? "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/sidqr.jpeg"
+                        : "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/qrcode.png";
                       return (
                         <div className="relative w-48 h-48 border-4 border-black rounded-xl overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mx-auto mb-4 bg-white">
                           <Image
@@ -1661,7 +1661,7 @@ function EventRegistrationContent() {
           <div className="relative w-[420px] h-[580px] bg-white border-4 border-black rounded-2xl shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] rotate-[-2deg] flex flex-col overflow-hidden group">
             <div className="h-2/3 bg-zinc-900 relative border-b-4 border-black overflow-hidden">
               <Image
-                src="/gallery/gallery-13.jpeg"
+                src="https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/gallery/gallery-13.jpeg"
                 alt="Event"
                 fill
                 className="object-cover opacity-80 group-hover:scale-105 transition-transform duration-700"

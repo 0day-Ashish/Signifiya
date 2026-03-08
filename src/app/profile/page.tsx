@@ -62,14 +62,14 @@ export default function Profile() {
 
   // Pre-defined Avatars
   const AVATARS = [
-    "/avatar9.jpg",
-    "/avatar2.jpg",
-    "/avatar3.jpg",
-    "/avatar4.jpg",
-    "/avatar5.jpg",
-    "/avatar6.jpg",
-    "/avatar7.jpg",
-    "/avatar8.jpg",
+    "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/avatar9.jpg",
+    "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/avatar2.jpg",
+    "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/avatar3.jpg",
+    "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/avatar4.jpg",
+    "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/avatar5.jpg",
+    "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/avatar6.jpg",
+    "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/avatar7.jpg",
+    "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/avatar8.jpg",
   ];
 
   // Form State
