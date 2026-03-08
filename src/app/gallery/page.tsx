@@ -24,9 +24,19 @@ const imageColors = [
   "bg-red-200",
   "bg-teal-200",
 ] as const;
-const imageRotations = ["rotate-2", "-rotate-1", "rotate-1", "-rotate-2", "rotate-3", "-rotate-3"] as const;
+const imageRotations = [
+  "rotate-2",
+  "-rotate-1",
+  "rotate-1",
+  "-rotate-2",
+  "rotate-3",
+  "-rotate-3",
+] as const;
 
 const CDN = "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev";
+
+// Images 7, 8, 9 do not exist — skip them
+const MISSING_GALLERY_IDS = new Set([7, 8, 9]);
 
 const galleryImages = Array.from({ length: 51 }, (_, index) => {
   const id = index + 1;
@@ -39,12 +49,20 @@ const galleryImages = Array.from({ length: 51 }, (_, index) => {
     color: imageColors[index % imageColors.length],
     rotation: imageRotations[index % imageRotations.length],
   };
-});
+}).filter((img) => !MISSING_GALLERY_IDS.has(img.id));
 
 // --- 2. COMPONENTS ---
 
 // Skeleton-aware image wrapper
-function GalleryImage({ src, alt, category }: { src: string; alt: string; category: string }) {
+function GalleryImage({
+  src,
+  alt,
+  category,
+}: {
+  src: string;
+  alt: string;
+  category: string;
+}) {
   const [loaded, setLoaded] = useState(false);
   return (
     <div className="relative w-full h-[300px] sm:h-[400px] border-2 border-black rounded-xl overflow-hidden bg-zinc-200">
@@ -73,10 +91,7 @@ function GalleryImage({ src, alt, category }: { src: string; alt: string; catego
 
 // Fixed Marquee: Added scale-105 to prevent white gaps on edges when rotated
 const Marquee = () => (
-
-
   <div className="w-full relative z-20 py-10 overflow-hidden">
-
     <div className="absolute inset-0 flex items-center bg-yellow-300 border-y-4 border-black transform -rotate-1 scale-105 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
       <div className="animate-marquee whitespace-nowrap flex">
         <span className="text-3xl font-black mx-4 tracking-tighter">
@@ -111,7 +126,16 @@ export default function Gallery() {
       setSession(sessionData);
     }
   }, [sessionData]);
-  const [hearts, setHearts] = useState<{ id: number; imageId: number; x: number; y: number; angle: number; distance: number }[]>([]);
+  const [hearts, setHearts] = useState<
+    {
+      id: number;
+      imageId: number;
+      x: number;
+      y: number;
+      angle: number;
+      distance: number;
+    }[]
+  >([]);
 
   // Filter logic
   const filteredImages =
@@ -120,7 +144,10 @@ export default function Gallery() {
       : galleryImages.filter((img) => img.category === activeFilter);
 
   // Generate hearts confetti on button click
-  const handleHeartClick = (e: React.MouseEvent<HTMLButtonElement>, imageId: number) => {
+  const handleHeartClick = (
+    e: React.MouseEvent<HTMLButtonElement>,
+    imageId: number,
+  ) => {
     const button = e.currentTarget;
     const rect = button.getBoundingClientRect();
     const buttonX = rect.left + rect.width / 2;
@@ -140,7 +167,9 @@ export default function Gallery() {
 
     // Remove hearts after animation completes
     setTimeout(() => {
-      setHearts((prev) => prev.filter((h) => !newHearts.some((nh) => nh.id === h.id)));
+      setHearts((prev) =>
+        prev.filter((h) => !newHearts.some((nh) => nh.id === h.id)),
+      );
     }, 2000);
   };
 
@@ -168,7 +197,9 @@ export default function Gallery() {
       <div className="p-4 lg:p-6">
         <div className="bg-gradient-to-b from-purple-950 via-purple-600 to-purple-100 min-h-[70vh] lg:min-h-[90vh] w-full rounded-[2rem] flex flex-col justify-center items-center relative overflow-hidden ">
           <div className="z-10 flex flex-col items-center sm:mt-0 mt-28 px-4">
-            <h1 className={`text-[15vw] lg:text-[10vw] italic tracking-widest text-white leading-none text-center select-none drop-shadow-xl ${gilton.className}`}>
+            <h1
+              className={`text-[15vw] lg:text-[10vw] italic tracking-widest text-white leading-none text-center select-none drop-shadow-xl ${gilton.className}`}
+            >
               GALLERY
             </h1>
 
@@ -177,7 +208,9 @@ export default function Gallery() {
                 EST. 2021
               </span>
 
-              <p className={`text-zinc-100 text-center text-lg lg:text-2xl max-w-2xl tracking-tight mt-6 ${softura.className}`}>
+              <p
+                className={`text-zinc-100 text-center text-lg lg:text-2xl max-w-2xl tracking-tight mt-6 ${softura.className}`}
+              >
                 A collection of chaotic, beautiful, and{" "}
                 <span className="bg-black text-white px-2 italic">
                   unforgettable
@@ -206,10 +239,11 @@ export default function Gallery() {
                 onClick={() => setActiveFilter(cat)}
                 className={`
                 px-6 py-2 lg:px-8 lg:py-3 font-black text-base lg:text-lg border-4 border-black rounded-xl transition-all duration-200 ${softura.className}
-                ${activeFilter === cat
+                ${
+                  activeFilter === cat
                     ? "bg-purple-500 text-white shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] translate-x-[2px] translate-y-[2px]"
                     : "bg-white text-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1"
-                  }
+                }
               `}
               >
                 {cat}
@@ -239,12 +273,18 @@ export default function Gallery() {
                 `}
               >
                 {/* Image Container */}
-                <GalleryImage src={img.src} alt={img.caption} category={img.category} />
+                <GalleryImage
+                  src={img.src}
+                  alt={img.caption}
+                  category={img.category}
+                />
 
                 {/* Caption Area */}
                 <div className="mt-4 px-2 pb-2 flex justify-between items-end">
                   <div>
-                    <h3 className={`font-black text-xl tracking-widest text-black uppercase leading-none ${softura.className}`}>
+                    <h3
+                      className={`font-black text-xl tracking-widest text-black uppercase leading-none ${softura.className}`}
+                    >
                       {img.caption}
                     </h3>
                   </div>
@@ -274,12 +314,17 @@ export default function Gallery() {
           <div
             key={heart.id}
             className="fixed pointer-events-none z-50 text-2xl heart-particle"
-            style={{
-              left: `${heart.x}px`,
-              top: `${heart.y}px`,
-              '--end-x': `${endX}px`,
-              '--end-y': `${endY}px`,
-            } as React.CSSProperties & { '--end-x': string; '--end-y': string }}
+            style={
+              {
+                left: `${heart.x}px`,
+                top: `${heart.y}px`,
+                "--end-x": `${endX}px`,
+                "--end-y": `${endY}px`,
+              } as React.CSSProperties & {
+                "--end-x": string;
+                "--end-y": string;
+              }
+            }
           >
             <span className="text-red-500 drop-shadow-lg">♥</span>
           </div>
@@ -299,26 +344,33 @@ export default function Gallery() {
         .animate-marquee {
           animation: marquee 20s linear infinite;
         }
-        
+
         .heart-particle {
           transform: translate(-50%, -50%);
           animation: heartConfetti 2s ease-out forwards;
         }
-        
+
         @keyframes shimmer {
-          0% { transform: translateX(-100%); }
-          100% { transform: translateX(200%); }
+          0% {
+            transform: translateX(-100%);
+          }
+          100% {
+            transform: translateX(200%);
+          }
         }
         @keyframes heartConfetti {
           0% {
-            transform: translate(-50%, -50%) translate(0, 0) scale(1) rotate(0deg);
+            transform: translate(-50%, -50%) translate(0, 0) scale(1)
+              rotate(0deg);
             opacity: 1;
           }
           50% {
             opacity: 0.8;
           }
           100% {
-            transform: translate(-50%, -50%) translate(calc(var(--end-x, 0px)), calc(var(--end-y, 0px))) scale(0.3) rotate(360deg);
+            transform: translate(-50%, -50%)
+              translate(calc(var(--end-x, 0px)), calc(var(--end-y, 0px)))
+              scale(0.3) rotate(360deg);
             opacity: 0;
           }
         }
@@ -326,4 +378,3 @@ export default function Gallery() {
     </div>
   );
 }
-

@@ -52,6 +52,7 @@ const EVENT_ID_MAP: Record<string, string> = {
 
 const EventCard = ({ event, index }: { event: any; index: number }) => {
   const isTextLeft = index % 2 === 0;
+  const [imgLoaded, setImgLoaded] = useState(false);
   // Normalize title/eventTitle to uppercase before lookup so
   // variants like "Circuitronix" (mixed case) match keys like "CIRCUITRONIX"
   const registrationId =
@@ -153,12 +154,18 @@ const EventCard = ({ event, index }: { event: any; index: number }) => {
           ></div>
 
           <div className="absolute inset-0 bg-white p-2 border-3 border-black transform -rotate-3 hover:rotate-0 transition-transform duration-300 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] z-20 rounded-2xl overflow-hidden">
-            <div className="relative w-full h-full border border-black rounded-xl overflow-hidden">
+            <div className="relative w-full h-full border border-black rounded-xl overflow-hidden bg-zinc-200">
+              {!imgLoaded && (
+                <div className="absolute inset-0 z-10 bg-zinc-300 animate-pulse">
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full animate-[shimmer_1.4s_infinite]" />
+                </div>
+              )}
               <Image
                 src={event.image1}
                 alt={`${event.title} main`}
                 fill
-                className="object-cover"
+                className={`object-cover transition-opacity duration-500 ${imgLoaded ? "opacity-100" : "opacity-0"}`}
+                onLoad={() => setImgLoaded(true)}
               />
             </div>
           </div>

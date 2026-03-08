@@ -267,6 +267,27 @@ const TEAM_MEMBERS: TeamMember[] = [
   },
 ];
 
+function TeamMemberImage({ src, alt }: { src: string; alt: string }) {
+  const [loaded, setLoaded] = useState(false);
+  return (
+    <div className="relative mb-3 overflow-hidden rounded-xl border-4 border-black bg-zinc-200 h-52">
+      {!loaded && (
+        <div className="absolute inset-0 z-10 bg-zinc-300 animate-pulse">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full animate-[shimmer_1.4s_infinite]" />
+        </div>
+      )}
+      <Image
+        src={src}
+        alt={alt}
+        width={400}
+        height={280}
+        className={`h-52 w-full object-cover transition-opacity duration-500 ${loaded ? "opacity-100" : "opacity-0"}`}
+        onLoad={() => setLoaded(true)}
+      />
+    </div>
+  );
+}
+
 export default function Team() {
   const marqueeMembers = [...TEAM_MEMBERS, ...TEAM_MEMBERS];
   const trackRef = useRef<HTMLDivElement>(null);
@@ -456,15 +477,7 @@ export default function Team() {
                   key={`${member.id}-${idx}`}
                   className="w-[min(82vw,250px)] sm:w-[300px] shrink-0 rounded-2xl border-4 border-black bg-[#fffaf0] p-3 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"
                 >
-                  <div className="relative mb-3 overflow-hidden rounded-xl border-4 border-black">
-                    <Image
-                      src={member.image}
-                      alt={member.name}
-                      width={400}
-                      height={280}
-                      className="h-52 w-full object-cover"
-                    />
-                  </div>
+                  <TeamMemberImage src={member.image} alt={member.name} />
 
                   <h4 className="text-xl font-black leading-tight text-black">
                     {member.name}

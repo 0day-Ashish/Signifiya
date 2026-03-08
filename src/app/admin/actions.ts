@@ -367,8 +367,6 @@ export async function getParticipantTeamsForRevenue(params?: {
   return { teams, total };
 }
 
-
-
 // --- Issues (contact page reports) ---
 export async function getIssues(params?: {
   resolved?: boolean;
@@ -446,7 +444,7 @@ export async function updateVisitorStatus(
       const { APP_CONFIG } = await import("@/config/app.config");
       const passTypeLabel =
         APP_CONFIG.passTypeLabels[
-        registration.passType as keyof typeof APP_CONFIG.passTypeLabels
+          registration.passType as keyof typeof APP_CONFIG.passTypeLabels
         ] || registration.passType;
 
       // Create Pass
@@ -838,13 +836,13 @@ export async function getAttendees(params?: {
       ],
       ...(search
         ? {
-          user: {
-            OR: [
-              { name: { contains: search, mode: "insensitive" } },
-              { email: { contains: search, mode: "insensitive" } },
-            ],
-          },
-        }
+            user: {
+              OR: [
+                { name: { contains: search, mode: "insensitive" } },
+                { email: { contains: search, mode: "insensitive" } },
+              ],
+            },
+          }
         : {}),
     },
     include: {
@@ -877,16 +875,16 @@ export async function getAttendees(params?: {
       ],
       ...(search
         ? {
-          OR: [
-            { leaderName: { contains: search, mode: "insensitive" } },
-            { leaderEmail: { contains: search, mode: "insensitive" } },
-            {
-              members: {
-                some: { name: { contains: search, mode: "insensitive" } },
+            OR: [
+              { leaderName: { contains: search, mode: "insensitive" } },
+              { leaderEmail: { contains: search, mode: "insensitive" } },
+              {
+                members: {
+                  some: { name: { contains: search, mode: "insensitive" } },
+                },
               },
-            },
-          ],
-        }
+            ],
+          }
         : {}),
     },
     include: {
@@ -1206,16 +1204,20 @@ export async function exportParticipantTeamsCsv(): Promise<string> {
 }
 
 // --- Event Registrations CSV (per event) ---
-export async function exportEventRegistrationsCsv(eventId: string): Promise<string> {
+export async function exportEventRegistrationsCsv(
+  eventId: string,
+): Promise<string> {
   await guard();
   const event = await prisma.event.findUnique({
     where: { id: eventId },
     include: {
       participantTeams: {
+        where: {
+          team: { status: "verified" },
+        },
         include: {
           team: {
             include: { members: true },
-            where: { status: "verified" },
           },
         },
         orderBy: { createdAt: "desc" },
