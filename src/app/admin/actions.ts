@@ -196,7 +196,13 @@ export async function getEvents() {
       NOT: [{ name: "Hackathon 2026" }, { name: "Tech Quiz" }],
     },
     orderBy: { date: "asc" },
-    include: { _count: { select: { participantTeams: true } } },
+    include: {
+      _count: {
+        select: {
+          participantTeams: { where: { team: { status: "verified" } } },
+        },
+      },
+    },
   });
 }
 
@@ -221,7 +227,12 @@ export async function getEventWithRegistrations(
         },
       },
     }),
-    prisma.participantTeamEvent.count({ where: { eventId } }),
+    prisma.participantTeamEvent.count({
+      where: {
+        eventId,
+        team: { status: "verified" },
+      },
+    }),
   ]);
   return { event, total };
 }
@@ -1202,7 +1213,10 @@ export async function exportEventRegistrationsCsv(eventId: string): Promise<stri
     include: {
       participantTeams: {
         include: {
-          team: { include: { members: true } },
+          team: {
+            include: { members: true },
+            where: { status: "verified" },
+          },
         },
         orderBy: { createdAt: "desc" },
       },
@@ -1257,8 +1271,13 @@ export async function exportAllEventsCsv(): Promise<string> {
     where: {
       NOT: [{ name: "Hackathon 2026" }, { name: "Tech Quiz" }],
     },
-    orderBy: { date: "asc" },
-    include: { _count: { select: { participantTeams: true } } },
+    include: {
+      _count: {
+        select: {
+          participantTeams: { where: { team: { status: "verified" } } },
+        },
+      },
+    },
   });
 
   const headers = [
