@@ -1527,7 +1527,7 @@ Rehost conditions allowed only under organizer discretion.
 
 8️Prize Structure:
 
-* Total Prize Pool – ₹25,000  
+* Total Prize Pool – ₹20,000  
 * Certificates for all participants
 
 9️Event Schedule:
