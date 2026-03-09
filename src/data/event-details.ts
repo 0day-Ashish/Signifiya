@@ -994,4 +994,63 @@ export const eventDetails: Record<string, EventDetail> = {
       time: "1:30 PM – 7:00 PM",
     },
   },
+  reel: {
+    id: "reel",
+    name: "Reel Making Competition",
+    category: "Non-Technical Event",
+    description:
+      "Showcase your creativity in this online social media challenge. Participants must create an original reel based on a provided theme, post it on Instagram, and compete for engagement and creative impact.",
+    objective: [
+      "Promote creativity and digital storytelling",
+      "Encourage original content creation",
+      "Test video editing and visual appeal skills",
+      "Engage the audience through social media platforms",
+    ],
+    participation: {
+      teamSize: "Individual / Team (up to 3 members)",
+      registrationFee: "₹149",
+      eligibility: "Open to all students",
+    },
+    format: [
+      "Theme provided by organizers",
+      "Reel duration: 30–40 seconds",
+      "Platform: Instagram (must tag official page)",
+      "Submission: Submit the reel link before the deadline",
+    ],
+    judgingCriteria: [
+      "Creativity and originality",
+      "Relevance to the theme",
+      "Visual appeal and editing quality",
+      "Engagement (likes, comments, shares)",
+      "Overall impact",
+    ],
+    requirements: [
+      "Smartphone or camera for recording",
+      "Video editing software/apps",
+      "Active Instagram account",
+      "Original content only",
+    ],
+    prizeStructure: {
+      prizePool: "₹2,000",
+      details: [
+        "Cash Prize and Certificates",
+      ],
+    },
+    schedule: {
+      date: "12th Mar - 25th Mar",
+      venue: "Online",
+      time: "24/7 (Submission window)",
+    },
+    rules: [
+      "Theme: Participants must create the reel based on the theme provided by the organizers.",
+      "Duration: The reel must be 30–40 seconds long.",
+      "Original Content: All content must be original. Plagiarism leads to disqualification.",
+      "Platform: The reel must be posted on Instagram.",
+      "Hashtags & Tags: Tag official event page and use specified hashtags.",
+      "Submission Deadline: Submit link before 25th March.",
+      "Content Guidelines: No offensive, abusive, or inappropriate content.",
+      "Faculty Coordinator: Nisarga Chand",
+      "Student Coordinator: Nipashree Bhattacharya (6289465108)",
+    ],
+  },
 };

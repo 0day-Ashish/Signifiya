@@ -522,6 +522,24 @@ export const ALL_EVENTS: MasterEvent[] = [
     color: "bg-yellow-50",
     excludeFromListing: true,
   },
+  {
+    id: 21,
+    title: "Reel Making Competition",
+    category: "NON-TECH",
+    department: "Non-Tech",
+    teamMember: "Individual / Team (up to 3)",
+    description:
+      "Showcase your creativity in this online social media challenge. Create, edit, and win!",
+    scheduleDescription:
+      "Theme-based reel making competition. Post on Instagram and submit your link.",
+    date: "March 12th - 25th",
+    image: "/reel-making.png",
+    prizePool: "₹2,000",
+    venue: "Online",
+    coordinators: "Nipashree Bhattacharya",
+    facultyCoordinators: "Nisarga Chand",
+    color: "bg-purple-50",
+  },
 ];
 
 // ============================================================
@@ -614,6 +632,7 @@ export function getEventsListingData(): EventListingItem[] {
     "Treasure Hunt": 300,
     "Power Deal": 149,
     "Tech Monopoly": 149,
+    "Reel Making Competition": 149,
   };
   return ALL_EVENTS.filter((e) => !e.excludeFromListing).map((e) => ({
     id: e.id,

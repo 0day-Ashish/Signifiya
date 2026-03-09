@@ -12,6 +12,8 @@ import Image from "next/image";
 import FadeIn from "./FadeIn";
 import { AnimatePresence } from "motion/react";
 import { getEventsListingData, getEventTitleToScheduleId } from "@/data/events";
+import { eventDetails } from "@/data/event-details";
+import EventDetailsModal from "./EventDetailsModal";
 import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 
 const gilton = localFont({ src: "../../public/fonts/GiltonRegular.otf" });
@@ -83,6 +85,10 @@ export default function Events() {
   const dragStartXRef = useRef(0);
   const dragStartOffsetRef = useRef(0);
   const [isPaused, setIsPaused] = useState(false);
+  
+  // Event Details Modal State
+  const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Reset offset when category changes
   useEffect(() => {
@@ -206,6 +212,11 @@ export default function Events() {
     pausedRef.current = wasPausedBeforeDragRef.current;
     setIsPaused(wasPausedBeforeDragRef.current);
     event.currentTarget.releasePointerCapture(event.pointerId);
+  };
+
+  const openEventModal = (eventId: string) => {
+    setSelectedEventId(eventId);
+    setIsModalOpen(true);
   };
 
   return (
@@ -347,7 +358,15 @@ export default function Events() {
                         {event.description}
                       </p>
                       <div className="mt-auto pt-2 sm:pt-4 flex flex-col gap-2">
-                        {EVENT_TITLE_TO_SCHEDULE_ID[event.title] ? (
+                        {event.title.toUpperCase() === "REEL MAKING COMPETITION" ? (
+                          <button
+                            type="button"
+                            onClick={() => openEventModal("reel")}
+                            className={`w-full bg-[#d091f8] text-black border-2 border-black rounded-xl py-1.5 sm:py-2 font-bold uppercase text-xs sm:text-sm transition-colors hover:bg-[#c080e8] text-center cursor-pointer ${softura.className}`}
+                          >
+                            View Details
+                          </button>
+                        ) : EVENT_TITLE_TO_SCHEDULE_ID[event.title] ? (
                           <Link
                             href={`/schedule#event-${EVENT_TITLE_TO_SCHEDULE_ID[event.title]}`}
                             className={`w-full bg-[#d091f8] text-black border-2 border-black rounded-xl py-1.5 sm:py-2 font-bold uppercase text-xs sm:text-sm transition-colors hover:bg-[#c080e8] text-center ${softura.className}`}
@@ -389,6 +408,12 @@ export default function Events() {
           </div>
         </div>
       </div>
+
+      <EventDetailsModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        event={selectedEventId ? eventDetails[selectedEventId] : null}
+      />
 
       <style jsx>{`
         .events-marquee {

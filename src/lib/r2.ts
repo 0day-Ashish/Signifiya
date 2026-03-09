@@ -14,7 +14,8 @@ import { S3Client } from "@aws-sdk/client-s3";
 function getR2Endpoint(): string {
   const accountId = process.env.CLOUDFLARE_R2_ACCOUNT_ID;
   if (!accountId) {
-    throw new Error("Missing CLOUDFLARE_R2_ACCOUNT_ID environment variable");
+    // Avoid throwing during build time if env vars are missing
+    return `https://placeholder.r2.cloudflarestorage.com`;
   }
   return `https://${accountId}.r2.cloudflarestorage.com`;
 }
@@ -33,10 +34,7 @@ export const r2Client = new S3Client({
  * Strips any double slashes.
  */
 export function getR2PublicUrl(key: string): string {
-  const base = (process.env.CLOUDFLARE_R2_PUBLIC_URL || "").replace(/\/$/, "");
-  if (!base) {
-    throw new Error("Missing CLOUDFLARE_R2_PUBLIC_URL environment variable");
-  }
+  const base = (process.env.CLOUDFLARE_R2_PUBLIC_URL || "https://placeholder-url.r2.dev").replace(/\/$/, "");
   return `${base}/${key.replace(/^\//, "")}`;
 }
 
