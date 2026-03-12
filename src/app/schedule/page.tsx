@@ -41,6 +41,7 @@ const EVENT_ID_MAP: Record<string, string> = {
   "Treasure Hunt": "treasure",
   "Power Deal": "powerdeal",
   "Tech Monopoly": "techmonopoly",
+  "Reel Making Competition": "reel",
   Carrom: "carrom",
   Chess: "chess",
   Volleyball: "volleyball",
@@ -138,10 +139,10 @@ const EventCard = ({ event, index }: { event: any; index: number }) => {
               📖 View Details
             </Link>
             <Link
-              href={`/events?event=${registrationId}`}
+              href={registrationId === "reel" ? "/events/reel" : `/events?event=${registrationId}`}
               className="inline-flex items-center justify-center px-6 py-3 bg-black text-white font-bold text-lg rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)] hover:translate-y-0.5 hover:shadow-none transition-all"
             >
-              Register Now
+              Register Now{registrationId === "reel" ? " — FREE" : ""}
             </Link>
           </div>
         )}
