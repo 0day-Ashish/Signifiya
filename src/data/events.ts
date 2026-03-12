@@ -632,7 +632,7 @@ export function getEventsListingData(): EventListingItem[] {
     "Treasure Hunt": 300,
     "Power Deal": 149,
     "Tech Monopoly": 149,
-    "Reel Making Competition": 149,
+    "Reel Making Competition": 0,
   };
   return ALL_EVENTS.filter((e) => !e.excludeFromListing).map((e) => ({
     id: e.id,

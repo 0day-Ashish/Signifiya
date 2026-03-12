@@ -567,10 +567,96 @@ export async function submitEventRegistrationManual(data: {
   }
 }
 
-/**
- * Legacy function - kept for backward compatibility
- * Now redirects to payment flow
- */
+export async function submitReelRegistration(data: {
+  teamName: string;
+  leaderName: string;
+  leaderPhone: string;
+  leaderEmail: string;
+  instagramId: string;
+  institutionName: string;
+  department?: string;
+  reelLink?: string;
+  leaderBookingId: string;
+}) {
+  try {
+    const {
+      teamName,
+      leaderName,
+      leaderPhone,
+      leaderEmail,
+      instagramId,
+      institutionName,
+      department,
+      reelLink,
+      leaderBookingId,
+    } = data;
+
+    if (
+      !teamName?.trim() ||
+      !leaderName?.trim() ||
+      !leaderPhone?.trim() ||
+      !leaderEmail?.trim() ||
+      !instagramId?.trim() ||
+      !institutionName?.trim() ||
+      !leaderBookingId?.trim()
+    ) {
+      return { success: false, error: "All required fields must be filled" };
+    }
+
+    const eventName = "Reel Making Competition";
+    const college = department?.trim()
+      ? `${institutionName.trim()} - ${department.trim()}`
+      : institutionName.trim();
+    const qrCode = `EP-${randomUUID()}`;
+
+    let event = await prisma.event.findFirst({ where: { name: eventName } });
+    if (!event) {
+      event = await prisma.event.create({
+        data: { name: eventName, price: 0, date: new Date() },
+      });
+    }
+
+    const team = await prisma.participantTeam.create({
+      data: {
+        teamName: teamName.trim(),
+        leaderName: leaderName.trim(),
+        leaderEmail: leaderEmail.trim().toLowerCase(),
+        leaderPhone: leaderPhone.trim(),
+        leaderBookingId: leaderBookingId.trim(),
+        college,
+        totalAmount: 0,
+        status: "pending",
+        paymentProofUrl: reelLink?.trim() || "FREE",
+        qrCode,
+        eventTime: "24/7 (Submission window)",
+      },
+    });
+
+    // Store Instagram ID as leader member's gameId
+    await prisma.participantTeamMember.create({
+      data: {
+        teamId: team.id,
+        name: leaderName.trim(),
+        college,
+        phone: leaderPhone.trim(),
+        email: leaderEmail.trim().toLowerCase(),
+        gameId: instagramId.trim(),
+      },
+    });
+
+    await prisma.participantTeamEvent.create({
+      data: { teamId: team.id, eventId: event.id },
+    });
+
+    revalidatePath("/admin/revenue");
+    revalidatePath("/profile");
+
+    return { success: true, teamId: team.id };
+  } catch (error: any) {
+    console.error("submitReelRegistration error:", error);
+    return { success: false, error: error?.message || "Registration failed" };
+  }
+}
 export async function registerEventTeam(data: {
   teamName: string;
   leaderName: string;

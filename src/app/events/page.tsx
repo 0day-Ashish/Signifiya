@@ -421,6 +421,10 @@ function EventRegistrationContent() {
   // Pre-select event from query parameter
   useEffect(() => {
     const eventId = searchParams.get("event");
+    if (eventId === "reel") {
+      router.replace("/events/reel");
+      return;
+    }
     if (eventId) {
       const validEvent = eventsList.find((ev) => ev.id === eventId);
       if (validEvent) {
