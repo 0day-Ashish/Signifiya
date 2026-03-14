@@ -105,6 +105,7 @@ const eventsList = [
     type: "Team (3)",
     date: "March 27th",
     color: "bg-gray-100",
+    closed: true,
   },
   {
     id: "tower",
@@ -428,8 +429,14 @@ function EventRegistrationContent() {
     if (eventId) {
       const validEvent = eventsList.find((ev) => ev.id === eventId);
       if (validEvent) {
-        setValue("selectedEvents", [eventId]);
-        setSingleEventMode(true);
+        if (validEvent.closed) {
+          toast.error(`${validEvent.name} registration is closed.`, {
+            description: "Sorry, this event is no longer accepting new registrations."
+          });
+        } else {
+          setValue("selectedEvents", [eventId]);
+          setSingleEventMode(true);
+        }
       }
     }
   }, [searchParams, setValue]);
@@ -716,6 +723,13 @@ function EventRegistrationContent() {
   };
 
   const toggleEvent = (id: string) => {
+    const event = eventsList.find((ev) => ev.id === id);
+    if (event?.closed) {
+      toast.error(`${event.name} registration is closed.`, {
+        description: "Sorry, this event is no longer accepting new registrations."
+      });
+      return;
+    }
     const current = watch("selectedEvents");
     // Reset dance mode when changing events
     if (id !== "dance") setDanceMode(null);
@@ -993,6 +1007,7 @@ function EventRegistrationContent() {
                                     </div>
                                     <div className="px-2 py-1 rounded text-xs font-bold border-2 bg-black text-white border-black">
                                       {(() => {
+                                        if (ev.closed) return <span>CLOSED</span>;
                                         const price = getEventPrice(ev);
                                         const {
                                           original,
@@ -1059,11 +1074,13 @@ function EventRegistrationContent() {
                           return (
                             <div key={ev.id}>
                               <div
-                                onClick={() => toggleEvent(ev.id)}
+                                onClick={ev.closed ? undefined : () => toggleEvent(ev.id)}
                                 className={`cursor-pointer border-2 p-4 rounded-xl transition-all relative overflow-hidden ${
                                   isSelected
                                     ? "border-black bg-[#deb3fa] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
-                                    : "border-zinc-900 bg-white hover:border-zinc-400"
+                                    : ev.closed
+                                      ? "border-zinc-300 bg-zinc-100 opacity-60 cursor-not-allowed"
+                                      : "border-zinc-900 bg-white hover:border-zinc-400"
                                 }`}
                               >
                                 <div className="flex justify-between items-start relative z-10">
@@ -1083,9 +1100,10 @@ function EventRegistrationContent() {
                                     </p>
                                   </div>
                                   <div
-                                    className={`px-2 py-1 rounded text-xs font-bold border-2 ${isSelected ? "bg-black text-white border-black" : "bg-zinc-100 text-zinc-800 border-zinc-200"}`}
+                                    className={`px-2 py-1 rounded text-xs font-bold border-2 ${isSelected ? "bg-black text-white border-black" : ev.closed ? "bg-zinc-300 text-zinc-500 border-zinc-400" : "bg-zinc-100 text-zinc-800 border-zinc-200"}`}
                                   >
                                     {(() => {
+                                      if (ev.closed) return <span>CLOSED</span>;
                                       const price = getEventPrice(ev);
                                       const {
                                         original,
