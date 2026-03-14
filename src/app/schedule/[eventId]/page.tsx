@@ -301,12 +301,20 @@ export default function EventDetailPage() {
             >
               ← Back to Schedule
             </Link>
-            <Link
-              href={`/events?event=${eventId}`}
-              className="inline-flex items-center justify-center px-8 py-4 bg-black text-white font-bold text-lg rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)] hover:translate-y-0.5 hover:shadow-none transition-all"
-            >
-              Register Now →
-            </Link>
+            {event.closed ? (
+              <span
+                className="inline-flex items-center justify-center px-8 py-4 bg-red-600 text-white font-bold text-lg rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)] cursor-not-allowed uppercase"
+              >
+                REGISTRATIONS CLOSED
+              </span>
+            ) : (
+              <Link
+                href={`/events?event=${eventId}`}
+                className="inline-flex items-center justify-center px-8 py-4 bg-black text-white font-bold text-lg rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)] hover:translate-y-0.5 hover:shadow-none transition-all"
+              >
+                Register Now →
+              </Link>
+            )}
           </div>
         </div>
       </div>

@@ -24,6 +24,7 @@ export interface EventDetail {
   };
   rules?: string[];
   additionalInfo?: string[];
+  closed?: boolean;
 }
 
 export const eventDetails: Record<string, EventDetail> = {
@@ -953,7 +954,8 @@ export const eventDetails: Record<string, EventDetail> = {
   freefire: {
     id: "freefire",
     name: "Free Fire",
-    category: "Gaming Event",
+    closed: true,
+    category: "E-Sports",
     description:
       "Free Fire – Signifiya 2026 is a competitive Squad Battle Royale tournament conducted under official esports tournament rules ensuring fairness, anti-cheat compliance, and structured scoring.",
     objective: [

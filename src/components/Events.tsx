@@ -381,18 +381,26 @@ export default function Events() {
                             View Details
                           </Link>
                         )}
-                        <Link
-                          href={
-                            event.title.toUpperCase() === "REEL MAKING COMPETITION"
-                              ? "/events/reel"
-                              : EVENT_TITLE_TO_REG_ID[event.title.toUpperCase()]
-                                ? `/events?event=${EVENT_TITLE_TO_REG_ID[event.title.toUpperCase()]}`
-                                : "/events"
-                          }
-                          className={`w-full bg-black text-white border-2 border-black rounded-xl py-1.5 sm:py-2 font-bold uppercase text-xs sm:text-sm transition-colors hover:bg-zinc-800 text-center ${softura.className}`}
-                        >
-                          Register{event.title.toUpperCase() === "REEL MAKING COMPETITION" ? " — FREE" : ""}
-                        </Link>
+                        {event.closed ? (
+                          <span
+                            className={`w-full bg-red-600 text-white border-2 border-black rounded-xl py-1.5 sm:py-2 font-bold uppercase text-xs sm:text-sm text-center cursor-not-allowed ${softura.className}`}
+                          >
+                            REGISTRATIONS CLOSED
+                          </span>
+                        ) : (
+                          <Link
+                            href={
+                              event.title.toUpperCase() === "REEL MAKING COMPETITION"
+                                ? "/events/reel"
+                                : EVENT_TITLE_TO_REG_ID[event.title.toUpperCase()]
+                                  ? `/events?event=${EVENT_TITLE_TO_REG_ID[event.title.toUpperCase()]}`
+                                  : "/events"
+                            }
+                            className={`w-full bg-black text-white border-2 border-black rounded-xl py-1.5 sm:py-2 font-bold uppercase text-xs sm:text-sm transition-colors hover:bg-zinc-800 text-center ${softura.className}`}
+                          >
+                            Register{event.title.toUpperCase() === "REEL MAKING COMPETITION" ? " — FREE" : ""}
+                          </Link>
+                        )}
                       </div>
                     </div>
                   </article>

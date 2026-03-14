@@ -39,6 +39,7 @@ export type MasterEvent = {
   teamMember?: string;
   /** If true, this event will be excluded from the public events listing (but can still appear on the schedule) */
   excludeFromListing?: boolean;
+  closed?: boolean;
 };
 
 // ============================================================
@@ -112,6 +113,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     lottie:
       "https://lottie.host/34b5f811-28e8-4ac1-9f7a-7857fb6cbb50/C28AMF6Pa6.lottie",
     color: "bg-gray-100",
+    closed: true,
   },
   {
     id: 3,
@@ -607,6 +609,7 @@ export type EventListingItem = {
   image: string;
   prizePool: string;
   price?: number;
+  closed?: boolean;
 };
 
 /** Derive events listing data from master events */
@@ -643,6 +646,7 @@ export function getEventsListingData(): EventListingItem[] {
     image: e.image,
     prizePool: e.prizePool,
     price: PRICE_BY_TITLE[e.title] ?? 0,
+    closed: e.closed,
   }));
 }
 
