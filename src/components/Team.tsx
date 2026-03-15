@@ -256,6 +256,7 @@ const TEAM_MEMBERS: TeamMember[] = [
     linkedin: "https://www.linkedin.com/in/tushardevx01",
     instagram: "https://www.instagram.com/tushardevx01",
     github: "https://github.com/Tusharxhub",
+    website: "https://www.tushardevx01.tech",
   },
   {
     id: 20,
