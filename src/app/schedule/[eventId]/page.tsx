@@ -98,7 +98,7 @@ export default function EventDetailPage() {
           >
             {event.category}
           </span>
-   
+
           <h1
             className={`text-5xl lg:text-7xl tracking-tight text-white leading-none font-black mb-4 ${bicubik.className}`}
           >
