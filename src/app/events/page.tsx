@@ -392,15 +392,19 @@ function EventRegistrationContent() {
     selectedEventIds?.[0] === "freefire";
   const isEFootball = selectedEventIds?.[0] === "efootball";
   const isArmWrestling = selectedEventIds?.[0] === "arm";
+  const isCircuitronix = selectedEventIds?.[0] === "circuit";
   const isSoloEvent = teamSizeLimit === 1;
-  // Allow one optional substitute beyond the regular team members for every event
+  // Allow one optional substitute beyond the regular team members for every event EXCEPT Circuitronix
+  const hasSubstitute = !isSoloEvent && !isCircuitronix;
   const maxTeamMembers = isSoloEvent
     ? 0
     : teamSizeLimit
-      ? teamSizeLimit + 1
+      ? hasSubstitute
+        ? teamSizeLimit + 1
+        : teamSizeLimit
       : 6;
   // maxTotalTeam shows the maximum possible total including leader and optional substitute
-  const maxTotalTeam = teamSizeLimit ? teamSizeLimit + 2 : 7;
+  const maxTotalTeam = teamSizeLimit ? (hasSubstitute ? teamSizeLimit + 2 : teamSizeLimit + 1) : 7;
   const currentGameIdLabel = selectedEventIds?.[0]
     ? getGameIdLabel(selectedEventIds[0])
     : null;
@@ -1354,6 +1358,7 @@ function EventRegistrationContent() {
                             Member {index + 1}
                             {teamSizeLimit !== null &&
                             teamSizeLimit !== undefined &&
+                            !isCircuitronix &&
                             index >= teamSizeLimit ? (
                               <span className="ml-2 text-[10px] font-medium text-zinc-600">
                                 (Substitute)
@@ -1413,7 +1418,7 @@ function EventRegistrationContent() {
                       + Add Member ({fields.length}/{maxTeamMembers})
                     </Button>
                   )}
-                  {!isSoloEvent && (
+                  {!isSoloEvent && !isCircuitronix && (
                     <p className="text-xs text-center text-zinc-500 mt-1">
                       You may add one optional substitute in addition to the
                       regular team members.

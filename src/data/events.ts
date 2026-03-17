@@ -213,7 +213,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     eventTitle: "CIRCUITRONIX",
     category: "EEE",
     department: "EEE (Tech)",
-    teamMember: "Team Size: 4 (+1 substitute)",
+    teamMember: "Team Size: 4",
     description:
       "Students race against the clock to design, build, and troubleshoot complex circuits.",
     scheduleDescription:
