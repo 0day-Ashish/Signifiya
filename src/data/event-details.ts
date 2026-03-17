@@ -942,7 +942,7 @@ export const eventDetails: Record<string, EventDetail> = {
       "Scoreboard tracking",
     ],
     prizeStructure: {
-      prizePool: "₹15,000",
+      prizePool: "₹20,000",
       details: ["Certificates for participants"],
     },
     schedule: {

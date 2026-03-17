@@ -409,6 +409,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     lottie:
       "https://lottie.host/7f2fbfd9-2f59-458a-bd35-5aa6133f3dc7/5yLGpgvIme.lottie",
     color: "bg-gray-100",
+    closed: true,
   },
   {
     id: 16,
@@ -431,6 +432,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     lottie:
       "https://lottie.host/34b5f811-28e8-4ac1-9f7a-7857fb6cbb50/C28AMF6Pa6.lottie",
     color: "bg-gray-100",
+    closed: true,
   },
   {
     id: 17,
