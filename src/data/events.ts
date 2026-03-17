@@ -153,7 +153,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     date: "March 27th",
     image:
       "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/mechanical1.jpg",
-    prizePool: "₹5,000",
+    prizePool: "₹10,000",
     day: 1,
     time: "1:30 PM - 3:30 PM",
     venue: "SOET 3304",
@@ -311,7 +311,7 @@ export const ALL_EVENTS: MasterEvent[] = [
       "A battle of precision turning. Machine the perfect component on the lathe within the given tolerance.",
     date: "March 28th",
     image: "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/lathe-war.jpg",
-    prizePool: "₹5,000",
+    prizePool: "₹10,000",
     day: 2,
     time: "10:00 AM - 3:00 PM",
     venue: "Workshop",
