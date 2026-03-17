@@ -565,6 +565,7 @@ export type ScheduleEventItem = {
   color: string;
   teamMember: string;
   excludeFromListing?: boolean;
+  closed?: boolean;
 };
 
 /** Day data for schedule page */
@@ -590,6 +591,7 @@ export function getScheduleData(): DayData[] {
     color: e.color || "bg-white",
     teamMember: e.teamMember || "",
     excludeFromListing: e.excludeFromListing || false,
+    closed: e.closed || false,
   });
 
   const day1 = ALL_EVENTS.filter((e) => e.day === 1).map(toScheduleItem);

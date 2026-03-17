@@ -138,12 +138,22 @@ const EventCard = ({ event, index }: { event: any; index: number }) => {
             >
               📖 View Details
             </Link>
-            <Link
-              href={registrationId === "reel" ? "/events/reel" : `/events?event=${registrationId}`}
-              className="inline-flex items-center justify-center px-6 py-3 bg-black text-white font-bold text-lg rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)] hover:translate-y-0.5 hover:shadow-none transition-all"
-            >
-              Register Now{registrationId === "reel" ? " — FREE" : ""}
-            </Link>
+            {event.closed ? (
+              <span className="inline-flex items-center justify-center px-6 py-3 bg-red-600 text-white font-bold text-lg rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] cursor-not-allowed">
+                REGISTRATIONS CLOSED
+              </span>
+            ) : (
+              <Link
+                href={
+                  registrationId === "reel"
+                    ? "/events/reel"
+                    : `/events?event=${registrationId}`
+                }
+                className="inline-flex items-center justify-center px-6 py-3 bg-black text-white font-bold text-lg rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)] hover:translate-y-0.5 hover:shadow-none transition-all"
+              >
+                Register Now{registrationId === "reel" ? " — FREE" : ""}
+              </Link>
+            )}
           </div>
         )}
       </div>
