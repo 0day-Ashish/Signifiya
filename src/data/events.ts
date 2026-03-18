@@ -304,7 +304,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     title: "Lathe War",
     category: "MECHANICAL",
     department: "Mechanical (Tech)",
-    teamMember: "Team Size: 3",
+    teamMember: "Team Size: 4",
     description:
       "Participants face off to machine raw materials into perfect components with speed and surgical accuracy.",
     scheduleDescription:
