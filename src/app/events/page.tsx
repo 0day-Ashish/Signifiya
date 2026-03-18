@@ -58,8 +58,8 @@ const eventsList = [
     id: "path",
     name: "Path Follower",
     price: 219,
-    // Spreadsheet: Path Follower total = 3 => members excluding leader = 2
-    type: "Team (2)",
+    // events.ts: "Team Size: 3" => 3 total = 2 members + leader
+    type: "Team (3)",
     date: "March 27th",
     color: "bg-red-100",
   },
@@ -120,8 +120,8 @@ const eventsList = [
     id: "design",
     name: "Dil Se Design",
     price: 219,
-    // Spreadsheet: Dil Se Design total = 3 => members excluding leader = 2
-    type: "Team (2)",
+    // events.ts: "Team Size: 3" => 3 total = 2 members + leader
+    type: "Team (3)",
     date: "March 28th",
     color: "bg-pink-100",
   },
@@ -129,8 +129,8 @@ const eventsList = [
     id: "lathe",
     name: "Lathe War",
     price: 219,
-    // Spreadsheet: Lathe War total = 3 => members excluding leader = 2
-    type: "Team (2)",
+    // events.ts: "Team Size: 4" => 4 total = 3 members + leader (no substitute)
+    type: "Team (3)",
     date: "March 28th",
     color: "bg-indigo-100",
   },
@@ -138,8 +138,8 @@ const eventsList = [
     id: "robo",
     name: "Robo Soccer",
     price: 219,
-    // Spreadsheet: Robo Soccer /  total = 3 => members excluding leader = 2
-    type: "Team (2)",
+    // events.ts: "Team Size: 3" => 3 total = 2 members + leader
+    type: "Team (3)",
     date: "March 28th",
     color: "bg-teal-100",
   },
@@ -147,8 +147,8 @@ const eventsList = [
     id: "rap",
     name: "Rap Battle",
     price: 149,
-    // Spreadsheet: Rap Battle total = 3 => members excluding leader = 2
-    type: "Team (2)",
+    // events.ts: "Team Size: 3" => 3 total = 2 members + leader
+    type: "Team (3)",
     date: "March 28th",
     color: "bg-fuchsia-100",
   },
@@ -156,7 +156,7 @@ const eventsList = [
     id: "bgmi",
     name: "BGMI",
     price: 399,
-    // Spreadsheet: BGMI total = 4 => members excluding leader = 3
+    // events.ts: "Team Size: 4 (+1 substitute)" => 4 total = 3 players + leader + 1 optional sub
     type: "Team (3)",
     date: "March 28th",
     color: "bg-gray-100",
@@ -173,8 +173,8 @@ const eventsList = [
     id: "treasure",
     name: "Treasure Hunt",
     price: 300,
-    // Max 3 members: 1 leader + 2 members
-    type: "Team (2)",
+    // events.ts: "Team Size: 3" => 3 total = 2 members + leader
+    type: "Team (3)",
     date: "March 28th",
     color: "bg-gray-100",
   },
@@ -182,7 +182,8 @@ const eventsList = [
     id: "powerdeal",
     name: "Power Deal",
     price: 149,
-    type: "Team (2)",
+    // events.ts: "Team Size: 3" => 3 total = 2 members + leader
+    type: "Team (3)",
     date: "March 28th",
     color: "bg-cyan-100",
   },
@@ -388,13 +389,13 @@ function EventRegistrationContent() {
   const teamSizeLimit = effectiveType ? getTeamSizeLimit(effectiveType) : null;
   const isEsports =
     selectedEventIds?.[0] === "gaming" ||
+    selectedEventIds?.[0] === "freefire" ||
     selectedEventIds?.[0] === "bgmi" ||
-    selectedEventIds?.[0] === "freefire";
+    selectedEventIds?.[0] === "efootball";
   const isEFootball = selectedEventIds?.[0] === "efootball";
   const isArmWrestling = selectedEventIds?.[0] === "arm";
   const isSoloEvent = teamSizeLimit === 1;
-  // Allow one optional substitute only for team-based esports events.
-  const hasSubstitute = isEsports && !isSoloEvent;
+  const hasSubstitute = (selectedEventIds?.[0] === "gaming" || selectedEventIds?.[0] === "freefire" || selectedEventIds?.[0] === "bgmi") && !isSoloEvent;
   const maxTeamMembers = isSoloEvent
     ? 0
     : teamSizeLimit
@@ -603,26 +604,10 @@ function EventRegistrationContent() {
     const members = watch("members") || [];
     const totalTeamSize = members.length + 1; // +1 for leader
 
-    // Enforce minimum required team counts (dynamic based on parsed type)
-    const requiredTotal = teamSizeLimit ? teamSizeLimit + 1 : null; // leader + regular members
-    if (
-      selectedId === "gaming" &&
-      requiredTotal &&
-      totalTeamSize < requiredTotal
-    ) {
+    // Enforce minimum required team counts based on teamSizeLimit
+    if (teamSizeLimit && totalTeamSize < teamSizeLimit + 1) {
       toast.error(
-        `Valorant requires ${requiredTotal} players (including leader). Add them to continue.`,
-      );
-      return;
-    }
-
-    if (
-      (selectedId === "bgmi" || selectedId === "freefire") &&
-      requiredTotal &&
-      totalTeamSize < requiredTotal
-    ) {
-      toast.error(
-        `This event requires ${requiredTotal} players (including leader). Add them to continue.`,
+        `This event requires ${teamSizeLimit + 1} members (including leader). Add ${teamSizeLimit + 1 - totalTeamSize} more member${teamSizeLimit + 1 - totalTeamSize > 1 ? "s" : ""} to continue.`,
       );
       return;
     }
