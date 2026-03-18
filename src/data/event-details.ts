@@ -33,7 +33,7 @@ export const eventDetails: Record<string, EventDetail> = {
     name: "Path Follower",
     category: "Technical Event",
     description:
-      "Path Follower is a robotics-based competition where participants control a robot to navigate through a predefined, twisted track within a limited time. The robots will be provided by the organizing team, ensuring equal opportunity for all participants. The challenge focuses on precision control, quick reflexes, and strategic maneuvering. Participants must efficiently guide the robot through curves and obstacles without deviating from the track.",
+      "Path Follower bots are designed to navigate a predefined path using sensors to detect and follow a line. The competition tests accuracy, speed and control algorithms under varying track conditions. Participants must build and optimize thier own bots to achieve the fastest and most reliable performance",
     objective: [
       "Promote practical exposure to robotics and automation concepts",
       "Encourage teamwork and strategic thinking",
@@ -58,9 +58,7 @@ export const eventDetails: Record<string, EventDetail> = {
     ],
     requirements: [
       "Indoor classroom/lab setup (SOET 3103)",
-      "Pre-built robots provided by organizing team",
       "Marked track with twists and turns",
-      "Power backup for charging and equipment",
       "Technical supervision team",
     ],
     prizeStructure: {

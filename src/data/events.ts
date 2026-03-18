@@ -179,7 +179,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     day: 1,
     time: "1:30 PM - 4:30 PM",
     venue: "SOET 3103",
-    coordinators: "Sumanto Roy",
+    coordinators: "Anurag Biswas (+91 9382694692) ",
     facultyCoordinators: "Mrs. Rupanwita Das Mahapatra",
     lottie:
       "https://lottie.host/927b9dd7-f2e5-471e-b14e-6d7402af9a9e/wzqLaYST4c.lottie",
@@ -382,7 +382,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     day: 2,
     time: "10:00 AM - 1:00 PM",
     venue: "SOET 3101",
-    coordinators: "Anurag Biswas",
+    coordinators: "Sumanto Roy (+91 86172 23944)",
     facultyCoordinators: "Mrs. Rupanwita Das Mahapatra",
     lottie:
       "https://lottie.host/8fe04dad-d3fa-4254-93b7-304f52d3c857/yxrz9HKunG.lottie",
