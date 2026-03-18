@@ -43,6 +43,35 @@ export default async function AdminDashboardPage() {
         ))}
       </div>
 
+      <Link
+        href="/admin/users"
+        className="block rounded-xl border-2 border-black bg-[#1f2937] p-5 text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 transition-all"
+      >
+        <p className={`text-xs font-bold uppercase tracking-wider text-zinc-300 ${softura.className}`}>
+          Student Registration Overview
+        </p>
+        <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="rounded-lg border-2 border-black bg-zinc-800 px-4 py-3">
+            <p className={`text-[11px] uppercase tracking-wider text-zinc-400 ${softura.className}`}>
+              Total Registered Students
+            </p>
+            <p className={`mt-1 text-2xl font-black text-[#deb3fa] ${gilton.className}`}>{stats.userCount}</p>
+          </div>
+          <div className="rounded-lg border-2 border-black bg-zinc-800 px-4 py-3">
+            <p className={`text-[11px] uppercase tracking-wider text-zinc-400 ${softura.className}`}>
+              Total Verified
+            </p>
+            <p className={`mt-1 text-2xl font-black text-[#4caf50] ${gilton.className}`}>{stats.verifiedUserCount}</p>
+          </div>
+          <div className="rounded-lg border-2 border-black bg-zinc-800 px-4 py-3">
+            <p className={`text-[11px] uppercase tracking-wider text-zinc-400 ${softura.className}`}>
+              Total Unverified
+            </p>
+            <p className={`mt-1 text-2xl font-black text-[#ff9800] ${gilton.className}`}>{stats.unverifiedUserCount}</p>
+          </div>
+        </div>
+      </Link>
+
       <div className="grid lg:grid-cols-2 gap-6">
         <div className="rounded-xl border-2 border-black bg-zinc-900 p-5 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.5)]">
           <div className="flex justify-between items-center mb-4">

@@ -26,6 +26,8 @@ export async function getAdminDashboardStats() {
   // Try cache first
   const cached = await getCache<{
     userCount: number;
+    verifiedUserCount: number;
+    unverifiedUserCount: number;
     visitorCount: number;
     teamCount: number;
     issueCount: number;
@@ -44,6 +46,8 @@ export async function getAdminDashboardStats() {
   // Fetch from database
   const [
     userCount,
+    verifiedUserCount,
+    unverifiedUserCount,
     visitorCount,
     teamCount,
     issueCount,
@@ -51,6 +55,8 @@ export async function getAdminDashboardStats() {
     teamRevenue,
   ] = await Promise.all([
     prisma.user.count(),
+    prisma.user.count({ where: { emailVerified: true } }),
+    prisma.user.count({ where: { emailVerified: false } }),
     prisma.visitorRegistration.count(),
     prisma.participantTeam.count(),
     prisma.issue.count(),
@@ -68,6 +74,8 @@ export async function getAdminDashboardStats() {
 
   const stats = {
     userCount,
+    verifiedUserCount,
+    unverifiedUserCount,
     visitorCount,
     teamCount,
     issueCount,
