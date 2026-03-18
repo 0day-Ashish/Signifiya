@@ -108,7 +108,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     day: 1,
     time: "1:30 PM - 7:00 PM",
     venue: "APJ Abdul Kalam Convention Hall",
-    coordinators: "Anis Imtahan Nayan",
+    coordinators: "Tushar Kanti Dey",
     facultyCoordinators: "Mr. Ayushman Bilash Thakur",
     lottie:
       "https://lottie.host/34b5f811-28e8-4ac1-9f7a-7857fb6cbb50/C28AMF6Pa6.lottie",

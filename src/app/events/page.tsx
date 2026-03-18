@@ -1725,6 +1725,14 @@ function EventRegistrationContent() {
           </div>
         </div>
       </div>
+
+      {/* Sticky beta notice */}
+      <div className="sticky bottom-0 left-0 right-0 bg-amber-50 border-t-4 border-amber-500 px-4 py-3 z-50">
+        <p className="text-xs sm:text-sm text-amber-900 font-medium text-center leading-snug">
+          Registrations made through the <strong>Signifiya App</strong> will <strong>not</strong> be accepted for events whose registration has been closed on this website.
+          The app is under beta testing and cannot be updated — all registrations must be done through this portal only.
+        </p>
+      </div>
     </div>
   );
 }
