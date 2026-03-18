@@ -2,6 +2,8 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { getVerificationLookup, markPassAttended, markEventTeamLeaderAttended, markEventTeamMemberAttended } from "../actions";
+import { toast } from "sonner";
+import { Toaster } from "sonner";
 import dynamic from "next/dynamic";
 
 const Scanner = dynamic(() => import('@yudiel/react-qr-scanner').then((mod) => mod.Scanner), { ssr: false });
@@ -33,7 +35,7 @@ type EventTeamRow = {
 export default function AdminVerifyPage() {
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
-  const [marking, setMarking] = useState<string | null>(null);
+  const [marking, setMarking] = useState<Set<string>>(new Set());
   const [passes, setPasses] = useState<PassRow[]>([]);
   const [eventTeams, setEventTeams] = useState<EventTeamRow[]>([]);
   const [userName, setUserName] = useState<string | null>(null);
@@ -139,43 +141,55 @@ export default function AdminVerifyPage() {
 
   const handleMarkAttended = async (passId: string, day: "day1" | "day2") => {
     const key = `${passId}-${day}`;
-    setMarking(key);
+    setMarking((prev) => new Set([...prev, key]));
     try {
       await markPassAttended(passId, day);
       const bid = query.trim();
       if (bid) await runLookup(bid);
     } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : "Failed to mark attended");
+      toast.error(e instanceof Error ? e.message : "Failed to mark attended");
     } finally {
-      setMarking(null);
+      setMarking((prev) => {
+        const next = new Set(prev);
+        next.delete(key);
+        return next;
+      });
     }
   };
 
   const handleMarkLeaderAttended = async (teamId: string) => {
     const key = `leader-${teamId}`;
-    setMarking(key);
+    setMarking((prev) => new Set([...prev, key]));
     try {
       await markEventTeamLeaderAttended(teamId);
       const bid = query.trim();
       if (bid) await runLookup(bid);
     } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : "Failed to mark leader attended");
+      toast.error(e instanceof Error ? e.message : "Failed to mark leader attended");
     } finally {
-      setMarking(null);
+      setMarking((prev) => {
+        const next = new Set(prev);
+        next.delete(key);
+        return next;
+      });
     }
   };
 
   const handleMarkMemberAttended = async (memberId: string) => {
     const key = `member-${memberId}`;
-    setMarking(key);
+    setMarking((prev) => new Set([...prev, key]));
     try {
       await markEventTeamMemberAttended(memberId);
       const bid = query.trim();
       if (bid) await runLookup(bid);
     } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : "Failed to mark member attended");
+      toast.error(e instanceof Error ? e.message : "Failed to mark member attended");
     } finally {
-      setMarking(null);
+      setMarking((prev) => {
+        const next = new Set(prev);
+        next.delete(key);
+        return next;
+      });
     }
   };
 
@@ -305,10 +319,10 @@ export default function AdminVerifyPage() {
                                 ) : (
                                   <button
                                     onClick={() => handleMarkAttended(p.id, "day1")}
-                                    disabled={!!marking}
+                                    disabled={marking.has(`${p.id}-day1`)}
                                     className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm disabled:opacity-50 transition-colors"
                                   >
-                                    {marking === `${p.id}-day1` ? "…" : "Mark Day 1"}
+                                    {marking.has(`${p.id}-day1`) ? "…" : "Mark Day 1"}
                                   </button>
                                 )}
                                 {attended2 ? (
@@ -318,10 +332,10 @@ export default function AdminVerifyPage() {
                                 ) : (
                                   <button
                                     onClick={() => handleMarkAttended(p.id, "day2")}
-                                    disabled={!!marking}
+                                    disabled={marking.has(`${p.id}-day2`)}
                                     className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm disabled:opacity-50 transition-colors"
                                   >
-                                    {marking === `${p.id}-day2` ? "…" : "Mark Day 2"}
+                                    {marking.has(`${p.id}-day2`) ? "…" : "Mark Day 2"}
                                   </button>
                                 )}
                               </>
@@ -333,10 +347,10 @@ export default function AdminVerifyPage() {
                               ) : (
                                 <button
                                   onClick={() => handleMarkAttended(p.id, "day1")}
-                                  disabled={!!marking}
+                                  disabled={marking.has(`${p.id}-day1`)}
                                   className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm disabled:opacity-50 transition-colors"
                                 >
-                                  {marking === `${p.id}-day1` ? "…" : "Mark attended"}
+                                  {marking.has(`${p.id}-day1`) ? "…" : "Mark attended"}
                                 </button>
                               )
                             )}
@@ -373,10 +387,10 @@ export default function AdminVerifyPage() {
                           ) : (
                             <button
                               onClick={() => handleMarkLeaderAttended(t.id)}
-                              disabled={!!marking}
+                              disabled={marking.has(`leader-${t.id}`)}
                               className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm disabled:opacity-50 transition-colors"
                             >
-                              {marking === `leader-${t.id}` ? "…" : "Mark attended"}
+                              {marking.has(`leader-${t.id}`) ? "…" : "Mark attended"}
                             </button>
                           )}
                         </div>
@@ -398,10 +412,10 @@ export default function AdminVerifyPage() {
                                 ) : (
                                   <button
                                     onClick={() => handleMarkMemberAttended(m.id)}
-                                    disabled={!!marking}
+                                    disabled={marking.has(`member-${m.id}`)}
                                     className="px-2 py-1 rounded-lg bg-zinc-600 hover:bg-zinc-500 text-white font-bold text-xs disabled:opacity-50 transition-colors"
                                   >
-                                    {marking === `member-${m.id}` ? "…" : "Mark attended"}
+                                    {marking.has(`member-${m.id}`) ? "…" : "Mark attended"}
                                   </button>
                                 )}
                               </div>
@@ -417,6 +431,7 @@ export default function AdminVerifyPage() {
           )}
         </section>
       )}
+      <Toaster />
     </div>
   );
 }

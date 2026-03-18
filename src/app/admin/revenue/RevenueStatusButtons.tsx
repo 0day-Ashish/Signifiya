@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { updateVisitorStatus, updateParticipantTeamStatus } from "../actions";
+import { toast } from "sonner";
 
 function Spinner() {
   return (
@@ -24,7 +24,6 @@ const LABELS: Record<string, string> = {
 };
 
 export function RevenueStatusButtons({ type, id, status }: { type: "visitor" | "team"; id: string; status: string }) {
-  const router = useRouter();
   const [loading, setLoading] = useState<string | null>(null);
 
   async function setStatus(s: "pending" | "verified" | "rejected") {
@@ -32,7 +31,8 @@ export function RevenueStatusButtons({ type, id, status }: { type: "visitor" | "
     try {
       if (type === "visitor") await updateVisitorStatus(id, s);
       else await updateParticipantTeamStatus(id, s);
-      router.refresh();
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : "Failed to update status");
     } finally {
       setLoading(null);
     }
