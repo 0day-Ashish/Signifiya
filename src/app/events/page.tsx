@@ -395,7 +395,11 @@ function EventRegistrationContent() {
   const isEFootball = selectedEventIds?.[0] === "efootball";
   const isArmWrestling = selectedEventIds?.[0] === "arm";
   const isSoloEvent = teamSizeLimit === 1;
-  const hasSubstitute = (selectedEventIds?.[0] === "gaming" || selectedEventIds?.[0] === "freefire" || selectedEventIds?.[0] === "bgmi") && !isSoloEvent;
+  const hasSubstitute =
+    (selectedEventIds?.[0] === "gaming" ||
+      selectedEventIds?.[0] === "freefire" ||
+      selectedEventIds?.[0] === "bgmi") &&
+    !isSoloEvent;
   const maxTeamMembers = isSoloEvent
     ? 0
     : teamSizeLimit
@@ -439,7 +443,8 @@ function EventRegistrationContent() {
       if (validEvent) {
         if (validEvent.closed) {
           toast.error(`${validEvent.name} registration is closed.`, {
-            description: "Sorry, this event is no longer accepting new registrations."
+            description:
+              "Sorry, this event is no longer accepting new registrations.",
           });
         } else {
           setValue("selectedEvents", [eventId]);
@@ -718,7 +723,8 @@ function EventRegistrationContent() {
     const event = eventsList.find((ev) => ev.id === id);
     if (event?.closed) {
       toast.error(`${event.name} registration is closed.`, {
-        description: "Sorry, this event is no longer accepting new registrations."
+        description:
+          "Sorry, this event is no longer accepting new registrations.",
       });
       return;
     }
@@ -740,8 +746,9 @@ function EventRegistrationContent() {
   }
 
   return (
-    <div className="bg-zinc-950 h-screen max-h-screen flex items-center justify-center p-4 lg:p-8 font-sans overflow-hidden">
-      <div className="bg-white rounded-[2rem] w-full max-w-full h-full max-h-full overflow-hidden flex flex-col lg:flex-row">
+    <div className="bg-zinc-950 h-screen max-h-screen flex flex-col p-4 lg:p-8 font-sans overflow-hidden">
+      <div className="flex-1 min-h-0 flex items-center justify-center">
+        <div className="bg-white rounded-[2rem] w-full max-w-full h-full max-h-full overflow-hidden flex flex-col lg:flex-row">
         <div className="flex-1 flex flex-col p-6 lg:p-10 relative overflow-hidden min-h-0">
           <div className="flex flex-col mb-6">
             <Link
@@ -999,7 +1006,8 @@ function EventRegistrationContent() {
                                     </div>
                                     <div className="px-2 py-1 rounded text-xs font-bold border-2 bg-black text-white border-black">
                                       {(() => {
-                                        if (ev.closed) return <span>CLOSED</span>;
+                                        if (ev.closed)
+                                          return <span>CLOSED</span>;
                                         const price = getEventPrice(ev);
                                         const {
                                           original,
@@ -1066,7 +1074,11 @@ function EventRegistrationContent() {
                           return (
                             <div key={ev.id}>
                               <div
-                                onClick={ev.closed ? undefined : () => toggleEvent(ev.id)}
+                                onClick={
+                                  ev.closed
+                                    ? undefined
+                                    : () => toggleEvent(ev.id)
+                                }
                                 className={`cursor-pointer border-2 p-4 rounded-xl transition-all relative overflow-hidden ${
                                   isSelected
                                     ? "border-black bg-[#deb3fa] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
@@ -1724,13 +1736,16 @@ function EventRegistrationContent() {
             </div>
           </div>
         </div>
+        {/* Sticky beta notice */}
+      </div>  
       </div>
-
       {/* Sticky beta notice */}
-      <div className="sticky bottom-0 left-0 right-0 bg-amber-50 border-t-4 border-amber-500 px-4 py-3 z-50">
+      <div className="bottom-0 left-0 right-0 mt-10 rounded-t-xl bg-amber-50 border-t-4 border-amber-500 px-4 py-3 z-50">
         <p className="text-xs sm:text-sm text-amber-900 font-medium text-center leading-snug">
-          Registrations made through the <strong>Signifiya App</strong> will <strong>not</strong> be accepted for events whose registration has been closed on this website.
-          The app is under beta testing and cannot be updated — all registrations must be done through this portal only.
+          Registrations made through the <strong>Signifiya App</strong> will{" "}
+          <strong>not</strong> be accepted for events whose registration has
+          been closed on this website. The app is under beta testing and cannot
+          be updated — all registrations must be done through this portal only.
         </p>
       </div>
     </div>
