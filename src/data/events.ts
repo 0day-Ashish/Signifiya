@@ -373,15 +373,15 @@ export const ALL_EVENTS: MasterEvent[] = [
     department: "Robotics (Tech)",
     teamMember: "Team Size: 3",
     description:
-      "Custom built bots must navigate a grueling obstacle course of mud, sand, and steep inclines.",
+      "Design and build a robot car to play soccer.Control and maneuver the ball efficiently across the field.",
     scheduleDescription:
-      "Navigate your bot through rough and uneven terrains without getting stuck or toppling over.",
+      "Design and build a robot car to play soccer. Control and maneuver the ball efficiently across the field. Score goals against an opponent within a defined arena.",
     date: "March 28th",
     image: "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/robotics1.jpg",
     prizePool: "₹5,000",
     day: 2,
     time: "10:00 AM - 1:00 PM",
-    venue: "SOET 3101",
+    venue: "SOET 3103",
     coordinators: "Sumanto Roy (+91 86172 23944)",
     facultyCoordinators: "Mrs. Rupanwita Das Mahapatra",
     lottie:
