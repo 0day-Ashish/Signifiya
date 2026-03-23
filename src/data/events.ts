@@ -163,6 +163,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     lottie:
       "https://lottie.host/85932f49-c3cd-4483-ae12-6ddcc8e7cc34/b0nR37lbph.lottie",
     color: "bg-green-100",
+    
   },
   {
     id: 5,
@@ -185,6 +186,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     lottie:
       "https://lottie.host/927b9dd7-f2e5-471e-b14e-6d7402af9a9e/wzqLaYST4c.lottie",
     color: "bg-red-100",
+    
   },
   {
     id: 6,
@@ -207,6 +209,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     facultyCoordinators: "Dr. Hasim Ali Khan, Dr. Apurba Paul",
     lottie: "",
     color: "bg-orange-100",
+    closed: true,
   },
   {
     id: 7,
@@ -253,6 +256,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     lottie:
       "https://lottie.host/8597f901-e7be-4086-9f99-317c1b123a0a/TtUunogZHF.lottie",
     color: "bg-fuchsia-100",
+    closed: true,
   },
   {
     id: 9,
@@ -275,6 +279,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     lottie:
       "https://lottie.host/34b5f811-28e8-4ac1-9f7a-7857fb6cbb50/C28AMF6Pa6.lottie",
     color: "bg-gray-100",
+    closed: true,
   },
 
   // ─── DAY 2 EVENTS (MARCH 28TH) ──────────────────────────
@@ -299,6 +304,8 @@ export const ALL_EVENTS: MasterEvent[] = [
     facultyCoordinators: "Mrs. Soodipa chakraborty",
     lottie: "",
     color: "bg-cyan-100",
+    closed: true,
+
   },
   {
     id: 11,
@@ -321,6 +328,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     lottie:
       "https://lottie.host/84997780-9072-40eb-bf3c-b02910fa01ef/C7GW3im1LR.lottie",
     color: "bg-indigo-100",
+
   },
   {
     id: 12,
@@ -343,6 +351,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     lottie:
       "https://lottie.host/a593ed4c-830c-414a-a362-aa96c695fa40/xrcW0oe0cK.lottie",
     color: "bg-pink-100",
+
   },
   {
     id: 13,
@@ -457,6 +466,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     lottie:
       "https://lottie.host/1846995a-7c92-4f8b-b524-cf6bcccd25a0/3ZauGqPRGA.lottie",
     color: "bg-gray-100",
+    closed: true,
   },
   {
     id: 18,
@@ -481,6 +491,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     lottie:
       "https://lottie.host/ce13941b-540c-4118-9e80-ff8ceb9afa1d/bsOQBQ1ZGm.lottie",
     color: "bg-fuchsia-100",
+      closed: true,
   },
   {
     id: 19,
@@ -505,6 +516,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     lottie:
       "https://lottie.host/0f63fd76-3dec-4340-b124-c72eb23a19be/pmSxXvemID.lottie",
     color: "bg-amber-100",
+    closed: true,
   },
   {
     id: 20,
@@ -526,6 +538,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     lottie: "",
     color: "bg-yellow-50",
     excludeFromListing: true,
+    closed: true,
   },
   {
     id: 21,
@@ -544,6 +557,8 @@ export const ALL_EVENTS: MasterEvent[] = [
     coordinators: "Nipashree Bhattacharya",
     facultyCoordinators: "Nisarga Chand",
     color: "bg-purple-50",
+    closed: true,
+    excludeFromListing: true,
   },
 ];
 
