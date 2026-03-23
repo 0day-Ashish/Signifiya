@@ -124,6 +124,7 @@ function ReelRegistrationContent() {
         department: vals.department,
         reelLink: vals.reelLink,
         leaderBookingId: bookingId,
+        clientType: "web",
       });
 
       if (!res.success) {

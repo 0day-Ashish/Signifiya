@@ -701,6 +701,7 @@ function EventRegistrationContent() {
         })),
         totalAmount: totalCost,
         utrId: utrId.trim(),
+        clientType: "web",
       });
 
       if (!res.success) {

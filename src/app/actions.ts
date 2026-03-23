@@ -19,6 +19,12 @@ import {
 const PASS_AMOUNTS = APP_CONFIG.passPrices;
 const PASS_TYPE_LABELS = APP_CONFIG.passTypeLabels;
 
+function isExpoRegistrationBlocked(clientType?: string) {
+  const disableExpoRegistration =
+    process.env.DISABLE_EXPO_REGISTRATION === "true";
+  return disableExpoRegistration && clientType?.toLowerCase() === "expo";
+}
+
 export async function uploadAvatar(formData: FormData) {
   try {
     const file = formData.get("file") as File;
@@ -269,6 +275,7 @@ export async function submitVisitorRegistration(data: {
   passType: string;
   sessionUserId: string;
   utrId: string;
+  clientType?: "web" | "expo" | string;
 }) {
   try {
     const {
@@ -280,7 +287,16 @@ export async function submitVisitorRegistration(data: {
       passType,
       sessionUserId,
       utrId,
+      clientType,
     } = data;
+
+    if (isExpoRegistrationBlocked(clientType)) {
+      return {
+        success: false,
+        error: "Registrations are disabled on Expo app.",
+      };
+    }
+
     const bid = rawBookingId?.trim();
 
     if (
@@ -456,6 +472,7 @@ export async function submitEventRegistrationManual(data: {
   }[];
   totalAmount: number;
   utrId: string;
+  clientType?: "web" | "expo" | string;
 }) {
   try {
     const {
@@ -471,7 +488,15 @@ export async function submitEventRegistrationManual(data: {
       members,
       totalAmount,
       utrId,
+      clientType,
     } = data;
+
+    if (isExpoRegistrationBlocked(clientType)) {
+      return {
+        success: false,
+        error: "Registrations are disabled on Expo app.",
+      };
+    }
 
     if (
       !teamName?.trim() ||
@@ -577,6 +602,7 @@ export async function submitReelRegistration(data: {
   department?: string;
   reelLink?: string;
   leaderBookingId: string;
+  clientType?: "web" | "expo" | string;
 }) {
   try {
     const {
@@ -589,7 +615,15 @@ export async function submitReelRegistration(data: {
       department,
       reelLink,
       leaderBookingId,
+      clientType,
     } = data;
+
+    if (isExpoRegistrationBlocked(clientType)) {
+      return {
+        success: false,
+        error: "Registrations are disabled on Expo app.",
+      };
+    }
 
     if (
       !teamName?.trim() ||

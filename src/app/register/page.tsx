@@ -208,6 +208,7 @@ export default function Register() {
         passType: values.passType || "single",
         sessionUserId: session.user.id,
         utrId: utrId.trim(),
+        clientType: "web",
       });
 
       if (!res.success) {
