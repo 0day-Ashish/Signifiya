@@ -68,6 +68,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     lottie: "",
     excludeFromListing: true,
     color: "bg-yellow-50",
+    closed: true,
   },
 
   {
@@ -139,6 +140,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     lottie:
       "https://lottie.host/5d55c618-6fa5-489d-82bf-a9e561c64414/w57drvo4fH.lottie",
     color: "bg-purple-100",
+    closed: true,
   },
   {
     id: 4,
@@ -163,7 +165,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     lottie:
       "https://lottie.host/85932f49-c3cd-4483-ae12-6ddcc8e7cc34/b0nR37lbph.lottie",
     color: "bg-green-100",
-    
+    closed: true,
   },
   {
     id: 5,
@@ -186,7 +188,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     lottie:
       "https://lottie.host/927b9dd7-f2e5-471e-b14e-6d7402af9a9e/wzqLaYST4c.lottie",
     color: "bg-red-100",
-    
+    closed: true,
   },
   {
     id: 6,
@@ -233,6 +235,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     lottie:
       "https://lottie.host/d4daf38b-2ffb-483d-b524-967a221f540e/okSpmUrCF7.lottie",
     color: "bg-yellow-100",
+    closed: true,
   },
   {
     id: 8,
@@ -328,6 +331,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     lottie:
       "https://lottie.host/84997780-9072-40eb-bf3c-b02910fa01ef/C7GW3im1LR.lottie",
     color: "bg-indigo-100",
+    closed: true,
 
   },
   {
@@ -351,6 +355,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     lottie:
       "https://lottie.host/a593ed4c-830c-414a-a362-aa96c695fa40/xrcW0oe0cK.lottie",
     color: "bg-pink-100",
+    closed: true,
 
   },
   {
@@ -374,6 +379,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     lottie:
       "https://lottie.host/2a0c41bc-2fb9-40e3-b13d-8b721a0abde8/20tioOZNVd.lottie",
     color: "bg-blue-100",
+    closed: true,
   },
   {
     id: 14,
@@ -397,6 +403,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     lottie:
       "https://lottie.host/8fe04dad-d3fa-4254-93b7-304f52d3c857/yxrz9HKunG.lottie",
     color: "bg-teal-100",
+    closed: true,
   },
   {
     id: 15,
