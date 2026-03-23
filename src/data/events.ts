@@ -135,7 +135,7 @@ export const ALL_EVENTS: MasterEvent[] = [
     day: 1,
     time: "1:30 PM - 4:30 PM",
     venue: "Lab 2102 & 2103",
-    coordinators: "Aviroop Pal, Sourish Samanta, MD Samiul Islam",
+    coordinators: "Aviroop Pal, Sourish Samanta, MD Samiul Islam, Argha Ghosh",
     facultyCoordinators: "Ms. Bodhi Chakraborty, Dr. Debdutta Pal",
     lottie:
       "https://lottie.host/5d55c618-6fa5-489d-82bf-a9e561c64414/w57drvo4fH.lottie",
