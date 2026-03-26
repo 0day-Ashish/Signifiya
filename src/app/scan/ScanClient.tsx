@@ -274,7 +274,11 @@ export default function ScanClient({
   const lastProcessedRef = useRef<{ qr: string; at: number } | null>(null);
   const beepAudioRef = useRef<HTMLAudioElement | null>(null);
 
-  const newlyMarkedByEvent = newlyMarked.reduce<Record<string, ScanTeamRow[]>>(
+  const allEventRows = [...newlyMarked, ...alreadyMarked].sort(
+    (a, b) => new Date(b.scannedAt).getTime() - new Date(a.scannedAt).getTime(),
+  );
+
+  const scannedByEvent = allEventRows.reduce<Record<string, ScanTeamRow[]>>(
     (acc, row) => {
       const events =
         row.eventList.length > 0 ? row.eventList : ["Unknown Event"];
@@ -287,7 +291,7 @@ export default function ScanClient({
     {},
   );
 
-  const eventTableEntries = Object.entries(newlyMarkedByEvent).sort((a, b) =>
+  const eventTableEntries = Object.entries(scannedByEvent).sort((a, b) =>
     a[0].localeCompare(b[0]),
   );
 
@@ -499,13 +503,13 @@ export default function ScanClient({
             {initialLoading || refreshing ? (
               <TableSkeleton title="Loading Event Tables" />
             ) : eventTableEntries.length === 0 ? (
-              <DataTable title="Newly Marked" rows={[]} />
+              <DataTable title="Scanned Teams" rows={[]} />
             ) : (
               <div className="space-y-4">
                 {eventTableEntries.map(([eventName, rows]) => (
                   <DataTable
                     key={eventName}
-                    title={`Newly Marked - ${eventName}`}
+                    title={`Scanned - ${eventName}`}
                     rows={rows}
                   />
                 ))}

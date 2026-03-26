@@ -25,6 +25,14 @@ export default function Navbar({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [desktopNavPinned, setDesktopNavPinned] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
+  const adminEmails = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || "")
+    .split(",")
+    .map((e) => e.trim().toLowerCase())
+    .filter(Boolean);
+  const userEmail = session?.user?.email?.toLowerCase();
+  const isAdmin =
+    (session?.user as { role?: string } | undefined)?.role === "admin" ||
+    (Boolean(userEmail) && adminEmails.includes(userEmail));
 
   useEffect(() => {
     const checkScreenSize = () => {
@@ -197,6 +205,15 @@ export default function Navbar({
               </span>
             </div>
           </a>
+
+          {isHomePage && isAdmin && (
+            <Link
+              href="/scan"
+              className="bg-[#deb3fa] px-4 py-2 sm:px-8 sm:py-3 rounded-full border-2 border-black hover:bg-[#d091f8] hover:scale-105 transition-all duration-300 uppercase font-extrabold text-xs sm:text-base text-black"
+            >
+              Scan
+            </Link>
+          )}
         </div>
 
         {/* Music Control & Profile Container */}
@@ -238,6 +255,16 @@ export default function Navbar({
                   >
                     Your Profile
                   </Link>
+
+                  {isAdmin && (
+                    <Link
+                      href="/scan"
+                      onClick={() => setShowProfileMenu(false)}
+                      className="w-full bg-zinc-900 text-white font-bold py-1.5 sm:py-2 rounded-lg border-2 border-black hover:bg-zinc-800 transition-colors text-xs sm:text-sm uppercase text-center"
+                    >
+                      Scan Dashboard
+                    </Link>
+                  )}
 
                   <button
                     onClick={async () => {
