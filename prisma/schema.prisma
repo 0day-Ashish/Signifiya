@@ -172,12 +172,12 @@ model ParticipantTeam {
 
 model ScanLog {
   id            String           @id @default(uuid())
-  qrValue       String
+  qrValue       String           @map("qr_value")
   status        String
   message       String?
-  scannedAt     DateTime         @default(now())
-  scannerUserId String?
-  teamId        String?
+  scannedAt     DateTime         @default(now()) @map("scanned_at")
+  scannerUserId String?          @map("scanner_user_id")
+  teamId        String?          @map("team_id")
   team          ParticipantTeam? @relation(fields: [teamId], references: [id], onDelete: SetNull)
 
   @@index([scannedAt])
