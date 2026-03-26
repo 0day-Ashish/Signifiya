@@ -40,6 +40,7 @@ const rampart = localFont({ src: "../../public/fonts/RampartOne-Regular.ttf" });
 const gilton = localFont({ src: "../../public/fonts/GiltonRegular.otf" });
 const bicubik = localFont({ src: "../../public/fonts/Bicubik.otf" });
 const softura = localFont({ src: "../../public/fonts/Softura-Demo.otf" });
+const VISITOR_REGISTRATION_OPEN = APP_CONFIG.features.visitorRegistrationOpen;
 
 const Marquee = () => {
   const baseVelocity = -2; // Reduced base speed
@@ -155,13 +156,15 @@ export default function Home() {
       if (sessionData.user?.id) {
         (async () => {
           try {
-            const res = await fetch(`/api/user?userId=${sessionData.user.id}`, { cache: 'no-store' });
-            if (!res.ok) throw new Error('Failed to fetch user data');
+            const res = await fetch(`/api/user?userId=${sessionData.user.id}`, {
+              cache: "no-store",
+            });
+            if (!res.ok) throw new Error("Failed to fetch user data");
             const json = await res.json();
             if (json.profile) setUserProfile(json.profile);
             if (json.passStatus) setPassStatus(json.passStatus);
           } catch (err) {
-            console.error('Error fetching user data:', err);
+            console.error("Error fetching user data:", err);
           }
         })();
       }
@@ -426,20 +429,34 @@ export default function Home() {
                     </Link>
                   ) : passStatus?.hasSingleDayPass ? (
                     // User has single day pass - show option to buy another day
-                    <Link
-                      href="/register"
-                      className={`bg-[#ff9800] text-black px-4 py-2 sm:px-6 sm:py-3 rounded-xl sm:rounded-2xl border-2 border-black font-bold text-xs sm:text-sm uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 ${gilton.className}`}
-                    >
-                      Buy Another Day
-                    </Link>
-                  ) : (
-                    // No visitor pass - show "Visitor's Pass"
+                    VISITOR_REGISTRATION_OPEN ? (
+                      <Link
+                        href="/register"
+                        className={`bg-[#ff9800] text-black px-4 py-2 sm:px-6 sm:py-3 rounded-xl sm:rounded-2xl border-2 border-black font-bold text-xs sm:text-sm uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 ${gilton.className}`}
+                      >
+                        Buy Another Day
+                      </Link>
+                    ) : (
+                      <span
+                        className={`bg-zinc-300 text-zinc-700 px-4 py-2 sm:px-6 sm:py-3 rounded-xl sm:rounded-2xl border-2 border-zinc-500 font-bold text-xs sm:text-sm uppercase tracking-wider ${gilton.className}`}
+                      >
+                        Registrations Closed
+                      </span>
+                    )
+                  ) : // No visitor pass - show "Visitor's Pass"
+                  VISITOR_REGISTRATION_OPEN ? (
                     <Link
                       href="/register"
                       className={`bg-[#ffffff] text-black px-4 py-2 sm:px-6 sm:py-3 rounded-xl sm:rounded-2xl border-2 border-black font-bold text-xs sm:text-sm uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 ${gilton.className}`}
                     >
                       Visitor&apos;s Pass
                     </Link>
+                  ) : (
+                    <span
+                      className={`bg-zinc-300 text-zinc-700 px-4 py-2 sm:px-6 sm:py-3 rounded-xl sm:rounded-2xl border-2 border-zinc-500 font-bold text-xs sm:text-sm uppercase tracking-wider ${gilton.className}`}
+                    >
+                      Registrations Closed
+                    </span>
                   )}
                 </div>
               )}
