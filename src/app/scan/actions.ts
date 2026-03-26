@@ -22,6 +22,19 @@ type ScanTeamRow = {
   alreadyMarked: boolean;
 };
 
+type VisitorPassRow = {
+  id: string;
+  name: string;
+  email: string;
+  bookingId: string;
+  passType: string;
+  day1At: Date | null;
+  day2At: Date | null;
+  legacyVerifiedAt: Date | null;
+  lastScannedAt: Date;
+  scanCount: number;
+};
+
 function toScanTeamRow(log: {
   id: string;
   qrValue: string;
@@ -253,4 +266,49 @@ export async function getGroupedScannedTeams() {
     newlyMarked: aggregateByTeam(newRows),
     alreadyMarked: aggregateByTeam(repeatRows),
   };
+}
+
+export async function getVisitorPassRows(): Promise<VisitorPassRow[]> {
+  const session = await requireAdmin();
+  if (!session) throw new Error("Unauthorized");
+
+  const passes = await prisma.pass.findMany({
+    where: {
+      OR: [
+        { verifiedDay1At: { not: null } },
+        { verifiedDay2At: { not: null } },
+        { verifiedAt: { not: null } },
+      ],
+    },
+    include: {
+      user: { select: { name: true, email: true } },
+    },
+    orderBy: { updatedAt: "desc" },
+    take: 500,
+  });
+
+  return passes.map((p) => {
+    const day1 = p.verifiedDay1At;
+    const day2 = p.verifiedDay2At;
+    const legacy = p.verifiedAt;
+
+    const lastScannedAt = [day1, day2, legacy]
+      .filter((v): v is Date => Boolean(v))
+      .sort((a, b) => b.getTime() - a.getTime())[0];
+
+    const scanCount = [day1, day2, legacy].filter(Boolean).length;
+
+    return {
+      id: p.id,
+      name: p.user.name,
+      email: p.user.email,
+      bookingId: p.userBookingId || "-",
+      passType: p.type,
+      day1At: day1,
+      day2At: day2,
+      legacyVerifiedAt: legacy,
+      lastScannedAt: lastScannedAt ?? p.updatedAt,
+      scanCount,
+    };
+  });
 }

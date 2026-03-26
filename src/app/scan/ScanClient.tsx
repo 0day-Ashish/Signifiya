@@ -2,8 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
-import { useRouter } from "next/navigation";
-import { getGroupedScannedTeams, scanTeamByQr } from "./actions";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { getGroupedScannedTeams, getVisitorPassRows, scanTeamByQr } from "./actions";
 import { Toaster, toast } from "sonner";
 
 type ScanTeamRow = {
@@ -22,6 +23,19 @@ type ScanTeamRow = {
   eventNames: string;
   eventList: string[];
   alreadyMarked: boolean;
+};
+
+type VisitorPassRow = {
+  id: string;
+  name: string;
+  email: string;
+  bookingId: string;
+  passType: string;
+  day1At: Date | null;
+  day2At: Date | null;
+  legacyVerifiedAt: Date | null;
+  lastScannedAt: Date;
+  scanCount: number;
 };
 
 const Scanner = dynamic(
@@ -137,14 +151,90 @@ function DataTable({ title, rows }: { title: string; rows: ScanTeamRow[] }) {
   );
 }
 
-export default function ScanClient() {
-  const router = useRouter();
+function VisitorTable({ rows }: { rows: VisitorPassRow[] }) {
+  return (
+    <section className="rounded-xl border border-zinc-200 bg-white">
+      <div className="flex items-center justify-between border-b border-zinc-200 p-3">
+        <h2 className="text-sm font-semibold text-zinc-800">Visitors</h2>
+      </div>
+
+      {rows.length === 0 ? (
+        <p className="p-4 text-sm text-zinc-500">No visitor scans yet.</p>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="min-w-full text-left text-xs">
+            <thead className="bg-zinc-50 text-zinc-600">
+              <tr>
+                <th className="p-2">Time</th>
+                <th className="p-2">Name</th>
+                <th className="p-2">Pass</th>
+                <th className="p-2">Booking ID</th>
+                <th className="p-2">Count</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row) => (
+                <tr key={row.id} className="border-t border-zinc-100">
+                  <td className="p-2 text-zinc-600">
+                    {new Date(row.lastScannedAt).toLocaleString()}
+                  </td>
+                  <td className="p-2 text-zinc-900">{row.name}</td>
+                  <td className="p-2 text-zinc-700">{row.passType}</td>
+                  <td className="p-2 font-mono text-zinc-600">{row.bookingId}</td>
+                  <td className="p-2 font-semibold text-zinc-900">{row.scanCount}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </section>
+  );
+}
+
+function BottomNav() {
+  const pathname = usePathname();
+  const itemClass =
+    "px-2 py-3 text-xs font-medium text-center border-r border-zinc-200 last:border-r-0";
+
+  return (
+    <nav className="fixed bottom-0 left-0 right-0 border-t border-zinc-200 bg-white">
+      <div className="mx-auto grid max-w-md grid-cols-3">
+        <Link
+          href="/scan/visitors"
+          className={`${itemClass} ${pathname === "/scan/visitors" ? "text-zinc-900 bg-zinc-100" : "text-zinc-700"}`}
+        >
+          Visitors
+        </Link>
+        <Link
+          href="/scan/events"
+          className={`${itemClass} ${pathname === "/scan/events" ? "text-zinc-900 bg-zinc-100" : "text-zinc-700"}`}
+        >
+          Events
+        </Link>
+        <Link
+          href="/scan"
+          className={`${itemClass} ${pathname === "/scan" ? "text-zinc-900 bg-zinc-100" : "text-zinc-700"}`}
+        >
+          Home
+        </Link>
+      </div>
+    </nav>
+  );
+}
+
+export default function ScanClient({
+  mode = "home",
+}: {
+  mode?: "home" | "events" | "visitors";
+}) {
   const [qrInput, setQrInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [showScanner, setShowScanner] = useState(true);
   const [newlyMarked, setNewlyMarked] = useState<ScanTeamRow[]>([]);
   const [alreadyMarked, setAlreadyMarked] = useState<ScanTeamRow[]>([]);
+  const [visitorRows, setVisitorRows] = useState<VisitorPassRow[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [lastScanValue, setLastScanValue] = useState("");
   const [scanPulse, setScanPulse] = useState(false);
@@ -152,9 +242,6 @@ export default function ScanClient() {
   const lockRef = useRef(false);
   const lastProcessedRef = useRef<{ qr: string; at: number } | null>(null);
   const beepAudioRef = useRef<HTMLAudioElement | null>(null);
-  const scanRef = useRef<HTMLElement | null>(null);
-  const newRef = useRef<HTMLDivElement | null>(null);
-  const repeatRef = useRef<HTMLDivElement | null>(null);
 
   const newlyMarkedByEvent = newlyMarked.reduce<Record<string, ScanTeamRow[]>>(
     (acc, row) => {
@@ -176,9 +263,13 @@ export default function ScanClient() {
   const loadTables = async () => {
     setRefreshing(true);
     try {
-      const grouped = await getGroupedScannedTeams();
+      const [grouped, visitors] = await Promise.all([
+        getGroupedScannedTeams(),
+        getVisitorPassRows(),
+      ]);
       setNewlyMarked(grouped.newlyMarked);
       setAlreadyMarked(grouped.alreadyMarked);
+      setVisitorRows(visitors);
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Failed to load scans";
       setError(msg);
@@ -235,19 +326,21 @@ export default function ScanClient() {
   };
 
   return (
-    <main
-      className="min-h-screen bg-zinc-100 pb-20 text-zinc-900"
-      ref={scanRef}
-    >
+    <main className="min-h-screen bg-zinc-100 pb-20 text-zinc-900">
       <Toaster richColors position="top-right" />
 
       <div className="mx-auto w-full max-w-md p-4">
-        <h1 className="text-lg font-semibold">Scan Team QR</h1>
-        <p className="mt-1 text-xs text-zinc-600">
-          Admin-only mobile scanner. Latest scans appear first.
-        </p>
+        <h1 className="text-lg font-semibold">
+          {mode === "home"
+            ? "Scan Team QR"
+            : mode === "events"
+              ? "Event Tables"
+              : "Visitors Table"}
+        </h1>
+        <p className="mt-1 text-xs text-zinc-600">Admin-only scanner dashboard.</p>
 
-        <section className="mt-4 rounded-xl border border-zinc-200 bg-white p-3">
+        {mode === "home" && (
+          <section className="mt-4 rounded-xl border border-zinc-200 bg-white p-3">
           <div className="mb-3 flex items-center justify-between">
             <p className="text-sm font-medium">QR Scanner</p>
             <button
@@ -355,10 +448,11 @@ export default function ScanClient() {
           </div>
 
           {error && <p className="mt-2 text-xs text-rose-600">{error}</p>}
-        </section>
+          </section>
+        )}
 
-        <div className="mt-4 space-y-4">
-          <div ref={newRef}>
+        {mode === "events" && (
+          <div className="mt-4 space-y-4">
             {eventTableEntries.length === 0 ? (
               <DataTable title="Newly Marked" rows={[]} />
             ) : (
@@ -373,47 +467,16 @@ export default function ScanClient() {
               </div>
             )}
           </div>
-          <div ref={repeatRef}>
-            <DataTable title="Already Marked" rows={alreadyMarked} />
+        )}
+
+        {mode === "visitors" && (
+          <div className="mt-4 space-y-4">
+            <VisitorTable rows={visitorRows} />
           </div>
-        </div>
+        )}
       </div>
 
-      <nav className="fixed bottom-0 left-0 right-0 border-t border-zinc-200 bg-white">
-        <div className="mx-auto grid max-w-md grid-cols-3">
-          <button
-            type="button"
-            className="px-2 py-3 text-xs font-medium text-zinc-700"
-            onClick={() =>
-              repeatRef.current?.scrollIntoView({
-                behavior: "smooth",
-                block: "start",
-              })
-            }
-          >
-            Visitors
-          </button>
-          <button
-            type="button"
-            className="px-2 py-3 text-xs font-medium text-zinc-700"
-            onClick={() =>
-              newRef.current?.scrollIntoView({
-                behavior: "smooth",
-                block: "start",
-              })
-            }
-          >
-            Events
-          </button>
-          <button
-            type="button"
-            className="px-2 py-3 text-xs font-medium text-zinc-700"
-            onClick={() => router.push("/")}
-          >
-            Home
-          </button>
-        </div>
-      </nav>
+      <BottomNav />
     </main>
   );
 }

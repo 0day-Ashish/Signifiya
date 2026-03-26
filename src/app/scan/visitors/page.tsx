@@ -1,11 +1,11 @@
 import { getSession, requireAdmin } from "@/lib/auth-server";
 import { redirect } from "next/navigation";
-import ScanClient from "./ScanClient";
+import ScanClient from "../ScanClient";
 
-export default async function ScanPage() {
+export default async function ScanVisitorsPage() {
   const session = await getSession();
   if (!session?.user) {
-    redirect("/sign-in?callbackUrl=/scan");
+    redirect("/sign-in?callbackUrl=/scan/visitors");
   }
 
   const admin = await requireAdmin();
@@ -13,5 +13,5 @@ export default async function ScanPage() {
     redirect("/");
   }
 
-  return <ScanClient mode="home" />;
+  return <ScanClient mode="visitors" />;
 }
