@@ -79,6 +79,11 @@ function normalizeQrValue(value: string) {
   return value.trim();
 }
 
+function isDualPassType(type: string) {
+  const t = type.toLowerCase();
+  return t.includes("dual") || t.includes("double");
+}
+
 async function createScanLog(params: {
   qrValue: string;
   status: string;
@@ -112,95 +117,172 @@ export async function scanTeamByQr(value: string) {
   const scannerUserId = session.user.id;
 
   if (!qrValue) throw new Error("QR value is required");
-  if (!qrValue.startsWith("EP-")) {
-    await createScanLog({
-      qrValue,
-      status: "invalid_qr",
-      message: "Only event team QR codes are allowed",
-      scannerUserId,
+
+  // Team QR flow (events page)
+  if (qrValue.startsWith("EP-")) {
+    const existing = await prisma.participantTeam.findFirst({
+      where: {
+        qrCode: { equals: qrValue, mode: "insensitive" },
+      },
+      include: {
+        events: { include: { event: { select: { name: true } } } },
+      },
     });
-    throw new Error("Only event team QR codes are allowed here");
-  }
 
-  const existing = await prisma.participantTeam.findFirst({
-    where: {
-      qrCode: { equals: qrValue, mode: "insensitive" },
-    },
-    include: {
-      events: { include: { event: { select: { name: true } } } },
-    },
-  });
+    if (!existing) {
+      await createScanLog({
+        qrValue,
+        status: "not_found",
+        message: "No team found for this QR",
+        scannerUserId,
+      });
+      throw new Error("No verified event team found for this QR");
+    }
 
-  if (!existing) {
-    await createScanLog({
-      qrValue,
-      status: "not_found",
-      message: "No team found for this QR",
-      scannerUserId,
+    if (existing.status !== "verified") {
+      await createScanLog({
+        qrValue,
+        status: "not_verified",
+        message: "Team found but registration is not verified",
+        scannerUserId,
+        teamId: existing.id,
+      });
+      throw new Error("Team registration is not verified yet");
+    }
+
+    if (existing.leaderAttendedAt) {
+      const scanLog = await createScanLog({
+        qrValue,
+        status: "already_marked",
+        message: "Team already marked",
+        scannerUserId,
+        teamId: existing.id,
+      });
+
+      if (!scanLog.team) {
+        throw new Error("Scan log persisted without team data");
+      }
+
+      return {
+        row: toScanTeamRow(scanLog),
+        message: "Team already marked",
+        markedNow: false,
+      };
+    }
+
+    const updated = await prisma.participantTeam.update({
+      where: { id: existing.id },
+      data: {
+        leaderAttendedAt: new Date(),
+        leaderAttendedBy: scannerUserId ?? "scan-route",
+      },
     });
-    throw new Error("No verified event team found for this QR");
-  }
 
-  if (existing.status !== "verified") {
-    await createScanLog({
-      qrValue,
-      status: "not_verified",
-      message: "Team found but registration is not verified",
-      scannerUserId,
-      teamId: existing.id,
-    });
-    throw new Error("Team registration is not verified yet");
-  }
-
-  if (existing.leaderAttendedAt) {
     const scanLog = await createScanLog({
       qrValue,
-      status: "already_marked",
-      message: "Team already marked",
+      status: "success",
+      message: "Team marked successfully",
       scannerUserId,
-      teamId: existing.id,
+      teamId: updated.id,
     });
 
     if (!scanLog.team) {
       throw new Error("Scan log persisted without team data");
     }
 
+    revalidatePath("/scan");
+    revalidatePath("/scan/events");
+    revalidatePath("/admin/verify");
+    revalidatePath("/admin/attendees");
+
     return {
       row: toScanTeamRow(scanLog),
-      message: "Team already marked",
-      markedNow: false,
+      message: "Team marked successfully",
+      markedNow: true,
     };
   }
 
-  const updated = await prisma.participantTeam.update({
-    where: { id: existing.id },
-    data: {
-      leaderAttendedAt: new Date(),
-      leaderAttendedBy: scannerUserId ?? "scan-route",
+  // Visitor flow (visitors page): teamId stays null in scan_log
+  const pass = await prisma.pass.findFirst({
+    where: {
+      OR: [
+        { qrCode: { equals: qrValue, mode: "insensitive" } },
+        { userBookingId: { equals: qrValue, mode: "insensitive" } },
+      ],
     },
+    include: { user: { select: { name: true } } },
   });
 
-  const scanLog = await createScanLog({
-    qrValue,
-    status: "success",
-    message: "Team marked successfully",
-    scannerUserId,
-    teamId: updated.id,
-  });
-
-  if (!scanLog.team) {
-    throw new Error("Scan log persisted without team data");
+  if (!pass) {
+    await createScanLog({
+      qrValue,
+      status: "visitor_not_found",
+      message: "No visitor pass found for this scan",
+      scannerUserId,
+    });
+    throw new Error("No visitor pass found");
   }
 
-  revalidatePath("/scan");
-  revalidatePath("/admin/verify");
-  revalidatePath("/admin/attendees");
+  const isDual = isDualPassType(pass.type);
+  const hasDay1 = Boolean(pass.verifiedDay1At || pass.verifiedAt);
+  const hasDay2 = Boolean(pass.verifiedDay2At);
 
-  return {
-    row: toScanTeamRow(scanLog),
-    message: "Team marked successfully",
-    markedNow: true,
-  };
+  if (!hasDay1) {
+    await prisma.pass.update({
+      where: { id: pass.id },
+      data: {
+        verifiedDay1At: new Date(),
+        verifiedDay1By: scannerUserId,
+      },
+    });
+
+    await createScanLog({
+      qrValue,
+      status: "visitor_marked",
+      message: `Visitor Day 1 marked (${pass.user.name})`,
+      scannerUserId,
+    });
+
+    revalidatePath("/scan");
+    revalidatePath("/scan/visitors");
+    revalidatePath("/admin/verify");
+    revalidatePath("/admin/attendees");
+
+    return { message: "Visitor marked (Day 1)", markedNow: true };
+  }
+
+  if (isDual && !hasDay2) {
+    await prisma.pass.update({
+      where: { id: pass.id },
+      data: {
+        verifiedDay2At: new Date(),
+        verifiedDay2By: scannerUserId,
+      },
+    });
+
+    await createScanLog({
+      qrValue,
+      status: "visitor_marked",
+      message: `Visitor Day 2 marked (${pass.user.name})`,
+      scannerUserId,
+    });
+
+    revalidatePath("/scan");
+    revalidatePath("/scan/visitors");
+    revalidatePath("/admin/verify");
+    revalidatePath("/admin/attendees");
+
+    return { message: "Visitor marked (Day 2)", markedNow: true };
+  }
+
+  await createScanLog({
+    qrValue,
+    status: "visitor_already_marked",
+    message: `Visitor already marked (${pass.user.name})`,
+    scannerUserId,
+  });
+
+  return { message: "Visitor already marked", markedNow: false };
 }
 
 export async function getScannedTeams() {
@@ -272,43 +354,62 @@ export async function getVisitorPassRows(): Promise<VisitorPassRow[]> {
   const session = await requireAdmin();
   if (!session) throw new Error("Unauthorized");
 
-  const passes = await prisma.pass.findMany({
+  const logs = await prisma.scanLog.findMany({
     where: {
-      OR: [
-        { verifiedDay1At: { not: null } },
-        { verifiedDay2At: { not: null } },
-        { verifiedAt: { not: null } },
-      ],
+      teamId: null,
+      status: { in: ["visitor_marked", "visitor_already_marked"] },
     },
-    include: {
-      user: { select: { name: true, email: true } },
-    },
-    orderBy: { updatedAt: "desc" },
+    orderBy: { scannedAt: "desc" },
     take: 500,
   });
 
-  return passes.map((p) => {
-    const day1 = p.verifiedDay1At;
-    const day2 = p.verifiedDay2At;
-    const legacy = p.verifiedAt;
+  const map = new Map<string, { last: Date; count: number }>();
+  for (const log of logs) {
+    const prev = map.get(log.qrValue);
+    if (!prev) {
+      map.set(log.qrValue, { last: log.scannedAt, count: 1 });
+      continue;
+    }
 
-    const lastScannedAt = [day1, day2, legacy]
-      .filter((v): v is Date => Boolean(v))
-      .sort((a, b) => b.getTime() - a.getTime())[0];
+    map.set(log.qrValue, {
+      last:
+        prev.last.getTime() > log.scannedAt.getTime()
+          ? prev.last
+          : log.scannedAt,
+      count: prev.count + 1,
+    });
+  }
 
-    const scanCount = [day1, day2, legacy].filter(Boolean).length;
+  const rows = await Promise.all(
+    Array.from(map.entries()).map(async ([qrValue, agg]) => {
+      const pass = await prisma.pass.findFirst({
+        where: {
+          OR: [
+            { qrCode: { equals: qrValue, mode: "insensitive" } },
+            { userBookingId: { equals: qrValue, mode: "insensitive" } },
+          ],
+        },
+        include: {
+          user: { select: { name: true, email: true } },
+        },
+      });
 
-    return {
-      id: p.id,
-      name: p.user.name,
-      email: p.user.email,
-      bookingId: p.userBookingId || "-",
-      passType: p.type,
-      day1At: day1,
-      day2At: day2,
-      legacyVerifiedAt: legacy,
-      lastScannedAt: lastScannedAt ?? p.updatedAt,
-      scanCount,
-    };
-  });
+      return {
+        id: pass?.id ?? qrValue,
+        name: pass?.user.name ?? "Unknown Visitor",
+        email: pass?.user.email ?? "-",
+        bookingId: pass?.userBookingId ?? qrValue,
+        passType: pass?.type ?? "Visitor Pass",
+        day1At: pass?.verifiedDay1At ?? null,
+        day2At: pass?.verifiedDay2At ?? null,
+        legacyVerifiedAt: pass?.verifiedAt ?? null,
+        lastScannedAt: agg.last,
+        scanCount: agg.count,
+      };
+    }),
+  );
+
+  return rows.sort(
+    (a, b) => b.lastScannedAt.getTime() - a.lastScannedAt.getTime(),
+  );
 }

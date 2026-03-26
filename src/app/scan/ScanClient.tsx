@@ -155,6 +155,24 @@ function DataTable({ title, rows }: { title: string; rows: ScanTeamRow[] }) {
   );
 }
 
+function TableSkeleton({ title }: { title: string }) {
+  return (
+    <section className="rounded-xl border border-zinc-200 bg-white">
+      <div className="flex items-center justify-between border-b border-zinc-200 p-3">
+        <h2 className="text-sm font-semibold text-zinc-800">{title}</h2>
+      </div>
+      <div className="p-3">
+        <div className="space-y-2">
+          <div className="h-4 w-3/4 animate-pulse rounded bg-zinc-200" />
+          <div className="h-4 w-full animate-pulse rounded bg-zinc-200" />
+          <div className="h-4 w-5/6 animate-pulse rounded bg-zinc-200" />
+          <div className="h-4 w-2/3 animate-pulse rounded bg-zinc-200" />
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function VisitorTable({ rows }: { rows: VisitorPassRow[] }) {
   return (
     <section className="rounded-xl border border-zinc-200 bg-white">
@@ -198,6 +216,10 @@ function VisitorTable({ rows }: { rows: VisitorPassRow[] }) {
       )}
     </section>
   );
+}
+
+function VisitorTableSkeleton() {
+  return <TableSkeleton title="Visitors" />;
 }
 
 function BottomNav() {
@@ -246,6 +268,7 @@ export default function ScanClient({
   const [error, setError] = useState<string | null>(null);
   const [lastScanValue, setLastScanValue] = useState("");
   const [scanPulse, setScanPulse] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
 
   const lockRef = useRef(false);
   const lastProcessedRef = useRef<{ qr: string; at: number } | null>(null);
@@ -271,19 +294,29 @@ export default function ScanClient({
   const loadTables = async () => {
     setRefreshing(true);
     try {
-      const [grouped, visitors] = await Promise.all([
-        getGroupedScannedTeams(),
-        getVisitorPassRows(),
-      ]);
-      setNewlyMarked(grouped.newlyMarked);
-      setAlreadyMarked(grouped.alreadyMarked);
-      setVisitorRows(visitors);
+      if (mode === "events") {
+        const grouped = await getGroupedScannedTeams();
+        setNewlyMarked(grouped.newlyMarked);
+        setAlreadyMarked(grouped.alreadyMarked);
+      } else if (mode === "visitors") {
+        const visitors = await getVisitorPassRows();
+        setVisitorRows(visitors);
+      } else {
+        const [grouped, visitors] = await Promise.all([
+          getGroupedScannedTeams(),
+          getVisitorPassRows(),
+        ]);
+        setNewlyMarked(grouped.newlyMarked);
+        setAlreadyMarked(grouped.alreadyMarked);
+        setVisitorRows(visitors);
+      }
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Failed to load scans";
       setError(msg);
       toast.error(msg);
     } finally {
       setRefreshing(false);
+      setInitialLoading(false);
     }
   };
 
@@ -337,7 +370,7 @@ export default function ScanClient({
     <main className="min-h-screen bg-zinc-100 pb-20 text-zinc-900">
       <Toaster richColors position="top-right" />
 
-      <div className="mx-auto w-full max-w-md p-4">
+      <div className="mx-auto w-full max-w-6xl p-4 sm:p-6 lg:p-8">
         <h1 className="text-lg font-semibold">
           {mode === "home"
             ? "Scan Team QR"
@@ -350,7 +383,7 @@ export default function ScanClient({
         </p>
 
         {mode === "home" && (
-          <section className="mt-4 rounded-xl border border-zinc-200 bg-white p-3">
+          <section className="mt-4 rounded-xl border border-zinc-200 bg-white p-3 sm:p-4">
             <div className="mb-3 flex items-center justify-between">
               <p className="text-sm font-medium">QR Scanner</p>
               <button
@@ -391,11 +424,9 @@ export default function ScanClient({
                   </div>
                 )}
 
-                <div className="pointer-events-none absolute left-4 top-8 z-[5] h-6 w-6 border-l-2 border-t-2 border-emerald-400" />
-                <div className="pointer-events-none absolute right-4 top-8 z-[5] h-6 w-6 border-r-2 border-t-2 border-emerald-400" />
-                <div className="pointer-events-none absolute bottom-4 left-4 z-[5] h-6 w-6 border-b-2 border-l-2 border-emerald-400" />
-                <div className="pointer-events-none absolute bottom-4 right-4 z-[5] h-6 w-6 border-b-2 border-r-2 border-emerald-400" />
-                <div className="pointer-events-none absolute inset-x-6 top-1/2 z-[5] h-0.5 -translate-y-1/2 animate-pulse bg-emerald-400/70" />
+                {loading && (
+                  <div className="pointer-events-none absolute inset-x-6 top-1/2 z-[5] h-0.5 -translate-y-1/2 animate-pulse bg-emerald-400/80" />
+                )}
 
                 <Scanner
                   onScan={(detectedCodes: { rawValue: string }[]) => {
@@ -465,7 +496,9 @@ export default function ScanClient({
 
         {mode === "events" && (
           <div className="mt-4 space-y-4">
-            {eventTableEntries.length === 0 ? (
+            {initialLoading || refreshing ? (
+              <TableSkeleton title="Loading Event Tables" />
+            ) : eventTableEntries.length === 0 ? (
               <DataTable title="Newly Marked" rows={[]} />
             ) : (
               <div className="space-y-4">
@@ -483,7 +516,11 @@ export default function ScanClient({
 
         {mode === "visitors" && (
           <div className="mt-4 space-y-4">
-            <VisitorTable rows={visitorRows} />
+            {initialLoading || refreshing ? (
+              <VisitorTableSkeleton />
+            ) : (
+              <VisitorTable rows={visitorRows} />
+            )}
           </div>
         )}
       </div>
