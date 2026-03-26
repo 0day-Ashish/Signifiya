@@ -28,6 +28,7 @@ import { APP_CONFIG } from "@/config/app.config";
 import RegistrationComingSoon from "@/components/RegistrationComingSoon";
 
 const REGISTRATION_OPEN_DATE = new Date("2026-02-23T12:00:00");
+const VISITOR_REGISTRATION_OPEN = APP_CONFIG.features.visitorRegistrationOpen;
 
 const PASS_AMOUNTS = {
   single: APP_CONFIG.passPrices.single,
@@ -160,6 +161,27 @@ export default function Register() {
     return (
       <div className="flex items-center justify-center min-h-screen bg-zinc-950">
         <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (!VISITOR_REGISTRATION_OPEN) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-zinc-950 p-4">
+        <div className="max-w-xl w-full bg-white border-4 border-black rounded-2xl p-8 shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] text-center">
+          <h1 className="text-3xl font-black uppercase tracking-tight text-black">
+            Visitor Registrations Closed
+          </h1>
+          <p className="mt-4 text-zinc-700 font-medium">
+            Visitor registrations are currently closed.
+          </p>
+          <Link
+            href="/"
+            className="inline-block mt-6 text-black font-mono text-xs font-bold border-2 border-black px-4 py-2 rounded bg-yellow-300 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-y-0.5 hover:shadow-none transition-all"
+          >
+            ← RETURN HOME
+          </Link>
+        </div>
       </div>
     );
   }
@@ -313,7 +335,8 @@ export default function Register() {
                           // Ensure it starts with SGF26-
                           if (value && !value.startsWith("SGF26-")) {
                             if (value.startsWith("SGF26")) {
-                              value = "SGF26-" + value.slice(5).replace(/-/g, "");
+                              value =
+                                "SGF26-" + value.slice(5).replace(/-/g, "");
                             } else if (value.length <= 5) {
                               value =
                                 "SGF26-" +
@@ -335,7 +358,9 @@ export default function Register() {
                               .slice(0, 8);
                             value = "SGF26-" + suffix;
                           }
-                          setValue("bookingId", value, { shouldValidate: true });
+                          setValue("bookingId", value, {
+                            shouldValidate: true,
+                          });
                         }}
                       />
                       <p className="text-xs text-zinc-500 mt-1">
@@ -493,7 +518,9 @@ export default function Register() {
                       <Checkbox
                         id="terms"
                         checked={watch("agreement")}
-                        onCheckedChange={(v) => setValue("agreement", v === true)}
+                        onCheckedChange={(v) =>
+                          setValue("agreement", v === true)
+                        }
                         className="border-2 border-black data-[state=checked]:bg-black data-[state=checked]:text-white w-5 h-5 rounded-md cursor-pointer"
                       />
                       <span className="text-zinc-700 font-bold text-xs uppercase select-none">
@@ -615,7 +642,11 @@ export default function Register() {
                     <motion.div
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
-                      transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 200,
+                        delay: 0.2,
+                      }}
                       className="relative w-28 h-28 bg-green-400 border-4 border-black rounded-full flex items-center justify-center shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]"
                     >
                       <span className="text-5xl">🎉</span>

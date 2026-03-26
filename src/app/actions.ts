@@ -278,6 +278,13 @@ export async function submitVisitorRegistration(data: {
   clientType?: "web" | "expo" | string;
 }) {
   try {
+    if (!APP_CONFIG.features.visitorRegistrationOpen) {
+      return {
+        success: false,
+        error: "Visitor registrations are currently closed.",
+      };
+    }
+
     const {
       bookingId: rawBookingId,
       name,

@@ -30,6 +30,11 @@ export const APP_CONFIG = {
     full: "Visitor Pass",
   },
 
+  // Feature toggles
+  features: {
+    visitorRegistrationOpen: false,
+  },
+
   /**
    * Event registration flash sale discounts.
    * Each entry: { start: ISO date, durationHours, discountPercent }
