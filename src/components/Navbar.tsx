@@ -25,14 +25,37 @@ export default function Navbar({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [desktopNavPinned, setDesktopNavPinned] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
-  const adminEmails = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || "")
-    .split(",")
-    .map((e) => e.trim().toLowerCase())
-    .filter(Boolean);
-  const userEmail = session?.user?.email?.toLowerCase();
+  const [isAdminFromServer, setIsAdminFromServer] = useState(false);
   const isAdmin =
     (session?.user as { role?: string } | undefined)?.role === "admin" ||
-    (Boolean(userEmail) && adminEmails.includes(userEmail));
+    isAdminFromServer;
+
+  useEffect(() => {
+    let cancelled = false;
+
+    if (!session?.user) {
+      setIsAdminFromServer(false);
+      return;
+    }
+
+    (async () => {
+      try {
+        const res = await fetch("/api/auth/is-admin", { cache: "no-store" });
+        if (!res.ok) {
+          if (!cancelled) setIsAdminFromServer(false);
+          return;
+        }
+        const data = (await res.json()) as { isAdmin?: boolean };
+        if (!cancelled) setIsAdminFromServer(Boolean(data.isAdmin));
+      } catch {
+        if (!cancelled) setIsAdminFromServer(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [session?.user]);
 
   useEffect(() => {
     const checkScreenSize = () => {
