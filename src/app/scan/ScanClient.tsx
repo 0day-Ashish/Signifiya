@@ -75,12 +75,17 @@ function downloadCsv(rows: ScanTeamRow[], filename: string) {
 
 function DataTable({ title, rows }: { title: string; rows: ScanTeamRow[] }) {
   return (
-    <section className="rounded-xl border border-zinc-200 bg-white" id={title.includes("New") ? "new-table" : "repeat-table"}>
+    <section
+      className="rounded-xl border border-zinc-200 bg-white"
+      id={title.includes("New") ? "new-table" : "repeat-table"}
+    >
       <div className="flex items-center justify-between border-b border-zinc-200 p-3">
         <h2 className="text-sm font-semibold text-zinc-800">{title}</h2>
         <button
           type="button"
-          onClick={() => downloadCsv(rows, `${title.toLowerCase().replace(/\s+/g, "-")}.csv`)}
+          onClick={() =>
+            downloadCsv(rows, `${title.toLowerCase().replace(/\s+/g, "-")}.csv`)
+          }
           className="rounded-md border border-zinc-300 px-2 py-1 text-xs font-medium text-zinc-700"
         >
           Export CSV
@@ -104,7 +109,9 @@ function DataTable({ title, rows }: { title: string; rows: ScanTeamRow[] }) {
             <tbody>
               {rows.map((row) => (
                 <tr key={row.id} className="border-t border-zinc-100">
-                  <td className="p-2 text-zinc-600">{new Date(row.scannedAt).toLocaleString()}</td>
+                  <td className="p-2 text-zinc-600">
+                    {new Date(row.scannedAt).toLocaleString()}
+                  </td>
                   <td className="p-2 text-zinc-900">{row.teamName}</td>
                   <td className="p-2 text-zinc-700">{row.leaderName}</td>
                   <td className="p-2 text-zinc-700">{row.eventNames}</td>
@@ -185,12 +192,17 @@ export default function ScanClient() {
   };
 
   return (
-    <main className="min-h-screen bg-zinc-100 pb-20 text-zinc-900" ref={scanRef}>
+    <main
+      className="min-h-screen bg-zinc-100 pb-20 text-zinc-900"
+      ref={scanRef}
+    >
       <Toaster richColors position="top-right" />
 
       <div className="mx-auto w-full max-w-md p-4">
         <h1 className="text-lg font-semibold">Scan Team QR</h1>
-        <p className="mt-1 text-xs text-zinc-600">Admin-only mobile scanner. Latest scans appear first.</p>
+        <p className="mt-1 text-xs text-zinc-600">
+          Admin-only mobile scanner. Latest scans appear first.
+        </p>
 
         <section className="mt-4 rounded-xl border border-zinc-200 bg-white p-3">
           <div className="mb-3 flex items-center justify-between">
@@ -262,7 +274,9 @@ export default function ScanClient() {
           </div>
 
           <div className="mt-3 flex items-center justify-between">
-            <p className="text-xs text-zinc-500">Last: {lastScanValue || "-"}</p>
+            <p className="text-xs text-zinc-500">
+              Last: {lastScanValue || "-"}
+            </p>
             <button
               type="button"
               onClick={() => void loadTables()}
@@ -291,21 +305,33 @@ export default function ScanClient() {
           <button
             type="button"
             className="px-2 py-3 text-xs font-medium text-zinc-700"
-            onClick={() => scanRef.current?.scrollIntoView({ behavior: "smooth" })}
+            onClick={() =>
+              scanRef.current?.scrollIntoView({ behavior: "smooth" })
+            }
           >
             Scanner
           </button>
           <button
             type="button"
             className="px-2 py-3 text-xs font-medium text-zinc-700"
-            onClick={() => newRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })}
+            onClick={() =>
+              newRef.current?.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+              })
+            }
           >
             New
           </button>
           <button
             type="button"
             className="px-2 py-3 text-xs font-medium text-zinc-700"
-            onClick={() => repeatRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })}
+            onClick={() =>
+              repeatRef.current?.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+              })
+            }
           >
             Repeat
           </button>
