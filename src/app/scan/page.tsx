@@ -2,8 +2,20 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
-import { getScannedTeams, scanTeamByQr, type ScanTeamRow } from "./actions";
+import { getScannedTeams, scanTeamByQr } from "./actions";
 import { Toaster, toast } from "sonner";
+
+type ScanTeamRow = {
+  id: string;
+  teamName: string;
+  leaderName: string;
+  leaderEmail: string;
+  college: string;
+  qrCode: string | null;
+  eventNames: string;
+  scannedAt: Date | null;
+  alreadyMarked: boolean;
+};
 
 const Scanner = dynamic(
   () => import("@yudiel/react-qr-scanner").then((mod) => mod.Scanner),
