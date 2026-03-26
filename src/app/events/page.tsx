@@ -23,6 +23,7 @@ import { getUserProfile } from "@/app/actions";
 import RegistrationComingSoon from "@/components/RegistrationComingSoon";
 
 const REGISTRATION_OPEN_DATE = new Date("2026-02-23T12:00:00");
+const EVENT_REGISTRATION_OPEN = APP_CONFIG.features.eventRegistrationOpen;
 
 // ... (Configuration Data remains the same) ...
 const eventsList = [
@@ -746,266 +747,393 @@ function EventRegistrationContent() {
     );
   }
 
+  if (!EVENT_REGISTRATION_OPEN) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-zinc-950 p-4">
+        <div className="max-w-xl w-full bg-white border-4 border-black rounded-2xl p-8 shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] text-center">
+          <h1 className="text-3xl font-black uppercase tracking-tight text-black">
+            Event Registrations Closed
+          </h1>
+          <p className="mt-4 text-zinc-700 font-medium">
+            Signifiya event registrations are currently closed.
+          </p>
+          <Link
+            href="/"
+            className="inline-block mt-6 text-black font-mono text-xs font-bold border-2 border-black px-4 py-2 rounded bg-yellow-300 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-y-0.5 hover:shadow-none transition-all"
+          >
+            ← RETURN HOME
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-zinc-950 h-screen max-h-screen flex flex-col p-4 lg:p-8 font-sans overflow-hidden">
       <div className="flex-1 min-h-0 flex items-center justify-center">
         <div className="bg-white rounded-[2rem] w-full max-w-full h-full max-h-full overflow-hidden flex flex-col lg:flex-row">
-        <div className="flex-1 flex flex-col p-6 lg:p-10 relative overflow-hidden min-h-0">
-          <div className="flex flex-col mb-6">
-            <Link
-              href="/"
-              className="inline-block w-fit text-black font-mono text-xs font-bold border-2 border-black px-3 py-1 rounded bg-yellow-300 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-y-0.5 hover:shadow-none transition-all mb-4"
-            >
-              ← RETURN HOME
-            </Link>
-
-            <h1 className="text-4xl lg:text-5xl font-black tracking-tighter text-black leading-none uppercase">
-              Event <span className="text-purple-600">Registration.</span>
-            </h1>
-
-            <div className="mt-8 w-full max-w-full h-6 border-2 border-black rounded-full p-1 bg-zinc-100 mb-2 overflow-hidden box-border">
-              <motion.div
-                initial={{ width: "0%" }}
-                animate={{ width: `${step * 25}%` }}
-                className="h-full bg-black rounded-full transition-all duration-500 ease-in-out relative overflow-hidden"
+          <div className="flex-1 flex flex-col p-6 lg:p-10 relative overflow-hidden min-h-0">
+            <div className="flex flex-col mb-6">
+              <Link
+                href="/"
+                className="inline-block w-fit text-black font-mono text-xs font-bold border-2 border-black px-3 py-1 rounded bg-yellow-300 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-y-0.5 hover:shadow-none transition-all mb-4"
               >
-                <div
-                  className="absolute inset-0 w-full h-full opacity-30"
-                  style={{
-                    backgroundImage:
-                      "repeating-linear-gradient(45deg, transparent, transparent 5px, rgba(255,255,255,0.5) 5px, rgba(255,255,255,0.5) 10px)",
-                  }}
-                ></div>
-              </motion.div>
-            </div>
+                ← RETURN HOME
+              </Link>
 
-            <div className="flex justify-between font-mono text-[10px] font-bold uppercase tracking-widest text-zinc-500">
-              <span className={step === 1 ? "text-black" : ""}>Leader</span>
-              <span className={step === 2 ? "text-black" : ""}>Events</span>
-              <span className={step === 3 ? "text-black" : ""}>Team</span>
-              <span className={step === 4 ? "text-black" : ""}>Pay</span>
-            </div>
-          </div>
+              <h1 className="text-4xl lg:text-5xl font-black tracking-tighter text-black leading-none uppercase">
+                Event <span className="text-purple-600">Registration.</span>
+              </h1>
 
-          <div className="flex-1 min-h-0 pr-2 custom-scrollbar overflow-y-auto">
-            {/* Form Steps */}
-            <AnimatePresence mode="wait">
-              {step === 1 && (
+              <div className="mt-8 w-full max-w-full h-6 border-2 border-black rounded-full p-1 bg-zinc-100 mb-2 overflow-hidden box-border">
                 <motion.div
-                  key="step1"
-                  initial={{ x: -20, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  exit={{ x: -20, opacity: 0 }}
-                  className="space-y-5"
+                  initial={{ width: "0%" }}
+                  animate={{ width: `${step * 25}%` }}
+                  className="h-full bg-black rounded-full transition-all duration-500 ease-in-out relative overflow-hidden"
                 >
-                  <div className="bg-purple-100 border-2 border-black p-3 rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                    <p className="font-bold text-xs uppercase">
-                      Step 1/4: Team Leader Details
-                    </p>
-                  </div>
-
-                  <div className="w-full">
-                    <Label className={labelStyles}>Team Name</Label>
-                    <Input
-                      {...register("teamName")}
-                      className={inputStyles}
-                      placeholder="CODE WARRIORS"
-                    />
-                    {errors.teamName && (
-                      <p className="text-red-500 text-xs font-bold mt-1 bg-red-50 p-1 border border-red-200 inline-block">
-                        {errors.teamName.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="flex flex-col md:flex-row gap-4">
-                    <div className="w-full">
-                      <Label className={labelStyles}>Leader Name</Label>
-                      <Input
-                        {...register("leaderName")}
-                        className={inputStyles}
-                        placeholder="JANE DOE"
-                      />
-                      {errors.leaderName && (
-                        <p className="text-red-500 text-xs font-bold mt-1 bg-red-50 p-1 border border-red-200 inline-block">
-                          {errors.leaderName.message}
-                        </p>
-                      )}
-                    </div>
-                    <div className="w-full">
-                      <Label className={labelStyles}>College/School name</Label>
-                      <Input
-                        {...register("college")}
-                        className={inputStyles}
-                        placeholder="ADAMAS UNIVERSITY"
-                      />
-                      {errors.college && (
-                        <p className="text-red-500 text-xs font-bold mt-1 bg-red-50 p-1 border border-red-200 inline-block">
-                          {errors.college.message}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label className={labelStyles}>Email</Label>
-                      <Input
-                        {...register("email")}
-                        className={inputStyles}
-                        placeholder="EMAIL@COLLEGE.EDU"
-                      />
-                      {errors.email && (
-                        <p className="text-red-500 text-xs font-bold mt-1 bg-red-50 p-1 border border-red-200 inline-block">
-                          {errors.email.message}
-                        </p>
-                      )}
-                    </div>
-                    <div>
-                      <Label className={labelStyles}>Phone</Label>
-                      <Input
-                        {...register("phone")}
-                        className={inputStyles}
-                        placeholder="9876543210"
-                      />
-                      {errors.phone && (
-                        <p className="text-red-500 text-xs font-bold mt-1 bg-red-50 p-1 border border-red-200 inline-block">
-                          {errors.phone.message}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div>
-                    <Label className={labelStyles}>Booking ID</Label>
-                    <Input
-                      {...register("bookingId")}
-                      className={inputStyles}
-                      placeholder="SGF26-XXXXXXXX"
-                      readOnly={isBookingIdPrefilled}
-                      onChange={(e) => {
-                        if (isBookingIdPrefilled) return;
-                        let value = e.target.value.toUpperCase();
-                        // Remove any characters that aren't alphanumeric or hyphen
-                        value = value.replace(/[^A-Z0-9-]/g, "");
-                        // Ensure it starts with SGF26-
-                        if (value && !value.startsWith("SGF26-")) {
-                          if (value.startsWith("SGF26")) {
-                            value = "SGF26-" + value.slice(5).replace(/-/g, "");
-                          } else if (value.length <= 5) {
-                            value =
-                              "SGF26-" +
-                              value.replace(/SGF26/g, "").replace(/-/g, "");
-                          } else {
-                            value =
-                              "SGF26-" +
-                              value
-                                .replace(/SGF26-?/g, "")
-                                .replace(/-/g, "")
-                                .slice(0, 8);
-                          }
-                        }
-                        // Limit to SGF26- + 8 characters
-                        if (value.startsWith("SGF26-")) {
-                          const suffix = value
-                            .slice(6)
-                            .replace(/-/g, "")
-                            .slice(0, 8);
-                          value = "SGF26-" + suffix;
-                        }
-                        setValue("bookingId", value, { shouldValidate: true });
-                      }}
-                    />
-                    <p className="text-xs text-zinc-500 mt-1">
-                      {isPrefillLoading
-                        ? "Loading Booking ID from database..."
-                        : "Booking ID auto-fills from your profile. If missing, visit "}
-                      {!isPrefillLoading && (
-                        <>
-                          <Link
-                            href="/profile"
-                            className="underline font-semibold text-zinc-700"
-                          >
-                            Profile
-                          </Link>
-                          {" and complete your details."}
-                        </>
-                      )}
-                    </p>
-                    {errors.bookingId && (
-                      <p className="text-red-500 text-xs font-bold mt-1 bg-red-50 p-1 border border-red-200 inline-block">
-                        {errors.bookingId.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <Button
-                    onClick={onSubmitStep1}
-                    className="w-full bg-black text-white font-bold py-6 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_#a855f7] hover:shadow-[2px_2px_0px_0px_#a855f7] hover:translate-x-[2px] hover:translate-y-[2px] transition-all mt-4"
-                  >
-                    NEXT: SELECT EVENT →
-                  </Button>
-                </motion.div>
-              )}
-
-              {step === 2 && (
-                <motion.div
-                  key="step2"
-                  initial={{ x: 20, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  exit={{ x: -20, opacity: 0 }}
-                  className="space-y-4"
-                >
-                  <p className="font-bold text-xs uppercase text-zinc-500">
-                    Step 2/4: Select Event
-                  </p>
-                  {activeDiscount && (
-                    <div className="bg-green-100 border-2 border-green-600 rounded-xl p-3 flex items-center justify-between animate-pulse">
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg">🔥</span>
-                        <span className="font-black text-green-800 text-sm uppercase">
-                          {activeDiscount.label}
-                        </span>
-                      </div>
-                      {discountTimeLeft && (
-                        <span className="font-mono font-bold text-green-700 text-xs bg-green-200 px-2 py-1 rounded-lg">
-                          Ends in {discountTimeLeft}
-                        </span>
-                      )}
-                    </div>
-                  )}
                   <div
-                    ref={eventListRef}
-                    className="space-y-3 h-[400px] overflow-y-auto pr-2 custom-scrollbar"
+                    className="absolute inset-0 w-full h-full opacity-30"
+                    style={{
+                      backgroundImage:
+                        "repeating-linear-gradient(45deg, transparent, transparent 5px, rgba(255,255,255,0.5) 5px, rgba(255,255,255,0.5) 10px)",
+                    }}
+                  ></div>
+                </motion.div>
+              </div>
+
+              <div className="flex justify-between font-mono text-[10px] font-bold uppercase tracking-widest text-zinc-500">
+                <span className={step === 1 ? "text-black" : ""}>Leader</span>
+                <span className={step === 2 ? "text-black" : ""}>Events</span>
+                <span className={step === 3 ? "text-black" : ""}>Team</span>
+                <span className={step === 4 ? "text-black" : ""}>Pay</span>
+              </div>
+            </div>
+
+            <div className="flex-1 min-h-0 pr-2 custom-scrollbar overflow-y-auto">
+              {/* Form Steps */}
+              <AnimatePresence mode="wait">
+                {step === 1 && (
+                  <motion.div
+                    key="step1"
+                    initial={{ x: -20, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    exit={{ x: -20, opacity: 0 }}
+                    className="space-y-5"
                   >
-                    {singleEventMode && selectedEventIds.length > 0
-                      ? eventsList
-                          .filter((ev) => selectedEventIds.includes(ev.id))
-                          .map((ev) => {
-                            const isSelected = true;
+                    <div className="bg-purple-100 border-2 border-black p-3 rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                      <p className="font-bold text-xs uppercase">
+                        Step 1/4: Team Leader Details
+                      </p>
+                    </div>
+
+                    <div className="w-full">
+                      <Label className={labelStyles}>Team Name</Label>
+                      <Input
+                        {...register("teamName")}
+                        className={inputStyles}
+                        placeholder="CODE WARRIORS"
+                      />
+                      {errors.teamName && (
+                        <p className="text-red-500 text-xs font-bold mt-1 bg-red-50 p-1 border border-red-200 inline-block">
+                          {errors.teamName.message}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="flex flex-col md:flex-row gap-4">
+                      <div className="w-full">
+                        <Label className={labelStyles}>Leader Name</Label>
+                        <Input
+                          {...register("leaderName")}
+                          className={inputStyles}
+                          placeholder="JANE DOE"
+                        />
+                        {errors.leaderName && (
+                          <p className="text-red-500 text-xs font-bold mt-1 bg-red-50 p-1 border border-red-200 inline-block">
+                            {errors.leaderName.message}
+                          </p>
+                        )}
+                      </div>
+                      <div className="w-full">
+                        <Label className={labelStyles}>
+                          College/School name
+                        </Label>
+                        <Input
+                          {...register("college")}
+                          className={inputStyles}
+                          placeholder="ADAMAS UNIVERSITY"
+                        />
+                        {errors.college && (
+                          <p className="text-red-500 text-xs font-bold mt-1 bg-red-50 p-1 border border-red-200 inline-block">
+                            {errors.college.message}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label className={labelStyles}>Email</Label>
+                        <Input
+                          {...register("email")}
+                          className={inputStyles}
+                          placeholder="EMAIL@COLLEGE.EDU"
+                        />
+                        {errors.email && (
+                          <p className="text-red-500 text-xs font-bold mt-1 bg-red-50 p-1 border border-red-200 inline-block">
+                            {errors.email.message}
+                          </p>
+                        )}
+                      </div>
+                      <div>
+                        <Label className={labelStyles}>Phone</Label>
+                        <Input
+                          {...register("phone")}
+                          className={inputStyles}
+                          placeholder="9876543210"
+                        />
+                        {errors.phone && (
+                          <p className="text-red-500 text-xs font-bold mt-1 bg-red-50 p-1 border border-red-200 inline-block">
+                            {errors.phone.message}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label className={labelStyles}>Booking ID</Label>
+                      <Input
+                        {...register("bookingId")}
+                        className={inputStyles}
+                        placeholder="SGF26-XXXXXXXX"
+                        readOnly={isBookingIdPrefilled}
+                        onChange={(e) => {
+                          if (isBookingIdPrefilled) return;
+                          let value = e.target.value.toUpperCase();
+                          // Remove any characters that aren't alphanumeric or hyphen
+                          value = value.replace(/[^A-Z0-9-]/g, "");
+                          // Ensure it starts with SGF26-
+                          if (value && !value.startsWith("SGF26-")) {
+                            if (value.startsWith("SGF26")) {
+                              value =
+                                "SGF26-" + value.slice(5).replace(/-/g, "");
+                            } else if (value.length <= 5) {
+                              value =
+                                "SGF26-" +
+                                value.replace(/SGF26/g, "").replace(/-/g, "");
+                            } else {
+                              value =
+                                "SGF26-" +
+                                value
+                                  .replace(/SGF26-?/g, "")
+                                  .replace(/-/g, "")
+                                  .slice(0, 8);
+                            }
+                          }
+                          // Limit to SGF26- + 8 characters
+                          if (value.startsWith("SGF26-")) {
+                            const suffix = value
+                              .slice(6)
+                              .replace(/-/g, "")
+                              .slice(0, 8);
+                            value = "SGF26-" + suffix;
+                          }
+                          setValue("bookingId", value, {
+                            shouldValidate: true,
+                          });
+                        }}
+                      />
+                      <p className="text-xs text-zinc-500 mt-1">
+                        {isPrefillLoading
+                          ? "Loading Booking ID from database..."
+                          : "Booking ID auto-fills from your profile. If missing, visit "}
+                        {!isPrefillLoading && (
+                          <>
+                            <Link
+                              href="/profile"
+                              className="underline font-semibold text-zinc-700"
+                            >
+                              Profile
+                            </Link>
+                            {" and complete your details."}
+                          </>
+                        )}
+                      </p>
+                      {errors.bookingId && (
+                        <p className="text-red-500 text-xs font-bold mt-1 bg-red-50 p-1 border border-red-200 inline-block">
+                          {errors.bookingId.message}
+                        </p>
+                      )}
+                    </div>
+
+                    <Button
+                      onClick={onSubmitStep1}
+                      className="w-full bg-black text-white font-bold py-6 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_#a855f7] hover:shadow-[2px_2px_0px_0px_#a855f7] hover:translate-x-[2px] hover:translate-y-[2px] transition-all mt-4"
+                    >
+                      NEXT: SELECT EVENT →
+                    </Button>
+                  </motion.div>
+                )}
+
+                {step === 2 && (
+                  <motion.div
+                    key="step2"
+                    initial={{ x: 20, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    exit={{ x: -20, opacity: 0 }}
+                    className="space-y-4"
+                  >
+                    <p className="font-bold text-xs uppercase text-zinc-500">
+                      Step 2/4: Select Event
+                    </p>
+                    {activeDiscount && (
+                      <div className="bg-green-100 border-2 border-green-600 rounded-xl p-3 flex items-center justify-between animate-pulse">
+                        <div className="flex items-center gap-2">
+                          <span className="text-lg">🔥</span>
+                          <span className="font-black text-green-800 text-sm uppercase">
+                            {activeDiscount.label}
+                          </span>
+                        </div>
+                        {discountTimeLeft && (
+                          <span className="font-mono font-bold text-green-700 text-xs bg-green-200 px-2 py-1 rounded-lg">
+                            Ends in {discountTimeLeft}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                    <div
+                      ref={eventListRef}
+                      className="space-y-3 h-[400px] overflow-y-auto pr-2 custom-scrollbar"
+                    >
+                      {singleEventMode && selectedEventIds.length > 0
+                        ? eventsList
+                            .filter((ev) => selectedEventIds.includes(ev.id))
+                            .map((ev) => {
+                              const isSelected = true;
+                              return (
+                                <div key={ev.id}>
+                                  <div
+                                    onClick={() => {
+                                      setSingleEventMode(false);
+                                      setValue("selectedEvents", []);
+                                      setDanceMode(null);
+                                    }}
+                                    className="cursor-pointer border-2 p-4 rounded-xl border-black bg-[#deb3fa] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+                                  >
+                                    <div className="flex justify-between items-start relative z-10">
+                                      <div>
+                                        <h3 className="font-black text-lg uppercase text-black">
+                                          {ev.name}
+                                        </h3>
+                                        <p className="text-xs font-bold mt-1 text-black/70">
+                                          {ev.date} • Click to change
+                                          {ev.id === "dance"
+                                            ? " • Team Size: 1/2/3/4/5/6/7"
+                                            : ""}
+                                        </p>
+                                      </div>
+                                      <div className="px-2 py-1 rounded text-xs font-bold border-2 bg-black text-white border-black">
+                                        {(() => {
+                                          if (ev.closed)
+                                            return <span>CLOSED</span>;
+                                          const price = getEventPrice(ev);
+                                          const {
+                                            original,
+                                            discounted,
+                                            hasDiscount,
+                                          } = getDiscountedPrice(
+                                            price,
+                                            activeDiscount,
+                                          );
+                                          return hasDiscount ? (
+                                            <span className="flex items-center gap-1">
+                                              <span className="line-through opacity-80">
+                                                ₹{original}
+                                              </span>
+                                              <span className="text-green-500">
+                                                ₹{discounted}
+                                              </span>
+                                            </span>
+                                          ) : (
+                                            <span>₹{original}</span>
+                                          );
+                                        })()}
+                                      </div>
+                                    </div>
+                                  </div>
+                                  {/* Dance Battle Solo/Team toggle */}
+                                  {ev.id === "dance" && (
+                                    <div className="flex gap-2 mt-2">
+                                      <button
+                                        type="button"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setDanceMode("solo");
+                                        }}
+                                        className={`flex-1 py-2 px-3 rounded-lg border-2 font-bold text-sm uppercase transition-all ${
+                                          danceMode === "solo"
+                                            ? "bg-fuchsia-600 text-white border-fuchsia-700 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
+                                            : "bg-white text-black border-black hover:bg-fuchsia-50"
+                                        }`}
+                                      >
+                                        Solo — ₹199
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setDanceMode("team");
+                                        }}
+                                        className={`flex-1 py-2 px-3 rounded-lg border-2 font-bold text-sm uppercase transition-all ${
+                                          danceMode === "team"
+                                            ? "bg-fuchsia-600 text-white border-fuchsia-700 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
+                                            : "bg-white text-black border-black hover:bg-fuchsia-50"
+                                        }`}
+                                      >
+                                        Team — ₹499
+                                      </button>
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })
+                        : eventsList.map((ev) => {
+                            const isSelected = selectedEventIds.includes(ev.id);
                             return (
                               <div key={ev.id}>
                                 <div
-                                  onClick={() => {
-                                    setSingleEventMode(false);
-                                    setValue("selectedEvents", []);
-                                    setDanceMode(null);
-                                  }}
-                                  className="cursor-pointer border-2 p-4 rounded-xl border-black bg-[#deb3fa] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+                                  onClick={
+                                    ev.closed
+                                      ? undefined
+                                      : () => toggleEvent(ev.id)
+                                  }
+                                  className={`cursor-pointer border-2 p-4 rounded-xl transition-all relative overflow-hidden ${
+                                    isSelected
+                                      ? "border-black bg-[#deb3fa] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+                                      : ev.closed
+                                        ? "border-zinc-300 bg-zinc-100 opacity-60 cursor-not-allowed"
+                                        : "border-zinc-900 bg-white hover:border-zinc-400"
+                                  }`}
                                 >
                                   <div className="flex justify-between items-start relative z-10">
                                     <div>
-                                      <h3 className="font-black text-lg uppercase text-black">
+                                      <h3
+                                        className={`font-black text-lg uppercase ${isSelected ? "text-black" : "text-zinc-900"}`}
+                                      >
                                         {ev.name}
                                       </h3>
-                                      <p className="text-xs font-bold mt-1 text-black/70">
-                                        {ev.date} • Click to change
-                                        {ev.id === "dance"
+                                      <p
+                                        className={`text-xs font-bold mt-1 ${isSelected ? "text-black/70" : "text-zinc-900"}`}
+                                      >
+                                        {ev.date}
+                                        {ev.id === "dance" && isSelected
                                           ? " • Team Size: 1/2/3/4/5/6/7"
                                           : ""}
                                       </p>
                                     </div>
-                                    <div className="px-2 py-1 rounded text-xs font-bold border-2 bg-black text-white border-black">
+                                    <div
+                                      className={`px-2 py-1 rounded text-xs font-bold border-2 ${isSelected ? "bg-black text-white border-black" : ev.closed ? "bg-zinc-300 text-zinc-500 border-zinc-400" : "bg-zinc-100 text-zinc-800 border-zinc-200"}`}
+                                    >
                                       {(() => {
                                         if (ev.closed)
                                           return <span>CLOSED</span>;
@@ -1035,7 +1163,7 @@ function EventRegistrationContent() {
                                   </div>
                                 </div>
                                 {/* Dance Battle Solo/Team toggle */}
-                                {ev.id === "dance" && (
+                                {ev.id === "dance" && isSelected && (
                                   <div className="flex gap-2 mt-2">
                                     <button
                                       type="button"
@@ -1069,676 +1197,580 @@ function EventRegistrationContent() {
                                 )}
                               </div>
                             );
-                          })
-                      : eventsList.map((ev) => {
-                          const isSelected = selectedEventIds.includes(ev.id);
-                          return (
-                            <div key={ev.id}>
-                              <div
-                                onClick={
-                                  ev.closed
-                                    ? undefined
-                                    : () => toggleEvent(ev.id)
-                                }
-                                className={`cursor-pointer border-2 p-4 rounded-xl transition-all relative overflow-hidden ${
-                                  isSelected
-                                    ? "border-black bg-[#deb3fa] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
-                                    : ev.closed
-                                      ? "border-zinc-300 bg-zinc-100 opacity-60 cursor-not-allowed"
-                                      : "border-zinc-900 bg-white hover:border-zinc-400"
-                                }`}
-                              >
-                                <div className="flex justify-between items-start relative z-10">
-                                  <div>
-                                    <h3
-                                      className={`font-black text-lg uppercase ${isSelected ? "text-black" : "text-zinc-900"}`}
-                                    >
-                                      {ev.name}
-                                    </h3>
-                                    <p
-                                      className={`text-xs font-bold mt-1 ${isSelected ? "text-black/70" : "text-zinc-900"}`}
-                                    >
-                                      {ev.date}
-                                      {ev.id === "dance" && isSelected
-                                        ? " • Team Size: 1/2/3/4/5/6/7"
-                                        : ""}
-                                    </p>
-                                  </div>
-                                  <div
-                                    className={`px-2 py-1 rounded text-xs font-bold border-2 ${isSelected ? "bg-black text-white border-black" : ev.closed ? "bg-zinc-300 text-zinc-500 border-zinc-400" : "bg-zinc-100 text-zinc-800 border-zinc-200"}`}
-                                  >
-                                    {(() => {
-                                      if (ev.closed) return <span>CLOSED</span>;
-                                      const price = getEventPrice(ev);
-                                      const {
-                                        original,
-                                        discounted,
-                                        hasDiscount,
-                                      } = getDiscountedPrice(
-                                        price,
-                                        activeDiscount,
-                                      );
-                                      return hasDiscount ? (
-                                        <span className="flex items-center gap-1">
-                                          <span className="line-through opacity-80">
-                                            ₹{original}
-                                          </span>
-                                          <span className="text-green-500">
-                                            ₹{discounted}
-                                          </span>
-                                        </span>
-                                      ) : (
-                                        <span>₹{original}</span>
-                                      );
-                                    })()}
-                                  </div>
-                                </div>
-                              </div>
-                              {/* Dance Battle Solo/Team toggle */}
-                              {ev.id === "dance" && isSelected && (
-                                <div className="flex gap-2 mt-2">
-                                  <button
-                                    type="button"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      setDanceMode("solo");
-                                    }}
-                                    className={`flex-1 py-2 px-3 rounded-lg border-2 font-bold text-sm uppercase transition-all ${
-                                      danceMode === "solo"
-                                        ? "bg-fuchsia-600 text-white border-fuchsia-700 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
-                                        : "bg-white text-black border-black hover:bg-fuchsia-50"
-                                    }`}
-                                  >
-                                    Solo — ₹199
-                                  </button>
-                                  <button
-                                    type="button"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      setDanceMode("team");
-                                    }}
-                                    className={`flex-1 py-2 px-3 rounded-lg border-2 font-bold text-sm uppercase transition-all ${
-                                      danceMode === "team"
-                                        ? "bg-fuchsia-600 text-white border-fuchsia-700 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
-                                        : "bg-white text-black border-black hover:bg-fuchsia-50"
-                                    }`}
-                                  >
-                                    Team — ₹499
-                                  </button>
-                                </div>
-                              )}
-                            </div>
-                          );
-                        })}
-                  </div>
-
-                  <div className="flex gap-4">
-                    <Button
-                      onClick={() => setStep(1)}
-                      variant="outline"
-                      className="flex-1 bg-white border-2 border-black font-bold py-6 rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
-                    >
-                      BACK
-                    </Button>
-                    <Button
-                      onClick={onSubmitStep2}
-                      className="flex-[2] bg-black text-white font-bold py-6 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_#a855f7] hover:shadow-[2px_2px_0px_0px_#a855f7] hover:translate-y-[2px] hover:shadow-none transition-all"
-                    >
-                      NEXT: ADD TEAM →
-                    </Button>
-                  </div>
-                </motion.div>
-              )}
-
-              {step === 3 && (
-                <motion.div
-                  key="step3"
-                  initial={{ x: 20, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  exit={{ x: -20, opacity: 0 }}
-                  className="space-y-4"
-                >
-                  <p className="font-bold text-xs uppercase text-zinc-500">
-                    {isSoloEvent
-                      ? "Step 3/4: Your Details"
-                      : `Step 3/4: Add Team Members (${fields.length + 1}/${maxTotalTeam}) - Including Leader`}
-                  </p>
-
-                  <div className="bg-purple-100 border-2 border-black p-4 rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                    <div className="flex items-center gap-2 mb-3">
-                      <span className="bg-black text-white text-xs font-bold px-2 py-1 rounded">
-                        TEAM LEADER
-                      </span>
+                          })}
                     </div>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <p className="text-xs text-zinc-500 uppercase font-bold">
-                          Name
-                        </p>
-                        <p className="font-bold text-black">
-                          {watch("leaderName") || "—"}
-                        </p>
+
+                    <div className="flex gap-4">
+                      <Button
+                        onClick={() => setStep(1)}
+                        variant="outline"
+                        className="flex-1 bg-white border-2 border-black font-bold py-6 rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+                      >
+                        BACK
+                      </Button>
+                      <Button
+                        onClick={onSubmitStep2}
+                        className="flex-[2] bg-black text-white font-bold py-6 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_#a855f7] hover:shadow-[2px_2px_0px_0px_#a855f7] hover:translate-y-[2px] hover:shadow-none transition-all"
+                      >
+                        NEXT: ADD TEAM →
+                      </Button>
+                    </div>
+                  </motion.div>
+                )}
+
+                {step === 3 && (
+                  <motion.div
+                    key="step3"
+                    initial={{ x: 20, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    exit={{ x: -20, opacity: 0 }}
+                    className="space-y-4"
+                  >
+                    <p className="font-bold text-xs uppercase text-zinc-500">
+                      {isSoloEvent
+                        ? "Step 3/4: Your Details"
+                        : `Step 3/4: Add Team Members (${fields.length + 1}/${maxTotalTeam}) - Including Leader`}
+                    </p>
+
+                    <div className="bg-purple-100 border-2 border-black p-4 rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                      <div className="flex items-center gap-2 mb-3">
+                        <span className="bg-black text-white text-xs font-bold px-2 py-1 rounded">
+                          TEAM LEADER
+                        </span>
                       </div>
-                      <div>
-                        <p className="text-xs text-zinc-500 uppercase font-bold">
-                          Email
-                        </p>
-                        <p className="font-bold text-black text-sm">
-                          {watch("email") || "—"}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-zinc-500 uppercase font-bold">
-                          Phone
-                        </p>
-                        <p className="font-bold text-black">
-                          {watch("phone") || "—"}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-zinc-500 uppercase font-bold">
-                          College
-                        </p>
-                        <p className="font-bold text-black text-sm">
-                          {watch("college") || "—"}
-                        </p>
-                      </div>
-                      {currentGameIdLabel && (
-                        <div className="col-span-2">
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
                           <p className="text-xs text-zinc-500 uppercase font-bold">
-                            {currentGameIdLabel}
+                            Name
                           </p>
                           <p className="font-bold text-black">
-                            {watch("leaderGameId") || "—"}
+                            {watch("leaderName") || "—"}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-zinc-500 uppercase font-bold">
+                            Email
+                          </p>
+                          <p className="font-bold text-black text-sm">
+                            {watch("email") || "—"}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-zinc-500 uppercase font-bold">
+                            Phone
+                          </p>
+                          <p className="font-bold text-black">
+                            {watch("phone") || "—"}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-zinc-500 uppercase font-bold">
+                            College
+                          </p>
+                          <p className="font-bold text-black text-sm">
+                            {watch("college") || "—"}
+                          </p>
+                        </div>
+                        {currentGameIdLabel && (
+                          <div className="col-span-2">
+                            <p className="text-xs text-zinc-500 uppercase font-bold">
+                              {currentGameIdLabel}
+                            </p>
+                            <p className="font-bold text-black">
+                              {watch("leaderGameId") || "—"}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {isArmWrestling && (
+                      <div className="bg-amber-50 border-2 border-amber-400 p-4 rounded-xl">
+                        <Label className={labelStyles}>Weight Category</Label>
+                        <select
+                          className={`${inputStyles} w-full px-3 py-2 cursor-pointer`}
+                          value={watch("leaderGameId") || ""}
+                          onChange={(e) =>
+                            setValue("leaderGameId", e.target.value, {
+                              shouldValidate: true,
+                            })
+                          }
+                        >
+                          <option value="">Select your weight category</option>
+                          {WEIGHT_CATEGORIES.map((cat) => (
+                            <option key={cat} value={cat}>
+                              {cat}
+                            </option>
+                          ))}
+                        </select>
+                        <p className="text-xs text-amber-600 mt-1">
+                          Required — choose the category you will compete in
+                        </p>
+                      </div>
+                    )}
+
+                    {isDanceBattle && (
+                      <div className="bg-fuchsia-50 border-2 border-fuchsia-400 p-4 rounded-xl">
+                        <Label className={labelStyles}>Dance Form</Label>
+                        <select
+                          className={`${inputStyles} w-full px-3 py-2 cursor-pointer`}
+                          value={watch("leaderGameId") || ""}
+                          onChange={(e) =>
+                            setValue("leaderGameId", e.target.value, {
+                              shouldValidate: true,
+                            })
+                          }
+                        >
+                          <option value="">Select your dance form</option>
+                          {DANCE_FORMS.map((form) => (
+                            <option key={form} value={form}>
+                              {form}
+                            </option>
+                          ))}
+                        </select>
+                        <p className="text-xs text-fuchsia-600 mt-1">
+                          Required — choose the dance style you will perform
+                        </p>
+                      </div>
+                    )}
+
+                    {currentGameIdLabel &&
+                      !isArmWrestling &&
+                      !isDanceBattle && (
+                        <div className="bg-amber-50 border-2 border-amber-400 p-4 rounded-xl">
+                          <Label className={labelStyles}>
+                            {currentGameIdLabel} (Team Leader)
+                          </Label>
+                          <Input
+                            {...register("leaderGameId")}
+                            className={inputStyles}
+                            placeholder={`Enter your ${currentGameIdLabel} (${currentGameIdPlaceholder})`}
+                          />
+                          <p className="text-xs text-amber-600 mt-1">
+                            Required for all team members including leader
                           </p>
                         </div>
                       )}
-                    </div>
-                  </div>
 
-                  {isArmWrestling && (
-                    <div className="bg-amber-50 border-2 border-amber-400 p-4 rounded-xl">
-                      <Label className={labelStyles}>Weight Category</Label>
-                      <select
-                        className={`${inputStyles} w-full px-3 py-2 cursor-pointer`}
-                        value={watch("leaderGameId") || ""}
-                        onChange={(e) =>
-                          setValue("leaderGameId", e.target.value, {
-                            shouldValidate: true,
-                          })
-                        }
-                      >
-                        <option value="">Select your weight category</option>
-                        {WEIGHT_CATEGORIES.map((cat) => (
-                          <option key={cat} value={cat}>
-                            {cat}
-                          </option>
-                        ))}
-                      </select>
-                      <p className="text-xs text-amber-600 mt-1">
-                        Required — choose the category you will compete in
-                      </p>
-                    </div>
-                  )}
+                    {isEsports && (
+                      <div className="bg-amber-100 border-2 border-amber-500 p-3 rounded-xl">
+                        <p className="text-amber-800 text-xs font-bold">
+                          Esports Event: 1 Leader + {teamSizeLimit} players
+                          (plus 1 optional substitute)
+                        </p>
+                      </div>
+                    )}
 
-                  {isDanceBattle && (
-                    <div className="bg-fuchsia-50 border-2 border-fuchsia-400 p-4 rounded-xl">
-                      <Label className={labelStyles}>Dance Form</Label>
-                      <select
-                        className={`${inputStyles} w-full px-3 py-2 cursor-pointer`}
-                        value={watch("leaderGameId") || ""}
-                        onChange={(e) =>
-                          setValue("leaderGameId", e.target.value, {
-                            shouldValidate: true,
-                          })
-                        }
-                      >
-                        <option value="">Select your dance form</option>
-                        {DANCE_FORMS.map((form) => (
-                          <option key={form} value={form}>
-                            {form}
-                          </option>
-                        ))}
-                      </select>
-                      <p className="text-xs text-fuchsia-600 mt-1">
-                        Required — choose the dance style you will perform
-                      </p>
-                    </div>
-                  )}
-
-                  {currentGameIdLabel && !isArmWrestling && !isDanceBattle && (
-                    <div className="bg-amber-50 border-2 border-amber-400 p-4 rounded-xl">
-                      <Label className={labelStyles}>
-                        {currentGameIdLabel} (Team Leader)
-                      </Label>
-                      <Input
-                        {...register("leaderGameId")}
-                        className={inputStyles}
-                        placeholder={`Enter your ${currentGameIdLabel} (${currentGameIdPlaceholder})`}
-                      />
-                      <p className="text-xs text-amber-600 mt-1">
-                        Required for all team members including leader
-                      </p>
-                    </div>
-                  )}
-
-                  {isEsports && (
-                    <div className="bg-amber-100 border-2 border-amber-500 p-3 rounded-xl">
-                      <p className="text-amber-800 text-xs font-bold">
-                        Esports Event: 1 Leader + {teamSizeLimit} players (plus
-                        1 optional substitute)
-                      </p>
-                    </div>
-                  )}
-
-                  {!isSoloEvent && (
-                    <div className="space-y-4">
-                      {fields.map((field, index) => (
-                        <div
-                          key={field.id}
-                          className="bg-white border-2 border-black p-4 rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] relative"
-                        >
-                          <button
-                            type="button"
-                            onClick={() => remove(index)}
-                            className="absolute -top-3 -right-3 w-8 h-8 flex items-center justify-center bg-red-500 border-2 border-black rounded-full text-white hover:bg-red-600 transition-colors z-10"
+                    {!isSoloEvent && (
+                      <div className="space-y-4">
+                        {fields.map((field, index) => (
+                          <div
+                            key={field.id}
+                            className="bg-white border-2 border-black p-4 rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] relative"
                           >
-                            <svg
-                              width="16"
-                              height="16"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="3"
+                            <button
+                              type="button"
+                              onClick={() => remove(index)}
+                              className="absolute -top-3 -right-3 w-8 h-8 flex items-center justify-center bg-red-500 border-2 border-black rounded-full text-white hover:bg-red-600 transition-colors z-10"
                             >
-                              <line x1="18" y1="6" x2="6" y2="18"></line>
-                              <line x1="6" y1="6" x2="18" y2="18"></line>
-                            </svg>
-                          </button>
-                          <h4 className="font-bold text-xs uppercase mb-3 text-zinc-400">
-                            Member {index + 1}
-                            {teamSizeLimit !== null &&
-                            teamSizeLimit !== undefined &&
-                            hasSubstitute &&
-                            index >= teamSizeLimit ? (
-                              <span className="ml-2 text-[10px] font-medium text-zinc-600">
-                                (Substitute)
-                              </span>
-                            ) : null}
-                          </h4>
-                          <div className="grid gap-3">
-                            <Input
-                              {...register(`members.${index}.name`)}
-                              className={inputStyles}
-                              placeholder="Name"
-                            />
-                            <Input
-                              {...register(`members.${index}.college`)}
-                              className={inputStyles}
-                              placeholder="College"
-                            />
-                            <div className="grid grid-cols-2 gap-3">
+                              <svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="3"
+                              >
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                              </svg>
+                            </button>
+                            <h4 className="font-bold text-xs uppercase mb-3 text-zinc-400">
+                              Member {index + 1}
+                              {teamSizeLimit !== null &&
+                              teamSizeLimit !== undefined &&
+                              hasSubstitute &&
+                              index >= teamSizeLimit ? (
+                                <span className="ml-2 text-[10px] font-medium text-zinc-600">
+                                  (Substitute)
+                                </span>
+                              ) : null}
+                            </h4>
+                            <div className="grid gap-3">
                               <Input
-                                {...register(`members.${index}.email`)}
+                                {...register(`members.${index}.name`)}
                                 className={inputStyles}
-                                placeholder="Email"
+                                placeholder="Name"
                               />
                               <Input
-                                {...register(`members.${index}.phone`)}
+                                {...register(`members.${index}.college`)}
                                 className={inputStyles}
-                                placeholder="Phone"
+                                placeholder="College"
                               />
+                              <div className="grid grid-cols-2 gap-3">
+                                <Input
+                                  {...register(`members.${index}.email`)}
+                                  className={inputStyles}
+                                  placeholder="Email"
+                                />
+                                <Input
+                                  {...register(`members.${index}.phone`)}
+                                  className={inputStyles}
+                                  placeholder="Phone"
+                                />
+                              </div>
+                              {currentGameIdLabel && (
+                                <Input
+                                  {...register(`members.${index}.gameId`)}
+                                  className={inputStyles}
+                                  placeholder={`${currentGameIdLabel} (${currentGameIdPlaceholder})`}
+                                />
+                              )}
                             </div>
-                            {currentGameIdLabel && (
-                              <Input
-                                {...register(`members.${index}.gameId`)}
-                                className={inputStyles}
-                                placeholder={`${currentGameIdLabel} (${currentGameIdPlaceholder})`}
-                              />
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {!isSoloEvent && fields.length < maxTeamMembers && (
+                      <Button
+                        type="button"
+                        onClick={() =>
+                          append({
+                            name: "",
+                            college: "",
+                            email: "",
+                            phone: "",
+                            gameId: "",
+                          })
+                        }
+                        className="w-full bg-white text-black font-bold py-4 rounded-xl border-2 border-dashed border-zinc-400 hover:border-black hover:bg-zinc-50 transition-all uppercase"
+                      >
+                        + Add Member ({fields.length}/{maxTeamMembers})
+                      </Button>
+                    )}
+                    {!isSoloEvent && hasSubstitute && (
+                      <p className="text-xs text-center text-zinc-500 mt-1">
+                        You may add one optional substitute in addition to the
+                        regular team members.
+                      </p>
+                    )}
+
+                    {isSoloEvent && (
+                      <div className="bg-amber-100 border-2 border-amber-500 p-3 rounded-xl">
+                        <p className="text-amber-800 text-xs font-bold">
+                          Solo Event: No additional team members needed
+                        </p>
+                      </div>
+                    )}
+
+                    {teamSizeLimit &&
+                      !isSoloEvent &&
+                      fields.length < teamSizeLimit && (
+                        <p className="text-xs text-center text-zinc-500">
+                          Add {teamSizeLimit - fields.length} more member
+                          {teamSizeLimit - fields.length > 1 ? "s" : ""} to
+                          complete team
+                        </p>
+                      )}
+
+                    <div className="flex gap-4 mt-6">
+                      <Button
+                        onClick={() => setStep(2)}
+                        variant="outline"
+                        className="flex-1 bg-white border-2 border-black font-bold py-6 rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+                      >
+                        BACK
+                      </Button>
+                      <Button
+                        onClick={onSubmitStep3}
+                        className="flex-[2] bg-black text-white font-bold py-6 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_#a855f7] hover:shadow-[2px_2px_0px_0px_#a855f7] hover:translate-y-[2px] hover:shadow-none transition-all"
+                      >
+                        NEXT: PAYMENT →
+                      </Button>
+                    </div>
+                  </motion.div>
+                )}
+
+                {step === 4 && (
+                  <motion.div
+                    key="step4"
+                    initial={{ x: 20, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    exit={{ x: -20, opacity: 0 }}
+                    className="space-y-6"
+                  >
+                    <div className="bg-red-100 border-2 border-black p-3 rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex justify-between items-center">
+                      <p className="font-bold text-xs uppercase">
+                        Step 4/4: Secure Payment
+                      </p>
+                      <p className="text-red-600 font-bold text-xs animate-pulse">
+                        EXP: {formatTime(timeLeft)}
+                      </p>
+                    </div>
+                    <div className="bg-white border-2 border-black p-4 rounded-xl font-mono text-sm relative">
+                      <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-black rounded-full"></div>
+                      <h3 className="text-center font-bold border-b-2 border-dashed border-black pb-2 mb-2">
+                        RECEIPT SUMMARY
+                      </h3>
+                      {selectedEventIds.map((id) => {
+                        const ev = eventsList.find((e) => e.id === id);
+                        if (!ev) return null;
+                        const { original, discounted, hasDiscount } =
+                          getDiscountedPrice(getEventPrice(ev), activeDiscount);
+                        return (
+                          <div key={id} className="flex justify-between mb-1">
+                            <span>{ev.name}</span>
+                            {hasDiscount ? (
+                              <span className="flex items-center gap-1">
+                                <span className="line-through opacity-50">
+                                  ₹{original}
+                                </span>
+                                <span className="text-green-600 font-bold">
+                                  ₹{discounted}
+                                </span>
+                              </span>
+                            ) : (
+                              <span>₹{getEventPrice(ev)}</span>
                             )}
                           </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {!isSoloEvent && fields.length < maxTeamMembers && (
-                    <Button
-                      type="button"
-                      onClick={() =>
-                        append({
-                          name: "",
-                          college: "",
-                          email: "",
-                          phone: "",
-                          gameId: "",
-                        })
-                      }
-                      className="w-full bg-white text-black font-bold py-4 rounded-xl border-2 border-dashed border-zinc-400 hover:border-black hover:bg-zinc-50 transition-all uppercase"
-                    >
-                      + Add Member ({fields.length}/{maxTeamMembers})
-                    </Button>
-                  )}
-                  {!isSoloEvent && hasSubstitute && (
-                    <p className="text-xs text-center text-zinc-500 mt-1">
-                      You may add one optional substitute in addition to the
-                      regular team members.
-                    </p>
-                  )}
-
-                  {isSoloEvent && (
-                    <div className="bg-amber-100 border-2 border-amber-500 p-3 rounded-xl">
-                      <p className="text-amber-800 text-xs font-bold">
-                        Solo Event: No additional team members needed
-                      </p>
-                    </div>
-                  )}
-
-                  {teamSizeLimit &&
-                    !isSoloEvent &&
-                    fields.length < teamSizeLimit && (
-                      <p className="text-xs text-center text-zinc-500">
-                        Add {teamSizeLimit - fields.length} more member
-                        {teamSizeLimit - fields.length > 1 ? "s" : ""} to
-                        complete team
-                      </p>
-                    )}
-
-                  <div className="flex gap-4 mt-6">
-                    <Button
-                      onClick={() => setStep(2)}
-                      variant="outline"
-                      className="flex-1 bg-white border-2 border-black font-bold py-6 rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
-                    >
-                      BACK
-                    </Button>
-                    <Button
-                      onClick={onSubmitStep3}
-                      className="flex-[2] bg-black text-white font-bold py-6 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_#a855f7] hover:shadow-[2px_2px_0px_0px_#a855f7] hover:translate-y-[2px] hover:shadow-none transition-all"
-                    >
-                      NEXT: PAYMENT →
-                    </Button>
-                  </div>
-                </motion.div>
-              )}
-
-              {step === 4 && (
-                <motion.div
-                  key="step4"
-                  initial={{ x: 20, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  exit={{ x: -20, opacity: 0 }}
-                  className="space-y-6"
-                >
-                  <div className="bg-red-100 border-2 border-black p-3 rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex justify-between items-center">
-                    <p className="font-bold text-xs uppercase">
-                      Step 4/4: Secure Payment
-                    </p>
-                    <p className="text-red-600 font-bold text-xs animate-pulse">
-                      EXP: {formatTime(timeLeft)}
-                    </p>
-                  </div>
-                  <div className="bg-white border-2 border-black p-4 rounded-xl font-mono text-sm relative">
-                    <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-black rounded-full"></div>
-                    <h3 className="text-center font-bold border-b-2 border-dashed border-black pb-2 mb-2">
-                      RECEIPT SUMMARY
-                    </h3>
-                    {selectedEventIds.map((id) => {
-                      const ev = eventsList.find((e) => e.id === id);
-                      if (!ev) return null;
-                      const { original, discounted, hasDiscount } =
-                        getDiscountedPrice(getEventPrice(ev), activeDiscount);
-                      return (
-                        <div key={id} className="flex justify-between mb-1">
-                          <span>{ev.name}</span>
-                          {hasDiscount ? (
-                            <span className="flex items-center gap-1">
-                              <span className="line-through opacity-50">
-                                ₹{original}
-                              </span>
-                              <span className="text-green-600 font-bold">
-                                ₹{discounted}
-                              </span>
+                        );
+                      })}
+                      <div className="flex justify-between border-t-2 border-black pt-2 mt-2 font-black text-lg">
+                        <span>TOTAL</span>
+                        {activeDiscount ? (
+                          <span className="flex items-center gap-2">
+                            <span className="line-through opacity-40 text-sm">
+                              ₹
+                              {selectedEventIds.reduce((s, id) => {
+                                const found = eventsList.find(
+                                  (e) => e.id === id,
+                                );
+                                return s + (found ? getEventPrice(found) : 0);
+                              }, 0)}
                             </span>
-                          ) : (
-                            <span>₹{getEventPrice(ev)}</span>
-                          )}
-                        </div>
-                      );
-                    })}
-                    <div className="flex justify-between border-t-2 border-black pt-2 mt-2 font-black text-lg">
-                      <span>TOTAL</span>
-                      {activeDiscount ? (
-                        <span className="flex items-center gap-2">
-                          <span className="line-through opacity-40 text-sm">
-                            ₹
-                            {selectedEventIds.reduce((s, id) => {
-                              const found = eventsList.find((e) => e.id === id);
-                              return s + (found ? getEventPrice(found) : 0);
-                            }, 0)}
+                            <span className="text-green-600">₹{totalCost}</span>
                           </span>
-                          <span className="text-green-600">₹{totalCost}</span>
-                        </span>
-                      ) : (
-                        <span>₹{totalCost}</span>
+                        ) : (
+                          <span>₹{totalCost}</span>
+                        )}
+                      </div>
+                      {activeDiscount && (
+                        <p className="text-[10px] text-green-600 font-bold text-right mt-1">
+                          {activeDiscount.label} applied!
+                        </p>
                       )}
                     </div>
-                    {activeDiscount && (
-                      <p className="text-[10px] text-green-600 font-bold text-right mt-1">
-                        {activeDiscount.label} applied!
-                      </p>
+
+                    {payError && (
+                      <div className="bg-red-100 border-2 border-red-600 p-3 rounded-xl">
+                        <p className="text-red-600 font-bold text-sm">
+                          {payError}
+                        </p>
+                      </div>
                     )}
-                  </div>
 
-                  {payError && (
-                    <div className="bg-red-100 border-2 border-red-600 p-3 rounded-xl">
-                      <p className="text-red-600 font-bold text-sm">
-                        {payError}
+                    <div className="bg-zinc-100 border-2 border-black p-4 rounded-xl text-center">
+                      <p className="font-bold text-sm text-zinc-700 mb-2">
+                        Total Amount:{" "}
+                        {activeDiscount ? (
+                          <>
+                            <span className="line-through opacity-40">
+                              ₹
+                              {selectedEventIds.reduce(
+                                (s, id) =>
+                                  s +
+                                  (eventsList.find((e) => e.id === id)?.price ||
+                                    0),
+                                0,
+                              )}
+                            </span>{" "}
+                            <span className="text-green-600">₹{totalCost}</span>
+                          </>
+                        ) : (
+                          <>₹{totalCost}</>
+                        )}
+                      </p>
+
+                      {/* Show special SID QR for esports events, otherwise default payment QR */}
+                      {(() => {
+                        // Determine selected event (robust: check id and name keywords)
+                        const selectedId = (selectedEventIds || [])[0];
+                        const selectedEvent = eventsList.find(
+                          (e) => e.id === selectedId,
+                        );
+
+                        const esportsKeywords = [
+                          "valorant",
+                          "free fire",
+                          "freefire",
+                          "bgmi",
+                          "e-football",
+                          "efootball",
+                          "gaming",
+                        ];
+
+                        const nameMatches = selectedEvent?.name
+                          ? esportsKeywords.some((k) =>
+                              selectedEvent.name.toLowerCase().includes(k),
+                            )
+                          : false;
+
+                        const isEsportsSelected =
+                          nameMatches ||
+                          esportsKeywords.includes(selectedId || "");
+                        const qrSrc = isEsportsSelected
+                          ? "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/sidqr.jpeg"
+                          : "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/qrcode.png";
+                        return (
+                          <div className="relative w-48 h-48 border-4 border-black rounded-xl overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mx-auto mb-4 bg-white">
+                            <Image
+                              src={qrSrc}
+                              alt="Payment QR Code"
+                              fill
+                              className="object-contain p-2"
+                            />
+                          </div>
+                        );
+                      })()}
+                      <p className="text-xs font-bold text-zinc-600">
+                        Scan to pay via UPI
                       </p>
                     </div>
-                  )}
 
-                  <div className="bg-zinc-100 border-2 border-black p-4 rounded-xl text-center">
-                    <p className="font-bold text-sm text-zinc-700 mb-2">
-                      Total Amount:{" "}
-                      {activeDiscount ? (
-                        <>
-                          <span className="line-through opacity-40">
-                            ₹
-                            {selectedEventIds.reduce(
-                              (s, id) =>
-                                s +
-                                (eventsList.find((e) => e.id === id)?.price ||
-                                  0),
-                              0,
-                            )}
-                          </span>{" "}
-                          <span className="text-green-600">₹{totalCost}</span>
-                        </>
-                      ) : (
-                        <>₹{totalCost}</>
-                      )}
-                    </p>
+                    <div>
+                      <Label className={labelStyles}>
+                        Enter Transaction / UTR ID
+                      </Label>
+                      <Input
+                        value={utrId}
+                        onChange={(e) => setUtrId(e.target.value)}
+                        className={inputStyles}
+                        placeholder="Enter 12-digit UTR ID"
+                      />
+                      <p className="text-xs text-zinc-500 mt-1">
+                        Usually starts with banking ref no. or 'UPI...'
+                      </p>
+                    </div>
 
-                    {/* Show special SID QR for esports events, otherwise default payment QR */}
-                    {(() => {
-                      // Determine selected event (robust: check id and name keywords)
-                      const selectedId = (selectedEventIds || [])[0];
-                      const selectedEvent = eventsList.find(
-                        (e) => e.id === selectedId,
-                      );
+                    <div className="flex gap-4">
+                      <Button
+                        onClick={() => setStep(3)}
+                        variant="outline"
+                        className="flex-1 bg-white border-2 border-black font-bold py-6 rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+                      >
+                        BACK
+                      </Button>
+                      <Button
+                        onClick={handleFinalSubmit}
+                        disabled={isLoading || !utrId || utrId.length < 4}
+                        className="flex-[2] bg-green-500 text-black font-bold py-6 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all disabled:opacity-60"
+                      >
+                        {isLoading ? "VERIFYING…" : "SUBMIT PAYMENT DETAILS →"}
+                      </Button>
+                    </div>
+                  </motion.div>
+                )}
 
-                      const esportsKeywords = [
-                        "valorant",
-                        "free fire",
-                        "freefire",
-                        "bgmi",
-                        "e-football",
-                        "efootball",
-                        "gaming",
-                      ];
+                {step === 5 && (
+                  <motion.div
+                    key="step5"
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className="space-y-6 text-center"
+                  >
+                    <div className="bg-[#4caf50] text-white p-6 rounded-4xl border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+                      <h2
+                        className={`text-4xl font-black uppercase mb-2 ${gilton.className}`}
+                      >
+                        Registration Successful!
+                      </h2>
+                      <p className="font-medium text-white/90">
+                        Your team registration is pending verification.
+                      </p>
+                      <p className="text-sm mt-2 opacity-80">
+                        Check your profile for the event pass once approved.
+                      </p>
+                    </div>
 
-                      const nameMatches = selectedEvent?.name
-                        ? esportsKeywords.some((k) =>
-                            selectedEvent.name.toLowerCase().includes(k),
-                          )
-                        : false;
-
-                      const isEsportsSelected =
-                        nameMatches ||
-                        esportsKeywords.includes(selectedId || "");
-                      const qrSrc = isEsportsSelected
-                        ? "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/sidqr.jpeg"
-                        : "https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/qrcode.png";
-                      return (
-                        <div className="relative w-48 h-48 border-4 border-black rounded-xl overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mx-auto mb-4 bg-white">
-                          <Image
-                            src={qrSrc}
-                            alt="Payment QR Code"
-                            fill
-                            className="object-contain p-2"
-                          />
-                        </div>
-                      );
-                    })()}
-                    <p className="text-xs font-bold text-zinc-600">
-                      Scan to pay via UPI
-                    </p>
-                  </div>
-
-                  <div>
-                    <Label className={labelStyles}>
-                      Enter Transaction / UTR ID
-                    </Label>
-                    <Input
-                      value={utrId}
-                      onChange={(e) => setUtrId(e.target.value)}
-                      className={inputStyles}
-                      placeholder="Enter 12-digit UTR ID"
-                    />
-                    <p className="text-xs text-zinc-500 mt-1">
-                      Usually starts with banking ref no. or 'UPI...'
-                    </p>
-                  </div>
-
-                  <div className="flex gap-4">
-                    <Button
-                      onClick={() => setStep(3)}
-                      variant="outline"
-                      className="flex-1 bg-white border-2 border-black font-bold py-6 rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
-                    >
-                      BACK
-                    </Button>
-                    <Button
-                      onClick={handleFinalSubmit}
-                      disabled={isLoading || !utrId || utrId.length < 4}
-                      className="flex-[2] bg-green-500 text-black font-bold py-6 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all disabled:opacity-60"
-                    >
-                      {isLoading ? "VERIFYING…" : "SUBMIT PAYMENT DETAILS →"}
-                    </Button>
-                  </div>
-                </motion.div>
-              )}
-
-              {step === 5 && (
-                <motion.div
-                  key="step5"
-                  initial={{ scale: 0.9, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  className="space-y-6 text-center"
-                >
-                  <div className="bg-[#4caf50] text-white p-6 rounded-4xl border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-                    <h2
-                      className={`text-4xl font-black uppercase mb-2 ${gilton.className}`}
-                    >
-                      Registration Successful!
-                    </h2>
-                    <p className="font-medium text-white/90">
-                      Your team registration is pending verification.
-                    </p>
-                    <p className="text-sm mt-2 opacity-80">
-                      Check your profile for the event pass once approved.
-                    </p>
-                  </div>
-
-                  <div className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4 w-full px-4 sm:px-0">
-                    <Button
-                      onClick={() => router.push("/profile")}
-                      className="w-full sm:w-auto bg-black text-white px-8 py-4 rounded-xl font-bold border-2 border-black shadow-[4px_4px_0px_0px_#a855f7] hover:shadow-none hover:translate-y-[2px]"
-                    >
-                      GO TO PROFILE
-                    </Button>
-                    <Button
-                      onClick={() => window.location.reload()}
-                      variant="outline"
-                      className="w-full sm:w-auto bg-white px-8 py-4 rounded-xl font-bold border-2 border-black"
-                    >
-                      REGISTER ANOTHER
-                    </Button>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
-
-        {/* --- RIGHT SIDE: VISUALS (Unchanged) --- */}
-        <div className="hidden lg:flex flex-1 bg-teal-100 relative items-center justify-center border-l-4 border-black p-8 overflow-hidden">
-          <div className="absolute top-10 left-10 w-20 h-20 bg-purple-500 border-4 border-black rounded-none rotate-12 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] z-10"></div>
-          <div className="absolute bottom-20 right-10 w-16 h-16 bg-orange-500 border-4 border-black rounded-full animate-bounce shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] z-10"></div>
-          <div className="relative w-[420px] h-[580px] bg-white border-4 border-black rounded-2xl shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] rotate-[-2deg] flex flex-col overflow-hidden group">
-            <div className="h-2/3 bg-zinc-900 relative border-b-4 border-black overflow-hidden">
-              <Image
-                src="https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/gallery/gallery-13.jpeg"
-                alt="Event"
-                fill
-                className="object-cover opacity-80 group-hover:scale-105 transition-transform duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
-              <div className="absolute bottom-4 left-4 text-white">
-                <p className="font-mono text-xs text-green-400">
-                  /// TEAM_ACCESS_GRANTED
-                </p>
-                <h2 className="text-3xl font-black tracking-tighter">
-                  BUILD.
-                  <br />
-                  BREAK.
-                  <br />
-                  CREATE.
-                </h2>
-              </div>
+                    <div className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4 w-full px-4 sm:px-0">
+                      <Button
+                        onClick={() => router.push("/profile")}
+                        className="w-full sm:w-auto bg-black text-white px-8 py-4 rounded-xl font-bold border-2 border-black shadow-[4px_4px_0px_0px_#a855f7] hover:shadow-none hover:translate-y-[2px]"
+                      >
+                        GO TO PROFILE
+                      </Button>
+                      <Button
+                        onClick={() => window.location.reload()}
+                        variant="outline"
+                        className="w-full sm:w-auto bg-white px-8 py-4 rounded-xl font-bold border-2 border-black"
+                      >
+                        REGISTER ANOTHER
+                      </Button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
-            <div className="h-1/3 p-6 flex flex-col justify-between bg-white relative">
-              <div
-                className="absolute inset-0 opacity-10"
-                style={{
-                  backgroundImage:
-                    "radial-gradient(circle, #000 1px, transparent 1px)",
-                  backgroundSize: "10px 10px",
-                }}
-              ></div>
-              <div className="relative z-10">
-                <p className="font-bold text-xl uppercase mb-1">
-                  {APP_CONFIG.event.fullName}
-                </p>
-                <p className="text-sm text-zinc-600">
-                  Secure your spot in the ultimate tech showdown. Limited slots
-                  available.
-                </p>
+          </div>
+
+          {/* --- RIGHT SIDE: VISUALS (Unchanged) --- */}
+          <div className="hidden lg:flex flex-1 bg-teal-100 relative items-center justify-center border-l-4 border-black p-8 overflow-hidden">
+            <div className="absolute top-10 left-10 w-20 h-20 bg-purple-500 border-4 border-black rounded-none rotate-12 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] z-10"></div>
+            <div className="absolute bottom-20 right-10 w-16 h-16 bg-orange-500 border-4 border-black rounded-full animate-bounce shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] z-10"></div>
+            <div className="relative w-[420px] h-[580px] bg-white border-4 border-black rounded-2xl shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] rotate-[-2deg] flex flex-col overflow-hidden group">
+              <div className="h-2/3 bg-zinc-900 relative border-b-4 border-black overflow-hidden">
+                <Image
+                  src="https://pub-7bb925c121d140598e02eb321a90257a.r2.dev/gallery/gallery-13.jpeg"
+                  alt="Event"
+                  fill
+                  className="object-cover opacity-80 group-hover:scale-105 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                <div className="absolute bottom-4 left-4 text-white">
+                  <p className="font-mono text-xs text-green-400">
+                    /// TEAM_ACCESS_GRANTED
+                  </p>
+                  <h2 className="text-3xl font-black tracking-tighter">
+                    BUILD.
+                    <br />
+                    BREAK.
+                    <br />
+                    CREATE.
+                  </h2>
+                </div>
               </div>
-              <div className="flex gap-2 relative z-10">
-                <span className="px-3 py-1 bg-black text-white text-xs font-bold rounded">
-                  TECH
-                </span>
-                <span className="px-3 py-1 bg-white border-2 border-black text-black text-xs font-bold rounded">
-                  FUN
-                </span>
+              <div className="h-1/3 p-6 flex flex-col justify-between bg-white relative">
+                <div
+                  className="absolute inset-0 opacity-10"
+                  style={{
+                    backgroundImage:
+                      "radial-gradient(circle, #000 1px, transparent 1px)",
+                    backgroundSize: "10px 10px",
+                  }}
+                ></div>
+                <div className="relative z-10">
+                  <p className="font-bold text-xl uppercase mb-1">
+                    {APP_CONFIG.event.fullName}
+                  </p>
+                  <p className="text-sm text-zinc-600">
+                    Secure your spot in the ultimate tech showdown. Limited
+                    slots available.
+                  </p>
+                </div>
+                <div className="flex gap-2 relative z-10">
+                  <span className="px-3 py-1 bg-black text-white text-xs font-bold rounded">
+                    TECH
+                  </span>
+                  <span className="px-3 py-1 bg-white border-2 border-black text-black text-xs font-bold rounded">
+                    FUN
+                  </span>
+                </div>
               </div>
             </div>
           </div>
+          {/* Sticky beta notice */}
         </div>
-        {/* Sticky beta notice */}
-      </div>  
       </div>
       {/* Sticky beta notice */}
       <div className="bottom-0 left-0 right-0 mt-10 rounded-t-xl bg-amber-50 border-t-4 border-amber-500 px-4 py-3 z-50">

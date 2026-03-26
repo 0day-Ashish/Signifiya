@@ -482,6 +482,13 @@ export async function submitEventRegistrationManual(data: {
   clientType?: "web" | "expo" | string;
 }) {
   try {
+    if (!APP_CONFIG.features.eventRegistrationOpen) {
+      return {
+        success: false,
+        error: "Event registrations are currently closed.",
+      };
+    }
+
     const {
       teamName,
       leaderName,
@@ -612,6 +619,13 @@ export async function submitReelRegistration(data: {
   clientType?: "web" | "expo" | string;
 }) {
   try {
+    if (!APP_CONFIG.features.eventRegistrationOpen) {
+      return {
+        success: false,
+        error: "Event registrations are currently closed.",
+      };
+    }
+
     const {
       teamName,
       leaderName,

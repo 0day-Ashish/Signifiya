@@ -15,6 +15,7 @@ import { getEventsListingData, getEventTitleToScheduleId } from "@/data/events";
 import { eventDetails } from "@/data/event-details";
 import EventDetailsModal from "./EventDetailsModal";
 import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
+import { APP_CONFIG } from "@/config/app.config";
 
 const gilton = localFont({ src: "../../public/fonts/GiltonRegular.otf" });
 const softura = localFont({ src: "../../public/fonts/Softura-Demo.otf" });
@@ -32,15 +33,16 @@ const CATEGORIES = [
 
 const EVENTS_DATA = getEventsListingData();
 const EVENT_TITLE_TO_SCHEDULE_ID = getEventTitleToScheduleId();
+const EVENT_REGISTRATION_OPEN = APP_CONFIG.features.eventRegistrationOpen;
 
 const EVENT_TITLE_TO_REG_ID: Record<string, string> = {
-  "VALORANT": "gaming",
+  VALORANT: "gaming",
   "FREE FIRE": "freefire",
   "CODING PREMIER LEAGUE": "cpl",
   "RE-FAB (WASTE TO WEALTH)": "refab",
   "PATH FOLLOWER": "path",
   "BRIDGE BUILDING": "bridge",
-  "CIRCUITRONIX": "circuit",
+  CIRCUITRONIX: "circuit",
   "DANCE BATTLE": "dance",
   "ARM WRESTLING": "arm",
   "TOWER MAKING": "tower",
@@ -48,17 +50,17 @@ const EVENT_TITLE_TO_REG_ID: Record<string, string> = {
   "LATHE WAR": "lathe",
   "ROBO SOCCER": "robo",
   "RAP BATTLE": "rap",
-  "BGMI": "bgmi",
+  BGMI: "bgmi",
   "E-FOOTBALL": "efootball",
   "TREASURE HUNT": "treasure",
   "POWER DEAL": "powerdeal",
   "TECH MONOPOLY": "techmonopoly",
-  "CARROM": "carrom",
-  "CHESS": "chess",
-  "VOLLEYBALL": "volleyball",
-  "CRICKET": "cricket",
-  "BADMINTON": "badminton",
-  "FOOTBALL": "football",
+  CARROM: "carrom",
+  CHESS: "chess",
+  VOLLEYBALL: "volleyball",
+  CRICKET: "cricket",
+  BADMINTON: "badminton",
+  FOOTBALL: "football",
   "BOX CRICKET": "boxcricket",
 };
 
@@ -85,7 +87,7 @@ export default function Events() {
   const dragStartXRef = useRef(0);
   const dragStartOffsetRef = useRef(0);
   const [isPaused, setIsPaused] = useState(false);
-  
+
   // Event Details Modal State
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -343,13 +345,14 @@ export default function Events() {
                           >
                             Prize pool: {event.prizePool}
                           </span>
-                          {typeof event.price === "number" && event.price > 0 && (
-                            <span
-                              className={`inline-block px-2 sm:px-3 py-1 rounded-full bg-yellow-100 text-yellow-800 text-xs sm:text-sm font-bold ${softura.className}`}
-                            >
-                              Fee: ₹{event.price}
-                            </span>
-                          )}
+                          {typeof event.price === "number" &&
+                            event.price > 0 && (
+                              <span
+                                className={`inline-block px-2 sm:px-3 py-1 rounded-full bg-yellow-100 text-yellow-800 text-xs sm:text-sm font-bold ${softura.className}`}
+                              >
+                                Fee: ₹{event.price}
+                              </span>
+                            )}
                         </div>
                       </div>
                       <p
@@ -358,7 +361,8 @@ export default function Events() {
                         {event.description}
                       </p>
                       <div className="mt-auto pt-2 sm:pt-4 flex flex-col gap-2">
-                        {event.title.toUpperCase() === "REEL MAKING COMPETITION" ? (
+                        {event.title.toUpperCase() ===
+                        "REEL MAKING COMPETITION" ? (
                           <button
                             type="button"
                             onClick={() => openEventModal("reel")}
@@ -381,7 +385,7 @@ export default function Events() {
                             View Details
                           </Link>
                         )}
-                        {event.closed ? (
+                        {!EVENT_REGISTRATION_OPEN || event.closed ? (
                           <span
                             className={`w-full bg-red-600 text-white border-2 border-black rounded-xl py-1.5 sm:py-2 font-bold uppercase text-xs sm:text-sm text-center cursor-not-allowed ${softura.className}`}
                           >
@@ -390,15 +394,22 @@ export default function Events() {
                         ) : (
                           <Link
                             href={
-                              event.title.toUpperCase() === "REEL MAKING COMPETITION"
+                              event.title.toUpperCase() ===
+                              "REEL MAKING COMPETITION"
                                 ? "/events/reel"
-                                : EVENT_TITLE_TO_REG_ID[event.title.toUpperCase()]
+                                : EVENT_TITLE_TO_REG_ID[
+                                      event.title.toUpperCase()
+                                    ]
                                   ? `/events?event=${EVENT_TITLE_TO_REG_ID[event.title.toUpperCase()]}`
                                   : "/events"
                             }
                             className={`w-full bg-black text-white border-2 border-black rounded-xl py-1.5 sm:py-2 font-bold uppercase text-xs sm:text-sm transition-colors hover:bg-zinc-800 text-center ${softura.className}`}
                           >
-                            Register{event.title.toUpperCase() === "REEL MAKING COMPETITION" ? " — FREE" : ""}
+                            Register
+                            {event.title.toUpperCase() ===
+                            "REEL MAKING COMPETITION"
+                              ? " — FREE"
+                              : ""}
                           </Link>
                         )}
                       </div>

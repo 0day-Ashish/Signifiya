@@ -32,6 +32,7 @@ export const APP_CONFIG = {
 
   // Feature toggles
   features: {
+    eventRegistrationOpen: false,
     visitorRegistrationOpen: false,
   },
 
