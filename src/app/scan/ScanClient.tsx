@@ -147,9 +147,11 @@ export default function ScanClient() {
   const [alreadyMarked, setAlreadyMarked] = useState<ScanTeamRow[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [lastScanValue, setLastScanValue] = useState("");
+  const [scanPulse, setScanPulse] = useState(false);
 
   const lockRef = useRef(false);
   const lastProcessedRef = useRef<{ qr: string; at: number } | null>(null);
+  const beepAudioRef = useRef<HTMLAudioElement | null>(null);
   const scanRef = useRef<HTMLElement | null>(null);
   const newRef = useRef<HTMLDivElement | null>(null);
   const repeatRef = useRef<HTMLDivElement | null>(null);
@@ -190,6 +192,17 @@ export default function ScanClient() {
     void loadTables();
   }, []);
 
+  useEffect(() => {
+    beepAudioRef.current = new Audio("/qr-code-scan-beep.mp3");
+    beepAudioRef.current.volume = 0.8;
+    return () => {
+      if (beepAudioRef.current) {
+        beepAudioRef.current.pause();
+        beepAudioRef.current = null;
+      }
+    };
+  }, []);
+
   const submitScan = async (rawValue: string) => {
     const qr = rawValue.trim();
     if (!qr) return;
@@ -199,6 +212,15 @@ export default function ScanClient() {
 
     try {
       const result = await scanTeamByQr(qr);
+      if (beepAudioRef.current) {
+        beepAudioRef.current.currentTime = 0;
+        void beepAudioRef.current.play().catch(() => {});
+      }
+      if (typeof navigator !== "undefined" && "vibrate" in navigator) {
+        navigator.vibrate(120);
+      }
+      setScanPulse(true);
+      setTimeout(() => setScanPulse(false), 260);
       setLastScanValue(qr);
       await loadTables();
       setQrInput("");
@@ -238,7 +260,25 @@ export default function ScanClient() {
           </div>
 
           {showScanner && (
-            <div className="relative overflow-hidden rounded-lg border border-zinc-200">
+            <div
+              className={`relative overflow-hidden rounded-xl border p-1 transition-all ${
+                scanPulse
+                  ? "border-emerald-400 shadow-[0_0_0_3px_rgba(16,185,129,0.24)]"
+                  : "border-zinc-200"
+              }`}
+            >
+              <div className="mb-2 flex items-center justify-between px-1 text-[11px]">
+                <span className="font-medium text-zinc-500">Live Camera</span>
+                <span
+                  className={`rounded-full px-2 py-0.5 font-medium ${
+                    loading
+                      ? "bg-amber-100 text-amber-700"
+                      : "bg-emerald-100 text-emerald-700"
+                  }`}
+                >
+                  {loading ? "Processing" : "Ready"}
+                </span>
+              </div>
               {loading && (
                 <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/55">
                   <div className="flex items-center gap-2 rounded-full bg-white px-3 py-1.5 text-xs font-medium text-zinc-800">
@@ -247,6 +287,12 @@ export default function ScanClient() {
                   </div>
                 </div>
               )}
+
+              <div className="pointer-events-none absolute left-4 top-8 z-[5] h-6 w-6 border-l-2 border-t-2 border-emerald-400" />
+              <div className="pointer-events-none absolute right-4 top-8 z-[5] h-6 w-6 border-r-2 border-t-2 border-emerald-400" />
+              <div className="pointer-events-none absolute bottom-4 left-4 z-[5] h-6 w-6 border-b-2 border-l-2 border-emerald-400" />
+              <div className="pointer-events-none absolute bottom-4 right-4 z-[5] h-6 w-6 border-b-2 border-r-2 border-emerald-400" />
+              <div className="pointer-events-none absolute inset-x-6 top-1/2 z-[5] h-0.5 -translate-y-1/2 animate-pulse bg-emerald-400/70" />
 
               <Scanner
                 onScan={(detectedCodes: { rawValue: string }[]) => {
