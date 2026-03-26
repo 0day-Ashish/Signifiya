@@ -11,6 +11,7 @@ type ScanTeamRow = {
   status: string;
   message: string | null;
   scannedAt: Date;
+  scanCount: number;
   teamId: string;
   teamName: string;
   leaderName: string;
@@ -104,6 +105,7 @@ function DataTable({ title, rows }: { title: string; rows: ScanTeamRow[] }) {
                 <th className="p-2">Leader</th>
                 <th className="p-2">Events</th>
                 <th className="p-2">QR</th>
+                <th className="p-2">Count</th>
               </tr>
             </thead>
             <tbody>
@@ -116,6 +118,9 @@ function DataTable({ title, rows }: { title: string; rows: ScanTeamRow[] }) {
                   <td className="p-2 text-zinc-700">{row.leaderName}</td>
                   <td className="p-2 text-zinc-700">{row.eventNames}</td>
                   <td className="p-2 font-mono text-zinc-600">{row.qrValue}</td>
+                  <td className="p-2 text-zinc-900 font-semibold">
+                    {row.scanCount}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -161,14 +166,6 @@ export default function ScanClient() {
     void loadTables();
   }, []);
 
-  const insertRow = (row: ScanTeamRow) => {
-    if (row.status === "success") {
-      setNewlyMarked((prev) => [row, ...prev]);
-      return;
-    }
-    setAlreadyMarked((prev) => [row, ...prev]);
-  };
-
   const submitScan = async (rawValue: string) => {
     const qr = rawValue.trim();
     if (!qr) return;
@@ -179,7 +176,7 @@ export default function ScanClient() {
     try {
       const result = await scanTeamByQr(qr);
       setLastScanValue(qr);
-      insertRow(result.row);
+      await loadTables();
       setQrInput("");
       toast.success(result.message);
     } catch (e) {

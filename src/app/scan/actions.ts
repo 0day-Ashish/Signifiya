@@ -10,6 +10,7 @@ type ScanTeamRow = {
   status: string;
   message: string | null;
   scannedAt: Date;
+  scanCount: number;
   teamId: string;
   teamName: string;
   leaderName: string;
@@ -47,6 +48,7 @@ function toScanTeamRow(log: {
     status: log.status,
     message: log.message,
     scannedAt: log.scannedAt,
+    scanCount: 1,
     teamId: log.team.id,
     teamName: log.team.teamName,
     leaderName: log.team.leaderName,
@@ -213,8 +215,40 @@ export async function getScannedTeams() {
 
 export async function getGroupedScannedTeams() {
   const rows = await getScannedTeams();
+
+  const aggregateByTeam = (source: ScanTeamRow[]) => {
+    const byTeam = new Map<string, ScanTeamRow>();
+
+    for (const row of source) {
+      const existing = byTeam.get(row.teamId);
+      if (!existing) {
+        byTeam.set(row.teamId, { ...row, scanCount: 1 });
+        continue;
+      }
+
+      if (row.scannedAt > existing.scannedAt) {
+        byTeam.set(row.teamId, {
+          ...row,
+          scanCount: existing.scanCount + 1,
+        });
+      } else {
+        byTeam.set(row.teamId, {
+          ...existing,
+          scanCount: existing.scanCount + 1,
+        });
+      }
+    }
+
+    return Array.from(byTeam.values()).sort(
+      (a, b) => b.scannedAt.getTime() - a.scannedAt.getTime(),
+    );
+  };
+
+  const newRows = rows.filter((row) => row.status === "success");
+  const repeatRows = rows.filter((row) => row.status === "already_marked");
+
   return {
-    newlyMarked: rows.filter((row) => row.status === "success"),
-    alreadyMarked: rows.filter((row) => row.status === "already_marked"),
+    newlyMarked: aggregateByTeam(newRows),
+    alreadyMarked: aggregateByTeam(repeatRows),
   };
 }
