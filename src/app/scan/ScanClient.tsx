@@ -225,29 +225,34 @@ function VisitorTableSkeleton() {
 function BottomNav() {
   const pathname = usePathname();
   const itemClass =
-    "px-2 py-3 text-xs font-medium text-center border-r border-zinc-200 last:border-r-0";
+    "px-2 py-3 text-xs font-semibold text-center border-r border-zinc-200 last:border-r-0 transition-all duration-200";
+
+  const tabs = [
+    { label: "Events", href: "/scan/events" },
+    { label: "Visitors", href: "/scan/visitors" },
+    { label: "Home", href: "/scan" },
+  ];
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 border-t border-zinc-200 bg-white">
       <div className="mx-auto grid max-w-md grid-cols-3">
-        <Link
-          href="/scan/visitors"
-          className={`${itemClass} ${pathname === "/scan/visitors" ? "text-zinc-900 bg-zinc-100" : "text-zinc-700"}`}
-        >
-          Visitors
-        </Link>
-        <Link
-          href="/scan/events"
-          className={`${itemClass} ${pathname === "/scan/events" ? "text-zinc-900 bg-zinc-100" : "text-zinc-700"}`}
-        >
-          Events
-        </Link>
-        <Link
-          href="/scan"
-          className={`${itemClass} ${pathname === "/scan" ? "text-zinc-900 bg-zinc-100" : "text-zinc-700"}`}
-        >
-          Home
-        </Link>
+        {tabs.map((tab) => {
+          const isActive = pathname === tab.href;
+          return (
+            <Link
+              key={tab.href}
+              href={tab.href}
+              aria-current={isActive ? "page" : undefined}
+              className={`${itemClass} ${
+                isActive
+                  ? "bg-zinc-900 text-white"
+                  : "bg-white text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900"
+              }`}
+            >
+              {tab.label}
+            </Link>
+          );
+        })}
       </div>
     </nav>
   );
@@ -429,7 +434,7 @@ export default function ScanClient({
                 )}
 
                 {loading && (
-                  <div className="pointer-events-none absolute inset-x-6 top-1/2 z-[5] h-0.5 -translate-y-1/2 animate-pulse bg-emerald-400/80" />
+                  <div className="pointer-events-none absolute inset-x-6 top-1/2 z-5 h-0.5 -translate-y-1/2 animate-pulse bg-emerald-400/80" />
                 )}
 
                 <Scanner
