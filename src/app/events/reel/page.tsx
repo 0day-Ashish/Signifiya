@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -48,6 +48,14 @@ const labelStyles =
 
 function ReelRegistrationContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const accessKey =
+    searchParams.get("accessKey")?.trim() ||
+    searchParams.get("key")?.trim() ||
+    "";
+  const reelPathWithAccess = accessKey
+    ? `/events/reel?accessKey=${encodeURIComponent(accessKey)}`
+    : "/events/reel";
   const { data: sessionData, isPending: isSessionPending } =
     authClient.useSession();
   const [isLoading, setIsLoading] = useState(false);
@@ -77,9 +85,11 @@ function ReelRegistrationContent() {
   // Auth guard
   useEffect(() => {
     if (!isSessionPending && !sessionData) {
-      router.push("/sign-in?callbackUrl=/events/reel");
+      router.push(
+        `/sign-in?callbackUrl=${encodeURIComponent(reelPathWithAccess)}`,
+      );
     }
-  }, [sessionData, isSessionPending, router]);
+  }, [sessionData, isSessionPending, router, reelPathWithAccess]);
 
   // Prefill from profile
   useEffect(() => {
@@ -129,6 +139,7 @@ function ReelRegistrationContent() {
         reelLink: vals.reelLink,
         leaderBookingId: bookingId,
         clientType: "web",
+        accessKey: accessKey || undefined,
       });
 
       if (!res.success) {
@@ -152,7 +163,7 @@ function ReelRegistrationContent() {
     );
   }
 
-  if (!EVENT_REGISTRATION_OPEN) {
+  if (!EVENT_REGISTRATION_OPEN && !accessKey) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-zinc-950 p-4">
         <div className="max-w-xl w-full bg-white border-4 border-black rounded-2xl p-8 shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] text-center">

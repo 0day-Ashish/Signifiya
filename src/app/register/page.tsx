@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { createRazorpayOrder, verifyRazorpayPayment } from "@/app/actions";
 import { getUserProfile } from "@/app/actions";
@@ -74,6 +74,14 @@ export default function Register() {
     () => new Date() >= REGISTRATION_OPEN_DATE,
   );
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const accessKey =
+    searchParams.get("accessKey")?.trim() ||
+    searchParams.get("key")?.trim() ||
+    "";
+  const registerPathWithAccess = accessKey
+    ? `/register?accessKey=${encodeURIComponent(accessKey)}`
+    : "/register";
 
   const { data: session, isPending } = authClient.useSession();
 
@@ -91,9 +99,11 @@ export default function Register() {
 
   useEffect(() => {
     if (!isPending && !session) {
-      router.push("/sign-in?callbackUrl=/register");
+      router.push(
+        `/sign-in?callbackUrl=${encodeURIComponent(registerPathWithAccess)}`,
+      );
     }
-  }, [session, isPending, router]);
+  }, [session, isPending, router, registerPathWithAccess]);
 
   // Debugging session state
   console.log("Register Page - Session:", session, "IsPending:", isPending);
@@ -165,7 +175,7 @@ export default function Register() {
     );
   }
 
-  if (!VISITOR_REGISTRATION_OPEN) {
+  if (!VISITOR_REGISTRATION_OPEN && !accessKey) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-zinc-950 p-4">
         <div className="max-w-xl w-full bg-white border-4 border-black rounded-2xl p-8 shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] text-center">
@@ -212,7 +222,7 @@ export default function Register() {
     }
 
     if (!session?.user?.id) {
-      window.location.href = "/sign-in?callbackUrl=/register";
+      window.location.href = `/sign-in?callbackUrl=${encodeURIComponent(registerPathWithAccess)}`;
       return;
     }
 
@@ -231,6 +241,7 @@ export default function Register() {
         sessionUserId: session.user.id,
         utrId: utrId.trim(),
         clientType: "web",
+        accessKey: accessKey || undefined,
       });
 
       if (!res.success) {

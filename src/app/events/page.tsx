@@ -327,6 +327,13 @@ function getDiscountedPrice(
 function EventRegistrationContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const accessKey =
+    searchParams.get("accessKey")?.trim() ||
+    searchParams.get("key")?.trim() ||
+    "";
+  const eventsPathWithAccess = accessKey
+    ? `/events?accessKey=${encodeURIComponent(accessKey)}`
+    : "/events";
   const { data: sessionData, isPending: isSessionPending } =
     authClient.useSession();
   const eventListRef = React.useRef<HTMLDivElement>(null);
@@ -428,15 +435,21 @@ function EventRegistrationContent() {
   // Redirect to sign-in if not authenticated
   useEffect(() => {
     if (!isSessionPending && !sessionData) {
-      router.push("/sign-in?callbackUrl=/events");
+      router.push(
+        `/sign-in?callbackUrl=${encodeURIComponent(eventsPathWithAccess)}`,
+      );
     }
-  }, [sessionData, isSessionPending, router]);
+  }, [sessionData, isSessionPending, router, eventsPathWithAccess]);
 
   // Pre-select event from query parameter
   useEffect(() => {
     const eventId = searchParams.get("event");
     if (eventId === "reel") {
-      router.replace("/events/reel");
+      router.replace(
+        accessKey
+          ? `/events/reel?accessKey=${encodeURIComponent(accessKey)}`
+          : "/events/reel",
+      );
       return;
     }
     if (eventId) {
@@ -453,7 +466,7 @@ function EventRegistrationContent() {
         }
       }
     }
-  }, [searchParams, setValue]);
+  }, [searchParams, setValue, router, accessKey]);
 
   // Re-check the open date every second so the page auto-transitions
   useEffect(() => {
@@ -703,6 +716,7 @@ function EventRegistrationContent() {
         totalAmount: totalCost,
         utrId: utrId.trim(),
         clientType: "web",
+        accessKey: accessKey || undefined,
       });
 
       if (!res.success) {
@@ -747,7 +761,7 @@ function EventRegistrationContent() {
     );
   }
 
-  if (!EVENT_REGISTRATION_OPEN) {
+  if (!EVENT_REGISTRATION_OPEN && !accessKey) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-zinc-950 p-4">
         <div className="max-w-xl w-full bg-white border-4 border-black rounded-2xl p-8 shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] text-center">
