@@ -4,7 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { getGroupedScannedTeams, getVisitorPassRows, scanTeamByQr } from "./actions";
+import {
+  getGroupedScannedTeams,
+  getVisitorPassRows,
+  scanTeamByQr,
+} from "./actions";
 import { Toaster, toast } from "sonner";
 
 type ScanTeamRow = {
@@ -180,8 +184,12 @@ function VisitorTable({ rows }: { rows: VisitorPassRow[] }) {
                   </td>
                   <td className="p-2 text-zinc-900">{row.name}</td>
                   <td className="p-2 text-zinc-700">{row.passType}</td>
-                  <td className="p-2 font-mono text-zinc-600">{row.bookingId}</td>
-                  <td className="p-2 font-semibold text-zinc-900">{row.scanCount}</td>
+                  <td className="p-2 font-mono text-zinc-600">
+                    {row.bookingId}
+                  </td>
+                  <td className="p-2 font-semibold text-zinc-900">
+                    {row.scanCount}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -337,117 +345,121 @@ export default function ScanClient({
               ? "Event Tables"
               : "Visitors Table"}
         </h1>
-        <p className="mt-1 text-xs text-zinc-600">Admin-only scanner dashboard.</p>
+        <p className="mt-1 text-xs text-zinc-600">
+          Admin-only scanner dashboard.
+        </p>
 
         {mode === "home" && (
           <section className="mt-4 rounded-xl border border-zinc-200 bg-white p-3">
-          <div className="mb-3 flex items-center justify-between">
-            <p className="text-sm font-medium">QR Scanner</p>
-            <button
-              type="button"
-              onClick={() => setShowScanner((v) => !v)}
-              className="rounded-md border border-zinc-300 px-2 py-1 text-xs"
-            >
-              {showScanner ? "Hide" : "Show"}
-            </button>
-          </div>
-
-          {showScanner && (
-            <div
-              className={`relative overflow-hidden rounded-xl border p-1 transition-all ${
-                scanPulse
-                  ? "border-emerald-400 shadow-[0_0_0_3px_rgba(16,185,129,0.24)]"
-                  : "border-zinc-200"
-              }`}
-            >
-              <div className="mb-2 flex items-center justify-between px-1 text-[11px]">
-                <span className="font-medium text-zinc-500">Live Camera</span>
-                <span
-                  className={`rounded-full px-2 py-0.5 font-medium ${
-                    loading
-                      ? "bg-amber-100 text-amber-700"
-                      : "bg-emerald-100 text-emerald-700"
-                  }`}
-                >
-                  {loading ? "Processing" : "Ready"}
-                </span>
-              </div>
-              {loading && (
-                <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/55">
-                  <div className="flex items-center gap-2 rounded-full bg-white px-3 py-1.5 text-xs font-medium text-zinc-800">
-                    <span className="h-3 w-3 animate-spin rounded-full border-2 border-zinc-500 border-t-transparent" />
-                    Processing scan
-                  </div>
-                </div>
-              )}
-
-              <div className="pointer-events-none absolute left-4 top-8 z-[5] h-6 w-6 border-l-2 border-t-2 border-emerald-400" />
-              <div className="pointer-events-none absolute right-4 top-8 z-[5] h-6 w-6 border-r-2 border-t-2 border-emerald-400" />
-              <div className="pointer-events-none absolute bottom-4 left-4 z-[5] h-6 w-6 border-b-2 border-l-2 border-emerald-400" />
-              <div className="pointer-events-none absolute bottom-4 right-4 z-[5] h-6 w-6 border-b-2 border-r-2 border-emerald-400" />
-              <div className="pointer-events-none absolute inset-x-6 top-1/2 z-[5] h-0.5 -translate-y-1/2 animate-pulse bg-emerald-400/70" />
-
-              <Scanner
-                onScan={(detectedCodes: { rawValue: string }[]) => {
-                  if (lockRef.current || detectedCodes.length === 0) return;
-                  const value = detectedCodes[0]?.rawValue;
-                  if (!value) return;
-
-                  const now = Date.now();
-                  const prev = lastProcessedRef.current;
-                  if (prev && prev.qr === value && now - prev.at < 1800) return;
-
-                  lastProcessedRef.current = { qr: value, at: now };
-                  lockRef.current = true;
-
-                  void submitScan(value).finally(() => {
-                    setTimeout(() => {
-                      lockRef.current = false;
-                    }, 600);
-                  });
-                }}
-                onError={(e) => {
-                  const msg = e instanceof Error ? e.message : "Scanner failed";
-                  setError(msg);
-                }}
-                components={{ finder: true }}
-              />
+            <div className="mb-3 flex items-center justify-between">
+              <p className="text-sm font-medium">QR Scanner</p>
+              <button
+                type="button"
+                onClick={() => setShowScanner((v) => !v)}
+                className="rounded-md border border-zinc-300 px-2 py-1 text-xs"
+              >
+                {showScanner ? "Hide" : "Show"}
+              </button>
             </div>
-          )}
 
-          <div className="mt-3 flex gap-2">
-            <input
-              type="text"
-              value={qrInput}
-              onChange={(e) => setQrInput(e.target.value)}
-              placeholder="EP-..."
-              className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm"
-            />
-            <button
-              type="button"
-              onClick={() => void submitScan(qrInput)}
-              disabled={loading}
-              className="rounded-md bg-zinc-900 px-3 py-2 text-sm font-medium text-white disabled:opacity-60"
-            >
-              Scan
-            </button>
-          </div>
+            {showScanner && (
+              <div
+                className={`relative overflow-hidden rounded-xl border p-1 transition-all ${
+                  scanPulse
+                    ? "border-emerald-400 shadow-[0_0_0_3px_rgba(16,185,129,0.24)]"
+                    : "border-zinc-200"
+                }`}
+              >
+                <div className="mb-2 flex items-center justify-between px-1 text-[11px]">
+                  <span className="font-medium text-zinc-500">Live Camera</span>
+                  <span
+                    className={`rounded-full px-2 py-0.5 font-medium ${
+                      loading
+                        ? "bg-amber-100 text-amber-700"
+                        : "bg-emerald-100 text-emerald-700"
+                    }`}
+                  >
+                    {loading ? "Processing" : "Ready"}
+                  </span>
+                </div>
+                {loading && (
+                  <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/55">
+                    <div className="flex items-center gap-2 rounded-full bg-white px-3 py-1.5 text-xs font-medium text-zinc-800">
+                      <span className="h-3 w-3 animate-spin rounded-full border-2 border-zinc-500 border-t-transparent" />
+                      Processing scan
+                    </div>
+                  </div>
+                )}
 
-          <div className="mt-3 flex items-center justify-between">
-            <p className="text-xs text-zinc-500">
-              Last: {lastScanValue || "-"}
-            </p>
-            <button
-              type="button"
-              onClick={() => void loadTables()}
-              disabled={refreshing}
-              className="rounded-md border border-zinc-300 px-2 py-1 text-xs"
-            >
-              {refreshing ? "Refreshing" : "Refresh Tables"}
-            </button>
-          </div>
+                <div className="pointer-events-none absolute left-4 top-8 z-[5] h-6 w-6 border-l-2 border-t-2 border-emerald-400" />
+                <div className="pointer-events-none absolute right-4 top-8 z-[5] h-6 w-6 border-r-2 border-t-2 border-emerald-400" />
+                <div className="pointer-events-none absolute bottom-4 left-4 z-[5] h-6 w-6 border-b-2 border-l-2 border-emerald-400" />
+                <div className="pointer-events-none absolute bottom-4 right-4 z-[5] h-6 w-6 border-b-2 border-r-2 border-emerald-400" />
+                <div className="pointer-events-none absolute inset-x-6 top-1/2 z-[5] h-0.5 -translate-y-1/2 animate-pulse bg-emerald-400/70" />
 
-          {error && <p className="mt-2 text-xs text-rose-600">{error}</p>}
+                <Scanner
+                  onScan={(detectedCodes: { rawValue: string }[]) => {
+                    if (lockRef.current || detectedCodes.length === 0) return;
+                    const value = detectedCodes[0]?.rawValue;
+                    if (!value) return;
+
+                    const now = Date.now();
+                    const prev = lastProcessedRef.current;
+                    if (prev && prev.qr === value && now - prev.at < 1800)
+                      return;
+
+                    lastProcessedRef.current = { qr: value, at: now };
+                    lockRef.current = true;
+
+                    void submitScan(value).finally(() => {
+                      setTimeout(() => {
+                        lockRef.current = false;
+                      }, 600);
+                    });
+                  }}
+                  onError={(e) => {
+                    const msg =
+                      e instanceof Error ? e.message : "Scanner failed";
+                    setError(msg);
+                  }}
+                  components={{ finder: true }}
+                />
+              </div>
+            )}
+
+            <div className="mt-3 flex gap-2">
+              <input
+                type="text"
+                value={qrInput}
+                onChange={(e) => setQrInput(e.target.value)}
+                placeholder="EP-..."
+                className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm"
+              />
+              <button
+                type="button"
+                onClick={() => void submitScan(qrInput)}
+                disabled={loading}
+                className="rounded-md bg-zinc-900 px-3 py-2 text-sm font-medium text-white disabled:opacity-60"
+              >
+                Scan
+              </button>
+            </div>
+
+            <div className="mt-3 flex items-center justify-between">
+              <p className="text-xs text-zinc-500">
+                Last: {lastScanValue || "-"}
+              </p>
+              <button
+                type="button"
+                onClick={() => void loadTables()}
+                disabled={refreshing}
+                className="rounded-md border border-zinc-300 px-2 py-1 text-xs"
+              >
+                {refreshing ? "Refreshing" : "Refresh Tables"}
+              </button>
+            </div>
+
+            {error && <p className="mt-2 text-xs text-rose-600">{error}</p>}
           </section>
         )}
 
