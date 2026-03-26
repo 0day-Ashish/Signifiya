@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
 import { getGroupedScannedTeams, scanTeamByQr } from "./actions";
 import { Toaster, toast } from "sonner";
 
@@ -19,6 +20,7 @@ type ScanTeamRow = {
   college: string;
   teamQrCode: string | null;
   eventNames: string;
+  eventList: string[];
   alreadyMarked: boolean;
 };
 
@@ -75,6 +77,12 @@ function downloadCsv(rows: ScanTeamRow[], filename: string) {
 }
 
 function DataTable({ title, rows }: { title: string; rows: ScanTeamRow[] }) {
+  const safeFilename = title
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-");
+
   return (
     <section
       className="rounded-xl border border-zinc-200 bg-white"
@@ -84,9 +92,7 @@ function DataTable({ title, rows }: { title: string; rows: ScanTeamRow[] }) {
         <h2 className="text-sm font-semibold text-zinc-800">{title}</h2>
         <button
           type="button"
-          onClick={() =>
-            downloadCsv(rows, `${title.toLowerCase().replace(/\s+/g, "-")}.csv`)
-          }
+          onClick={() => downloadCsv(rows, `${safeFilename}.csv`)}
           className="rounded-md border border-zinc-300 px-2 py-1 text-xs font-medium text-zinc-700"
         >
           Export CSV
@@ -132,6 +138,7 @@ function DataTable({ title, rows }: { title: string; rows: ScanTeamRow[] }) {
 }
 
 export default function ScanClient() {
+  const router = useRouter();
   const [qrInput, setQrInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -146,6 +153,23 @@ export default function ScanClient() {
   const scanRef = useRef<HTMLElement | null>(null);
   const newRef = useRef<HTMLDivElement | null>(null);
   const repeatRef = useRef<HTMLDivElement | null>(null);
+
+  const newlyMarkedByEvent = newlyMarked.reduce<Record<string, ScanTeamRow[]>>(
+    (acc, row) => {
+      const events =
+        row.eventList.length > 0 ? row.eventList : ["Unknown Event"];
+      for (const eventName of events) {
+        if (!acc[eventName]) acc[eventName] = [];
+        acc[eventName].push(row);
+      }
+      return acc;
+    },
+    {},
+  );
+
+  const eventTableEntries = Object.entries(newlyMarkedByEvent).sort((a, b) =>
+    a[0].localeCompare(b[0]),
+  );
 
   const loadTables = async () => {
     setRefreshing(true);
@@ -289,7 +313,19 @@ export default function ScanClient() {
 
         <div className="mt-4 space-y-4">
           <div ref={newRef}>
-            <DataTable title="Newly Marked" rows={newlyMarked} />
+            {eventTableEntries.length === 0 ? (
+              <DataTable title="Newly Marked" rows={[]} />
+            ) : (
+              <div className="space-y-4">
+                {eventTableEntries.map(([eventName, rows]) => (
+                  <DataTable
+                    key={eventName}
+                    title={`Newly Marked - ${eventName}`}
+                    rows={rows}
+                  />
+                ))}
+              </div>
+            )}
           </div>
           <div ref={repeatRef}>
             <DataTable title="Already Marked" rows={alreadyMarked} />
@@ -303,10 +339,13 @@ export default function ScanClient() {
             type="button"
             className="px-2 py-3 text-xs font-medium text-zinc-700"
             onClick={() =>
-              scanRef.current?.scrollIntoView({ behavior: "smooth" })
+              repeatRef.current?.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+              })
             }
           >
-            Scanner
+            Visitors
           </button>
           <button
             type="button"
@@ -318,19 +357,14 @@ export default function ScanClient() {
               })
             }
           >
-            New
+            Events
           </button>
           <button
             type="button"
             className="px-2 py-3 text-xs font-medium text-zinc-700"
-            onClick={() =>
-              repeatRef.current?.scrollIntoView({
-                behavior: "smooth",
-                block: "start",
-              })
-            }
+            onClick={() => router.push("/")}
           >
-            Repeat
+            Home
           </button>
         </div>
       </nav>

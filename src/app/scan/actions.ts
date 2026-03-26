@@ -18,6 +18,7 @@ type ScanTeamRow = {
   college: string;
   teamQrCode: string | null;
   eventNames: string;
+  eventList: string[];
   alreadyMarked: boolean;
 };
 
@@ -56,6 +57,7 @@ function toScanTeamRow(log: {
     college: log.team.college,
     teamQrCode: log.team.qrCode,
     eventNames: log.team.events.map((entry) => entry.event.name).join(", "),
+    eventList: log.team.events.map((entry) => entry.event.name),
     alreadyMarked: Boolean(log.team.leaderAttendedAt),
   };
 }
