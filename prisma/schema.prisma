@@ -165,8 +165,24 @@ model ParticipantTeam {
   leaderAttendedBy String?
   events           ParticipantTeamEvent[]
   members          ParticipantTeamMember[]
+  scanLogs         ScanLog[]
 
   @@map("participant_team")
+}
+
+model ScanLog {
+  id            String           @id @default(uuid())
+  qrValue       String
+  status        String
+  message       String?
+  scannedAt     DateTime         @default(now())
+  scannerUserId String?
+  teamId        String?
+  team          ParticipantTeam? @relation(fields: [teamId], references: [id], onDelete: SetNull)
+
+  @@index([scannedAt])
+  @@index([teamId])
+  @@map("scan_log")
 }
 
 model ParticipantTeamMember {
