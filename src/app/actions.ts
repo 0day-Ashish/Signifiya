@@ -25,6 +25,12 @@ function isExpoRegistrationBlocked(clientType?: string) {
   return disableExpoRegistration && clientType?.toLowerCase() === "expo";
 }
 
+function hasRegistrationBackdoorAccess(accessKey?: string) {
+  const backdoorToken = process.env.REGISTRATION_BACKDOOR_TOKEN?.trim();
+  if (!backdoorToken) return false;
+  return accessKey?.trim() === backdoorToken;
+}
+
 export async function uploadAvatar(formData: FormData) {
   try {
     const file = formData.get("file") as File;
@@ -276,8 +282,19 @@ export async function submitVisitorRegistration(data: {
   sessionUserId: string;
   utrId: string;
   clientType?: "web" | "expo" | string;
+  accessKey?: string;
 }) {
   try {
+    if (
+      !APP_CONFIG.features.visitorRegistrationOpen &&
+      !hasRegistrationBackdoorAccess(data.accessKey)
+    ) {
+      return {
+        success: false,
+        error: "Visitor registrations are currently closed.",
+      };
+    }
+
     const {
       bookingId: rawBookingId,
       name,
@@ -473,8 +490,19 @@ export async function submitEventRegistrationManual(data: {
   totalAmount: number;
   utrId: string;
   clientType?: "web" | "expo" | string;
+  accessKey?: string;
 }) {
   try {
+    if (
+      !APP_CONFIG.features.eventRegistrationOpen &&
+      !hasRegistrationBackdoorAccess(data.accessKey)
+    ) {
+      return {
+        success: false,
+        error: "Event registrations are currently closed.",
+      };
+    }
+
     const {
       teamName,
       leaderName,
@@ -603,8 +631,19 @@ export async function submitReelRegistration(data: {
   reelLink?: string;
   leaderBookingId: string;
   clientType?: "web" | "expo" | string;
+  accessKey?: string;
 }) {
   try {
+    if (
+      !APP_CONFIG.features.eventRegistrationOpen &&
+      !hasRegistrationBackdoorAccess(data.accessKey)
+    ) {
+      return {
+        success: false,
+        error: "Event registrations are currently closed.",
+      };
+    }
+
     const {
       teamName,
       leaderName,

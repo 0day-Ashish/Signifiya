@@ -1,9 +1,11 @@
 import localFont from "next/font/local";
 import Image from "next/image";
 import FadeIn from "./FadeIn";
+import { APP_CONFIG } from "@/config/app.config";
 
 const gilton = localFont({ src: "../../public/fonts/GiltonRegular.otf" });
 const softura = localFont({ src: "../../public/fonts/Softura-Demo.otf" });
+const VISITOR_REGISTRATION_OPEN = APP_CONFIG.features.visitorRegistrationOpen;
 
 export default function About() {
   return (
@@ -41,12 +43,20 @@ export default function About() {
                 art, and culture.
               </p>
               <div className="mt-8">
-                <a
-                  href="/register"
-                  className={`inline-block bg-black text-white px-4 py-2 sm:px-6 sm:py-3 rounded-full border-2 border-transparent hover:bg-[#deb3fa] hover:text-black hover:border-black hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all ml-5 sm:ml-0 uppercase font-bold text-xs sm:text-sm tracking-wider cursor-none ${softura.className}`}
-                >
-                  Get Visitor&apos;s Pass
-                </a>
+                {VISITOR_REGISTRATION_OPEN ? (
+                  <a
+                    href="/register"
+                    className={`inline-block bg-black text-white px-4 py-2 sm:px-6 sm:py-3 rounded-full border-2 border-transparent hover:bg-[#deb3fa] hover:text-black hover:border-black hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all ml-5 sm:ml-0 uppercase font-bold text-xs sm:text-sm tracking-wider cursor-none ${softura.className}`}
+                  >
+                    Get Visitor&apos;s Pass
+                  </a>
+                ) : (
+                  <span
+                    className={`inline-block bg-zinc-300 text-zinc-700 px-4 py-2 sm:px-6 sm:py-3 rounded-full border-2 border-zinc-500 ml-5 sm:ml-0 uppercase font-bold text-xs sm:text-sm tracking-wider ${softura.className}`}
+                  >
+                    Visitor Registrations Closed
+                  </span>
+                )}
                 <p
                   className={`text-black text-xs font-medium mt-2 max-w-xs ml-6 sm:ml-0 ${softura.className} opacity-70`}
                 >

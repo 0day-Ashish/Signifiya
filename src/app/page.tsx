@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect } from "react";
 import Preloader from "@/components/Preloader";
-import Timer from "@/components/Timer";
 import localFont from "next/font/local";
 import Image from "next/image";
 import Link from "next/link";
@@ -40,6 +39,7 @@ const rampart = localFont({ src: "../../public/fonts/RampartOne-Regular.ttf" });
 const gilton = localFont({ src: "../../public/fonts/GiltonRegular.otf" });
 const bicubik = localFont({ src: "../../public/fonts/Bicubik.otf" });
 const softura = localFont({ src: "../../public/fonts/Softura-Demo.otf" });
+const VISITOR_REGISTRATION_OPEN = APP_CONFIG.features.visitorRegistrationOpen;
 
 const Marquee = () => {
   const baseVelocity = -2; // Reduced base speed
@@ -155,13 +155,15 @@ export default function Home() {
       if (sessionData.user?.id) {
         (async () => {
           try {
-            const res = await fetch(`/api/user?userId=${sessionData.user.id}`, { cache: 'no-store' });
-            if (!res.ok) throw new Error('Failed to fetch user data');
+            const res = await fetch(`/api/user?userId=${sessionData.user.id}`, {
+              cache: "no-store",
+            });
+            if (!res.ok) throw new Error("Failed to fetch user data");
             const json = await res.json();
             if (json.profile) setUserProfile(json.profile);
             if (json.passStatus) setPassStatus(json.passStatus);
           } catch (err) {
-            console.error('Error fetching user data:', err);
+            console.error("Error fetching user data:", err);
           }
         })();
       }
@@ -370,79 +372,25 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Lottie Animation Above Timer */}
-            {/* <div className="hidden sm:block absolute -top-50 left-1/2 -translate-x-[170%] w-[220px] h-[220px] pointer-events-none z-20">
-                <DotLottieReact
-                  src="https://lottie.host/e28afc4a-f625-49e6-b4b6-a41b4d08a155/f7wuEZYKPl.lottie"
-                  loop
-                 autoplay
-                />
-             </div> */}
-
-            <Timer />
-
-            {/* Booking ID Display - Only show if user is logged in */}
-            {session?.user && (
-              <div className="flex justify-center mt-4">
-                <div
-                  className={`bg-white/90 backdrop-blur-sm px-6 py-3 rounded-2xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] ${softura.className}`}
-                >
-                  <div className="flex flex-col items-center gap-1">
-                    <span className="text-xs font-bold text-gray-600 uppercase tracking-wider">
-                      Your Booking ID
-                    </span>
-                    <span className="text-lg font-bold text-black tracking-wider font-mono">
-                      {userProfile?.bookingId || "Loading..."}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            <div>
-              {!session ? (
-                <Link
-                  href="/sign-in"
-                  className={`bg-[#deb3fa] text-black px-6 py-2 rounded-full border-2 border-black font-bold text-base uppercase tracking-wider shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 ${gilton.className}`}
-                >
-                  Sign In / Sign Up
-                </Link>
-              ) : (
-                <div className="flex flex-row gap-3 sm:gap-4 justify-center items-center">
-                  <Link
-                    href="#events"
-                    className={`bg-[#deb3fa] text-black px-4 py-2 sm:px-6 sm:py-3 rounded-xl sm:rounded-2xl border-2 border-black font-bold text-xs sm:text-sm uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 ${gilton.className}`}
-                  >
-                    {passStatus?.hasEventPass ? "View Events" : "Check Events"}
-                  </Link>
-                  {/* Show different button based on pass status */}
-                  {passStatus?.hasDualDayPass ? (
-                    // User has dual day pass - show "View My Passes"
-                    <Link
-                      href="/profile"
-                      className={`bg-[#4caf50] text-white px-4 py-2 sm:px-6 sm:py-3 rounded-xl sm:rounded-2xl border-2 border-black font-bold text-xs sm:text-sm uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 ${gilton.className}`}
-                    >
-                      View My Passes
-                    </Link>
-                  ) : passStatus?.hasSingleDayPass ? (
-                    // User has single day pass - show option to buy another day
-                    <Link
-                      href="/register"
-                      className={`bg-[#ff9800] text-black px-4 py-2 sm:px-6 sm:py-3 rounded-xl sm:rounded-2xl border-2 border-black font-bold text-xs sm:text-sm uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 ${gilton.className}`}
-                    >
-                      Buy Another Day
-                    </Link>
-                  ) : (
-                    // No visitor pass - show "Visitor's Pass"
-                    <Link
-                      href="/register"
-                      className={`bg-[#ffffff] text-black px-4 py-2 sm:px-6 sm:py-3 rounded-xl sm:rounded-2xl border-2 border-black font-bold text-xs sm:text-sm uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 ${gilton.className}`}
-                    >
-                      Visitor&apos;s Pass
-                    </Link>
-                  )}
-                </div>
-              )}
+            {/* Thank You Message */}
+            <div className="flex flex-col items-center gap-6 sm:gap-8">
+              <h2
+                className={`text-3xl sm:text-4xl md:text-6xl font-extrabold text-white text-center tracking-wide ${bicubik.className}`}
+                style={{ textShadow: "4px 4px 0px rgba(0,0,0,1)" }}
+              >
+                Thank You for Joining
+              </h2>
+              <p
+                className={`text-xl sm:text-2xl md:text-3xl font-bold text-white text-center tracking-widest ${gilton.className}`}
+                style={{ textShadow: "2px 2px 0px rgba(0,0,0,1)" }}
+              >
+                SIGNIFIYA 2026
+              </p>
+              <p
+                className={`text-sm sm:text-base md:text-lg text-white/90 text-center max-w-2xl ${softura.className}`}
+              >
+                We hope you had an amazing time! Stay tuned for more exciting events.
+              </p>
             </div>
           </div>
 

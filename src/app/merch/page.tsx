@@ -881,6 +881,10 @@ function MerchBookingContent() {
                     </Link>{" "}
                     section of your profile.
                   </span>
+                  <span className="block mt-2 text-zinc-700 font-semibold text-base">
+                    You will be notified after 7 days or you will get your
+                    refund.
+                  </span>
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-3 w-full max-w-sm mt-4">

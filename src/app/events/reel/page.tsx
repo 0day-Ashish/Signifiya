@@ -8,15 +8,17 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { getUserProfile } from "@/app/actions";
 import localFont from "next/font/local";
+import { APP_CONFIG } from "@/config/app.config";
 
 const gilton = localFont({ src: "../../../../public/fonts/GiltonRegular.otf" });
+const EVENT_REGISTRATION_OPEN = APP_CONFIG.features.eventRegistrationOpen;
 
 const formSchema = z.object({
   teamName: z.string().min(2, "Team Name is required"),
@@ -46,6 +48,14 @@ const labelStyles =
 
 function ReelRegistrationContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const accessKey =
+    searchParams.get("accessKey")?.trim() ||
+    searchParams.get("key")?.trim() ||
+    "";
+  const reelPathWithAccess = accessKey
+    ? `/events/reel?accessKey=${encodeURIComponent(accessKey)}`
+    : "/events/reel";
   const { data: sessionData, isPending: isSessionPending } =
     authClient.useSession();
   const [isLoading, setIsLoading] = useState(false);
@@ -75,9 +85,11 @@ function ReelRegistrationContent() {
   // Auth guard
   useEffect(() => {
     if (!isSessionPending && !sessionData) {
-      router.push("/sign-in?callbackUrl=/events/reel");
+      router.push(
+        `/sign-in?callbackUrl=${encodeURIComponent(reelPathWithAccess)}`,
+      );
     }
-  }, [sessionData, isSessionPending, router]);
+  }, [sessionData, isSessionPending, router, reelPathWithAccess]);
 
   // Prefill from profile
   useEffect(() => {
@@ -90,13 +102,15 @@ function ReelRegistrationContent() {
         if (profile.bookingId) setBookingId(profile.bookingId);
         if (sessionData.user.email) setLeaderEmail(sessionData.user.email);
         if (profile.name) setValue("leaderName", profile.name);
-        else if (sessionData.user.name) setValue("leaderName", sessionData.user.name);
+        else if (sessionData.user.name)
+          setValue("leaderName", sessionData.user.name);
         if (profile.mobileNo)
           setValue(
             "leaderPhone",
             String(profile.mobileNo).replace(/\D/g, "").slice(0, 10),
           );
-        if (profile.collegeName) setValue("institutionName", profile.collegeName);
+        if (profile.collegeName)
+          setValue("institutionName", profile.collegeName);
       } finally {
         setIsPrefillLoading(false);
       }
@@ -125,6 +139,7 @@ function ReelRegistrationContent() {
         reelLink: vals.reelLink,
         leaderBookingId: bookingId,
         clientType: "web",
+        accessKey: accessKey || undefined,
       });
 
       if (!res.success) {
@@ -144,6 +159,27 @@ function ReelRegistrationContent() {
     return (
       <div className="bg-zinc-950 h-screen flex items-center justify-center">
         <p className="text-white font-mono text-sm animate-pulse">Loading…</p>
+      </div>
+    );
+  }
+
+  if (!EVENT_REGISTRATION_OPEN && !accessKey) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-zinc-950 p-4">
+        <div className="max-w-xl w-full bg-white border-4 border-black rounded-2xl p-8 shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] text-center">
+          <h1 className="text-3xl font-black uppercase tracking-tight text-black">
+            Event Registrations Closed
+          </h1>
+          <p className="mt-4 text-zinc-700 font-medium">
+            Signifiya event registrations are currently closed.
+          </p>
+          <Link
+            href="/"
+            className="inline-block mt-6 text-black font-mono text-xs font-bold border-2 border-black px-4 py-2 rounded bg-yellow-300 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-y-0.5 hover:shadow-none transition-all"
+          >
+            ← RETURN HOME
+          </Link>
+        </div>
       </div>
     );
   }
@@ -298,8 +334,7 @@ function ReelRegistrationContent() {
                   <div className="flex flex-col md:flex-row gap-4">
                     <div className="w-full">
                       <Label className={labelStyles}>
-                        Team Leader Name{" "}
-                        <span className="text-red-500">*</span>
+                        Team Leader Name <span className="text-red-500">*</span>
                       </Label>
                       <Input
                         {...register("leaderName")}
@@ -314,8 +349,7 @@ function ReelRegistrationContent() {
                     </div>
                     <div className="w-full">
                       <Label className={labelStyles}>
-                        Institution Name{" "}
-                        <span className="text-red-500">*</span>
+                        Institution Name <span className="text-red-500">*</span>
                       </Label>
                       <Input
                         {...register("institutionName")}
