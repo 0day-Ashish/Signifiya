@@ -4,7 +4,21 @@ import { useEffect, useState } from "react";
 import localFont from "next/font/local";
 
 const bartle = localFont({ src: "../../public/fonts/BBHBartle-Regular.ttf" });
-const TARGET_DATE = new Date("2026-03-27T00:00:00+05:30");
+const TARGET_DATE = new Date("2026-03-28T00:00:00+05:30");
+
+function calculateTimeDelta(targetDate: Date) {
+  const now = new Date();
+  const difference = targetDate.getTime() - now.getTime();
+  const elapsed = Math.abs(difference);
+
+  return {
+    days: Math.floor(elapsed / (1000 * 60 * 60 * 24)),
+    hours: Math.floor((elapsed / (1000 * 60 * 60)) % 24),
+    minutes: Math.floor((elapsed / 1000 / 60) % 60),
+    seconds: Math.floor((elapsed / 1000) % 60),
+    isPast: difference <= 0,
+  };
+}
 
 export default function Timer() {
   const [timeLeft, setTimeLeft] = useState({
@@ -12,26 +26,16 @@ export default function Timer() {
     hours: 0,
     minutes: 0,
     seconds: 0,
+    isPast: false,
   });
 
   // Calculate and update the countdown
   useEffect(() => {
     const calculateTimeLeft = () => {
-      const difference = +TARGET_DATE - +new Date();
-
-      if (difference > 0) {
-        setTimeLeft({
-          days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-          hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-          minutes: Math.floor((difference / 1000 / 60) % 60),
-          seconds: Math.floor((difference / 1000) % 60),
-        });
-      } else {
-        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-      }
+      setTimeLeft(calculateTimeDelta(TARGET_DATE));
     };
 
-    calculateTimeLeft(); // Initial call
+    calculateTimeLeft();
     const timer = setInterval(calculateTimeLeft, 1000);
 
     return () => clearInterval(timer);
@@ -41,7 +45,10 @@ export default function Timer() {
     <div className={`flex flex-col items-center gap-2 ${bartle.className}`}>
       <div className="flex items-center gap-1 sm:gap-4 md:gap-8">
         {[
-          { label: "DAYS", value: timeLeft.days },
+          {
+            label: timeLeft.isPast ? "DAYS PASSED" : "DAYS LEFT",
+            value: timeLeft.days,
+          },
           { label: "HOURS", value: timeLeft.hours },
           { label: "MINS", value: timeLeft.minutes },
           { label: "SEC", value: timeLeft.seconds },
