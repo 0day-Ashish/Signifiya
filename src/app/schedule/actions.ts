@@ -56,7 +56,7 @@ const getEventsData = (): DayData[] => [
         coordinators: "",
         facultyCoordinators: "",
         image1: "/eee.jpg",
-        lottie: 
+        lottie:
           "https://lottie.host/d4daf38b-2ffb-483d-b524-967a221f540e/okSpmUrCF7.lottie",
         color: "bg-yellow-100",
       },
@@ -84,7 +84,7 @@ const getEventsData = (): DayData[] => [
         time: "10:00 AM - 12:00 PM",
         venue: "Workshop Hall",
         coordinators: "Aritro Chakrabarty",
-        facultyCoordinators: "",  
+        facultyCoordinators: "",
         image1: "/mechanical1.jpg",
         lottie:
           "https://lottie.host/85932f49-c3cd-4483-ae12-6ddcc8e7cc34/b0nR37lbph.lottie",
@@ -196,7 +196,7 @@ const getEventsData = (): DayData[] => [
  */
 export async function getScheduleEvents(): Promise<DayData[]> {
   const cacheKey = CacheKeys.schedule();
-  
+
   // Try to get from cache first
   const cached = await getCache<DayData[]>(cacheKey, process.env.NODE_ENV === "development");
   if (cached) {
@@ -211,7 +211,7 @@ export async function getScheduleEvents(): Promise<DayData[]> {
 
   // Cache it for 30 minutes (CACHE_TTL.LONG)
   await setCache(cacheKey, eventsData, CACHE_TTL.LONG, process.env.NODE_ENV === "development");
-  
+
   if (process.env.NODE_ENV === "development") {
     console.log(`[CACHE] Schedule events cached for ${CACHE_TTL.LONG}s (30 minutes)`);
   }
