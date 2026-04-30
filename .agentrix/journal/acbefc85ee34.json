@@ -1,0 +1,13 @@
+{
+  "id": "acbefc85ee34",
+  "workspace": "C:\\Users\\ARYADEEP\\Desktop\\Signifiya",
+  "ops": [
+    {
+      "kind": "edit",
+      "path": "README.md",
+      "before_blob_path": "C:\\Users\\ARYADEEP\\Desktop\\Signifiya\\.agentrix\\journal\\acbefc85ee34\\blobs\\5466f4dedeae41c0bd7a7b5c07756001-README.md",
+      "after_preview": "# Signifiya\n\n**Signifiya** is the annual techfest of the **School of Engineering & Technology (SOET), Adamas University**. It brings together students from acro",
+      "ts": 1777451069175
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "id": "e6ae7bed5664",
+  "workspace": "C:\\Users\\ARYADEEP\\Desktop\\Signifiya",
+  "ops": [
+    {
+      "kind": "edit",
+      "path": "src/app/page.tsx",
+      "before_blob_path": "C:\\Users\\ARYADEEP\\Desktop\\Signifiya\\.agentrix\\journal\\e6ae7bed5664\\blobs\\9d20472b943f47e384d6f4c3c4a96616-page.tsx",
+      "after_preview": "",
+      "ts": 1777559691704
+    }
+  ]
+}

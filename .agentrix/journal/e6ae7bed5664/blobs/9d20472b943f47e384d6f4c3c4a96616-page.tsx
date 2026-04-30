@@ -365,7 +365,7 @@ export default function Home() {
       <About />
       <div className="relative z-20 bg-black">
         <Marquee />
-
+        <Events />
         <Prizes />
         <Sponsors />
         <Gallery />

@@ -1,0 +1,13 @@
+{
+  "id": "c78ba2caff94",
+  "workspace": "C:\\Users\\ARYADEEP\\Desktop\\Signifiya",
+  "ops": [
+    {
+      "kind": "edit",
+      "path": "src/components/AudioProvider.tsx",
+      "before_blob_path": "C:\\Users\\ARYADEEP\\Desktop\\Signifiya\\.agentrix\\journal\\c78ba2caff94\\blobs\\d5b991d1b0d847dba8041a1c291a686d-AudioProvider.tsx",
+      "after_preview": "\"use client\";\n\nimport React, { createContext, useContext, useRef, useState, useEffect } from \"react\";\n\ninterface AudioContextType {\n  musicPlaying: boolean;\n  a",
+      "ts": 1777555424655
+    }
+  ]
+}
