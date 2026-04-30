@@ -1,0 +1,48 @@
+{
+  "id": "102582c87398",
+  "workspace": "C:\\Users\\ARYADEEP\\Desktop\\Signifiya",
+  "ops": [
+    {
+      "kind": "delete",
+      "path": "src/app/events/page.tsx",
+      "before_blob_path": "C:\\Users\\ARYADEEP\\Desktop\\Signifiya\\.agentrix\\journal\\102582c87398\\blobs\\2304492fc4b844de9621edeb484c8f20-page.tsx",
+      "after_preview": "",
+      "ts": 1777559726339
+    },
+    {
+      "kind": "delete",
+      "path": "src/components/Events.tsx",
+      "before_blob_path": "C:\\Users\\ARYADEEP\\Desktop\\Signifiya\\.agentrix\\journal\\102582c87398\\blobs\\09815bf33f884f1088c0187a9cb584e1-Events.tsx",
+      "after_preview": "",
+      "ts": 1777559734485
+    },
+    {
+      "kind": "delete",
+      "path": "src/components/Events-Pass.tsx",
+      "before_blob_path": "C:\\Users\\ARYADEEP\\Desktop\\Signifiya\\.agentrix\\journal\\102582c87398\\blobs\\9df2ca8130a048f78744d91135e5e309-Events-Pass.tsx",
+      "after_preview": "",
+      "ts": 1777559735735
+    },
+    {
+      "kind": "delete",
+      "path": "src/app/admin/events/page.tsx",
+      "before_blob_path": "C:\\Users\\ARYADEEP\\Desktop\\Signifiya\\.agentrix\\journal\\102582c87398\\blobs\\ec2b76768edb4589890561f31bb3e57b-page.tsx",
+      "after_preview": "",
+      "ts": 1777559737154
+    },
+    {
+      "kind": "delete",
+      "path": "src/app/admin/events/[id]/page.tsx",
+      "before_blob_path": "C:\\Users\\ARYADEEP\\Desktop\\Signifiya\\.agentrix\\journal\\102582c87398\\blobs\\61e8f9a8c1f74055918ae7d23b477b82-page.tsx",
+      "after_preview": "",
+      "ts": 1777559738052
+    },
+    {
+      "kind": "delete",
+      "path": "public/events-pg.jpg",
+      "before_blob_path": "C:\\Users\\ARYADEEP\\Desktop\\Signifiya\\.agentrix\\journal\\102582c87398\\blobs\\08dce52494b2418b956bf5509284d062-events-pg.jpg",
+      "after_preview": "",
+      "ts": 1777559738906
+    }
+  ]
+}
