@@ -1,0 +1,13 @@
+{
+  "id": "ec56447771ce",
+  "workspace": "C:\\Users\\ARYADEEP\\Desktop\\Signifiya",
+  "ops": [
+    {
+      "kind": "create",
+      "path": "agent.md",
+      "before_blob_path": null,
+      "after_preview": "its cool",
+      "ts": 1778016499086
+    }
+  ]
+}
