@@ -1,0 +1,13 @@
+{
+  "id": "8f9e62bb4d76",
+  "workspace": "C:\\Users\\ARYADEEP\\Desktop\\Signifiya",
+  "ops": [
+    {
+      "kind": "write",
+      "path": "README.md",
+      "before_blob_path": "C:\\Users\\ARYADEEP\\Desktop\\Signifiya\\.agentrix\\journal\\8f9e62bb4d76\\blobs\\2e1499b96a684f7eb7aafe0711d45ffd-README.md",
+      "after_preview": "# Signifiya \u2013 Official Techfest Platform\n\nSignifiya is the official full-stack platform powering the national-level techfest of the **School of Engineering & Te",
+      "ts": 1777899562797
+    }
+  ]
+}

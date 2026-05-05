@@ -1,0 +1,13 @@
+{
+  "id": "003147badac2",
+  "workspace": "C:\\Users\\ARYADEEP\\Desktop\\Signifiya",
+  "ops": [
+    {
+      "kind": "edit",
+      "path": "README.md",
+      "before_blob_path": "C:\\Users\\ARYADEEP\\Desktop\\Signifiya\\.agentrix\\journal\\003147badac2\\blobs\\38022856e33b4215ab0cbc04589433ae-README.md",
+      "after_preview": "",
+      "ts": 1777835831072
+    }
+  ]
+}

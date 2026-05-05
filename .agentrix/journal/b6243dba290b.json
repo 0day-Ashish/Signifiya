@@ -1,0 +1,13 @@
+{
+  "id": "b6243dba290b",
+  "workspace": "C:\\Users\\ARYADEEP\\Desktop\\Signifiya",
+  "ops": [
+    {
+      "kind": "delete",
+      "path": "README.md",
+      "before_blob_path": "C:\\Users\\ARYADEEP\\Desktop\\Signifiya\\.agentrix\\journal\\b6243dba290b\\blobs\\f79eeaa1c4844e70b60ecf03c824bb41-README.md",
+      "after_preview": "",
+      "ts": 1778009498519
+    }
+  ]
+}

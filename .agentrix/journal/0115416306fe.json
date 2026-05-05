@@ -1,0 +1,13 @@
+{
+  "id": "0115416306fe",
+  "workspace": "C:\\Users\\ARYADEEP\\Desktop\\Signifiya",
+  "ops": [
+    {
+      "kind": "write",
+      "path": "README.md",
+      "before_blob_path": "C:\\Users\\ARYADEEP\\Desktop\\Signifiya\\.agentrix\\journal\\0115416306fe\\blobs\\6146e9ca0b0149958835699ce6c748a8-README.md",
+      "after_preview": "# Signifiya Web App\n\nThis repository contains the official web application for **Signifiya**, the annual technology festival of the **School of Engineering & Te",
+      "ts": 1777899194685
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "id": "d28b362de02c",
+  "workspace": "C:\\Users\\ARYADEEP\\Desktop\\Signifiya",
+  "ops": [
+    {
+      "kind": "delete",
+      "path": "src/app/register/page.tsx",
+      "before_blob_path": "C:\\Users\\ARYADEEP\\Desktop\\Signifiya\\.agentrix\\journal\\d28b362de02c\\blobs\\c994bf32aa764da6b6b9310eafa20cca-page.tsx",
+      "after_preview": "",
+      "ts": 1777987117101
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "id": "bb5f9833d7de",
+  "workspace": "C:\\Users\\ARYADEEP\\Desktop\\Signifiya",
+  "ops": [
+    {
+      "kind": "write",
+      "path": "README.md",
+      "before_blob_path": "C:\\Users\\ARYADEEP\\Desktop\\Signifiya\\.agentrix\\journal\\bb5f9833d7de\\blobs\\96b3cfe4df534883bef45780b7c8fba1-README.md",
+      "after_preview": "# Signifiya \u2013 Official Techfest Platform\n\nWelcome to **Signifiya**, the national\u2011level techfest of the **School of Engineering & Technology (SOET), Adamas Unive",
+      "ts": 1777899354972
+    }
+  ]
+}

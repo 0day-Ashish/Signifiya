@@ -1,0 +1,20 @@
+{
+  "id": "e5cf3c612c5d",
+  "workspace": "C:\\Users\\ARYADEEP\\Desktop\\Signifiya",
+  "ops": [
+    {
+      "kind": "edit",
+      "path": "README.md",
+      "before_blob_path": "C:\\Users\\ARYADEEP\\Desktop\\Signifiya\\.agentrix\\journal\\e5cf3c612c5d\\blobs\\361975e984104aaf84734c105f223dee-README.md",
+      "after_preview": "",
+      "ts": 1777899039535
+    },
+    {
+      "kind": "edit",
+      "path": "README.md",
+      "before_blob_path": "C:\\Users\\ARYADEEP\\Desktop\\Signifiya\\.agentrix\\journal\\e5cf3c612c5d\\blobs\\22d0df893bf34cca8247d7f85b6615a6-README.md",
+      "after_preview": "## Learn more\n\nend of readme",
+      "ts": 1777899045914
+    }
+  ]
+}

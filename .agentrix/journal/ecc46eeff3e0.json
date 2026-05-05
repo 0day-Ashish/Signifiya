@@ -1,0 +1,13 @@
+{
+  "id": "ecc46eeff3e0",
+  "workspace": "C:\\Users\\ARYADEEP\\Desktop\\Signifiya",
+  "ops": [
+    {
+      "kind": "edit",
+      "path": "README.md",
+      "before_blob_path": "C:\\Users\\ARYADEEP\\Desktop\\Signifiya\\.agentrix\\journal\\ecc46eeff3e0\\blobs\\47d55c738a194441971d256c443db688-README.md",
+      "after_preview": "# Signifiya\n\n\nend of readme**Signifiya** is the annual techfest of the **School of Engineering & Technology (SOET), Adamas University**. It brings together stud",
+      "ts": 1777898920112
+    }
+  ]
+}
