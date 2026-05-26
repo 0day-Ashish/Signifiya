@@ -1,0 +1,13 @@
+{
+  "id": "fcdc0922a8df",
+  "workspace": "C:\\Users\\ARYADEEP\\Desktop\\AGENTRIX\\packages\\relay\\workspaces\\arya232006\\Signifiya",
+  "ops": [
+    {
+      "kind": "create",
+      "path": "xyz.md",
+      "before_blob_path": null,
+      "after_preview": "hellooo alll",
+      "ts": 1779775833950
+    }
+  ]
+}
